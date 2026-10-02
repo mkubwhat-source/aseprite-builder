@@ -12,7 +12,9 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
-import org.lwjgl.glfw.GLFW;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 
 import java.util.List;
 
@@ -54,11 +56,11 @@ public class PedestalEditScreen extends Screen {
 
         this.addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, b -> {
             sendUpdate();
-            this.minecraft.setScreen(null);
+            this.minecraft.gui.setScreen(null);
         }).bounds(this.width / 2 - btnW - 4, y, btnW, btnH).build());
 
         this.addRenderableWidget(Button.builder(CommonComponents.GUI_CANCEL, b -> {
-            this.minecraft.setScreen(null);
+            this.minecraft.gui.setScreen(null);
         }).bounds(this.width / 2 + 4, y, btnW, btnH).build());
 
         this.field = new TextFieldHelper(
@@ -100,23 +102,23 @@ public class PedestalEditScreen extends Screen {
     public void tick() { ++frame; }
 
     @Override
-    public boolean keyPressed(int key, int scancode, int modifiers) {
-        if (key == GLFW.GLFW_KEY_ENTER || key == GLFW.GLFW_KEY_KP_ENTER) {
+    public boolean keyPressed(KeyEvent event) {
+        if (event.isConfirmation()) {
             sendUpdate();
-            this.minecraft.setScreen(null);
+            this.minecraft.gui.setScreen(null);
             return true;
         }
-        if (key == GLFW.GLFW_KEY_ESCAPE) {
+        if (event.isEscape()) {
             sendUpdate();
-            if (this.minecraft != null) this.minecraft.setScreen(null);
+            if (this.minecraft != null) this.minecraft.gui.setScreen(null);
             return true;
         }
-        return field.keyPressed(key) || super.keyPressed(key, scancode, modifiers);
+        return field.keyPressed(event) || super.keyPressed(event);
     }
 
     @Override
-    public boolean charTyped(char codePoint, int modifiers) {
-        field.charTyped(codePoint);
+    public boolean charTyped(CharacterEvent event) {
+        field.charTyped(event);
         return true;
     }
 
@@ -141,11 +143,10 @@ public class PedestalEditScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(g, mouseX, mouseY, partialTick);
-        g.drawCenteredString(this.font, this.title, this.width / 2, 40, 0xFFFFFF);
+    public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTick) {
+        g.centeredText(this.font, this.title, this.width / 2, 40, 0xFFFFFFFF);
 
-        g.pose().pushPose();
+        g.pose().pushMatrix();
         {
             int cx = this.width / 2;
             int cy = 90;
@@ -153,12 +154,11 @@ public class PedestalEditScreen extends Screen {
             int texW = 16, texH = 16;
             int drawW = texW * 5;
             int drawH = texH * 5;
-            g.blit(PREVIEW_TEX, cx - drawW / 2, cy - drawH / 2, drawW, drawH, 0, 0, texW, texH, texW, texH);
+            g.blit(RenderPipelines.GUI_TEXTURED, PREVIEW_TEX, cx - drawW / 2, cy - drawH / 2, 0, 0, drawW, drawH, texW, texH, texW, texH);
 
             // text overlay – scale to fit maxTextPixels, center
-            g.pose().pushPose();
-            g.pose().translate(0, 0, 200);
-            g.pose().translate(cx, cy, 0);
+            g.pose().pushMatrix();
+            g.pose().translate(cx, cy);
 
             String toDraw = this.font.isBidirectional() ? this.font.bidirectionalShaping(line) : line;
             int rawW = this.font.width(toDraw);
@@ -167,9 +167,9 @@ public class PedestalEditScreen extends Screen {
             if (rawW > this.maxTextPixels) {
                 fit = (float) this.maxTextPixels / (float) rawW;
             }
-            g.pose().scale(fit, fit, 1f);
+            g.pose().scale(fit, fit);
 
-            int textColor = this.color.getTextColor();
+            int textColor = 0xFF000000 | this.color.getTextColor();
             boolean caretBlink = (frame / 6) % 2 == 0;
             int cursor = field.getCursorPos();
             int sel = field.getSelectionPos();
@@ -177,11 +177,11 @@ public class PedestalEditScreen extends Screen {
             int baseY = -this.font.lineHeight / 2;
             int x0 = -rawW / 2;
 
-            g.drawString(this.font, toDraw, x0, baseY, textColor, false);
+            g.text(this.font, toDraw, x0, baseY, textColor, false);
 
             if (caretBlink && cursor >= 0 && cursor == toDraw.length()) {
                 int xCaret = this.font.width(toDraw) - rawW / 2;
-                g.drawString(this.font, "_", xCaret, baseY, textColor, false);
+                g.text(this.font, "_", xCaret, baseY, textColor, false);
             }
 
             if (cursor != sel) {
@@ -191,14 +191,14 @@ public class PedestalEditScreen extends Screen {
                 int xB = this.font.width(toDraw.substring(0, b)) - rawW / 2;
                 int yTop = baseY - 1;
                 int yBot = baseY + this.font.lineHeight;
-                g.fill(net.minecraft.client.renderer.RenderType.guiTextHighlight(), xA, yTop, xB, yBot, 0xFF0000FF);
+                g.textHighlight(xA, yTop, xB, yBot, true);
             }
 
-            g.pose().popPose();
+            g.pose().popMatrix();
         }
-        g.pose().popPose();
+        g.pose().popMatrix();
 
-        super.render(g, mouseX, mouseY, partialTick);
+        super.extractRenderState(g, mouseX, mouseY, partialTick);
     }
 
     @Override
@@ -209,7 +209,7 @@ public class PedestalEditScreen extends Screen {
 
     private void onDone() {
         // Just close; removed() will send
-        this.minecraft.setScreen(null);
+        this.minecraft.gui.setScreen(null);
     }
 
     @Override

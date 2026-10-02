@@ -4,57 +4,74 @@ import dev.hexnowloading.dungeonnowloading.block.MendingAuraBlock;
 import dev.hexnowloading.dungeonnowloading.block.client.renderer.MendingAuraBlockEntityRenderer;
 import dev.hexnowloading.dungeonnowloading.block.entity.MendingAuraBlockEntity;
 import dev.hexnowloading.dungeonnowloading.registry.DNLBlocks;
-import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.fabricmc.fabric.api.client.model.loading.v1.wrapper.WrapperBlockStateModel;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.resources.model.geometry.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.resources.model.cuboid.ItemTransforms;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.function.Supplier;
+import java.util.function.Predicate;
 
-public class MendingAuraFabricBakedModel implements BakedModel, FabricBakedModel {
-    private final BakedModel wrapped;
+/**
+ * Chunk model of the mending aura block: renders the mimicked block's geometry re-textured with the aura sprite.
+ * The aura texture is projected onto each face by block-space position, so it tiles seamlessly across faces.
+ */
+public class MendingAuraFabricBakedModel extends WrapperBlockStateModel {
 
-    public MendingAuraFabricBakedModel(BakedModel wrapped) {
-        this.wrapped = wrapped;
+    public MendingAuraFabricBakedModel(BlockStateModel wrapped) {
+        super(wrapped);
     }
 
     @Override
-    public boolean isVanillaAdapter() {
-        return false;
-    }
-
-    @Override
-    public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos, Supplier<RandomSource> randomSupplier, RenderContext context) {
-        BlockState storedState = getStoredBlockState(blockView, pos);
+    public void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<@org.jspecify.annotations.Nullable Direction> cullTest) {
+        BlockState storedState = getStoredBlockState(level, pos);
         if (storedState == null) {
             return;
         }
 
-        BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
-        BakedModel storedModel = dispatcher.getBlockModel(storedState);
-        TextureAtlasSprite auraSprite = dispatcher.getBlockModel(DNLBlocks.MENDING_AURA.get().defaultBlockState()).getParticleIcon();
-        BakedModel auraModel = new MendingAuraBlockEntityRenderer.AuraTextureModel(
-                storedModel,
-                auraSprite,
-                blockView,
-                pos,
-                MendingAuraBlockEntityRenderer.GLOBAL_REMAPPED_QUAD_CACHE
-        );
+        var modelSet = Minecraft.getInstance().getModelManager().getBlockStateModelSet();
+        BlockStateModel storedModel = modelSet.get(storedState);
+        TextureAtlasSprite auraSprite = modelSet.getParticleMaterial(DNLBlocks.MENDING_AURA.get().defaultBlockState()).sprite();
 
-        context.bakedModelConsumer().accept(auraModel, storedState);
+        emitter.pushTransform(quad -> {
+            Direction cullFace = quad.cullFace();
+            if (cullFace != null && !MendingAuraBlockEntityRenderer.AuraTextureModel.shouldRenderAgainstNeighborAura(storedState, level, pos, cullFace)) {
+                return false;
+            }
+            Direction face = quad.nominalFace();
+            for (int vertex = 0; vertex < 4; vertex++) {
+                float x = quad.x(vertex);
+                float y = quad.y(vertex);
+                float z = quad.z(vertex);
+                float u;
+                float v;
+                switch (face == null ? Direction.UP : face) {
+                    case UP, DOWN -> { u = x; v = z; }
+                    case NORTH, SOUTH -> { u = x; v = 1.0F - y; }
+                    default -> { u = z; v = 1.0F - y; }
+                }
+                quad.uv(vertex, auraSprite.getU(wrap(u)), auraSprite.getV(wrap(v)));
+                quad.color(vertex, -1);
+            }
+            quad.tintIndex(-1);
+            quad.chunkLayer(ChunkSectionLayer.TRANSLUCENT);
+            return true;
+        });
+        storedModel.emitQuads(emitter, level, pos, storedState, random, cullTest);
+        emitter.popTransform();
+    }
+
+    private static float wrap(float value) {
+        float wrapped = value - (float) Math.floor(value);
+        return value != 0.0F && wrapped == 0.0F ? 1.0F : wrapped;
     }
 
     @Nullable
@@ -67,45 +84,5 @@ public class MendingAuraFabricBakedModel implements BakedModel, FabricBakedModel
             }
         }
         return null;
-    }
-
-    @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction direction, RandomSource random) {
-        return this.wrapped.getQuads(state, direction, random);
-    }
-
-    @Override
-    public boolean useAmbientOcclusion() {
-        return this.wrapped.useAmbientOcclusion();
-    }
-
-    @Override
-    public boolean isGui3d() {
-        return this.wrapped.isGui3d();
-    }
-
-    @Override
-    public boolean usesBlockLight() {
-        return this.wrapped.usesBlockLight();
-    }
-
-    @Override
-    public boolean isCustomRenderer() {
-        return this.wrapped.isCustomRenderer();
-    }
-
-    @Override
-    public TextureAtlasSprite getParticleIcon() {
-        return this.wrapped.getParticleIcon();
-    }
-
-    @Override
-    public ItemTransforms getTransforms() {
-        return this.wrapped.getTransforms();
-    }
-
-    @Override
-    public ItemOverrides getOverrides() {
-        return this.wrapped.getOverrides();
     }
 }

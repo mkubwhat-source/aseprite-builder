@@ -1,5 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.particle;
 
+
+
+import net.minecraft.client.particle.SingleQuadParticle;
+import dev.hexnowloading.dungeonnowloading.client.legacy.TextureSheetParticle;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -96,12 +100,12 @@ public class MendingRuneParticle extends TextureSheetParticle {
     }
 
     @Override
-    public int getLightColor(float $$0) {
+    public int getLightCoords(float $$0) {
         return 240;
     }
 
     @Override
-    public ParticleRenderType getRenderType() { return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT; }
+    public SingleQuadParticle.Layer getLayer() { return SingleQuadParticle.Layer.TRANSLUCENT; }
 
     public static class Factory implements ParticleProvider<SimpleParticleType> {
 
@@ -113,7 +117,7 @@ public class MendingRuneParticle extends TextureSheetParticle {
 
         @Nullable
         @Override
-        public Particle createParticle(SimpleParticleType simpleParticleType, ClientLevel clientLevel, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(SimpleParticleType simpleParticleType, ClientLevel clientLevel, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, net.minecraft.util.RandomSource random) {
             MendingRuneParticle particle = new MendingRuneParticle(clientLevel, x, y, z, xSpeed, ySpeed, zSpeed, this.sprites);
             particle.setSprite(sprites.get(0, 1));
             return particle;

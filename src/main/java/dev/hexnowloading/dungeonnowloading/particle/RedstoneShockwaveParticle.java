@@ -1,5 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.particle;
 
+
+
+import net.minecraft.client.particle.SingleQuadParticle;
+import dev.hexnowloading.dungeonnowloading.client.legacy.TextureSheetParticle;
 import dev.hexnowloading.dungeonnowloading.particle.type.ScalableParticleType;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
@@ -43,13 +47,13 @@ public class RedstoneShockwaveParticle extends TextureSheetParticle {
     }
 
     @Override
-    protected int getLightColor(float $$0) {
+    public int getLightCoords(float $$0) {
         return 240;
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    public SingleQuadParticle.Layer getLayer() {
+        return SingleQuadParticle.Layer.TRANSLUCENT;
     }
 
     public static class Factory implements ParticleProvider<ScalableParticleType.ScalableParticleData> {
@@ -62,7 +66,7 @@ public class RedstoneShockwaveParticle extends TextureSheetParticle {
 
         @Nullable
         @Override
-        public Particle createParticle(ScalableParticleType.ScalableParticleData scalableParticleData, ClientLevel clientLevel, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(ScalableParticleType.ScalableParticleData scalableParticleData, ClientLevel clientLevel, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, net.minecraft.util.RandomSource random) {
             RedstoneShockwaveParticle particle = new RedstoneShockwaveParticle(clientLevel, x, y, z, xSpeed, ySpeed, zSpeed, scalableParticleData.getScale(), this.spriteSet);
             particle.setSprite(spriteSet.get(0, 1));
             return particle;

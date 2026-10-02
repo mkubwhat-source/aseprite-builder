@@ -2,7 +2,6 @@ package dev.hexnowloading.dungeonnowloading.block.client.renderer;
 
 
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -57,7 +56,6 @@ public class DungeonBannerBlockItemRenderer extends BlockEntityWithoutLevelRende
         // These transforms are "good defaults". Tweak to taste.
         switch (ctx) {
             case GUI -> {
-                Lighting.setupForFlatItems();
                 poseStack.translate(0.8, 0.8, 0.0);
                 poseStack.scale(0.6F, -0.6F, -0.6F);
                 poseStack.rotate(Axis.YP.rotationDegrees(200f));

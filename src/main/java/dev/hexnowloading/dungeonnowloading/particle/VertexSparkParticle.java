@@ -1,5 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.particle;
 
+
+
+import net.minecraft.client.particle.SingleQuadParticle;
+import dev.hexnowloading.dungeonnowloading.client.legacy.TextureSheetParticle;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import dev.hexnowloading.dungeonnowloading.particle.type.AxisParticleType;
@@ -95,24 +99,24 @@ public class VertexSparkParticle extends TextureSheetParticle {
     }
 
 //    @Override
-//    public void render(VertexConsumer vertexConsumer, Camera camera, float partialTick) {
+//    public void extract(net.minecraft.client.renderer.state.level.QuadParticleRenderState particleRenderState, Camera camera, float partialTick) {
 //        this.alpha = 1.0F - Mth.clamp((((float)this.age + partialTick) / (float)this.lifetime), 0.0f, 1.0f);
 //        this.rCol = 1.0f;
 //        this.gCol = 1.0f;
-////        this.renderRotatedParticle(vertexConsumer, camera, partialTick, this.axis, this.degree);
+////        this.renderRotatedParticle(particleRenderState, camera, partialTick, this.axis, this.degree);
 //        this.rCol = 0.1f;
 //        this.gCol = 0.1f;
-////        this.renderRotatedParticle(vertexConsumer, camera, partialTick, this.axis, this.degree + 180F);
+////        this.renderRotatedParticle(particleRenderState, camera, partialTick, this.axis, this.degree + 180F);
 //    }
 
     @Override
-    public int getLightColor(float f) {
+    public int getLightCoords(float f) {
         return 240;
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    public SingleQuadParticle.Layer getLayer() {
+        return SingleQuadParticle.Layer.TRANSLUCENT;
     }
 
     public static class Factory implements ParticleProvider<ScalableParticleType.ScalableParticleData> {
@@ -125,7 +129,7 @@ public class VertexSparkParticle extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(ScalableParticleType.ScalableParticleData scalableParticleData, ClientLevel clientLevel, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(ScalableParticleType.ScalableParticleData scalableParticleData, ClientLevel clientLevel, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, net.minecraft.util.RandomSource random) {
             VertexSparkParticle particle = new VertexSparkParticle(clientLevel, x, y, z, scalableParticleData.getScale(), this.sprites);
             particle.setSprite(this.sprites.get(0, 1));
             return particle;

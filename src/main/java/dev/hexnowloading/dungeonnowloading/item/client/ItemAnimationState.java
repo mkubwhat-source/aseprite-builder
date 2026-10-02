@@ -55,7 +55,7 @@ public class ItemAnimationState {
 
         CompoundTag animationsTag = StackNbt.getTag(stack).getCompoundOrEmpty(ANIMATIONS_TAG);
 
-        for (String key : animationsTag.getAllKeys()) {
+        for (String key : animationsTag.keySet()) {
             CompoundTag animTag = animationsTag.getCompoundOrEmpty(key);
             long startTime = animTag.getLongOr("StartTime", 0L);
             long duration = animTag.getLongOr("Duration", 0L);

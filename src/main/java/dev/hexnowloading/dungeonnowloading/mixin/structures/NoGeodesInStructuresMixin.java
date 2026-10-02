@@ -12,9 +12,10 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.GeodeFeature;
-import net.minecraft.world.level.levelgen.feature.configurations.GeodeConfiguration;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import org.spongepowered.asm.mixin.Mixin;
@@ -50,12 +51,12 @@ import java.util.function.Predicate;
 public class NoGeodesInStructuresMixin {
 
     @Inject(
-            method = "place(Lnet/minecraft/world/level/levelgen/feature/FeaturePlaceContext;)Z",
+            method = "place(Lnet/minecraft/world/level/WorldGenLevel;Lnet/minecraft/world/level/chunk/ChunkGenerator;Lnet/minecraft/util/RandomSource;Lnet/minecraft/core/BlockPos;)Z",
             at = @At("HEAD"),
             cancellable = true
     )
-    private void dungeonnowloading_noGeodesInStructures(FeaturePlaceContext<GeodeConfiguration> context, CallbackInfoReturnable<Boolean> cir) {
-        if (!(context.level() instanceof WorldGenRegion worldGenRegion)) {
+    private void dungeonnowloading_noGeodesInStructures(WorldGenLevel genLevel, ChunkGenerator chunkGenerator, RandomSource random, BlockPos origin, CallbackInfoReturnable<Boolean> cir) {
+        if (!(genLevel instanceof WorldGenRegion worldGenRegion)) {
             return;
         }
 
@@ -63,10 +64,8 @@ public class NoGeodesInStructuresMixin {
 
         List<StructureStart> starts = getValidStructureStarts(
                 worldGenRegion,
-                context.origin(),
-                structure -> structureRegistry.getHolder(structureRegistry.getResourceKey(structure).get())
-                        .map(holder -> holder.is(DNLTags.NO_GEODES_TAG))
-                        .orElse(false)
+                origin,
+                structure -> structureRegistry.wrapAsHolder(structure).is(DNLTags.NO_GEODES_TAG)
         );
 
         if (!starts.isEmpty()) {
@@ -100,12 +99,12 @@ public class NoGeodesInStructuresMixin {
 
     private static void fillStartsForStructure(LevelReader level, StructureManager structureManager, Structure structure, LongSet references, BlockPos pos, Consumer<StructureStart> consumer) {
         for (long ref : references) {
-            SectionPos sectionPos = SectionPos.of(ChunkPos.containing(ref), level.getMinSection());
+            SectionPos sectionPos = SectionPos.of(ChunkPos.unpack(ref), level.getMinSectionY());
             if (!level.hasChunk(sectionPos.x(), sectionPos.z())) {
                 continue;
             }
 
-            StructureStart start = structureManager.getStartForStructure(sectionPos, structure, level.getChunk(sectionPos.x(), sectionPos.z(), ChunkStatus.STRUCTURE_STARTS));
+            StructureStart start = structureManager.getStartForStructure(structure, level.getChunk(sectionPos.x(), sectionPos.z(), ChunkStatus.STRUCTURE_STARTS));
             if (start != null && start.isValid() && start.getBoundingBox().isInside(pos)) {
                 consumer.accept(start);
             }

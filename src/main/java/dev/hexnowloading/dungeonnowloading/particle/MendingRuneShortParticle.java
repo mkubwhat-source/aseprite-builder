@@ -27,7 +27,7 @@ public class MendingRuneShortParticle extends MendingRuneParticle {
 
         @Nullable
         @Override
-        public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, net.minecraft.util.RandomSource random) {
             MendingRuneShortParticle p = new MendingRuneShortParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, this.sprites);
             p.setSprite(this.sprites.get(0, 1));
             return p;

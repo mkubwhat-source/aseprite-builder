@@ -11,6 +11,6 @@ public class ClientScreens {
     private ClientScreens() {}
 
     public static void openPedestalEditor(BlockPos pos, List<Component> lines, DyeColor color, boolean glowing) {
-        Minecraft.getInstance().setScreen(new PedestalEditScreen(pos, lines, color, glowing));
+        Minecraft.getInstance().gui.setScreen(new PedestalEditScreen(pos, lines, color, glowing));
     }
 }

@@ -1,5 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.particle;
 
+
+
+import net.minecraft.client.particle.SingleQuadParticle;
+import dev.hexnowloading.dungeonnowloading.client.legacy.TextureSheetParticle;
 import dev.hexnowloading.dungeonnowloading.particle.type.MendingFadeParticleType;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
@@ -87,13 +91,13 @@ public class MendingFadeParticle extends TextureSheetParticle {
     }
 
     @Override
-    public int getLightColor(float partialTick) {
+    public int getLightCoords(float partialTick) {
         return 240;
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    public SingleQuadParticle.Layer getLayer() {
+        return SingleQuadParticle.Layer.TRANSLUCENT;
     }
 
     public static class Factory implements ParticleProvider<MendingFadeParticleType.Data> {
@@ -107,7 +111,7 @@ public class MendingFadeParticle extends TextureSheetParticle {
         @Override
         public Particle createParticle(MendingFadeParticleType.Data data, ClientLevel level,
                                        double x, double y, double z,
-                                       double xSpeed, double ySpeed, double zSpeed) {
+                                       double xSpeed, double ySpeed, double zSpeed, net.minecraft.util.RandomSource random) {
 
             // NOTE: xSpeed/ySpeed/zSpeed are ignored; we use data.vx/vy/vz
             return new MendingFadeParticle(

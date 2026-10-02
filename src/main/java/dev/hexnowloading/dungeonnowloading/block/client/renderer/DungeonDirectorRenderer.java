@@ -3,13 +3,10 @@ package dev.hexnowloading.dungeonnowloading.block.client.renderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.hexnowloading.dungeonnowloading.block.entity.DungeonDirectorBlockEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import dev.hexnowloading.dungeonnowloading.client.legacy.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -29,21 +26,7 @@ public class DungeonDirectorRenderer implements BlockEntityRenderer<DungeonDirec
 
         BlockState state = be.getBlockState();
 
-        // Get baked model + correct render layer (cutout/solid/translucent)
-        BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
-        BakedModel model = dispatcher.getBlockModel(state);
-
-        RenderType layer = ItemBlockRenderTypes.getRenderType(state, false);
-
-        // Render baked model directly (ignores RenderShape.INVISIBLE)
-        dispatcher.getModelRenderer().renderModel(
-                poseStack.last(),
-                buffer.getBuffer(layer),
-                state,
-                model,
-                1.0F, 1.0F, 1.0F,
-                packedLight,
-                packedOverlay
-        );
+        // Render the block model directly (the block itself uses RenderShape.INVISIBLE)
+        dev.hexnowloading.dungeonnowloading.client.legacy.RecordingBufferSource.renderBlock(buffer, state, poseStack, packedLight, packedOverlay);
     }
 }

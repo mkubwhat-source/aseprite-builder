@@ -81,8 +81,8 @@ public final class StatueSkinCache {
                     PlayerSkin defaultSkin = (profile != null)
                             ? DefaultPlayerSkin.get(profile)
                             : DefaultPlayerSkin.get(new UUID(0L, 0L));
-                    Identifier def = defaultSkin.texture();
-                    boolean slim = defaultSkin.model() == PlayerSkin.Model.SLIM;
+                    Identifier def = defaultSkin.body().texturePath();
+                    boolean slim = defaultSkin.model() == net.minecraft.world.entity.player.PlayerModelType.SLIM;
                     NativeImage img = readResource(def);
                     if (img == null) return;
                     s = new SkinImg(img, slim);
@@ -99,7 +99,7 @@ public final class StatueSkinCache {
 
                 boolean isSlim = s.slim;
                 Minecraft.getInstance().execute(() -> {
-                    Minecraft.getInstance().getTextureManager().register(loc, new DynamicTexture(finalImg));
+                    Minecraft.getInstance().getTextureManager().register(loc, new DynamicTexture(() -> "dungeonnowloading statue skin", finalImg));
                     StatueSkin ss = new StatueSkin(loc, isSlim);
                     READY.put(key, ss); // ensure we cache under the primary key
                     String nk = nameKey(profile), uk = uuidKey(profile);
@@ -123,10 +123,11 @@ public final class StatueSkinCache {
         // A) SkinManager (1.21 returns a PlayerSkin with textureUrl + model)
         try {
             SkinManager sm = Minecraft.getInstance().getSkinManager();
-            PlayerSkin skin = sm.getInsecureSkin(profile);
-            if (skin != null && skin.textureUrl() != null) {
-                boolean slim = skin.model() == PlayerSkin.Model.SLIM;
-                NativeImage img = downloadPng(skin.textureUrl());
+            PlayerSkin skin = sm.createLookup(profile, false).get();
+            String skinUrl = skin != null && skin.body() instanceof net.minecraft.core.ClientAsset.DownloadedTexture downloaded ? downloaded.url() : null;
+            if (skinUrl != null) {
+                boolean slim = skin.model() == net.minecraft.world.entity.player.PlayerModelType.SLIM;
+                NativeImage img = downloadPng(skinUrl);
                 if (img != null) return new SkinImg(img, slim);
             }
         } catch (Exception ignored) {}
@@ -168,7 +169,7 @@ public final class StatueSkinCache {
                 uuidNoDash.replaceFirst(
                         "(........)(....)(....)(....)(............)",
                         "$1-$2-$3-$4-$5"
-                ))).model() == PlayerSkin.Model.SLIM;
+                ))).model() == net.minecraft.world.entity.player.PlayerModelType.SLIM;
         NativeImage img = downloadPng("https://crafatar.com/skins/" + uuidNoDash);
         return (img != null) ? new SkinImg(img, slim) : null;
     }
@@ -212,8 +213,8 @@ public final class StatueSkinCache {
     private static String trySkinManager(GameProfile profile) {
         try {
             SkinManager sm = Minecraft.getInstance().getSkinManager();
-            PlayerSkin skin = sm.getInsecureSkin(profile);
-            return skin != null ? skin.textureUrl() : null;
+            PlayerSkin skin = sm.createLookup(profile, false).get();
+            return skin != null ? (skin.body() instanceof net.minecraft.core.ClientAsset.DownloadedTexture downloaded ? downloaded.url() : null) : null;
         } catch (Exception ignored) {
             return null;
         }
@@ -299,10 +300,10 @@ public final class StatueSkinCache {
     private static void grayscale(NativeImage img) {
         int w = img.getWidth(), h = img.getHeight();
         for (int y = 0; y < h; y++) for (int x = 0; x < w; x++) {
-            int abgr = img.getPixelRGBA(x, y);
+            int abgr = net.minecraft.util.ARGB.toABGR(img.getPixel(x, y));
             int a = (abgr >>> 24) & 0xFF, b = (abgr >>> 16) & 0xFF, g = (abgr >>> 8) & 0xFF, r = abgr & 0xFF;
             int gray = (int)(0.2126*r + 0.7152*g + 0.0722*b) & 0xFF;
-            img.setPixelRGBA(x, y, (a << 24) | (gray << 16) | (gray << 8) | gray);
+            img.setPixelABGR(x, y, (a << 24) | (gray << 16) | (gray << 8) | gray);
         }
     }
 
@@ -314,18 +315,18 @@ public final class StatueSkinCache {
             int oy = y % oh;
             for (int x = 0; x < w; x++) {
                 int ox = x % ow;
-                int bc = base.getPixelRGBA(x, y);
+                int bc = net.minecraft.util.ARGB.toABGR(base.getPixel(x, y));
                 int a = (bc >>> 24) & 0xFF; if (a == 0) continue;
                 int bb = (bc >>> 16) & 0xFF, bg = (bc >>> 8) & 0xFF, br = bc & 0xFF;
 
-                int oc = overlay.getPixelRGBA(ox, oy);
+                int oc = net.minecraft.util.ARGB.toABGR(overlay.getPixel(ox, oy));
                 int ob = (oc >>> 16) & 0xFF, og = (oc >>> 8) & 0xFF, or = oc & 0xFF, oa = (oc >>> 24) & 0xFF;
 
                 float oaf = (oa / 255f) * alpha;
                 int r = (int)(br * (1f - oaf) + or * oaf);
                 int g = (int)(bg * (1f - oaf) + og * oaf);
                 int b = (int)(bb * (1f - oaf) + ob * oaf);
-                base.setPixelRGBA(x, y, (a << 24) | (b << 16) | (g << 8) | r);
+                base.setPixelABGR(x, y, (a << 24) | (b << 16) | (g << 8) | r);
             }
         }
     }
@@ -334,15 +335,15 @@ public final class StatueSkinCache {
         try {
             // fixed UUID -> stable Steve/Alex selection
             PlayerSkin defaultSkin = DefaultPlayerSkin.get(new UUID(0L, 0L));
-            Identifier def = defaultSkin.texture();
-            boolean slim = defaultSkin.model() == PlayerSkin.Model.SLIM;
+            Identifier def = defaultSkin.body().texturePath();
+            boolean slim = defaultSkin.model() == net.minecraft.world.entity.player.PlayerModelType.SLIM;
 
             NativeImage img = readResource(def);
             if (img != null) {
                 grayscale(img);
                 NativeImage stone = readResource(stoneTex);
                 if (stone != null) { blendOverlay(img, stone, overlayAlpha); stone.close(); }
-                DynamicTexture dyn = new DynamicTexture(img);
+                DynamicTexture dyn = new DynamicTexture(() -> "dungeonnowloading statue skin", img);
 
                 String seed = keySeed + "|ph|" + String.format(Locale.ROOT, "%.2f", overlayAlpha) + "|" + stoneTex;
                 String digest = Hashing.sha1().hashString(seed, StandardCharsets.UTF_8).toString();

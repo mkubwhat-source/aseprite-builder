@@ -1,5 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.particle;
 
+
+
+import net.minecraft.client.particle.SingleQuadParticle;
+import dev.hexnowloading.dungeonnowloading.client.legacy.TextureSheetParticle;
 import dev.hexnowloading.dungeonnowloading.particle.type.ScalableParticleType;
 import dev.hexnowloading.dungeonnowloading.util.DNLMath;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -57,13 +61,13 @@ public class ArrowHazardIndicatorParticle extends TextureSheetParticle {
 
 
     @Override
-    public int getLightColor(float f) {
+    public int getLightCoords(float f) {
         return 240;
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    public SingleQuadParticle.Layer getLayer() {
+        return SingleQuadParticle.Layer.TRANSLUCENT;
     }
 
     public static class Factory implements ParticleProvider<ScalableParticleType.ScalableParticleData> {
@@ -76,7 +80,7 @@ public class ArrowHazardIndicatorParticle extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(ScalableParticleType.ScalableParticleData scalableParticleData, ClientLevel clientLevel, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(ScalableParticleType.ScalableParticleData scalableParticleData, ClientLevel clientLevel, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, net.minecraft.util.RandomSource random) {
             ArrowHazardIndicatorParticle particle = new ArrowHazardIndicatorParticle(clientLevel, x, y, z, scalableParticleData.getScale(), this.sprites);
             particle.setSprite(this.sprites.get(0, 1));
             return particle;

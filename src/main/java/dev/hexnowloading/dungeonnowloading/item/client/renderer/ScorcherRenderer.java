@@ -158,7 +158,7 @@ public class ScorcherRenderer extends BlockEntityWithoutLevelRenderer {
     }
 
     private float getPartialTick() {
-        return (ClientUtil.getClientLevel() != null) ? ClientUtil.getClient().getTimer().getGameTimeDeltaPartialTick(false) : 0;
+        return (ClientUtil.getClientLevel() != null) ? ClientUtil.getClient().getDeltaTracker().getGameTimeDeltaPartialTick(false) : 0;
     }
 
     public static ScorcherRenderer getInstance() {

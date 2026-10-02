@@ -74,7 +74,7 @@ public class MendstonePickaxeParticleLogic {
         BlockPos adjacent = pos.relative(face);
         BlockState neighbor = level.getBlockState(adjacent);
 
-        return neighbor.isAir() || !neighbor.isSolidRender(level, adjacent);
+        return neighbor.isAir() || !neighbor.isSolidRender();
     }
 
     // Spawns one particle somewhere on the given face

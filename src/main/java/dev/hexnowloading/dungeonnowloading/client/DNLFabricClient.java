@@ -33,7 +33,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import dev.hexnowloading.dungeonnowloading.client.legacy.LegacyBlockEntityRenderers;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
-import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -53,6 +52,10 @@ public class DNLFabricClient implements ClientModInitializer {
 
         DNLClient.registerItemModels();
         DNLClient.registerMenuScreens();
+        net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents.COLLECT_SUBMITS.register(context ->
+                dev.hexnowloading.dungeonnowloading.client.render.MendingAuraOverlayRenderer.render(
+                        context.poseStack(), context.submitNodeCollector(), context.levelState().cameraRenderState.pos,
+                        net.minecraft.client.Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false)));
         registerItemModelLayers();
         registerItemRenderers();
         registerBlockRenderers();
@@ -98,10 +101,9 @@ public class DNLFabricClient implements ClientModInitializer {
     }
 
     private void registerModelModifiers() {
-        ModelLoadingPlugin.register(context -> context.modifyModelAfterBake().register((net.minecraft.client.resources.model.BakedModel model, ModelModifier.AfterBake.Context modifierContext) -> {
-            Identifier id = modifierContext.resourceId();
-            if (model != null && DungeonNowLoading.MOD_ID.equals(id.getNamespace()) && isMendingAuraModel(id.getPath())) {
-                return (net.minecraft.client.resources.model.BakedModel) new MendingAuraFabricBakedModel(model);
+        ModelLoadingPlugin.register(context -> context.modifyBlockModelAfterBake().register((model, modifierContext) -> {
+            if (model != null && modifierContext.state().is(DNLBlocks.MENDING_AURA.get())) {
+                return new MendingAuraFabricBakedModel(model);
             }
             return model;
         }));
@@ -157,25 +159,8 @@ public class DNLFabricClient implements ClientModInitializer {
         LegacyBlockEntityRenderers.register(DNLBlockEntityTypes.DUNGEON_BANNER.get(), DungeonBannerBlockRenderer::new);
         LegacyBlockEntityRenderers.register(DNLBlockEntityTypes.MENDING_AURA.get(), MendingAuraBlockEntityRenderer::new);
 
-        // Item Properties
-        ItemProperties.register(DNLItems.VERTEX_BOW.get(), Identifier.parse("pull"), (stack, level, entity, idk) -> {
-            if (entity == null) return 0.0F;
-            else
-                return entity.getUseItem() != stack ? 0.0F : (stack.getUseDuration(entity) - entity.getUseItemRemainingTicks()) / 30.0F;
-        });
-
-        ItemProperties.register(DNLItems.VERTEX_BOW.get(), Identifier.parse("pulling"), (stack, level, entity, idk) ->
-                entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
-
-        ItemProperties.register(DNLItems.COPPER_DETONATOR.get(), Identifier.parse("mode_switch"), (stack, level, entity, idk) -> {
-            if (entity == null || entity.getUseItem() != stack) return 0.0F;
-
-            int useTime = stack.getUseDuration(entity) - entity.getUseItemRemainingTicks();
-            return useTime > CopperDetonatorItem.MODE_SWITCH_TIMING ? 1.0F : 0.0F;
-        });
-
-        ItemProperties.register(DNLItems.REPULSOR.get(), Identifier.parse("golden_mode"),
-                (stack, level, entity, seed) -> RepulsorItem.isGoldenMode(stack) ? 1.0F : 0.0F);
+        // Item model properties (26.x: data-driven, see assets/dungeonnowloading/items)
+        dev.hexnowloading.dungeonnowloading.client.item.DNLItemModelProperties.register();
     }
 
     private void registerModelLayers() {
@@ -223,7 +208,7 @@ public class DNLFabricClient implements ClientModInitializer {
     }
 
     private static void registerParticleFactories() {
-        ParticleFactoryRegistry registry = ParticleFactoryRegistry.getInstance();
+        ParticleProviderRegistry registry = ParticleProviderRegistry.getInstance();
         registry.register(DNLParticleTypes.LARGE_FLAME_PARTICLE.get(), LargeFlameParticle.Factory::new);
         registry.register(DNLParticleTypes.LARGE_SOUL_FLAME_PARTICLE.get(), LargeSoulFlameParticle.Factory::new);
         registry.register(DNLParticleTypes.SCORCHER_FLAME_PARTICLE.get(), ScorcherFlameParticle.Factory::new);

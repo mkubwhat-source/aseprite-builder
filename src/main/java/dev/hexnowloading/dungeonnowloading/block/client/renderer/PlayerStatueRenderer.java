@@ -1,6 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.block.client.renderer;
 
 
+import dev.hexnowloading.dungeonnowloading.client.legacy.RecordingBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -45,7 +46,7 @@ public class PlayerStatueRenderer implements BlockEntityRenderer<PlayerStatueBlo
     public PlayerStatueRenderer(BlockEntityRendererProvider.Context ctx) {
         this.statue   = new PlayerStatueModel(ctx.bakeLayer(PlayerStatueModel.LAYER_LOCATION));
         this.pedestal = new PlayerStatuePedestalModel(ctx.bakeLayer(PlayerStatuePedestalModel.LAYER_LOCATION));
-        this.font = ctx.getFont(); // 🔹 grab the font renderer
+        this.font = ctx.font(); // 🔹 grab the font renderer
     }
 
     @Override
@@ -166,10 +167,9 @@ public class PlayerStatueRenderer implements BlockEntityRenderer<PlayerStatueBlo
             float y = -this.font.lineHeight / 2f;
 
             if (outlineVisible) {
-                this.font.drawInBatch8xOutline(seqs.get(0), x, y, argbText, darkColor, pose.last().pose(), buf, packedLight);
+                RecordingBufferSource.renderText(buf, pose, seqs.get(0), x, y, argbText, 0xFF000000 | darkColor, packedLight);
             } else {
-                this.font.drawInBatch(seqs.get(0), x, y, argbText, false, pose.last().pose(), buf,
-                        Font.DisplayMode.POLYGON_OFFSET, 0, packedLight);
+                RecordingBufferSource.renderText(buf, pose, seqs.get(0), x, y, argbText, 0, packedLight);
             }
         }
         pose.popPose();

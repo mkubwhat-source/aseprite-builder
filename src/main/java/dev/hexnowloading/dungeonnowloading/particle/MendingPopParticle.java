@@ -1,5 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.particle;
 
+
+
+import net.minecraft.client.particle.SingleQuadParticle;
+import dev.hexnowloading.dungeonnowloading.client.legacy.TextureSheetParticle;
 import dev.hexnowloading.dungeonnowloading.particle.type.ScalableParticleType;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
@@ -45,13 +49,13 @@ public class MendingPopParticle extends TextureSheetParticle {
     }
 
     @Override
-    public int getLightColor(float partialTick) {
+    public int getLightCoords(float partialTick) {
         return 240;
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    public SingleQuadParticle.Layer getLayer() {
+        return SingleQuadParticle.Layer.TRANSLUCENT;
     }
 
     public static class Factory implements ParticleProvider<ScalableParticleType.ScalableParticleData> {
@@ -65,7 +69,7 @@ public class MendingPopParticle extends TextureSheetParticle {
         @Override
         public Particle createParticle(ScalableParticleType.ScalableParticleData data, ClientLevel level,
                                        double x, double y, double z,
-                                       double xSpeed, double ySpeed, double zSpeed) {
+                                       double xSpeed, double ySpeed, double zSpeed, net.minecraft.util.RandomSource random) {
 
             return new MendingPopParticle(
                     level,

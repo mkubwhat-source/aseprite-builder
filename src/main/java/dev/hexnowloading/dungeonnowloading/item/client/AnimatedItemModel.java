@@ -29,7 +29,7 @@ public abstract class AnimatedItemModel extends Model {
     public abstract ModelPart root(); // Ensure each model provides a root
 
     public Optional<ModelPart> getAnyDescendantWithName(String string) {
-        return string.equals("root") ? Optional.of(this.root()) : this.root().getAllParts()
+        return string.equals("root") ? Optional.of(this.root()) : this.root().getAllParts().stream()
                 .filter(part -> part.hasChild(string))
                 .findFirst()
                 .map(part -> part.getChild(string));

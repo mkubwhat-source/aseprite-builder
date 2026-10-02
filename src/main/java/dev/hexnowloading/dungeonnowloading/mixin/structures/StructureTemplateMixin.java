@@ -1,6 +1,5 @@
 package dev.hexnowloading.dungeonnowloading.mixin.structures;
 
-import dev.hexnowloading.dungeonnowloading.mixin.structures.StructureProcessorAccessor;
 import dev.hexnowloading.dungeonnowloading.registry.DNLProcessors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
@@ -25,7 +24,7 @@ public class StructureTemplateMixin {
             at = @At(value = "HEAD")
     )
     private void dungeonnowloading_fixWaterlogging(ServerLevelAccessor serverLevelAccessor, BlockPos blockPos1, BlockPos blockPos2, StructurePlaceSettings structurePlaceSettings, RandomSource random, int flag, CallbackInfoReturnable<Boolean> cir) {
-        if (structurePlaceSettings.getProcessors().stream().anyMatch(processor -> ((StructureProcessorAccessor)processor).callGetType() == DNLProcessors.WATERLOGGING_FIX_PROCESSOR.get())) {
+        if (structurePlaceSettings.getProcessors().stream().anyMatch(processor -> processor instanceof dev.hexnowloading.dungeonnowloading.world.processors.WaterloggingFixProcessor)) {
             structurePlaceSettings.setLiquidSettings(net.minecraft.world.level.levelgen.structure.templatesystem.LiquidSettings.IGNORE_WATERLOGGING);
         }
     }

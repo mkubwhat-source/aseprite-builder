@@ -49,9 +49,29 @@ public final class RecordingBufferSource implements MultiBufferSource {
         }
     }
 
+    private static final net.minecraft.client.renderer.block.model.BlockDisplayContext BLOCK_DISPLAY_CONTEXT =
+            net.minecraft.client.renderer.block.model.BlockDisplayContext.create();
+
+    /** Replacement for 1.21.1 {@code BlockRenderDispatcher#renderSingleBlock}/{@code ModelBlockRenderer#renderModel} in legacy render code. */
+    public static void renderBlock(MultiBufferSource buffer, net.minecraft.world.level.block.state.BlockState state, PoseStack poseStack, int packedLight, int packedOverlay) {
+        if (buffer instanceof RecordingBufferSource source && source.collector != null) {
+            net.minecraft.client.renderer.block.BlockModelRenderState renderState = new net.minecraft.client.renderer.block.BlockModelRenderState();
+            new net.minecraft.client.renderer.block.BlockModelResolver(Minecraft.getInstance().getModelManager()).update(renderState, state, BLOCK_DISPLAY_CONTEXT);
+            renderState.submit(poseStack, source.collector, packedLight, packedOverlay, 0);
+        }
+    }
+
     @Override
     public VertexConsumer getBuffer(RenderType renderType) {
         return this.buffers.computeIfAbsent(renderType, type -> new Recorder());
+    }
+
+    /** Replacement for {@code Font#drawInBatch}: submits text through the collector (outlineColor 0 = no outline). */
+    public static void renderText(MultiBufferSource buffer, PoseStack poseStack, net.minecraft.util.FormattedCharSequence text, float x, float y,
+                                  int color, int outlineColor, int packedLight) {
+        if (buffer instanceof RecordingBufferSource source && source.collector != null) {
+            source.collector.submitText(poseStack, x, y, text, false, net.minecraft.client.gui.Font.DisplayMode.POLYGON_OFFSET, packedLight, color, 0, outlineColor);
+        }
     }
 
     public void submit(SubmitNodeCollector collector) {

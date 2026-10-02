@@ -1,5 +1,10 @@
 package dev.hexnowloading.dungeonnowloading.client.render;
 
+
+import dev.hexnowloading.dungeonnowloading.client.legacy.RecordingBufferSource;
+import dev.hexnowloading.dungeonnowloading.registry.DNLBlocks;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.world.phys.Vec3;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.hexnowloading.dungeonnowloading.block.MendingAuraBlock;
@@ -9,11 +14,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.LightCoordsUtil;
 import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
@@ -37,7 +40,6 @@ public class MendingAuraOverlayRenderer {
     private static final float MODEL_OVERLAY_OFFSET = 0.002F;
     private static final float SHAPE_OVERLAY_EPSILON = 0.001F;
     private static final Identifier MENDING_AURA_SPRITE = Identifier.fromNamespaceAndPath("dungeonnowloading", "block/mending_aura_0");
-    private static final Map<TextureAtlasSprite, Map<BakedQuad, List<BakedQuad>>> OVERLAY_REMAPPED_QUAD_CACHE = new IdentityHashMap<>();
 
     private MendingAuraOverlayRenderer() {
     }
@@ -46,7 +48,8 @@ public class MendingAuraOverlayRenderer {
         MendingAuraOverlayClientState.add(pos, OVERLAY_TICKS);
     }
 
-    public static void render(PoseStack poseStack, float partialTick, Camera camera) {
+    /** Called from {@code LevelRenderEvents.COLLECT_SUBMITS}; draws a fading aura over recently repaired blocks. */
+    public static void render(PoseStack poseStack, net.minecraft.client.renderer.SubmitNodeCollector collector, Vec3 cameraPos, float partialTick) {
         Minecraft minecraft = Minecraft.getInstance();
         Level level = minecraft.level;
         if (level == null) {
@@ -58,89 +61,24 @@ public class MendingAuraOverlayRenderer {
             return;
         }
 
-        BlockRenderDispatcher dispatcher = minecraft.getBlockRenderer();
-        TextureAtlasSprite auraSprite = minecraft.getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(MENDING_AURA_SPRITE);
-        MultiBufferSource.BufferSource bufferSource = minecraft.renderBuffers().bufferSource();
-        VertexConsumer translucentConsumer = bufferSource.getBuffer(RenderType.translucent());
+        TextureAtlasSprite auraSprite = minecraft.getModelManager().getBlockStateModelSet()
+                .getParticleMaterial(DNLBlocks.MENDING_AURA.get().defaultBlockState()).sprite();
 
-        double cameraX = camera.getPosition().x;
-        double cameraY = camera.getPosition().y;
-        double cameraZ = camera.getPosition().z;
-
-        for (MendingAuraOverlayClientState.ActiveOverlay overlay : overlays) {
-            BlockPos pos = overlay.pos();
-            BlockState state = level.getBlockState(pos);
-            if (state.isAir() || state.getBlock() instanceof MendingAuraBlock) {
-                continue;
-            }
-
-            BakedModel storedModel = dispatcher.getBlockModel(state);
-            BakedModel auraModel = new MendingAuraBlockEntityRenderer.AuraTextureModel(
-                    storedModel,
-                    auraSprite,
-                    level,
-                    pos,
-                    OVERLAY_REMAPPED_QUAD_CACHE,
-                    MODEL_OVERLAY_OFFSET
-            );
-
-            poseStack.pushPose();
-            poseStack.translate(pos.getX() - cameraX, pos.getY() - cameraY, pos.getZ() - cameraZ);
-            VertexConsumer alphaConsumer = new AlphaVertexConsumer(translucentConsumer, overlay.alpha());
-            BlockEntity blockEntity = level.getBlockEntity(pos);
-            if (shouldUseOnlyBlockEntityOverlay(state, storedModel, pos, blockEntity)) {
-                minecraft.getBlockEntityRenderDispatcher().render(
-                        blockEntity,
-                        partialTick,
-                        poseStack,
-                        new MendingAuraBlockEntityOverlayBuffer(bufferSource, overlay.alpha())
-                );
-            } else if (needsShapeOverlay(state, storedModel, pos)) {
-                renderShapeOverlay(state, level, pos, poseStack, alphaConsumer, auraSprite);
-            } else {
-                dispatcher.getModelRenderer().renderModel(
-                        poseStack.last(),
-                        alphaConsumer,
-                        state,
-                        auraModel,
-                        1.0F,
-                        1.0F,
-                        1.0F,
-                        LightCoordsUtil.FULL_BRIGHT,
-                        0
-                );
-                if (blockEntity != null) {
-                    minecraft.getBlockEntityRenderDispatcher().render(
-                            blockEntity,
-                            partialTick,
-                            poseStack,
-                            new MendingAuraBlockEntityOverlayBuffer(bufferSource, overlay.alpha())
-                    );
+        RecordingBufferSource.draw(collector, buffers -> {
+            VertexConsumer translucentConsumer = buffers.getBuffer(RenderTypes.entityTranslucent(TextureAtlas.LOCATION_BLOCKS));
+            for (MendingAuraOverlayClientState.ActiveOverlay overlay : overlays) {
+                BlockPos pos = overlay.pos();
+                BlockState state = level.getBlockState(pos);
+                if (state.isAir() || state.getBlock() instanceof MendingAuraBlock) {
+                    continue;
                 }
+
+                poseStack.pushPose();
+                poseStack.translate(pos.getX() - cameraPos.x, pos.getY() - cameraPos.y, pos.getZ() - cameraPos.z);
+                renderShapeOverlay(state, level, pos, poseStack, new AlphaVertexConsumer(translucentConsumer, overlay.alpha()), auraSprite);
+                poseStack.popPose();
             }
-            poseStack.popPose();
-        }
-
-        bufferSource.endBatch(RenderType.translucent());
-        bufferSource.endBatch(MendingAuraBlockEntityOverlayBuffer.RENDER_TYPE);
-    }
-
-    private static boolean shouldUseOnlyBlockEntityOverlay(BlockState state, BakedModel model, BlockPos pos, BlockEntity blockEntity) {
-        return blockEntity != null && (state.getRenderShape() != RenderShape.MODEL || needsShapeOverlay(state, model, pos));
-    }
-
-    private static boolean needsShapeOverlay(BlockState state, BakedModel model, BlockPos pos) {
-        return model.isCustomRenderer() || !hasAnyBakedQuads(state, model, pos);
-    }
-
-    private static boolean hasAnyBakedQuads(BlockState state, BakedModel model, BlockPos pos) {
-        var random = net.minecraft.util.RandomSource.create(state.getSeed(pos));
-        for (Direction direction : Direction.values()) {
-            if (!model.getQuads(state, direction, random).isEmpty()) {
-                return true;
-            }
-        }
-        return !model.getQuads(state, null, random).isEmpty();
+        });
     }
 
     private static void renderShapeOverlay(BlockState state, Level level, BlockPos pos, PoseStack poseStack, VertexConsumer consumer, TextureAtlasSprite auraSprite) {
@@ -213,6 +151,11 @@ public class MendingAuraOverlayRenderer {
     }
 
     private static class AlphaVertexConsumer implements VertexConsumer {
+
+        @Override
+        public VertexConsumer setColor(int color) {
+            return this.setColor((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF, (color >>> 24) & 0xFF);
+        }
 
         @Override
         public VertexConsumer setLineWidth(float width) {

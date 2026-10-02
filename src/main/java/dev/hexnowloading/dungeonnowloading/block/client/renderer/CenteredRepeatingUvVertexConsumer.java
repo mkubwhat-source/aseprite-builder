@@ -31,6 +31,11 @@ public class CenteredRepeatingUvVertexConsumer implements VertexConsumer {
     }
 
     @Override
+    public VertexConsumer setColor(int color) {
+        return this.delegate.setColor(color);
+    }
+
+    @Override
     public VertexConsumer setColor(int red, int green, int blue, int alpha) {
         return this.delegate.setColor(red, green, blue, alpha);
     }

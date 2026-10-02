@@ -1,5 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.particle;
 
+
+
+import net.minecraft.client.particle.SingleQuadParticle;
+import dev.hexnowloading.dungeonnowloading.client.legacy.TextureSheetParticle;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -52,12 +56,12 @@ public class ScorcherFlameParticle extends TextureSheetParticle {
         this.zd *= (double) this.friction;
     }
     @Override
-    public int getLightColor(float $$0) {
+    public int getLightCoords(float $$0) {
         return 240;
     }
 
     @Override
-    public ParticleRenderType getRenderType() { return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT; }
+    public SingleQuadParticle.Layer getLayer() { return SingleQuadParticle.Layer.TRANSLUCENT; }
 
     public static class Factory implements ParticleProvider<SimpleParticleType> {
 
@@ -69,7 +73,7 @@ public class ScorcherFlameParticle extends TextureSheetParticle {
 
         @Nullable
         @Override
-        public Particle createParticle(SimpleParticleType simpleParticleType, ClientLevel clientLevel, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(SimpleParticleType simpleParticleType, ClientLevel clientLevel, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, net.minecraft.util.RandomSource random) {
             ScorcherFlameParticle particle = new ScorcherFlameParticle(clientLevel, x, y, z, xSpeed, ySpeed, zSpeed, this.sprites);
             particle.setSprite(sprites.get(0, 1));
             return particle;

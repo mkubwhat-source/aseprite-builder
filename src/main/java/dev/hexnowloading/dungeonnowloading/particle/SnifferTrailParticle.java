@@ -6,6 +6,7 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
+import dev.hexnowloading.dungeonnowloading.client.legacy.TextureSheetParticle;
 import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
@@ -82,12 +83,12 @@ public class SnifferTrailParticle extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    public SingleQuadParticle.Layer getLayer() {
+        return SingleQuadParticle.Layer.TRANSLUCENT;
     }
 
     @Override
-    public int getLightColor(float partialTick) {
+    public int getLightCoords(float partialTick) {
         return 240;
     }
 
@@ -100,7 +101,7 @@ public class SnifferTrailParticle extends TextureSheetParticle {
 
         @Nullable
         @Override
-        public Particle createParticle(SnifferTrailParticleType.Data data, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(SnifferTrailParticleType.Data data, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, net.minecraft.util.RandomSource random) {
             return new SnifferTrailParticle(level, x, y, z, data.getTargetX(), data.getTargetY(), data.getTargetZ(), data.getTravelLifetime(), data.getDelay(), this.sprites);
         }
     }

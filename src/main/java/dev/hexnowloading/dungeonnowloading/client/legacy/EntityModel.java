@@ -20,7 +20,7 @@ public abstract class EntityModel<T extends Entity> {
     public boolean young;
 
     protected EntityModel() {
-        this(RenderTypes::entityCutoutNoCull);
+        this(texture -> RenderTypes.entityCutout(texture));
     }
 
     protected EntityModel(Function<Identifier, RenderType> renderType) {
