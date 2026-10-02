@@ -48,6 +48,8 @@ public class PedestalEditScreen extends Screen {
 
     @Override
     protected void init() {
+        // 26.x (SDL): text input must be enabled explicitly for charTyped events to arrive
+        this.minecraft.textInputManager().startTextInput(this);
         int btnW = 100, btnH = 20;
         int y = this.height / 4 + 144;
 
@@ -87,6 +89,7 @@ public class PedestalEditScreen extends Screen {
 
     @Override
     public void removed() {
+        this.minecraft.textInputManager().stopTextInput(this);
         if (sent) return;
         sent = true;
         System.out.println("[PedestalEditScreen] sending line=\"" + line + "\" to server @ " + pos);
