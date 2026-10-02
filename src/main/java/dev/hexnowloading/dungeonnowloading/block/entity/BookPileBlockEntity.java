@@ -32,7 +32,7 @@ public class BookPileBlockEntity extends BlockEntity {
     }
 
     public void setLootTable(@Nullable Identifier id, long seed) {
-        this.lootTable = id;
+        this.lootTable = java.util.Optional.of(id);
         this.lootTableSeed = seed;
         setChanged();
     }
@@ -52,10 +52,10 @@ public class BookPileBlockEntity extends BlockEntity {
         super.loadAdditional(tag);
 
         if (NbtCompat.has(tag, "LootTable")) {
-            this.lootTable = Identifier.parse(tag.getStringOr("LootTable", ""));
+            this.lootTable = java.util.Optional.of(Identifier.parse(tag.getStringOr("LootTable", "")));
             this.lootTableSeed = tag.getLongOr("LootTableSeed", 0L);
         } else {
-            this.lootTable = null;
+            this.lootTable = java.util.Optional.of(null);
             this.lootTableSeed = 0L;
         }
     }

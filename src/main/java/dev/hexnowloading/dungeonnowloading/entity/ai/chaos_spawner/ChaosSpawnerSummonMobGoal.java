@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.entity.ai.chaos_spawner;
 
+
+import net.minecraft.world.entity.EntityTypes;
 import dev.hexnowloading.dungeonnowloading.registry.DNLEnchantments;
 import com.google.common.collect.ImmutableList;
 import dev.hexnowloading.dungeonnowloading.entity.boss.ChaosSpawnerEntity;
@@ -151,7 +153,7 @@ public class ChaosSpawnerSummonMobGoal extends Goal {
         serverLevel.sendParticles(ParticleTypes.CLOUD, px, py, pz, 10, 0.5D, 0.5D, 0.5D, 0.0D);
 
         // Special case entries that need to spawn multiple mobs (e.g. jockey)
-        if (entry.type() == EntityType.SPIDER && entry.post() == POST_SPIDER_JOCKEY) {
+        if (entry.type() == EntityTypes.SPIDER && entry.post() == POST_SPIDER_JOCKEY) {
             spawnSpiderJockey(serverLevel, summonPos);
             return;
         }
@@ -170,8 +172,8 @@ public class ChaosSpawnerSummonMobGoal extends Goal {
     private void spawnSpiderJockey(ServerLevel serverLevel, BlockPos summonPos) {
         Level level = boss.level();
 
-        Spider spider = EntityType.SPIDER.create(level);
-        Skeleton skeleton = EntityType.SKELETON.create(level);
+        Spider spider = EntityTypes.SPIDER.create(level, EntitySpawnReason.MOB_SUMMONED);
+        Skeleton skeleton = EntityTypes.SKELETON.create(level, EntitySpawnReason.MOB_SUMMONED);
         if (spider == null || skeleton == null) return;
 
         spider.snapTo(summonPos, 0.0F, 0.0F);
@@ -196,10 +198,10 @@ public class ChaosSpawnerSummonMobGoal extends Goal {
 
     private static WeightedRandomBag<SummonEntry> buildPhase1Bag() {
         WeightedRandomBag<SummonEntry> bag = new WeightedRandomBag<>();
-        bag.addEntry(new SummonEntry(EntityType.ZOMBIE, m -> noDropChance((Monster) m)), 3);
-        bag.addEntry(new SummonEntry(EntityType.SKELETON, m -> noDropChance((Monster) m)), 2);
-        bag.addEntry(new SummonEntry(EntityType.SPIDER, m -> noDropChance((Monster) m)), 2);
-        bag.addEntry(new SummonEntry(EntityType.CREEPER, m -> noDropChance((Monster) m)), 2);
+        bag.addEntry(new SummonEntry(EntityTypes.ZOMBIE, m -> noDropChance((Monster) m)), 3);
+        bag.addEntry(new SummonEntry(EntityTypes.SKELETON, m -> noDropChance((Monster) m)), 2);
+        bag.addEntry(new SummonEntry(EntityTypes.SPIDER, m -> noDropChance((Monster) m)), 2);
+        bag.addEntry(new SummonEntry(EntityTypes.CREEPER, m -> noDropChance((Monster) m)), 2);
         bag.addEntry(new SummonEntry(DNLEntityTypes.HOLLOW.get(), m -> noDropChance((Monster) m)), 2);
         return bag;
     }
@@ -211,14 +213,14 @@ public class ChaosSpawnerSummonMobGoal extends Goal {
         WeightedRandomBag<SummonEntry> bag = new WeightedRandomBag<>();
 
         // Basics
-        bag.addEntry(new SummonEntry(EntityType.ZOMBIE, m -> noDropChance((Monster) m)), 6);
-        bag.addEntry(new SummonEntry(EntityType.SKELETON, m -> noDropChance((Monster) m)), 4);
-        bag.addEntry(new SummonEntry(EntityType.SPIDER, m -> noDropChance((Monster) m)), 4);
-        bag.addEntry(new SummonEntry(EntityType.CREEPER, m -> noDropChance((Monster) m)), 4);
+        bag.addEntry(new SummonEntry(EntityTypes.ZOMBIE, m -> noDropChance((Monster) m)), 6);
+        bag.addEntry(new SummonEntry(EntityTypes.SKELETON, m -> noDropChance((Monster) m)), 4);
+        bag.addEntry(new SummonEntry(EntityTypes.SPIDER, m -> noDropChance((Monster) m)), 4);
+        bag.addEntry(new SummonEntry(EntityTypes.CREEPER, m -> noDropChance((Monster) m)), 4);
         bag.addEntry(new SummonEntry(DNLEntityTypes.HOLLOW.get(), m -> noDropChance((Monster) m)), 4);
 
         // Diamond Zombie
-        bag.addEntry(new SummonEntry(EntityType.ZOMBIE, m -> {
+        bag.addEntry(new SummonEntry(EntityTypes.ZOMBIE, m -> {
             if (m instanceof Zombie z) {
                 z.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.DIAMOND_HELMET));
                 z.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.DIAMOND_SWORD));
@@ -228,7 +230,7 @@ public class ChaosSpawnerSummonMobGoal extends Goal {
         }), 6);
 
         // Diamond Skeleton
-        bag.addEntry(new SummonEntry(EntityType.SKELETON, m -> {
+        bag.addEntry(new SummonEntry(EntityTypes.SKELETON, m -> {
             if (m instanceof Skeleton s) {
                 s.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.DIAMOND_HELMET));
                 s.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
@@ -238,12 +240,12 @@ public class ChaosSpawnerSummonMobGoal extends Goal {
         }), 6);
 
         // Invisible Spider (use a large positive duration instead of -1)
-        bag.addEntry(new SummonEntry(EntityType.SPIDER, m -> {
+        bag.addEntry(new SummonEntry(EntityTypes.SPIDER, m -> {
             m.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, Integer.MAX_VALUE, 0, false, false));
         }), 6);
 
         // Spider Jockey
-        bag.addEntry(new SummonEntry(EntityType.SPIDER, POST_SPIDER_JOCKEY), 3);
+        bag.addEntry(new SummonEntry(EntityTypes.SPIDER, POST_SPIDER_JOCKEY), 3);
 
         bag.addEntry(new SummonEntry(DNLEntityTypes.SPAWNER_CARRIER.get(), m -> {
             if (m instanceof SpawnerCarrierEntity carrier) {
@@ -253,7 +255,7 @@ public class ChaosSpawnerSummonMobGoal extends Goal {
         }), 6);
 
         // Baby Zombie (geared)
-        bag.addEntry(new SummonEntry(EntityType.ZOMBIE, m -> {
+        bag.addEntry(new SummonEntry(EntityTypes.ZOMBIE, m -> {
             if (m instanceof Zombie z) {
                 z.setBaby(true);
                 z.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.DIAMOND_HELMET));

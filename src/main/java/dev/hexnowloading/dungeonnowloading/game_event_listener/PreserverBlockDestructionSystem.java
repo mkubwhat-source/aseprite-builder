@@ -272,7 +272,7 @@ public interface PreserverBlockDestructionSystem {
                     return false;
                 }
 
-                if (serverLevel.getBlockEntity(centerBlockPos) instanceof MendstoneChalkMarkBlockEntity && context.sourceEntity() != null && context.sourceEntity().getType().is(DNLTags.BOSSES_AND_RELATED_DESTRUCTIVES)) {
+                if (serverLevel.getBlockEntity(centerBlockPos) instanceof MendstoneChalkMarkBlockEntity && context.sourceEntity() != null && context.sourceEntity().getType().builtInRegistryHolder().is(DNLTags.BOSSES_AND_RELATED_DESTRUCTIVES)) {
                     return false;
                 }
 

@@ -11,16 +11,15 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
-public class WaterloggingFixProcessor extends StructureProcessor {
+public class WaterloggingFixProcessor implements StructureProcessor {
     public static final MapCodec<WaterloggingFixProcessor> CODEC = MapCodec.unit(WaterloggingFixProcessor::new);
 
     @Override
-    public StructureTemplate.StructureBlockInfo processBlock(LevelReader levelReader, BlockPos pos, BlockPos pos2, StructureTemplate.StructureBlockInfo infoIn1, StructureTemplate.StructureBlockInfo infoIn2, StructurePlaceSettings settings) {
+    public StructureTemplate.StructureBlockInfo processBlock(LevelReader levelReader, BlockPos pos, BlockPos pos2, BlockPos templateRelativePos, StructureTemplate.StructureBlockInfo infoIn2, StructurePlaceSettings settings) {
         if(!infoIn2.state().getFluidState().isEmpty()) {
-            if(levelReader instanceof WorldGenRegion worldGenRegion && !worldGenRegion.getCenter().equals(new ChunkPos(infoIn2.pos()))) {
+            if(levelReader instanceof WorldGenRegion worldGenRegion && !worldGenRegion.getCenter().equals(ChunkPos.containing(infoIn2.pos()))) {
                 return infoIn2;
             }
 
@@ -36,7 +35,7 @@ public class WaterloggingFixProcessor extends StructureProcessor {
     }
 
     @Override
-    protected StructureProcessorType<?> getType() {
-        return DNLProcessors.WATERLOGGING_FIX_PROCESSOR.get();
+    public MapCodec<? extends StructureProcessor> codec() {
+        return CODEC;
     }
 }

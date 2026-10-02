@@ -1,0 +1,5 @@
+{
+  "type": "dungeonnowloading:brewing_stand",
+  "potion": "minecraft:healing",
+  "potion_item": "minecraft:splash_potion"
+}

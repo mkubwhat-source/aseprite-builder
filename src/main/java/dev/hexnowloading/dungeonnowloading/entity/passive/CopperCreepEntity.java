@@ -3,6 +3,10 @@ package dev.hexnowloading.dungeonnowloading.entity.passive;
 
 
 
+
+
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
@@ -649,7 +653,7 @@ public class CopperCreepEntity extends PathfinderMob implements OwnableEntity, P
 
     private void attemptToAttractLightning() {
         if (this.level().isThundering() && hasClearSkyAbove()) {
-            LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(this.level());
+            LightningBolt lightningBolt = EntityTypes.LIGHTNING_BOLT.create(this.level(), EntitySpawnReason.MOB_SUMMONED);
             if (lightningBolt != null) {
                 lightningBolt.snapTo(this.getX(), this.getY(), this.getZ());
                 this.level().addFreshEntity(lightningBolt);

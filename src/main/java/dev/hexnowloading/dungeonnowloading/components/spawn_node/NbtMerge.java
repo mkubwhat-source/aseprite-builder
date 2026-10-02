@@ -18,7 +18,7 @@ public final class NbtMerge {
     public static void mergeCompound(CompoundTag target, CompoundTag patch) {
         if (target == null || patch == null || patch.isEmpty()) return;
 
-        for (String key : patch.getAllKeys()) {
+        for (String key : patch.keySet()) {
             Tag patchValue = patch.get(key);
             if (patchValue == null) continue;
 

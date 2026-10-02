@@ -2,6 +2,8 @@ package dev.hexnowloading.dungeonnowloading.entity.monster;
 
 
 
+
+import dev.hexnowloading.dungeonnowloading.util.DNLGameRules;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import dev.hexnowloading.dungeonnowloading.entity.ai.BallistaGolemArrowAttackGoal;
@@ -140,7 +142,7 @@ public class BallistaGolemEntity extends Monster implements Enemy, SlumberingEnt
             }
         }
 
-        if (this.horizontalCollision && this.level().getGameRules().getBooleanOr(GameRules.RULE_MOBGRIEFING, false)) {
+        if (this.horizontalCollision && DNLGameRules.get(this.level(), GameRules.MOB_GRIEFING)) {
             boolean brokeLeaves = false;
             AABB box = this.getBoundingBox().inflate(0.2);
 

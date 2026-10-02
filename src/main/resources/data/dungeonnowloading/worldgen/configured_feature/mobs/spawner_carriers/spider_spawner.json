@@ -1,6 +1,0 @@
-{
-  "config": {
-    "entity_type": "minecraft:spider"
-  },
-  "type": "dungeonnowloading:spawner_carrier"
-}

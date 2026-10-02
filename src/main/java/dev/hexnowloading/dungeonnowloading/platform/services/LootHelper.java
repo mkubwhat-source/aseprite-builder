@@ -1,8 +1,8 @@
 package dev.hexnowloading.dungeonnowloading.platform.services;
 
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.level.storage.loot.LootPool;
 
 public interface LootHelper {
-    void injectLoot(Identifier id, LootPool pool);
+    /** Rolls {@code injectTable} whenever {@code targetTable} generates loot and adds the result to its drops. */
+    void injectLoot(Identifier targetTable, Identifier injectTable);
 }

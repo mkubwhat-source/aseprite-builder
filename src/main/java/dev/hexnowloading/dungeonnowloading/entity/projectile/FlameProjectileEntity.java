@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.entity.projectile;
 
+
+import dev.hexnowloading.dungeonnowloading.util.DNLGameRules;
 import dev.hexnowloading.dungeonnowloading.entity.util.ProjectileUtils;
 import dev.hexnowloading.dungeonnowloading.particle.type.ScalableParticleType;
 import dev.hexnowloading.dungeonnowloading.registry.DNLEntityTypes;
@@ -130,7 +132,7 @@ public class FlameProjectileEntity extends ThrowableItemProjectile {
         }
 
         Entity owner = this.getOwner();
-        if (!(owner instanceof LivingEntity) || this.level().getGameRules().getBooleanOr(GameRules.RULE_MOBGRIEFING, false)) {
+        if (!(owner instanceof LivingEntity) || DNLGameRules.get(this.level(), GameRules.MOB_GRIEFING)) {
             BlockPos blockPos = blockHitResult.getBlockPos().relative(blockHitResult.getDirection());
             if (this.level().isEmptyBlock(blockPos)) {
                 this.level().setBlockAndUpdate(blockPos, BaseFireBlock.getState(this.level(), blockPos));

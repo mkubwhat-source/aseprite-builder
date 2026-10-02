@@ -4,6 +4,8 @@ package dev.hexnowloading.dungeonnowloading.entity.boss;
 
 
 
+
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
@@ -59,7 +61,6 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -846,7 +847,7 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
 
         int level = 1;
 
-        ItemStack book = EnchantedBookItem.createForEnchantment(new EnchantmentInstance(ench, level));
+        ItemStack book = EnchantmentHelper.createBook(new EnchantmentInstance(ench, level));
         // (Optional) sanity check: StackNbt.getTag(book) should contain "StoredEnchantments"
 
         this.spawnSpecialItemEntity(book, 0.0F, playerUuid);

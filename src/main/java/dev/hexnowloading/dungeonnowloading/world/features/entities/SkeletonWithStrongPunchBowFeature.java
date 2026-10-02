@@ -1,5 +1,11 @@
 package dev.hexnowloading.dungeonnowloading.world.features.entities;
 
+
+
+
+import net.minecraft.world.entity.EntityTypes;
+import dev.hexnowloading.dungeonnowloading.world.features.DNLFeatureContext;
+import dev.hexnowloading.dungeonnowloading.world.features.DNLFeature;
 import dev.hexnowloading.dungeonnowloading.registry.DNLEnchantments;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.entity.util.EntityScale;
@@ -13,18 +19,15 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
-public class SkeletonWithStrongPunchBowFeature extends Feature<NoneFeatureConfiguration> {
+public class SkeletonWithStrongPunchBowFeature extends DNLFeature<DNLFeature.None> {
 
-    public SkeletonWithStrongPunchBowFeature() { super(NoneFeatureConfiguration.CODEC); }
+    public SkeletonWithStrongPunchBowFeature() { super(DNLFeature.None.INSTANCE); }
 
     @Override
-    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
+    public boolean place(DNLFeatureContext<DNLFeature.None> context) {
 
-        Skeleton skeleton = EntityType.SKELETON.create(context.level().getLevel());
+        Skeleton skeleton = EntityTypes.SKELETON.create(context.level().getLevel(), EntitySpawnReason.MOB_SUMMONED);
         skeleton.setPersistenceRequired();
         skeleton.snapTo((double)context.origin().getX() + 0.5D, context.origin().getY(), (double)context.origin().getZ() + 0.5D, 0.0F, 0.0F);
         skeleton.finalizeSpawn(context.level(), context.level().getCurrentDifficultyAt(context.origin()), EntitySpawnReason.STRUCTURE, null);
@@ -41,7 +44,7 @@ public class SkeletonWithStrongPunchBowFeature extends Feature<NoneFeatureConfig
         skeleton.setDropChance(EquipmentSlot.LEGS, 0.0F);
         skeleton.setDropChance(EquipmentSlot.FEET, 0.0F);
         skeleton.setLeftHanded(context.level().getRandom().nextFloat() < 0.05F);
-        skeleton.lootTable = net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE, Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "entities/modified/diamond_skeleton"));
+        skeleton.lootTable = java.util.Optional.of(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE, Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "entities/modified/diamond_skeleton")));
 
         context.level().addFreshEntity(skeleton);
         return true;

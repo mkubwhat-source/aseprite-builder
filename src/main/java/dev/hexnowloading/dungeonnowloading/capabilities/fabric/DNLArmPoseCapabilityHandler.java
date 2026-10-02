@@ -23,7 +23,7 @@ public class DNLArmPoseCapabilityHandler implements DNLArmPoseComponent, Respawn
 
     @Override
     public void readData(ValueInput input) {
-        input.getStringOr("DNLArmPose", "").ifPresent(id -> this.armPose = DNLArmPose.fromId(id));
+        input.getString("DNLArmPose").ifPresent(id -> this.armPose = DNLArmPose.fromId(id));
     }
 
     @Override

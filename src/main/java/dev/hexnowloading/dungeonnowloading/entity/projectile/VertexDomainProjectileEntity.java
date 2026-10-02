@@ -238,7 +238,7 @@ public class VertexDomainProjectileEntity extends ModelledProjectileEntity {
                 continue;
             }
             if (applyDamage(entity, BASE_DAMAGE, 0.6F)) {
-                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, SLOWNESS_DURATION, SLOWNESS_AMPLIFIER)); // Slowness V (4 = level 5)
+                entity.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, SLOWNESS_DURATION, SLOWNESS_AMPLIFIER)); // Slowness V (4 = level 5)
                 spawnRedstoneBeamParticle((ServerLevel) level, entity);
             }
         }

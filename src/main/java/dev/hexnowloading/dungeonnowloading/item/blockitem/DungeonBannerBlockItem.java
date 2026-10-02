@@ -29,7 +29,7 @@ public class DungeonBannerBlockItem extends BlockItem {
     }
 
     @Override
-    public String getDescriptionId(ItemStack stack) {
-        return "item." + DungeonNowLoading.MOD_ID + ".dungeon_banner_" + this.variant.getSerializedName();
+    public net.minecraft.network.chat.Component getName(ItemStack stack) {
+        return net.minecraft.network.chat.Component.translatable("item." + DungeonNowLoading.MOD_ID + ".dungeon_banner_" + this.variant.getSerializedName());
     }
 }

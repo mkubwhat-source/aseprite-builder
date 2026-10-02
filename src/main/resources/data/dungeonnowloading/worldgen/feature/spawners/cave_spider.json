@@ -1,0 +1,4 @@
+{
+  "type": "dungeonnowloading:spawner",
+  "entity_type": "minecraft:cave_spider"
+}

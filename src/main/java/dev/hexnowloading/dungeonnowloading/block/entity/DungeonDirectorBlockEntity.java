@@ -220,7 +220,7 @@ public class DungeonDirectorBlockEntity extends BlockEntity implements ZoneRecei
         if (patch != null && !patch.isEmpty()) {
             CompoundTag full = NbtCompat.saveEntity(mob);
             NbtMerge.mergeCompound(full, patch);
-            mob.load(full);
+            NbtCompat.loadEntity(mob, full);
         }
 
         // 3) Add root + passengers

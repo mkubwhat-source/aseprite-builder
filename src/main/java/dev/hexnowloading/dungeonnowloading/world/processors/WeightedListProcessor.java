@@ -8,20 +8,18 @@ import dev.hexnowloading.dungeonnowloading.registry.DNLProcessors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.random.Weight;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class WeightedListProcessor extends StructureProcessor {
+public class WeightedListProcessor implements StructureProcessor {
 
     public static final MapCodec<WeightedListProcessor> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
             BuiltInRegistries.BLOCK.byNameCodec().fieldOf("input_block").forGetter(config -> config.input_block),
@@ -40,7 +38,7 @@ public class WeightedListProcessor extends StructureProcessor {
 
     @Nullable
     @Override
-    public StructureTemplate.StructureBlockInfo processBlock(LevelReader levelReader, BlockPos jigsawPiecePos, BlockPos jigsawPieceBottomCenterPos, StructureTemplate.StructureBlockInfo blockInfoLocal, StructureTemplate.StructureBlockInfo blockInfoGlobal, StructurePlaceSettings settings) {
+    public StructureTemplate.StructureBlockInfo processBlock(LevelReader levelReader, BlockPos jigsawPiecePos, BlockPos jigsawPieceBottomCenterPos, BlockPos templateRelativePos, StructureTemplate.StructureBlockInfo blockInfoGlobal, StructurePlaceSettings settings) {
         if (blockInfoGlobal.state().getBlock() == input_block) {
             double totalWeight = 0.0D;
             RandomSource randomSource = settings.getRandom(blockInfoGlobal.pos());
@@ -67,7 +65,7 @@ public class WeightedListProcessor extends StructureProcessor {
     }
 
     @Override
-    protected StructureProcessorType<?> getType() {
-        return DNLProcessors.WEIGHTED_LIST_PROCESSOR.get();
+    public MapCodec<? extends StructureProcessor> codec() {
+        return CODEC;
     }
 }

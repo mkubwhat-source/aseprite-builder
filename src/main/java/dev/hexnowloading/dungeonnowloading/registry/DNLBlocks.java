@@ -155,7 +155,7 @@ public class DNLBlocks {
         BOOK_PILE = registerBlock("book_pile", () -> new BookPileBlock(BlockBehaviour.Properties.of().instabreak().noOcclusion().sound(SoundType.WOOL)));
         EXPLOSIVE_BARREL = registerBlock("explosive_barrel", () -> new ExplosiveBarrelBlock(BlockBehaviour.Properties.of().noOcclusion().sound(SoundType.GRASS)
                 .lightLevel(state -> state.hasProperty(FUSE) && state.getValue(FUSE) > 0 ? 12 : 0)
-                .emissiveRendering((state, getter, pos) -> state.hasProperty(FUSE) && state.getValue(FUSE) > 0)
+                .emissiveRendering(state -> state.hasProperty(FUSE) && state.getValue(FUSE) > 0)
         ));
         COBBLESTONE_PEBBLES = registerBlock("cobblestone_pebbles", () -> new PebbleBlock(BlockBehaviour.Properties.of().strength(3.0F, 6.0F).noOcclusion().sound(SoundType.STONE)));
         MOSSY_COBBLESTONE_PEBBLES = registerBlock("mossy_cobblestone_pebbles", () -> new PebbleBlock(BlockBehaviour.Properties.of().strength(3.0F, 6.0F).noOcclusion().sound(SoundType.STONE)));
@@ -251,6 +251,10 @@ public class DNLBlocks {
             case POWERED -> 3;
             case OVERPOWERED -> 15;
         };
+    }
+
+    public static boolean always(BlockState blockState) {
+        return true;
     }
 
     public static boolean always(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos) {

@@ -121,13 +121,13 @@ public class MendingTableMenu extends AbstractContainerMenu {
             ItemStack original = ScrapItem.getOriginal(inputItem);
             if (!original.isEmpty()) {
                 if (stack.is(DNLItems.DURITE.get()) || stack.is(DNLItems.MENDSTONE.get())) return true;
-                return original.getItem().isValidRepairItem(original, stack);
+                return original.isValidRepairItem(stack);
             }
             return stack.is(DNLItems.DURITE.get()) || stack.is(DNLItems.MENDSTONE.get());
         }
         if (stack.is(DNLItems.DURITE.get()) || stack.is(DNLItems.MENDSTONE.get())) return true;
         if (!inputItem.isEmpty()) {
-            return inputItem.getItem().isValidRepairItem(inputItem, stack);
+            return inputItem.isValidRepairItem(stack);
         }
         return false;
     }

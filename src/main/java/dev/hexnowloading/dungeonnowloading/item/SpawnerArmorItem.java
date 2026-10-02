@@ -31,8 +31,9 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
@@ -45,7 +46,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.UUID;
 
-public class SpawnerArmorItem extends ArmorItem {
+public class SpawnerArmorItem extends Item {
 
     private static final int DEFAULT_SUMMON_TICK = 200;
     private static final int EMPTY_AREA_RECHECK_TICK = 20;
@@ -64,8 +65,8 @@ public class SpawnerArmorItem extends ArmorItem {
     private static final String MODE_LANTERN = "lantern";
     private static final String MODE_MIX = "mix";
 
-    public SpawnerArmorItem(java.util.function.Supplier<net.minecraft.core.Holder<ArmorMaterial>> armorMaterial, Type slot) {
-        super(armorMaterial.get(), slot, new Properties().durability(slot.getDurability(DNLArmorMaterial.SPAWNER_DURABILITY_MULTIPLIER)));
+    public SpawnerArmorItem(ArmorType slot) {
+        super(new Properties().humanoidArmor(DNLArmorMaterial.SPAWNER, slot));
     }
 
     @Override
@@ -101,8 +102,8 @@ public class SpawnerArmorItem extends ArmorItem {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected) {
-        super.inventoryTick(stack, level, entity, slot, selected);
+    public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
+        super.inventoryTick(stack, level, entity, slot);
 
         if (level.isClientSide()) return;
         if (!(entity instanceof Player player)) return;
@@ -272,14 +273,14 @@ public class SpawnerArmorItem extends ArmorItem {
     }
 
     private void damageAllArmor(Player player, int amount) {
-        player.getInventory().getArmor(0).hurtAndBreak(amount, player, net.minecraft.world.entity.EquipmentSlot.FEET);
-        player.getInventory().getArmor(1).hurtAndBreak(amount, player, net.minecraft.world.entity.EquipmentSlot.LEGS);
-        player.getInventory().getArmor(2).hurtAndBreak(amount, player, net.minecraft.world.entity.EquipmentSlot.CHEST);
-        player.getInventory().getArmor(3).hurtAndBreak(amount, player, net.minecraft.world.entity.EquipmentSlot.HEAD);
+        player.getItemBySlot(EquipmentSlot.FEET).hurtAndBreak(amount, player, net.minecraft.world.entity.EquipmentSlot.FEET);
+        player.getItemBySlot(EquipmentSlot.LEGS).hurtAndBreak(amount, player, net.minecraft.world.entity.EquipmentSlot.LEGS);
+        player.getItemBySlot(EquipmentSlot.CHEST).hurtAndBreak(amount, player, net.minecraft.world.entity.EquipmentSlot.CHEST);
+        player.getItemBySlot(EquipmentSlot.HEAD).hurtAndBreak(amount, player, net.minecraft.world.entity.EquipmentSlot.HEAD);
     }
 
     private boolean isEquippedSpawnerHelmet(Player player, ItemStack stack) {
-        return stack.is(DNLItems.SPAWNER_HELMET.get()) && player.getInventory().getArmor(3) == stack;
+        return stack.is(DNLItems.SPAWNER_HELMET.get()) && player.getItemBySlot(EquipmentSlot.HEAD) == stack;
     }
 
     private boolean canUseLanternWhimperMode(Player player) {
@@ -288,21 +289,10 @@ public class SpawnerArmorItem extends ArmorItem {
     }
 
     private boolean hasCorrectArmorOn(Player player) {
-        for (ItemStack armorStack : player.getInventory().armor) {
-            if (!(armorStack.getItem() instanceof ArmorItem)) {
-                return false;
-            }
-        }
-
-        ArmorItem boots = (ArmorItem) player.getInventory().getArmor(0).getItem();
-        ArmorItem leggings = (ArmorItem) player.getInventory().getArmor(1).getItem();
-        ArmorItem chestplate = (ArmorItem) player.getInventory().getArmor(2).getItem();
-        ArmorItem helmet = (ArmorItem) player.getInventory().getArmor(3).getItem();
-
-        return helmet.getMaterial() == material
-                && chestplate.getMaterial() == material
-                && leggings.getMaterial() == material
-                && boots.getMaterial() == material;
+        return player.getItemBySlot(EquipmentSlot.HEAD).getItem() instanceof SpawnerArmorItem
+                && player.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof SpawnerArmorItem
+                && player.getItemBySlot(EquipmentSlot.LEGS).getItem() instanceof SpawnerArmorItem
+                && player.getItemBySlot(EquipmentSlot.FEET).getItem() instanceof SpawnerArmorItem;
     }
 
     private int countOwnedWhimpers(Level level, Player player) {

@@ -75,7 +75,7 @@ public class ScrapItem extends Item {
         try {
             for (Item item : BuiltInRegistries.ITEM) {
                 ItemStack candidate = new ItemStack(item);
-                if (!candidate.isEmpty() && original.getItem().isValidRepairItem(original, candidate)) {
+                if (!candidate.isEmpty() && original.isValidRepairItem(candidate)) {
                     return candidate.getHoverName();
                 }
             }

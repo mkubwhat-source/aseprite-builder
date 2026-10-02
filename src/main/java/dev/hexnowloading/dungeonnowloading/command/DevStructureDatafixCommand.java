@@ -32,7 +32,7 @@ public class DevStructureDatafixCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal(DungeonNowLoading.MOD_ID)
-                .requires(src -> src.hasPermission(2))
+                .requires(src -> src.permissions().hasPermission(net.minecraft.server.permissions.Permissions.COMMANDS_GAMEMASTER))
                 .then(Commands.literal("dev")
                         .then(Commands.literal("structures")
                                 .then(Commands.literal("report").executes(DevStructureDatafixCommand::report))
@@ -47,7 +47,7 @@ public class DevStructureDatafixCommand {
 
     private static int report(CommandContext<CommandSourceStack> ctx) {
         ServerLevel level = ctx.getSource().getLevel();
-        StructureTemplateManager mgr = level.getStructureManager();
+        StructureTemplateManager mgr = level.getStructureTemplateManager();
         var src = ctx.getSource();
         int checked = 0, empty = 0, zeroSize = 0;
         var log = com.mojang.logging.LogUtils.getLogger();
@@ -69,7 +69,7 @@ public class DevStructureDatafixCommand {
 
     private static int datafix(CommandContext<CommandSourceStack> ctx) {
         ServerLevel level = ctx.getSource().getLevel();
-        StructureTemplateManager mgr = level.getStructureManager();
+        StructureTemplateManager mgr = level.getStructureTemplateManager();
         // Write into the game's run directory (dev: neoforge/run). Copy these over the source
         // structures/ dir manually after verifying.
         Path outDir = Path.of("dnl_datafix_structures");

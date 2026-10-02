@@ -59,7 +59,7 @@ public class C2SPedestalEditPacket implements DNLPacket {
         if (!(be instanceof PlayerStatueBlockEntity statue)) return;
 
         // simple reach check
-        if (sender.distanceToSqr(pos.getCenter()) > 64.0D) return;
+        if (sender.distanceToSqr(net.minecraft.world.phys.Vec3.atCenterOf(pos)) > 64.0D) return;
 
         var color = (colorId >= 0 && colorId < DyeColor.values().length)
                 ? DyeColor.byId(colorId)

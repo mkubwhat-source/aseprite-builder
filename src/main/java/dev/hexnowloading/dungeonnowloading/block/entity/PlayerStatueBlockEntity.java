@@ -151,10 +151,7 @@ public class PlayerStatueBlockEntity extends BlockEntity {
 
         // owner
         if (owner != null) {
-            net.minecraft.world.item.component.ResolvableProfile.CODEC
-                    .encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, new net.minecraft.world.item.component.ResolvableProfile(owner))
-                    .result()
-                    .ifPresent(t -> NbtCompat.put(tag, "Owner", t));
+            tag.store("Owner", net.minecraft.util.ExtraCodecs.STORED_GAME_PROFILE.codec(), owner);
         }
 
         // pose
@@ -162,7 +159,7 @@ public class PlayerStatueBlockEntity extends BlockEntity {
 
         // text
         for (int i = 0; i < LINES; i++) {
-            tag.putString("Text" + (i + 1), Component.Serializer.toJson(text[i], registries));
+            tag.store("Text" + (i + 1), net.minecraft.network.chat.ComponentSerialization.CODEC, text[i]);
         }
         tag.putString("TextColor", textColor.getName());
         tag.putBoolean("TextGlowing", glowingText);
@@ -181,11 +178,7 @@ public class PlayerStatueBlockEntity extends BlockEntity {
 
         // owner
         if (NbtCompat.has(tag, "Owner")) {
-            owner = net.minecraft.world.item.component.ResolvableProfile.CODEC
-                    .parse(net.minecraft.nbt.NbtOps.INSTANCE, NbtCompat.getCompound(tag, "Owner"))
-                    .result()
-                    .map(net.minecraft.world.item.component.ResolvableProfile::gameProfile)
-                    .orElse(null);
+            owner = tag.read("Owner", net.minecraft.util.ExtraCodecs.STORED_GAME_PROFILE.codec()).orElse(null);
         } else {
             owner = null;
         }
@@ -196,7 +189,7 @@ public class PlayerStatueBlockEntity extends BlockEntity {
         // text
         for (int i = 0; i < LINES; i++) {
             String key = "Text" + (i + 1);
-            text[i] = NbtCompat.has(tag, key) ? Component.Serializer.fromJson(tag.getStringOr(key, ""), registries) : Component.empty();
+            text[i] = tag.read(key, net.minecraft.network.chat.ComponentSerialization.CODEC).orElse(Component.empty());
         }
         if (NbtCompat.has(tag, "TextColor")) {
             try { textColor = DyeColor.byName(tag.getStringOr("TextColor", ""), DyeColor.BLACK); } catch (Exception ignored) {}
@@ -213,7 +206,7 @@ public class PlayerStatueBlockEntity extends BlockEntity {
 
         // Back-compat: if a legacy "Offering" tag exists, derive the tier once.
         if (this.notchTier == NotchTier.NONE && NbtCompat.has(tag, "Offering")) {
-            ItemStack legacy = ItemStack.parseOptional(registries, NbtCompat.getCompound(tag, "Offering"));
+            ItemStack legacy = tag.read("Offering", ItemStack.CODEC).orElse(ItemStack.EMPTY);
             NotchTier legacyTier = tierFromItem(legacy);
             if (legacyTier != NotchTier.NONE) this.notchTier = legacyTier;
         }
@@ -256,11 +249,11 @@ public class PlayerStatueBlockEntity extends BlockEntity {
         java.util.UUID id = owner.id();
         if (id == null) return null;
 
-        var cache = sl.getServer().getProfileCache();
+        var cache = sl.getServer().services().nameToIdCache();
         if (cache != null) {
-            var opt = cache.get(id); // Optional<GameProfile>
+            var opt = cache.get(id); // Optional<NameAndId>
             if (opt.isPresent()) {
-                this.owner = opt.get();    // update BE with the named profile
+                this.owner = new GameProfile(id, opt.get().name());    // update BE with the named profile
                 setChanged();
                 return this.owner.name();
             }

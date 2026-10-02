@@ -60,11 +60,7 @@ public class MendstoneChalkItem extends Item {
 
                         // fx
                         if (level instanceof ServerLevel sl) {
-                            var dust = new DustColorTransitionOptions(
-                                    new org.joml.Vector3f(0.45f, 0.80f, 1.0f),
-                                    new org.joml.Vector3f(0.90f, 0.95f, 1.0f),
-                                    1.0f
-                            );
+                            var dust = new DustColorTransitionOptions(net.minecraft.util.ARGB.colorFromFloat(1.0F, 0.45f, 0.80f, 1.0f), net.minecraft.util.ARGB.colorFromFloat(1.0F, 0.90f, 0.95f, 1.0f), 1.0f);
                             sl.sendParticles(dust, clickedPos.getX() + 0.5, clickedPos.getY() + 0.5, clickedPos.getZ() + 0.5,
                                     6, 0.5, 0.5, 0.5, 0.0);
                             level.playSound(null, clickedPos, DNLSounds.MENDING_AURA_POP.get(), SoundSource.BLOCKS, 0.6f, 1.2f);
@@ -182,11 +178,5 @@ public class MendstoneChalkItem extends Item {
 
     }
 
-    @Override
-    public boolean isValidRepairItem(ItemStack $$0, ItemStack $$1) {
-        return false;
-    }
 
-    @Override public boolean isEnchantable(ItemStack stack) { return false; }
-    @Override public int getEnchantmentValue() { return 0; }
 }

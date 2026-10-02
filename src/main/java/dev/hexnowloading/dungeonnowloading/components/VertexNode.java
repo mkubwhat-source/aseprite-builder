@@ -147,7 +147,7 @@ public class VertexNode {
                     int vertexTransAmplifier = 0;
 
                     // Slowness application
-                    livingEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, slownessDurationTicks, slownessAmplifier));
+                    livingEntity.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, slownessDurationTicks, slownessAmplifier));
 
                     // Vertex Transmission application
                     boolean entityHasEffect = livingEntity.hasEffect(DNLMobEffects.vertexTransmission());
@@ -157,14 +157,14 @@ public class VertexNode {
                         livingEntity.addEffect(new MobEffectInstance(DNLMobEffects.vertexTransmission(),
                                 vertexTransDurationTicks, vertexTransAmplifier));
                         MobEffectInstance inst = livingEntity.getEffect(DNLMobEffects.vertexTransmission());
-                        if (inst != null && inst.getEffect() instanceof VertexTransmissionEffect vtx) {
+                        if (inst != null && inst.getEffect().value() instanceof VertexTransmissionEffect vtx) {
                             vtx.markAsReconnectionCase(livingEntity.getUUID());
                         }
                     }
 
                     // No connections damage case
                     MobEffectInstance inst = livingEntity.getEffect(DNLMobEffects.vertexTransmission());
-                    if (inst != null && inst.getEffect() instanceof VertexTransmissionEffect vtx) {
+                    if (inst != null && inst.getEffect().value() instanceof VertexTransmissionEffect vtx) {
                         VertexNode entityInBeamVertexNode = vtx.getVertexNode(livingEntity.getUUID());
                         if (entityInBeamVertexNode != null && entityInBeamVertexNode.getConnectionCount() == 0) {
                             vtx.setNoConnectionBeamDamageCase(livingEntity.getUUID(), true);
@@ -237,7 +237,7 @@ public class VertexNode {
         if (entity.hasEffect(DNLMobEffects.vertexTransmission())) {
             MobEffectInstance effectInstance = entity.getEffect(DNLMobEffects.vertexTransmission());
 
-            if (effectInstance.getEffect() instanceof VertexTransmissionEffect customEffect) {
+            if (effectInstance.getEffect().value() instanceof VertexTransmissionEffect customEffect) {
                 return customEffect.getVertexNode(entity.getUUID());
             }
         }

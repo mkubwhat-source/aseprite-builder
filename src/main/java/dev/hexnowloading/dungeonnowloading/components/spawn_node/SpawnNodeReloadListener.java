@@ -1,5 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.components.spawn_node;
 
+
+
+import net.minecraft.resources.FileToIdConverter;
+import net.minecraft.util.ExtraCodecs;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -17,12 +21,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SpawnNodeReloadListener extends SimpleJsonResourceReloadListener {
+public class SpawnNodeReloadListener extends SimpleJsonResourceReloadListener<JsonElement> {
 
     private final Logger logger;
 
     public SpawnNodeReloadListener(Gson gson, Logger logger) {
-        super(gson, "spawn_nodes");
+        super(ExtraCodecs.JSON, FileToIdConverter.json("spawn_nodes"));
         this.logger = logger;
     }
 
@@ -89,7 +93,7 @@ public class SpawnNodeReloadListener extends SimpleJsonResourceReloadListener {
             Identifier entityId = Identifier.parse(obj.get("entity").getAsString());
             if (!BuiltInRegistries.ENTITY_TYPE.containsKey(entityId)) return null;
 
-            EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(entityId);
+            EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.getValue(entityId);
 
             int count = obj.has("count") ? obj.get("count").getAsInt() : 1;
             double chance = obj.has("chance") ? obj.get("chance").getAsDouble() : 1.0;
@@ -102,7 +106,7 @@ public class SpawnNodeReloadListener extends SimpleJsonResourceReloadListener {
 
             CompoundTag snbtPatch = new CompoundTag();
             if (obj.has("snbt")) {
-                snbtPatch = TagParser.parseTag(obj.get("snbt").getAsString());
+                snbtPatch = TagParser.parseCompoundFully(obj.get("snbt").getAsString());
             }
 
             return new SpawnEntry(type, count, chance, spawnEffect, nbtPatch, snbtPatch);

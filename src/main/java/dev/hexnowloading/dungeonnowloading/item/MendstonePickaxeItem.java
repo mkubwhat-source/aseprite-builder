@@ -2,6 +2,10 @@ package dev.hexnowloading.dungeonnowloading.item;
 
 
 
+
+
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.ToolMaterial;
 import java.util.function.Consumer;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.Item;
@@ -13,10 +17,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class MendstonePickaxeItem extends PickaxeItem {
+public class MendstonePickaxeItem extends Item {
 
     public MendstonePickaxeItem(Properties properties) {
-        super(Tiers.IRON, properties.attributes(net.minecraft.world.item.DiggerItem.createAttributes(Tiers.IRON, 1, -2.8F)));
+        // Not repairable and not enchantable, matching the 1.21.1 overrides.
+        super(properties.pickaxe(ToolMaterial.IRON, 1.0F, -2.8F)
+                .component(DataComponents.REPAIRABLE, null)
+                .component(DataComponents.ENCHANTABLE, null));
     }
 
     @Override
@@ -29,19 +36,7 @@ public class MendstonePickaxeItem extends PickaxeItem {
 
     // 1.21 removed Item.getRarity(ItemStack); rarity is set via Properties.rarity(...) at registration.
 
-    @Override
-    public boolean isValidRepairItem(ItemStack itemStack, ItemStack repairItem) {
-        return false;
-    }
 
     // Prevent enchanting entirely (enchanting table + "enchantability" weight)
-    @Override
-    public boolean isEnchantable(ItemStack stack) {
-        return false;
-    }
 
-    @Override
-    public int getEnchantmentValue() {
-        return 0;
-    }
 }

@@ -137,7 +137,7 @@ public final class PatronRegistry {
 
     private static void enrichNamesFromProfileCache(MinecraftServer server, Map<String, Campaign> data) {
         if (server == null || data == null) return;
-        var cache = server.getProfileCache();
+        var cache = server.services().nameToIdCache();
         if (cache == null) return;
 
         for (var entry : data.entrySet()) {
@@ -148,8 +148,8 @@ public final class PatronRegistry {
                 if (p.name != null && !p.name.isBlank()) continue;
 
                 cache.get(p.uuid).ifPresent(gp -> {
-                    if (gp.getName() != null && !gp.getName().isBlank()) {
-                        p.name = gp.getName();
+                    if (gp.name() != null && !gp.name().isBlank()) {
+                        p.name = gp.name();
                     }
                 });
             }

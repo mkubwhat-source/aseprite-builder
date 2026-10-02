@@ -1,5 +1,13 @@
 package dev.hexnowloading.dungeonnowloading.world.features.entities;
 
+
+
+
+
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityTypes;
+import dev.hexnowloading.dungeonnowloading.world.features.DNLFeatureContext;
+import dev.hexnowloading.dungeonnowloading.world.features.DNLFeature;
 import com.mojang.serialization.Codec;
 import dev.hexnowloading.dungeonnowloading.world.features.configs.ArmorStandConfig;
 import net.minecraft.world.InteractionHand;
@@ -12,18 +20,14 @@ import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.JigsawBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 
-public class GenericArmorStandFeature extends Feature<ArmorStandConfig> {
+public class GenericArmorStandFeature extends DNLFeature<ArmorStandConfig> {
 
-    public GenericArmorStandFeature(Codec<ArmorStandConfig> codec) {
-        super(codec);
-    }
+    public GenericArmorStandFeature(ArmorStandConfig config) { super(config); }
 
     @Override
-    public boolean place(FeaturePlaceContext<ArmorStandConfig> context) {
-        ArmorStand armorStand = EntityType.ARMOR_STAND.create(context.level().getLevel());
+    public boolean place(DNLFeatureContext<ArmorStandConfig> context) {
+        ArmorStand armorStand = EntityTypes.ARMOR_STAND.create(context.level().getLevel(), EntitySpawnReason.MOB_SUMMONED);
         armorStand.snapTo(context.origin().below(), 0.0F, 0.0F);
         context.config().heldItem.ifPresent(item -> armorStand.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(item)));
         context.config().helmet.ifPresent(item -> armorStand.setItemSlot(EquipmentSlot.HEAD, new ItemStack(item)));

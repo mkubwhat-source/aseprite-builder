@@ -19,10 +19,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
-public class StatueProcessor extends StructureProcessor {
+public class StatueProcessor implements StructureProcessor {
 
     public static final MapCodec<StatueProcessor> CODEC = RecordCodecBuilder.mapCodec(i ->
             i.group(
@@ -48,12 +47,7 @@ public class StatueProcessor extends StructureProcessor {
     }
 
     @Override
-    public StructureTemplate.StructureBlockInfo processBlock(
-            LevelReader level, BlockPos pieceOrigin, BlockPos pieceWorldPos,
-            StructureTemplate.StructureBlockInfo original,
-            StructureTemplate.StructureBlockInfo current,
-            StructurePlaceSettings settings
-    ) {
+    public StructureTemplate.StructureBlockInfo processBlock(LevelReader level, BlockPos pieceOrigin, BlockPos pieceWorldPos, BlockPos templateRelativePos, StructureTemplate.StructureBlockInfo current, StructurePlaceSettings settings) {
         if (!current.state().is(DNLBlocks.PLAYER_STATUE.get())) return current;
 
         RandomSource rand = settings.getRandom(current.pos());
@@ -99,7 +93,7 @@ public class StatueProcessor extends StructureProcessor {
     }
 
     @Override
-    protected StructureProcessorType<?> getType() {
-        return DNLProcessors.STATUE_PROCESSOR.get();
+    public MapCodec<? extends StructureProcessor> codec() {
+        return CODEC;
     }
 }

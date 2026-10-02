@@ -42,7 +42,7 @@ public class VertexBowItem extends BowItem {
     }
 
     @Override
-    public void releaseUsing(ItemStack itemStack, Level level, LivingEntity livingEntity, int remainingUseDuration) {
+    public boolean releaseUsing(ItemStack itemStack, Level level, LivingEntity livingEntity, int remainingUseDuration) {
         if (livingEntity instanceof Player player) {
                 boolean b = player.getAbilities().instabuild || EnchantmentHelper.getItemEnchantmentLevel(DNLEnchantments.holder(level, Enchantments.INFINITY), itemStack) > 0;
             ItemStack projectile = player.getProjectile(itemStack);
@@ -67,7 +67,7 @@ public class VertexBowItem extends BowItem {
                             arrow = arrowItem.createArrow(level, projectile, player, itemStack);
                         }
 
-                        arrow.setBaseDamage(arrow.getBaseDamage() * 0.75);
+                        arrow.setBaseDamage(arrow.baseDamage * 0.75);
 
                         arrow.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, powerForTime * 3.0F, 1.0F);
                         if (powerForTime == 1.0F) {
@@ -76,7 +76,7 @@ public class VertexBowItem extends BowItem {
 
                         int powerLevel = EnchantmentHelper.getItemEnchantmentLevel(DNLEnchantments.holder(level, Enchantments.POWER), itemStack);
                         if (powerLevel > 0) {
-                            arrow.setBaseDamage(arrow.getBaseDamage() + (double)powerLevel * 0.5 + 0.5);
+                            arrow.setBaseDamage(arrow.baseDamage + (double)powerLevel * 0.5 + 0.5);
                         }
 
                         // 1.21 removed AbstractArrow.setKnockback(int); Punch knockback now
@@ -118,6 +118,7 @@ public class VertexBowItem extends BowItem {
                 }
             }
         }
+        return true;
     }
 
     public static float getPowerForTime(int charge) {

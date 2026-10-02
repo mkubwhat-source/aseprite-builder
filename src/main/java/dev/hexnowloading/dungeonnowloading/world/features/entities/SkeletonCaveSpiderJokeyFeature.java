@@ -1,27 +1,30 @@
 package dev.hexnowloading.dungeonnowloading.world.features.entities;
 
+
+
+
+import net.minecraft.world.entity.EntityTypes;
+import dev.hexnowloading.dungeonnowloading.world.features.DNLFeatureContext;
+import dev.hexnowloading.dungeonnowloading.world.features.DNLFeature;
 import dev.hexnowloading.dungeonnowloading.entity.util.EntityScale;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.monster.spider.CaveSpider;
 import net.minecraft.world.entity.monster.skeleton.Skeleton;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
-public class SkeletonCaveSpiderJokeyFeature extends Feature<NoneFeatureConfiguration> {
+public class SkeletonCaveSpiderJokeyFeature extends DNLFeature<DNLFeature.None> {
 
-    public SkeletonCaveSpiderJokeyFeature() { super(NoneFeatureConfiguration.CODEC); }
+    public SkeletonCaveSpiderJokeyFeature() { super(DNLFeature.None.INSTANCE); }
 
     @Override
-    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
-        CaveSpider caveSpider = EntityType.CAVE_SPIDER.create(context.level().getLevel());
+    public boolean place(DNLFeatureContext<DNLFeature.None> context) {
+        CaveSpider caveSpider = EntityTypes.CAVE_SPIDER.create(context.level().getLevel(), EntitySpawnReason.MOB_SUMMONED);
         caveSpider.setPersistenceRequired();
         caveSpider.snapTo((double)context.origin().getX() + 0.5D, context.origin().getY(), (double)context.origin().getZ() + 0.5D, 0.0F, 0.0F);
         caveSpider.finalizeSpawn(context.level(), context.level().getCurrentDifficultyAt(context.origin()), EntitySpawnReason.STRUCTURE, null);
         EntityScale.scaleMobAttributes(caveSpider);
 
-        Skeleton skeleton = EntityType.SKELETON.create(context.level().getLevel());
+        Skeleton skeleton = EntityTypes.SKELETON.create(context.level().getLevel(), EntitySpawnReason.MOB_SUMMONED);
         skeleton.setPersistenceRequired();
         skeleton.snapTo((double)context.origin().getX() + 0.5D, context.origin().getY() + 1, (double)context.origin().getZ() + 0.5D, 0.0F, 0.0F);
         skeleton.finalizeSpawn(context.level(), context.level().getCurrentDifficultyAt(context.origin()), EntitySpawnReason.STRUCTURE, null);

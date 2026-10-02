@@ -1,5 +1,13 @@
 package dev.hexnowloading.dungeonnowloading.world.features.entities;
 
+
+
+
+
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityTypes;
+import dev.hexnowloading.dungeonnowloading.world.features.DNLFeatureContext;
+import dev.hexnowloading.dungeonnowloading.world.features.DNLFeature;
 import com.mojang.serialization.Codec;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
@@ -11,20 +19,17 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
-public class ArmorStandWithRandomEquipmentsFeature extends Feature<NoneFeatureConfiguration> {
+public class ArmorStandWithRandomEquipmentsFeature extends DNLFeature<DNLFeature.None> {
 
-    public ArmorStandWithRandomEquipmentsFeature() { super(NoneFeatureConfiguration.CODEC); }
+    public ArmorStandWithRandomEquipmentsFeature() { super(DNLFeature.None.INSTANCE); }
 
     private final Item[] DIAMOND_EQUIPMENTS = new Item[]{Items.DIAMOND_SWORD, Items.DIAMOND_AXE, Items.DIAMOND_PICKAXE};
     private final Item[] IRON_AND_CHAINMAIL_EQUIPMENTS = new Item[]{Items.IRON_SWORD, Items.IRON_AXE, Items.IRON_PICKAXE, Items.BOW, Items.CROSSBOW};
 
     @Override
-    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
-        ArmorStand armorStand = EntityType.ARMOR_STAND.create(context.level().getLevel());
+    public boolean place(DNLFeatureContext<DNLFeature.None> context) {
+        ArmorStand armorStand = EntityTypes.ARMOR_STAND.create(context.level().getLevel(), EntitySpawnReason.MOB_SUMMONED);
         armorStand.snapTo(context.origin().below(), 0.0F, 0.0F);
 
         float armorTypeChance = context.random().nextFloat();
@@ -51,7 +56,7 @@ public class ArmorStandWithRandomEquipmentsFeature extends Feature<NoneFeatureCo
         return true;
     }
 
-    private void equipChainmailEquipments(ArmorStand armorStand, FeaturePlaceContext<NoneFeatureConfiguration> context) {
+    private void equipChainmailEquipments(ArmorStand armorStand, DNLFeatureContext<DNLFeature.None> context) {
         if (context.random().nextFloat() < 0.5F) { armorStand.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.CHAINMAIL_HELMET)); }
         if (context.random().nextFloat() < 0.5F) { armorStand.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.CHAINMAIL_CHESTPLATE)); }
         if (context.random().nextFloat() < 0.5F) { armorStand.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.CHAINMAIL_LEGGINGS)); }
@@ -62,7 +67,7 @@ public class ArmorStandWithRandomEquipmentsFeature extends Feature<NoneFeatureCo
         }
     }
 
-    private void equipIronEquipments(ArmorStand armorStand, FeaturePlaceContext<NoneFeatureConfiguration> context) {
+    private void equipIronEquipments(ArmorStand armorStand, DNLFeatureContext<DNLFeature.None> context) {
         if (context.random().nextFloat() < 0.5F) { armorStand.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET)); }
         if (context.random().nextFloat() < 0.5F) { armorStand.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.IRON_CHESTPLATE)); }
         if (context.random().nextFloat() < 0.5F) { armorStand.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.IRON_LEGGINGS)); }
@@ -73,7 +78,7 @@ public class ArmorStandWithRandomEquipmentsFeature extends Feature<NoneFeatureCo
         }
     }
 
-    private void equipDiamondEquipments(ArmorStand armorStand, FeaturePlaceContext<NoneFeatureConfiguration> context) {
+    private void equipDiamondEquipments(ArmorStand armorStand, DNLFeatureContext<DNLFeature.None> context) {
         if (context.random().nextFloat() < 0.5F) { armorStand.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.DIAMOND_HELMET)); }
         if (context.random().nextFloat() < 0.5F) { armorStand.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.DIAMOND_CHESTPLATE)); }
         if (context.random().nextFloat() < 0.5F) { armorStand.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.DIAMOND_LEGGINGS)); }

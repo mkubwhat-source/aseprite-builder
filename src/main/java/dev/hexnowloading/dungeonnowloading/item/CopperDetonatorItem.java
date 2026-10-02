@@ -3,6 +3,8 @@ package dev.hexnowloading.dungeonnowloading.item;
 
 
 
+
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.entity.EntitySpawnReason;
 import java.util.function.Consumer;
 import net.minecraft.world.item.component.TooltipDisplay;
@@ -83,9 +85,9 @@ public class CopperDetonatorItem extends Item {
     }
 
     public static String getCosmeticMode(ItemStack stack) {
-        return StackNbt.getOrCreateTag(stack).getString(TAG_COSMETIC_MODE).isEmpty()
+        return StackNbt.getOrCreateTag(stack).getStringOr(TAG_COSMETIC_MODE, "").isEmpty()
                 ? MODE_DEFAULT
-                : StackNbt.getOrCreateTag(stack).getString(TAG_COSMETIC_MODE);
+                : StackNbt.getOrCreateTag(stack).getStringOr(TAG_COSMETIC_MODE, "");
     }
 
     @Override
@@ -107,15 +109,15 @@ public class CopperDetonatorItem extends Item {
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack $$0) {
+    public ItemUseAnimation getUseAnimation(ItemStack $$0) {
         return super.getUseAnimation($$0);
     }
 
     @Override
-    public void releaseUsing(ItemStack itemStack, Level level, LivingEntity livingEntity, int remainingTicks) {
+    public boolean releaseUsing(ItemStack itemStack, Level level, LivingEntity livingEntity, int remainingTicks) {
         int usedTime = itemStack.getUseDuration(livingEntity) - remainingTicks;
 
-        if (!(livingEntity instanceof Player player)) return;
+        if (!(livingEntity instanceof Player player)) return false;
 
         InteractionHand hand = player.getUsedItemHand();
 
@@ -128,27 +130,28 @@ public class CopperDetonatorItem extends Item {
                     if (!level.isClientSide()) {
                         player.sendOverlayMessage(Component.literal("Not enough space for summon").withStyle(ChatFormatting.RED));
                     }
-                    player.getCooldowns().addCooldown(this, 20);
-                    return;
+                    player.getCooldowns().addCooldown(this.getDefaultInstance(), 20);
+                    return false;
                 }
 
                 // Only consume copper block after we know the spawn will succeed.
                 if (consumeCopperBlockIfAvailable(player)) {
                     launchCreep(level, player, itemStack);
-                    player.getCooldowns().addCooldown(this, SUMMON_COOLDOWN);
+                    player.getCooldowns().addCooldown(this.getDefaultInstance(), SUMMON_COOLDOWN);
                     itemStack.hurtAndBreak(1, player, hand.asEquipmentSlot());
-                    player.swing(hand);
+                    player.swing(hand, SwingAnimation.DEFAULT, false);
                 }
             }
         } else {
             if (!creepsInRange.isEmpty()) {
                 igniteCreeps(creepsInRange);
-                player.getCooldowns().addCooldown(this, creepsInRange.size() * IGNITE_COOLDOWN_PER_CREEP);
-                player.swing(hand);
+                player.getCooldowns().addCooldown(this.getDefaultInstance(), creepsInRange.size() * IGNITE_COOLDOWN_PER_CREEP);
+                player.swing(hand, SwingAnimation.DEFAULT, false);
             }
         }
 
         super.releaseUsing(itemStack, level, livingEntity, remainingTicks);
+        return true;
     }
 
     @Override
@@ -222,7 +225,7 @@ public class CopperDetonatorItem extends Item {
 
         for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
             ItemStack stack = player.getInventory().getItem(i);
-            if (stack.getItem() == Items.COPPER_BLOCK && stack.getCount() > 0) {
+            if (stack.getItem() == Items.COPPER_BLOCK.weathering().unaffected() && stack.getCount() > 0) {
                 stack.shrink(1);
                 return true;
             }

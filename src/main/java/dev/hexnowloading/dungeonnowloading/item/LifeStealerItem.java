@@ -2,6 +2,8 @@ package dev.hexnowloading.dungeonnowloading.item;
 
 
 
+
+import dev.hexnowloading.dungeonnowloading.registry.DNLTags;
 import java.util.function.Consumer;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.Item;
@@ -18,8 +20,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
@@ -27,10 +28,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class LifeStealerItem extends SwordItem {
+public class LifeStealerItem extends Item {
 
-    public LifeStealerItem(Tier $$0, int $$1, float $$2, Properties $$3) {
-        super($$0, $$3.attributes(net.minecraft.world.item.SwordItem.createAttributes($$0, $$1, $$2)));
+    public LifeStealerItem(Properties properties, float attackSpeed) {
+        // 26.x: swords are plain items configured through properties; repairs use the spawner blade or diamonds.
+        super(properties.sword(ToolMaterial.DIAMOND, 3.0F, attackSpeed).repairable(DNLTags.REPAIRS_SPAWNER_WEAPONS));
     }
 
     /*@Override
@@ -98,10 +100,6 @@ public class LifeStealerItem extends SwordItem {
         }
     }
 
-    @Override
-    public boolean isValidRepairItem(ItemStack itemStack, ItemStack repairItem) {
-        return repairItem.is(DNLItems.SPAWNER_BLADE.get()) || super.isValidRepairItem(itemStack, repairItem);
-    }
 
     @Override
     public void appendHoverText(ItemStack itemStack, Item.TooltipContext level, TooltipDisplay tooltipDisplay, Consumer<Component> components, TooltipFlag tooltipFlag) {

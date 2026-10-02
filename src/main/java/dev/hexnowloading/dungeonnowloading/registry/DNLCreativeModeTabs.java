@@ -1,9 +1,10 @@
 package dev.hexnowloading.dungeonnowloading.registry;
 
+
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import dev.hexnowloading.dungeonnowloading.platform.Services;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 
 import java.util.function.Supplier;
@@ -58,16 +59,16 @@ public class DNLCreativeModeTabs {
                 output.accept(DNLItems.SPAWNER_LEGGINGS.get());
                 output.accept(DNLItems.SPAWNER_BOOTS.get());
                 // Enchantments - Books
-                output.accept(EnchantedBookItem.createForEnchantment(new EnchantmentInstance(DNLEnchantments.holder(itemDisplayParameters.holders(), DNLEnchantments.BREAK_PROTECTION), 1)));
-                output.accept(EnchantedBookItem.createForEnchantment(new EnchantmentInstance(DNLEnchantments.holder(itemDisplayParameters.holders(), DNLEnchantments.AMPLIFICATION), 1)));
-                output.accept(EnchantedBookItem.createForEnchantment(new EnchantmentInstance(DNLEnchantments.holder(itemDisplayParameters.holders(), DNLEnchantments.NULLIFICATION), 1)));
-                output.accept(EnchantedBookItem.createForEnchantment(new EnchantmentInstance(DNLEnchantments.holder(itemDisplayParameters.holders(), DNLEnchantments.GIGANTISM), 1)));
-                output.accept(EnchantedBookItem.createForEnchantment(new EnchantmentInstance(DNLEnchantments.holder(itemDisplayParameters.holders(), DNLEnchantments.OVERWORKED), 1)));
-                output.accept(EnchantedBookItem.createForEnchantment(new EnchantmentInstance(DNLEnchantments.holder(itemDisplayParameters.holders(), DNLEnchantments.PACK_BLESSING), 1)));
-                output.accept(EnchantedBookItem.createForEnchantment(new EnchantmentInstance(DNLEnchantments.holder(itemDisplayParameters.holders(), DNLEnchantments.ARC_SHOT), 1)));
-                output.accept(EnchantedBookItem.createForEnchantment(new EnchantmentInstance(DNLEnchantments.holder(itemDisplayParameters.holders(), DNLEnchantments.PULSE_SHOT), 1)));
-                output.accept(EnchantedBookItem.createForEnchantment(new EnchantmentInstance(DNLEnchantments.holder(itemDisplayParameters.holders(), DNLEnchantments.SACRIFICE), 1)));
-                output.accept(EnchantedBookItem.createForEnchantment(new EnchantmentInstance(DNLEnchantments.holder(itemDisplayParameters.holders(), DNLEnchantments.RECKLESS), 1)));
+                output.accept(EnchantmentHelper.createBook(new EnchantmentInstance(DNLEnchantments.holder(itemDisplayParameters.holders(), DNLEnchantments.BREAK_PROTECTION), 1)));
+                output.accept(EnchantmentHelper.createBook(new EnchantmentInstance(DNLEnchantments.holder(itemDisplayParameters.holders(), DNLEnchantments.AMPLIFICATION), 1)));
+                output.accept(EnchantmentHelper.createBook(new EnchantmentInstance(DNLEnchantments.holder(itemDisplayParameters.holders(), DNLEnchantments.NULLIFICATION), 1)));
+                output.accept(EnchantmentHelper.createBook(new EnchantmentInstance(DNLEnchantments.holder(itemDisplayParameters.holders(), DNLEnchantments.GIGANTISM), 1)));
+                output.accept(EnchantmentHelper.createBook(new EnchantmentInstance(DNLEnchantments.holder(itemDisplayParameters.holders(), DNLEnchantments.OVERWORKED), 1)));
+                output.accept(EnchantmentHelper.createBook(new EnchantmentInstance(DNLEnchantments.holder(itemDisplayParameters.holders(), DNLEnchantments.PACK_BLESSING), 1)));
+                output.accept(EnchantmentHelper.createBook(new EnchantmentInstance(DNLEnchantments.holder(itemDisplayParameters.holders(), DNLEnchantments.ARC_SHOT), 1)));
+                output.accept(EnchantmentHelper.createBook(new EnchantmentInstance(DNLEnchantments.holder(itemDisplayParameters.holders(), DNLEnchantments.PULSE_SHOT), 1)));
+                output.accept(EnchantmentHelper.createBook(new EnchantmentInstance(DNLEnchantments.holder(itemDisplayParameters.holders(), DNLEnchantments.SACRIFICE), 1)));
+                output.accept(EnchantmentHelper.createBook(new EnchantmentInstance(DNLEnchantments.holder(itemDisplayParameters.holders(), DNLEnchantments.RECKLESS), 1)));
 
                 // Items - Boss Related
                 output.accept(DNLItems.GREAT_EXPERIENCE_BOTTLE.get());

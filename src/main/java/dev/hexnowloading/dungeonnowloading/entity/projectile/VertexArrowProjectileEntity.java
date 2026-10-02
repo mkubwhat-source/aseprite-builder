@@ -101,7 +101,7 @@ public class VertexArrowProjectileEntity extends AbstractArrow {
             int vertexTransAmplifier = 0;
 
             // Slowness application
-            entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, slownessDurationTicks, slownessAmplifier));
+            entity.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, slownessDurationTicks, slownessAmplifier));
 
             // Vertex Transmission application
             boolean entityHasEffect = entity.hasEffect(DNLMobEffects.vertexTransmission());
@@ -119,7 +119,7 @@ public class VertexArrowProjectileEntity extends AbstractArrow {
     public void tick() {
         super.tick();
 
-        if (!this.inGround) {
+        if (!this.isInGround()) {
             this.vertexNode.disconnect_all();
             this.powerIncrementTimer = 0;
             this.powerLevel = 0;

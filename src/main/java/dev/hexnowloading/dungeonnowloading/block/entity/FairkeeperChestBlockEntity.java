@@ -3,6 +3,8 @@ package dev.hexnowloading.dungeonnowloading.block.entity;
 
 
 
+
+import net.minecraft.world.entity.ContainerUser;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
@@ -204,7 +206,7 @@ public class FairkeeperChestBlockEntity extends RandomizableContainerBlockEntity
 
     private void removeLootTable() {
         if (this.lootTable != null) {
-            this.lootTable = null;
+            this.lootTable = java.util.Optional.of(null);
         }
     }
 
@@ -226,7 +228,7 @@ public class FairkeeperChestBlockEntity extends RandomizableContainerBlockEntity
 
     protected boolean tryLoadLootTable(CompoundTag nbt) {
         if (nbt.contains("LootTable", 8)) {
-            this.lootTable = Identifier.parse(nbt.getStringOr("LootTable", ""));
+            this.lootTable = java.util.Optional.of(Identifier.parse(nbt.getStringOr("LootTable", "")));
             this.lootTableSeed = nbt.getLongOr("LootTableSeed", 0L);
             return true;
         } else {
@@ -260,7 +262,8 @@ public class FairkeeperChestBlockEntity extends RandomizableContainerBlockEntity
     }
 
     @Override
-    public void startOpen(Player player) {
+    public void startOpen(ContainerUser containerUser) {
+        net.minecraft.world.entity.LivingEntity player = containerUser.getLivingEntity();
         if (!this.remove && !player.isSpectator()) {
             FairkeeperChestBlock.setFairkeeperChest(this.getLevel(), this.getBlockPos(), ChestStates.OPENING);
             FairkeeperChestBlockEntity.playSound(this.getLevel(), this.getBlockPos(), SoundEvents.CHEST_OPEN);
@@ -269,7 +272,8 @@ public class FairkeeperChestBlockEntity extends RandomizableContainerBlockEntity
     }
 
     @Override
-    public void stopOpen(Player player) {
+    public void stopOpen(ContainerUser containerUser) {
+        net.minecraft.world.entity.LivingEntity player = containerUser.getLivingEntity();
         if (!this.remove && !player.isSpectator()) {
             FairkeeperChestBlock.setFairkeeperChest(this.getLevel(), this.getBlockPos(), ChestStates.CLOSING);
             FairkeeperChestBlockEntity.playSound(this.getLevel(), this.getBlockPos(), SoundEvents.CHEST_CLOSE);

@@ -30,10 +30,10 @@ public interface DNLAnimatedItem<T extends Enum<T> & DNLAnimationState> {
     }
 
     default UUID getItemUUID(ItemStack stack) {
-        if (!StackNbt.hasTag(stack) || !StackNbt.getTag(stack).hasUUID(ITEM_UUID)) {
+        if (!StackNbt.hasTag(stack) || !NbtCompat.hasUUID(StackNbt.getTag(stack), ITEM_UUID)) {
             return null;
         }
-        return StackNbt.getTag(stack).getUUID(ITEM_UUID);
+        return NbtCompat.getUUID(StackNbt.getTag(stack), ITEM_UUID);
     }
 
     default void resetItemUUID(ItemStack stack) {

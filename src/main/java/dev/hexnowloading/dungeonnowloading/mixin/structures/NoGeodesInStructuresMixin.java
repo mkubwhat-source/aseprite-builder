@@ -100,7 +100,7 @@ public class NoGeodesInStructuresMixin {
 
     private static void fillStartsForStructure(LevelReader level, StructureManager structureManager, Structure structure, LongSet references, BlockPos pos, Consumer<StructureStart> consumer) {
         for (long ref : references) {
-            SectionPos sectionPos = SectionPos.of(new ChunkPos(ref), level.getMinSection());
+            SectionPos sectionPos = SectionPos.of(ChunkPos.containing(ref), level.getMinSection());
             if (!level.hasChunk(sectionPos.x(), sectionPos.z())) {
                 continue;
             }

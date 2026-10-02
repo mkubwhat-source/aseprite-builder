@@ -1,5 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.components.spawn_node;
 
+
+
+import net.minecraft.resources.FileToIdConverter;
+import net.minecraft.util.ExtraCodecs;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -14,13 +18,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SpawnPoolReloadListener extends SimpleJsonResourceReloadListener {
+public class SpawnPoolReloadListener extends SimpleJsonResourceReloadListener<JsonElement> {
 
     private final Logger logger;
 
     // Folder: data/<namespace>/spawn_pools/*.json
     public SpawnPoolReloadListener(Gson gson, Logger logger) {
-        super(gson, "spawn_pools");
+        super(ExtraCodecs.JSON, FileToIdConverter.json("spawn_pools"));
         this.logger = logger;
     }
 

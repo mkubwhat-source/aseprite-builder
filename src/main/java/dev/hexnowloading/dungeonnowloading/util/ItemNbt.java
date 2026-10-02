@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.util;
 
+
+import net.minecraft.nbt.NbtOps;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -18,7 +20,7 @@ public final class ItemNbt {
         if (provider == null) {
             return ItemStack.EMPTY;
         }
-        return ItemStack.parseOptional(provider, tag);
+        return ItemStack.OPTIONAL_CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), tag).result().orElse(ItemStack.EMPTY);
     }
 
     /** Loads using the cached registry access (server start / client level). */
@@ -30,7 +32,8 @@ public final class ItemNbt {
         if (provider == null || stack.isEmpty()) {
             return new CompoundTag();
         }
-        return (CompoundTag) stack.save(provider);
+        return ItemStack.CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), stack).result()
+                .flatMap(net.minecraft.nbt.Tag::asCompound).orElseGet(CompoundTag::new);
     }
 
     /** Saves using the cached registry access. */

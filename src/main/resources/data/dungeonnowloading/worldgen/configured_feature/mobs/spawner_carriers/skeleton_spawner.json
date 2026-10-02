@@ -1,6 +1,0 @@
-{
-  "config": {
-    "entity_type": "minecraft:skeleton"
-  },
-  "type": "dungeonnowloading:spawner_carrier"
-}

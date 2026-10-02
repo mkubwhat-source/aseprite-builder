@@ -126,7 +126,7 @@ public class SpawnerCarrierPreviewLayer<T extends SpawnerCarrierEntity, M extend
     private Entity createDisplayEntity(T carrier, String id) {
         try {
             Identifier rl = Identifier.parse(id);
-            EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(rl);
+            EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.getValue(rl);
             if (type == null) return null;
 
             Entity e = type.create(carrier.level(), EntitySpawnReason.MOB_SUMMONED);

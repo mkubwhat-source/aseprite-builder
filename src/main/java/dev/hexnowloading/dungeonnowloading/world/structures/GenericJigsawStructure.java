@@ -85,7 +85,7 @@ public class GenericJigsawStructure extends Structure {
                         blockPos,
                         false,
                         this.projectStartToHeightmap,
-                        this.maxDistanceFromCenter,
+                        new net.minecraft.world.level.levelgen.structure.structures.JigsawStructure.MaxDistance(this.maxDistanceFromCenter),
                         net.minecraft.world.level.levelgen.structure.pools.alias.PoolAliasLookup.EMPTY,
                         net.minecraft.world.level.levelgen.structure.pools.DimensionPadding.ZERO,
                         net.minecraft.world.level.levelgen.structure.templatesystem.LiquidSettings.APPLY_WATERLOGGING);
@@ -138,7 +138,7 @@ public class GenericJigsawStructure extends Structure {
                 new BlockPos(centerX, surfaceY, centerZ),
                 false,
                 Optional.empty(),
-                this.extraSurfaceMaxDistanceFromCenter,
+                new net.minecraft.world.level.levelgen.structure.structures.JigsawStructure.MaxDistance(this.extraSurfaceMaxDistanceFromCenter),
                 net.minecraft.world.level.levelgen.structure.pools.alias.PoolAliasLookup.EMPTY,
                 net.minecraft.world.level.levelgen.structure.pools.DimensionPadding.ZERO,
                 net.minecraft.world.level.levelgen.structure.templatesystem.LiquidSettings.APPLY_WATERLOGGING

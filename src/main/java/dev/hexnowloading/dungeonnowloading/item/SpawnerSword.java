@@ -2,6 +2,8 @@ package dev.hexnowloading.dungeonnowloading.item;
 
 
 
+
+import dev.hexnowloading.dungeonnowloading.registry.DNLTags;
 import java.util.function.Consumer;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.Item;
@@ -13,8 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
@@ -22,34 +23,36 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class SpawnerSword extends SwordItem {
+public class SpawnerSword extends Item {
 
-    public SpawnerSword(Tier $$0, int $$1, float $$2, Properties $$3) {
-        super($$0, $$3.attributes(net.minecraft.world.item.SwordItem.createAttributes($$0, $$1, $$2)));
+    public SpawnerSword(Properties properties, float attackSpeed) {
+        // 26.x: swords are plain items configured through properties; repairs use the spawner blade or diamonds.
+        super(properties.sword(ToolMaterial.DIAMOND, 3.0F, attackSpeed).repairable(DNLTags.REPAIRS_SPAWNER_WEAPONS));
     }
 
     @Override
-    public boolean hurtEnemy(ItemStack itemStack, LivingEntity target, LivingEntity attacker) {
-        boolean result = super.hurtEnemy(itemStack, target, attacker);
+    public void hurtEnemy(ItemStack itemStack, LivingEntity target, LivingEntity attacker) {
+        super.hurtEnemy(itemStack, target, attacker);
+        boolean result = true;
         if (result && !target.level().isClientSide()) {
             int recklessLevel = EnchantmentHelper.getItemEnchantmentLevel(DNLEnchantments.holder(attacker.level(), DNLEnchantments.RECKLESS), attacker.getMainHandItem());
             float selfDamage = 1.0F + recklessLevel;
 
             // Don't self-damage in creative/spectator.
             if (attacker instanceof Player player && (player.getAbilities().instabuild || player.isSpectator())) {
-                return true;
+                return;
             }
 
             // If self damage would kill the attacker, do nothing (no self damage and no bonus damage).
             // This matches: "shouldn't kill the user, but also shouldn't apply the bonus damage".
             if (recklessLevel > 0 && attacker.getHealth() <= selfDamage) {
-                return result;
+                return;
             }
 
             // Always apply: 1 + reckless level.
             attacker.hurt(attacker.damageSources().magic(), selfDamage);
         }
-        return result;
+        return;
     }
 
     public static float soulDispersionEffect(LivingEntity attacker, LivingEntity target, float damage) {
@@ -70,10 +73,6 @@ public class SpawnerSword extends SwordItem {
         return damage;
     }
 
-    @Override
-    public boolean isValidRepairItem(ItemStack itemStack, ItemStack repairItemStack) {
-        return repairItemStack.is(DNLItems.SPAWNER_BLADE.get()) || super.isValidRepairItem(itemStack, repairItemStack);
-    }
 
     @Override
     public void appendHoverText(ItemStack itemStack, Item.TooltipContext level, TooltipDisplay tooltipDisplay, Consumer<Component> components, TooltipFlag tooltipFlag) {

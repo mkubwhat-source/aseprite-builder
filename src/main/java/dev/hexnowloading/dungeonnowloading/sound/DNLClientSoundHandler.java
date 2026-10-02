@@ -18,7 +18,7 @@ public class DNLClientSoundHandler {
     private static final Map<Identifier, Map<Integer, Map<Integer, List<AbstractTickableSoundInstance>>>> activeSounds = new HashMap<>();
 
     public static void playTickingSound(Identifier soundId, SoundSource soundSource, Entity entity, int tagId, float volume, float pitch, boolean stopWhenOutOfRange, float range, float fadeStartDistance) {
-        SoundEvent sound = BuiltInRegistries.SOUND_EVENT.get(soundId);
+        SoundEvent sound = BuiltInRegistries.SOUND_EVENT.getValue(soundId);
         if (sound == null) return;
 
         int entityId = entity.getId();

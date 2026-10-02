@@ -40,7 +40,7 @@ public class VertexTransmissionEffect extends MobEffect {
 
 
     @Override
-    public boolean applyEffectTick(LivingEntity entity, int amplifier) {
+    public boolean applyEffectTick(net.minecraft.server.level.ServerLevel serverLevel, LivingEntity entity, int amplifier) {
         UUID uuid = entity.getUUID();
         entityVertexNodeMap.computeIfAbsent(uuid, id -> new VertexNode(entity));
         damageTickCountMap.putIfAbsent(uuid, 5);
@@ -96,9 +96,9 @@ public class VertexTransmissionEffect extends MobEffect {
      * lifecycle hook onMobRemoved(...). Our per-entity bookkeeping cleanup lives here.
      */
     @Override
-    public void onMobRemoved(LivingEntity entity, int amplifier, net.minecraft.world.entity.Entity.RemovalReason reason) {
+    public void onMobRemoved(net.minecraft.server.level.ServerLevel level, LivingEntity entity, int amplifier, net.minecraft.world.entity.Entity.RemovalReason reason) {
         cleanup(entity);
-        super.onMobRemoved(entity, amplifier, reason);
+        super.onMobRemoved(level, entity, amplifier, reason);
     }
 
     private void cleanup(LivingEntity entity) {

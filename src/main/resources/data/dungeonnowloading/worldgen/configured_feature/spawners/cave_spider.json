@@ -1,6 +1,0 @@
-{
-  "config": {
-    "entity_type": "minecraft:cave_spider"
-  },
-  "type": "dungeonnowloading:spawner"
-}

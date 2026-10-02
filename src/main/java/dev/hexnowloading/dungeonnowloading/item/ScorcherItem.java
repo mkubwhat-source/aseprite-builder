@@ -3,6 +3,8 @@ package dev.hexnowloading.dungeonnowloading.item;
 
 
 
+
+import net.minecraft.server.level.ServerLevel;
 import java.util.function.Consumer;
 import net.minecraft.world.item.component.TooltipDisplay;
 import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
@@ -114,7 +116,7 @@ public class ScorcherItem extends Item implements DNLAnimatedItem<ScorcherItem.S
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack $$0) {
+    public ItemUseAnimation getUseAnimation(ItemStack $$0) {
         return super.getUseAnimation($$0);
     }
 
@@ -152,7 +154,7 @@ public class ScorcherItem extends Item implements DNLAnimatedItem<ScorcherItem.S
             ItemAnimationState.start(itemStack, ScorcherAnimationState.SCORCHER_OVERHEAT.getName(), gameTime, (long) (ScorcherAnimationDuration.SCORCHER_OVERHEAT * 20L), false, true);
             playScorcherSounds(itemStack, player, DNLSounds.SCORCHER_OVERHEAT.get(), DNLSounds.SOUL_SCORCHER_OVERHEAT.get());
             setHeatLevel(itemStack, overHeatedDuration, gameTime);
-            //((Player) player).getCooldowns().addCooldown(this, 160);
+            //((Player) player).getCooldowns().addCooldown(this.getDefaultInstance(), 160);
             player.releaseUsingItem();
             return;
         }
@@ -241,7 +243,8 @@ public class ScorcherItem extends Item implements DNLAnimatedItem<ScorcherItem.S
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean isSelected) {
+    public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
+        boolean isSelected = slot == EquipmentSlot.MAINHAND;
         long gameTime = level.getGameTime();
 
         if (!level.isClientSide() && stack.getItem() instanceof ScorcherItem && entity instanceof Player player) {
@@ -329,17 +332,18 @@ public class ScorcherItem extends Item implements DNLAnimatedItem<ScorcherItem.S
     }
 
     @Override
-    public void releaseUsing(ItemStack stack, Level level, LivingEntity entity, int timeCharged) {
+    public boolean releaseUsing(ItemStack stack, Level level, LivingEntity entity, int timeCharged) {
 
-        if (level.isClientSide()) return;
+        if (level.isClientSide()) return false;
 
         if (ItemAnimationState.isAnimating(stack, ScorcherAnimationState.SCORCHER_OVERHEAT.getName(), level.getGameTime())) {
-            return;
+            return false;
         }
 
         ItemAnimationState.start(stack, ScorcherAnimationState.SCORCHER_STOP.getName(), level.getGameTime(), (long) (ScorcherAnimationDuration.SCORCHER_STOP * 20L), false, true);
         playScorcherSounds(stack, (Player) entity, DNLSounds.SCORCHER_STOP.get(), DNLSounds.SOUL_SCORCHER_STOP.get());
         stopScorcherSounds(stack, (Player) entity, DNLSounds.SCORCHER_SHOOT.get(), DNLSounds.SOUL_SCORCHER_SHOOT.get());
+        return true;
     }
 
     private void playScorcherSounds(ItemStack itemStack, Player player, SoundEvent scorcher, SoundEvent soulScorcher) {
@@ -454,7 +458,7 @@ public class ScorcherItem extends Item implements DNLAnimatedItem<ScorcherItem.S
         CompoundTag tag = StackNbt.getTag(stack);
         if (tag != null && tag.contains("FuelType")) {
             Identifier fuelId = Identifier.parse(tag.getStringOr("FuelType", ""));
-            return BuiltInRegistries.ITEM.get(fuelId);
+            return BuiltInRegistries.ITEM.getValue(fuelId);
         }
         return Items.AIR;
     }
@@ -472,11 +476,11 @@ public class ScorcherItem extends Item implements DNLAnimatedItem<ScorcherItem.S
     }
 
     public static float getHeatLevel(ItemStack stack) {
-        return StackNbt.hasTag(stack) ? StackNbt.getTag(stack).getFloat(HEAT_TAG) : 0.0F;
+        return StackNbt.hasTag(stack) ? StackNbt.getTag(stack).getFloatOr(HEAT_TAG, 0.0F) : 0.0F;
     }
 
     public static long getTimeStamp(ItemStack stack) {
-        return StackNbt.hasTag(stack) ? StackNbt.getTag(stack).getLong(HEAT_TIME_STAMP) : 0L;
+        return StackNbt.hasTag(stack) ? StackNbt.getTag(stack).getLongOr(HEAT_TIME_STAMP, 0L) : 0L;
     }
 
     @Override

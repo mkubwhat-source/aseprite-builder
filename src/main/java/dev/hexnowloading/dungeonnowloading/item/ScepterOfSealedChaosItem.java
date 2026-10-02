@@ -43,7 +43,7 @@ public class ScepterOfSealedChaosItem extends Item {
     private static final String MODE_BASIC = "SealedChaosBasic";
 
     public ScepterOfSealedChaosItem(Properties properties) {
-        super(properties);
+        super(properties.repairable(DNLItems.CHAOTIC_HEXAHEDRON.get()));
     }
 
     @Override
@@ -57,7 +57,7 @@ public class ScepterOfSealedChaosItem extends Item {
 // cycle mode if amethyst cluster is clicked
         if (clickedState.is(net.minecraft.world.level.block.Blocks.AMETHYST_CLUSTER)) {
             if (!level.isClientSide() && player != null) {
-                boolean basic = !StackNbt.getOrCreateTag(itemStack).getBoolean(MODE_BASIC);
+                boolean basic = !StackNbt.getOrCreateTag(itemStack).getBooleanOr(MODE_BASIC, false);
                 StackNbt.update(itemStack, t -> t.putBoolean(MODE_BASIC, basic));
 
                 player.sendOverlayMessage(Component.translatable(
@@ -72,7 +72,7 @@ public class ScepterOfSealedChaosItem extends Item {
         if (itemStack.getDamageValue() == itemStack.getMaxDamage()) {
             return InteractionResult.FAIL;
         } else {
-            player.getCooldowns().addCooldown(this, 600);
+            player.getCooldowns().addCooldown(this.getDefaultInstance(), 600);
             if (player == null) {
                 return InteractionResult.PASS;
             }
@@ -115,7 +115,7 @@ public class ScepterOfSealedChaosItem extends Item {
 
                 // Prevent spawn if there is not enough free space for its (possibly gigantic) bounding box
                 if (!level.noCollision(sealedChaosEntity)) {
-                    player.getCooldowns().addCooldown(this, 20);
+                    player.getCooldowns().addCooldown(this.getDefaultInstance(), 20);
                     player.sendOverlayMessage(Component.literal("Not enough space for summon").withStyle(ChatFormatting.RED));
                     return InteractionResult.FAIL;
                 }
@@ -139,7 +139,7 @@ public class ScepterOfSealedChaosItem extends Item {
                     // Apply/refresh owner HP penalty based on overworked summons currently alive.
                     OverworkedPenaltyUtil.refreshOwnerPenalty((ServerLevel) level, player);
 
-                player.getCooldowns().addCooldown(this, 600);
+                player.getCooldowns().addCooldown(this.getDefaultInstance(), 600);
                 spawned = true;
             }
         }
@@ -157,10 +157,6 @@ public class ScepterOfSealedChaosItem extends Item {
         return super.use(level, player, interactionHand);
     }
 
-    @Override
-    public boolean isValidRepairItem(ItemStack itemStack, ItemStack repairItemStack) {
-        return repairItemStack.is(DNLItems.CHAOTIC_HEXAHEDRON.get()) || super.isValidRepairItem(itemStack, repairItemStack);
-    }
 
     @Override
     public void appendHoverText(ItemStack itemStack, Item.TooltipContext level, TooltipDisplay tooltipDisplay, Consumer<Component> components, TooltipFlag tooltipFlag) {

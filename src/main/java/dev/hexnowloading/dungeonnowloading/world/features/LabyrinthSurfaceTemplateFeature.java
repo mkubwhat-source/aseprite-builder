@@ -1,5 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.world.features;
 
+
+
+import dev.hexnowloading.dungeonnowloading.world.features.DNLFeatureContext;
+import dev.hexnowloading.dungeonnowloading.world.features.DNLFeature;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.Identifier;
@@ -7,33 +11,28 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 
-public class LabyrinthSurfaceTemplateFeature extends Feature<NoneFeatureConfiguration> {
+public class LabyrinthSurfaceTemplateFeature extends DNLFeature<DNLFeature.None> {
 
     private static final Identifier TEMPLATE_ID =
             Identifier.fromNamespaceAndPath("dungeonnowloading", "labyrinth/surface");
 
-    public LabyrinthSurfaceTemplateFeature() {
-        super(NoneFeatureConfiguration.CODEC);
-    }
+    public LabyrinthSurfaceTemplateFeature() { super(DNLFeature.None.INSTANCE); }
 
     @Override
-    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> ctx) {
+    public boolean place(DNLFeatureContext<DNLFeature.None> ctx) {
         WorldGenLevel level = ctx.level();
         RandomSource random = ctx.random();
 
         BlockPos origin = ctx.origin();
         System.out.println("[DNL] LabyrinthSurfaceTemplateFeature CALLED at origin=" + origin
-                + " dim=" + level.getLevel().dimension().location());
+                + " dim=" + level.getLevel().dimension().identifier());
 
         ServerLevel serverLevel = level.getLevel();
-        StructureTemplateManager templates = serverLevel.getStructureManager();
+        StructureTemplateManager templates = serverLevel.getStructureTemplateManager();
 
         // IMPORTANT: log whether it resolves
         StructureTemplate template = templates.getOrCreate(TEMPLATE_ID);

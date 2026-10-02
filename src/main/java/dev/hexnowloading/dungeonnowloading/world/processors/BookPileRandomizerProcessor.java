@@ -13,12 +13,11 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
 import java.util.List;
 
-public class BookPileRandomizerProcessor extends StructureProcessor {
+public class BookPileRandomizerProcessor implements StructureProcessor {
 
     public static final MapCodec<BookPileRandomizerProcessor> CODEC =
             RecordCodecBuilder.mapCodec(inst -> inst.group(
@@ -58,19 +57,12 @@ public class BookPileRandomizerProcessor extends StructureProcessor {
     }
 
     @Override
-    protected StructureProcessorType<?> getType() {
-        return DNLProcessors.BOOK_PILE_RANDOMIZER_PROCESSOR.get();
+    public MapCodec<? extends StructureProcessor> codec() {
+        return CODEC;
     }
 
     @Override
-    public StructureTemplate.StructureBlockInfo processBlock(
-            LevelReader level,
-            BlockPos offset,
-            BlockPos pos,
-            StructureTemplate.StructureBlockInfo rawInfo,
-            StructureTemplate.StructureBlockInfo placedInfo,
-            StructurePlaceSettings settings
-    ) {
+    public StructureTemplate.StructureBlockInfo processBlock(LevelReader level, BlockPos offset, BlockPos pos, BlockPos templateRelativePos, StructureTemplate.StructureBlockInfo placedInfo, StructurePlaceSettings settings) {
         BlockState state = placedInfo.state();
 
         if (!state.is(DNLBlocks.BOOK_PILE.get())) {

@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.entity.projectile;
 
+
+import net.minecraft.world.entity.EntityTypes;
 import dev.hexnowloading.dungeonnowloading.entity.util.ProjectileUtils;
 import dev.hexnowloading.dungeonnowloading.registry.DNLEntityTypes;
 import net.minecraft.sounds.SoundEvents;
@@ -120,7 +122,7 @@ public class BorusArrowEntity extends AbstractArrow {
             }
         }
 
-        boolean isEnderman = target.getType() == EntityType.ENDERMAN;
+        boolean isEnderman = target.getType() == EntityTypes.ENDERMAN;
         int fireTick = target.getRemainingFireTicks();
         if (this.isOnFire() && !isEnderman) {
             target.igniteForSeconds(15);

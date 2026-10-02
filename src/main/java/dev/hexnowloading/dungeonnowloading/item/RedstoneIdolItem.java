@@ -29,7 +29,7 @@ import java.util.List;
 public class RedstoneIdolItem extends BlockItem implements BossSummoningItem {
 
     public RedstoneIdolItem(Block block, Item.Properties properties) {
-        super(block, properties);
+        super(block, properties.enchantable(1));
     }
 
     @Override
@@ -52,7 +52,7 @@ public class RedstoneIdolItem extends BlockItem implements BossSummoningItem {
             if (soul.tryStartChanneling(player, stack)) {
                 level.playSound(null, player.blockPosition(), DNLSounds.FAIRKEEPER_SERPENT_CALLER_ACTIVATED.get(), SoundSource.NEUTRAL, 1.0F, 1.0F);
 
-                player.getCooldowns().addCooldown(this, 7);
+                player.getCooldowns().addCooldown(this.getDefaultInstance(), 7);
                 player.awardStat(Stats.ITEM_USED.get(this));
                 return InteractionResult.CONSUME;
             }
@@ -62,7 +62,7 @@ public class RedstoneIdolItem extends BlockItem implements BossSummoningItem {
         List<FairkeeperSerpentCallerEntity> sleepingTargets = targets.stream().filter(entity -> !entity.isActivated()).toList();
         if (!sleepingTargets.isEmpty()) {
             player.startUsingItem(hand);
-            player.getCooldowns().addCooldown(this, 7);
+            player.getCooldowns().addCooldown(this.getDefaultInstance(), 7);
             player.awardStat(Stats.ITEM_USED.get(this));
             for (FairkeeperSerpentCallerEntity serpentCallerEntity : targets) {
                 if (!level.isClientSide()) {
@@ -85,13 +85,5 @@ public class RedstoneIdolItem extends BlockItem implements BossSummoningItem {
         }
     }
 
-    @Override
-    public boolean isEnchantable(ItemStack itemStack) {
-        return itemStack.getCount() == 1;
-    }
 
-    @Override
-    public int getEnchantmentValue() {
-        return 1;
-    }
 }

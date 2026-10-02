@@ -38,7 +38,7 @@ public final class StatueCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> d) {
         d.register(Commands.literal("statue")
-                .requires(src -> src.hasPermission(2))
+                .requires(src -> src.permissions().hasPermission(net.minecraft.server.permissions.Permissions.COMMANDS_GAMEMASTER))
 
                 // /statue <campaign>
                 .then(Commands.argument("campaign", StringArgumentType.word())
@@ -95,7 +95,7 @@ public final class StatueCommand {
         ItemStack stack = createStatueStack(owner, tier, /*pose*/ 0);
 
         boolean added = receiver.getInventory().add(stack);
-        if (!added) receiver.drop(stack, false);
+        if (!added) receiver.drop(stack, false, net.minecraft.util.Prediction.SERVER_ONLY);
 
         String label = (owner != null && owner.name() != null && !owner.name().isBlank()) ? owner.name() : "that player";
         src.sendSuccess(() -> Component.literal("Gave a " + campaign + " statue of " + label + "."), false);
@@ -119,7 +119,7 @@ public final class StatueCommand {
         ItemStack stack = createStatueStack(gp, tier, /*pose*/ 0);
 
         boolean added = receiver.getInventory().add(stack);
-        if (!added) receiver.drop(stack, false);
+        if (!added) receiver.drop(stack, false, net.minecraft.util.Prediction.SERVER_ONLY);
 
         String label = (gp.name() != null && !gp.name().isBlank()) ? gp.name() : name;
         src.sendSuccess(() -> Component.literal("Gave a " + campaign + " statue of " + label + "."), false);
@@ -138,18 +138,12 @@ public final class StatueCommand {
         CompoundTag tag = StackNbt.getOrCreateTag(stack);
 
         if (owner != null) {
-            net.minecraft.world.item.component.ResolvableProfile.CODEC
-                    .encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, new net.minecraft.world.item.component.ResolvableProfile(owner))
-                    .result()
-                    .ifPresent(ownerTag -> tag.put("Owner", ownerTag));
+            tag.put("Owner", dev.hexnowloading.dungeonnowloading.util.ProfileNbt.write(owner));
 
             if (owner.name() != null && !owner.name().isBlank()) {
                 tag.putString("SkullOwner", owner.name()); // for item display name
             } else if (owner.id() != null) {
-                net.minecraft.world.item.component.ResolvableProfile.CODEC
-                        .encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, new net.minecraft.world.item.component.ResolvableProfile(owner))
-                        .result()
-                        .ifPresent(t -> tag.put("SkullOwner", t));
+                tag.put("SkullOwner", dev.hexnowloading.dungeonnowloading.util.ProfileNbt.write(owner));
             }
         } else {
             tag.putString("SkullOwner", "MHF_Alex");
@@ -169,17 +163,17 @@ public final class StatueCommand {
     private static GameProfile resolveProfile(MinecraftServer server, String inputName) {
         String name = inputName.trim();
 
-        var cache = server.getProfileCache();
+        var cache = server.services().nameToIdCache();
         if (cache != null) {
-            Optional<GameProfile> cached = cache.get(name);
-            if (cached.isPresent()) return cached.get();
+            Optional<net.minecraft.server.players.NameAndId> cached = cache.get(name);
+            if (cached.isPresent()) return new GameProfile(cached.get().id(), cached.get().name());
         }
 
         UUID parsed = tryParseUuid(name);
         if (parsed != null) {
             if (cache != null) {
-                Optional<GameProfile> byId = cache.get(parsed);
-                if (byId.isPresent()) return byId.get();
+                Optional<net.minecraft.server.players.NameAndId> byId = cache.get(parsed);
+                if (byId.isPresent()) return new GameProfile(byId.get().id(), byId.get().name());
             }
             return new GameProfile(parsed, name);
         }

@@ -1,27 +1,23 @@
 package dev.hexnowloading.dungeonnowloading.item;
 
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
-import dev.hexnowloading.dungeonnowloading.platform.Services;
-import dev.hexnowloading.dungeonnowloading.registry.DNLItems;
-import net.minecraft.util.Util;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.item.ArmorItem;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.equipment.ArmorMaterial;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.item.equipment.EquipmentAsset;
+import net.minecraft.world.item.equipment.EquipmentAssets;
 
 import java.util.EnumMap;
-import java.util.List;
-import java.util.function.Supplier;
-
-import com.google.common.base.Suppliers;
+import java.util.Map;
 
 /**
- * 1.21 made ArmorMaterial a data-driven record registered in {@code Registries.ARMOR_MATERIAL}.
- * The durability multiplier moved onto the item ({@code Type.getDurability}); the material now
- * only carries defense/enchantability/sound/repair/toughness/knockback + render layers.
+ * 26.x armor materials are plain records (no registry). The worn texture is looked up through the
+ * equipment asset {@code assets/dungeonnowloading/equipment/spawner.json}, and repairs use the
+ * {@code dungeonnowloading:repairs_spawner_armor} item tag.
  */
 public final class DNLArmorMaterial {
     private DNLArmorMaterial() {}
@@ -29,43 +25,33 @@ public final class DNLArmorMaterial {
     /** Durability multiplier the old enum carried (BASE_DURABILITY * 26). */
     public static final int SPAWNER_DURABILITY_MULTIPLIER = 26;
 
-    // 1.21: register the material via the platform helper (DeferredRegister on NeoForge — the
-    // BuiltInRegistries.ARMOR_MATERIAL is frozen by mod-construction time; eager Registry.register
-    // on Fabric). Expose a lazy Holder<ArmorMaterial> resolved from the registry on first access
-    // (consumers run at item-registry time, post-init on both loaders), so neither loader's
-    // registration-timing model (deferred vs eager) breaks it.
-    public static final Supplier<Holder<ArmorMaterial>> SPAWNER = register(
-            "spawner",
-            Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
-                map.put(ArmorItem.Type.HELMET, 3);
-                map.put(ArmorItem.Type.CHESTPLATE, 8);
-                map.put(ArmorItem.Type.LEGGINGS, 6);
-                map.put(ArmorItem.Type.BOOTS, 3);
-                map.put(ArmorItem.Type.BODY, 8);
-            }),
+    public static final TagKey<Item> REPAIRS_SPAWNER_ARMOR =
+            TagKey.create(Registries.ITEM, DungeonNowLoading.id("repairs_spawner_armor"));
+
+    public static final ResourceKey<EquipmentAsset> SPAWNER_ASSET =
+            ResourceKey.create(EquipmentAssets.ROOT_ID, DungeonNowLoading.id("spawner"));
+
+    public static final ArmorMaterial SPAWNER = new ArmorMaterial(
+            SPAWNER_DURABILITY_MULTIPLIER,
+            defense(3, 6, 8, 3, 8),
             10,                                   // enchantmentValue
+            SoundEvents.ARMOR_EQUIP_IRON,
             2.0F,                                 // toughness
             0.0F,                                 // knockbackResistance
-            () -> Ingredient.of(DNLItems.SPAWNER_FRAME.get())
+            REPAIRS_SPAWNER_ARMOR,
+            SPAWNER_ASSET
     );
 
-    private static Supplier<Holder<ArmorMaterial>> register(String name, EnumMap<ArmorItem.Type, Integer> defense,
-                                                            int enchantmentValue, float toughness, float knockbackResistance,
-                                                            Supplier<Ingredient> repairIngredient) {
-        Identifier id = DungeonNowLoading.id(name);
-        List<ArmorMaterial.Layer> layers = List.of(new ArmorMaterial.Layer(id, "", false));
-        net.minecraft.resources.ResourceKey<ArmorMaterial> key =
-                net.minecraft.resources.ResourceKey.create(BuiltInRegistries.ARMOR_MATERIAL.key(), id);
-        Services.REGISTRY.register(
-                BuiltInRegistries.ARMOR_MATERIAL,
-                name,
-                () -> new ArmorMaterial(defense, enchantmentValue, SoundEvents.ARMOR_EQUIP_IRON, repairIngredient, layers, toughness, knockbackResistance)
-        );
-        // Resolve lazily: by the time anything reads SPAWNER, the material is registered on both loaders.
-        return Suppliers.memoize(() -> BuiltInRegistries.ARMOR_MATERIAL.getHolder(key)
-                .orElseThrow(() -> new IllegalStateException("DNL armor material not registered: " + id)));
+    private static Map<ArmorType, Integer> defense(int boots, int leggings, int chestplate, int helmet, int body) {
+        EnumMap<ArmorType, Integer> map = new EnumMap<>(ArmorType.class);
+        map.put(ArmorType.BOOTS, boots);
+        map.put(ArmorType.LEGGINGS, leggings);
+        map.put(ArmorType.CHESTPLATE, chestplate);
+        map.put(ArmorType.HELMET, helmet);
+        map.put(ArmorType.BODY, body);
+        return map;
     }
 
-    /** Forces class init so the static registration runs. */
+    /** Kept for call-site compatibility; the material no longer needs registering. */
     public static void init() {}
 }

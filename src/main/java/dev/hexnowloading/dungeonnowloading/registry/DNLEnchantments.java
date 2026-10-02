@@ -34,7 +34,7 @@ public class DNLEnchantments {
 
     /** Resolve an enchantment holder from a level's registry access. */
     public static Holder<Enchantment> holder(Level level, ResourceKey<Enchantment> key) {
-        return level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(key);
+        return level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(key);
     }
 
     /** Resolve an enchantment holder from a registry lookup provider. */

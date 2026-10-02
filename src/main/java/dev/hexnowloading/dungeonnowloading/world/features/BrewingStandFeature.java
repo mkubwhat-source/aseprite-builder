@@ -1,5 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.world.features;
 
+
+
+import dev.hexnowloading.dungeonnowloading.world.features.DNLFeatureContext;
+import dev.hexnowloading.dungeonnowloading.world.features.DNLFeature;
 import com.mojang.serialization.Codec;
 import dev.hexnowloading.dungeonnowloading.world.features.configs.PotionConfig;
 import net.minecraft.core.BlockPos;
@@ -14,18 +18,16 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 
 import java.util.function.Predicate;
 
-public class BrewingStandFeature extends Feature<PotionConfig> {
+public class BrewingStandFeature extends DNLFeature<PotionConfig> {
 
-    public BrewingStandFeature(Codec<PotionConfig> codec) { super(codec); }
+    public BrewingStandFeature(PotionConfig config) { super(config); }
 
     @Override
-    public boolean place(FeaturePlaceContext<PotionConfig> context) {
-        Predicate<BlockState> predicate = Feature.isReplaceable(BlockTags.FEATURES_CANNOT_REPLACE);
+    public boolean place(DNLFeatureContext<PotionConfig> context) {
+        Predicate<BlockState> predicate = DNLFeature.isReplaceable(BlockTags.FEATURES_CANNOT_REPLACE);
         BlockPos blockPos = context.origin().below();
         WorldGenLevel worldGenLevel = context.level();
 

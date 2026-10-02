@@ -113,7 +113,7 @@ public class VertexPillarBlockEntity extends BlockEntity {
                     if (blockEntity.age > 0) {
                         spawnRedstoneLaser((ServerLevel) level, pos, linkedPos);
                     } else {
-                        spawnInitialParticleBeamVFX(level, pos.getCenter().add(0.0f, 1.0f, 0.0f), linkedPos.getCenter().add(0.0f, 1.0f, 0.0f));
+                        spawnInitialParticleBeamVFX(level, net.minecraft.world.phys.Vec3.atCenterOf(pos).add(0.0f, 1.0f, 0.0f), net.minecraft.world.phys.Vec3.atCenterOf(linkedPos).add(0.0f, 1.0f, 0.0f));
                         level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), DNLSounds.VERTEX_NODE_CONNECT.get(), SoundSource.NEUTRAL, 0.5F, 1.2F / (DNLMath.randomRange(0.0f, 1.0f) * 0.2F + 0.9F)
                         );
                     }
@@ -139,7 +139,7 @@ public class VertexPillarBlockEntity extends BlockEntity {
                 continue;
             }
             entity.hurt(entity.level().damageSources().magic(), DAMAGE);
-            entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, SLOWNESS_DURATION, SLOWNESS_AMPLIFIER));
+            entity.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, SLOWNESS_DURATION, SLOWNESS_AMPLIFIER));
         }
 
         spawnParticleBeamVFX(level, startVec, endVec);

@@ -1,6 +1,8 @@
 package dev.hexnowloading.dungeonnowloading.registry;
 
 
+
+import net.minecraft.world.item.equipment.ArmorType;
 import dev.hexnowloading.dungeonnowloading.item.blockitem.ToolTipBlockItem;
 import dev.hexnowloading.dungeonnowloading.block.DungeonBannerBlock;
 import dev.hexnowloading.dungeonnowloading.item.*;
@@ -42,12 +44,12 @@ public class DNLItems {
     // ITEMS - FUNCTIONAL
     public static final Supplier<Item> GREAT_EXPERIENCE_BOTTLE = register("great_experience_bottle", () -> new GreatExperienceBottleItem(new Item.Properties().rarity(Rarity.RARE), 100));
     public static final Supplier<Item> SCEPTER_OF_SEALED_CHAOS = register("scepter_of_sealed_chaos", () -> new ScepterOfSealedChaosItem(new Item.Properties().rarity(Rarity.RARE).durability(100)));
-    public static final Supplier<Item> LIFE_STEALER = register("life_stealer", () -> new LifeStealerItem(Tiers.DIAMOND, 3, -2.8F, new Item.Properties().rarity(Rarity.COMMON).durability(1562)));
-    public static final Supplier<Item> SPAWNER_SWORD = register("spawner_sword", () -> new SpawnerSword(Tiers.DIAMOND, 3, -2.4F, new Item.Properties().rarity(Rarity.COMMON).durability(1562)));
-    public static final Supplier<Item> SPAWNER_HELMET = register("spawner_helmet", () -> new SpawnerArmorItem(DNLArmorMaterial.SPAWNER, ArmorItem.Type.HELMET));
-    public static final Supplier<Item> SPAWNER_CHESTPLATE = register("spawner_chestplate", () -> new SpawnerArmorItem(DNLArmorMaterial.SPAWNER, ArmorItem.Type.CHESTPLATE));
-    public static final Supplier<Item> SPAWNER_LEGGINGS = register("spawner_leggings", () -> new SpawnerArmorItem(DNLArmorMaterial.SPAWNER, ArmorItem.Type.LEGGINGS));
-    public static final Supplier<Item> SPAWNER_BOOTS = register("spawner_boots", () -> new SpawnerArmorItem(DNLArmorMaterial.SPAWNER, ArmorItem.Type.BOOTS));
+    public static final Supplier<Item> LIFE_STEALER = register("life_stealer", () -> new LifeStealerItem(new Item.Properties().rarity(Rarity.COMMON), -2.8F));
+    public static final Supplier<Item> SPAWNER_SWORD = register("spawner_sword", () -> new SpawnerSword(new Item.Properties().rarity(Rarity.COMMON), -2.4F));
+    public static final Supplier<Item> SPAWNER_HELMET = register("spawner_helmet", () -> new SpawnerArmorItem(ArmorType.HELMET));
+    public static final Supplier<Item> SPAWNER_CHESTPLATE = register("spawner_chestplate", () -> new SpawnerArmorItem(ArmorType.CHESTPLATE));
+    public static final Supplier<Item> SPAWNER_LEGGINGS = register("spawner_leggings", () -> new SpawnerArmorItem(ArmorType.LEGGINGS));
+    public static final Supplier<Item> SPAWNER_BOOTS = register("spawner_boots", () -> new SpawnerArmorItem(ArmorType.BOOTS));
     public static final Supplier<Item> SKULL_OF_CHAOS = register("skull_of_chaos", () -> new SkullOfChaosItem(new Item.Properties().rarity(Rarity.EPIC).stacksTo(1)));
     public static final Supplier<Item> REDSTONE_IDOL = register("redstone_idol", () -> new RedstoneIdolItem(DNLBlocks.REDSTONE_IDOL.get(), new Item.Properties().rarity(Rarity.EPIC).stacksTo(1)));
     public static final Supplier<Item> VERTEX_BOW = register("vertex_bow", () -> new VertexBowItem(new Item.Properties().rarity(Rarity.RARE).durability(384)));
@@ -203,7 +205,7 @@ public class DNLItems {
         List<ItemStack> items = new ArrayList<>();
         getItemTabs().forEach((itemTab, itemLikes) -> {
             if (tab == itemTab) {
-                itemLikes.forEach((itemLike) -> items.add(Objects.requireNonNull(BuiltInRegistries.ITEM.get(itemLike)).getDefaultInstance()));
+                itemLikes.forEach((itemLike) -> items.add(Objects.requireNonNull(BuiltInRegistries.ITEM.getValue(itemLike)).getDefaultInstance()));
             }
         });
         return items;

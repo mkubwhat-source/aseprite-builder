@@ -3,6 +3,8 @@ package dev.hexnowloading.dungeonnowloading.entity.misc;
 
 
 
+
+import dev.hexnowloading.dungeonnowloading.util.DNLGameRules;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
@@ -232,7 +234,7 @@ public class RepulsorEntity extends Mob {
     }
 
     public void dropItem(@Nullable Entity entity) {
-        if (this.level().getGameRules().getBooleanOr(GameRules.RULE_DOENTITYDROPS, false)) {
+        if (DNLGameRules.get(this.level(), GameRules.ENTITY_DROPS)) {
             this.playSound(DNLSounds.REPULSOR_BREAK.get());
             if (entity instanceof Player player && player.getAbilities().instabuild) return;
 
@@ -284,7 +286,7 @@ public class RepulsorEntity extends Mob {
                     boolean discardEntity = false;
                     boolean aboveHalfHealth = this.entityData.get(DATA_SHIELD_HEALTH) > SHIELD_ALERT_THRESHOLD;
                     if (entity instanceof ThrownTrident thrownTrident) {
-                        if (!processedTridents.contains(thrownTrident) && !thrownTrident.inGround) {
+                        if (!processedTridents.contains(thrownTrident) && !thrownTrident.isInGround()) {
                             processedTridents.add(thrownTrident);
 
                             Vec3 motion = thrownTrident.getDeltaMovement();
@@ -349,7 +351,7 @@ public class RepulsorEntity extends Mob {
                         int i = (potion != null && potion.value().hasInstantEffects()) ? 2007 : 2002;
                         this.level().levelEvent(i, thrownPotion.blockPosition(), potionContents.getColor());
                         discardEntity = true;
-                    } else if (entity instanceof AbstractArrow arrow && arrow.inGround) {
+                    } else if (entity instanceof AbstractArrow arrow && arrow.isInGround()) {
                         continue;
                     } else {
                         discardEntity = true;
@@ -360,9 +362,9 @@ public class RepulsorEntity extends Mob {
 
                     int shieldDamage = 1;
 
-                    if (entity.getType().is(DNLTags.REPULSOR_HIGH_DAMAGE_PROJECTILES)) {
+                    if (entity.getType().builtInRegistryHolder().is(DNLTags.REPULSOR_HIGH_DAMAGE_PROJECTILES)) {
                         shieldDamage = 20;
-                    } else if (entity.getType().is(DNLTags.REPULSOR_LOW_DAMAGE_PROJECTILES)) {
+                    } else if (entity.getType().builtInRegistryHolder().is(DNLTags.REPULSOR_LOW_DAMAGE_PROJECTILES)) {
                         shieldDamage = 5;
                     }
 
@@ -464,9 +466,9 @@ public class RepulsorEntity extends Mob {
         return this.level().getEntities(
                 (Entity) null, detectionBox, entity -> (
                                 entity instanceof Projectile
-                                || entity.getType().is(DNLTags.PROJECTILES)
+                                || entity.getType().builtInRegistryHolder().is(DNLTags.PROJECTILES)
                                 || entity instanceof ThrownPotion)
-                                && !entity.getType().is(DNLTags.REPULSOR_OMITTED_PROJECTILES)
+                                && !entity.getType().builtInRegistryHolder().is(DNLTags.REPULSOR_OMITTED_PROJECTILES)
         );
     }
 
@@ -502,7 +504,7 @@ public class RepulsorEntity extends Mob {
     public ItemStack getSourceStack() { return sourceStack; }
 
     private void maybeDropScrapOnUsedUp() {
-        if (!this.level().getGameRules().getBooleanOr(GameRules.RULE_DOENTITYDROPS, false)) return;
+        if (!DNLGameRules.get(this.level(), GameRules.ENTITY_DROPS)) return;
         if (this.level().isClientSide()) return;
         if (this.sourceStack.isEmpty()) return;
         // Only convert to scrap if the original item had Break Protection

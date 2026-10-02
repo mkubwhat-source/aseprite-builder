@@ -1,5 +1,13 @@
 package dev.hexnowloading.dungeonnowloading.util;
 
+
+
+
+
+import net.minecraft.util.profiling.Profiler;
+import net.minecraft.world.level.gamerules.GameRule;
+import net.minecraft.world.level.ServerExplosion;
+import dev.hexnowloading.dungeonnowloading.util.DNLGameRules;
 import com.mojang.datafixers.util.Pair;
 import dev.hexnowloading.dungeonnowloading.registry.DNLGameEvents;
 import dev.hexnowloading.dungeonnowloading.util.event_managers.ExplosionDestructionManager;
@@ -57,20 +65,17 @@ public final class DNLCustomExplosion {
         ExplosionDamageCalculator damageCalculator = settings.damageCalculator != null
                 ? settings.damageCalculator
                 : makeDamageCalculator(settings.source);
-        Explosion explosion = new Explosion(
+        // 26.x: Explosion is an interface; ServerExplosion is only used here as the context object
+        // handed to damage calculators / blocks. The blast itself is still computed by this class.
+        ServerExplosion explosion = new ServerExplosion(
                 level,
                 settings.source,
                 damageSource,
                 damageCalculator,
-                center.x,
-                center.y,
-                center.z,
+                center,
                 settings.radius,
                 settings.causesFire,
-                blockInteraction,
-                net.minecraft.core.particles.ParticleTypes.EXPLOSION,
-                net.minecraft.core.particles.ParticleTypes.EXPLOSION_EMITTER,
-                settings.sound
+                blockInteraction
         );
 
         ObjectArrayList<BlockPos> toBlow = calculateBlocks(level, explosion, damageCalculator, center, settings.radius, blockInteraction);
@@ -90,17 +95,17 @@ public final class DNLCustomExplosion {
     private static Explosion.BlockInteraction getBlockInteraction(ServerLevel level, Level.ExplosionInteraction explosionInteraction) {
         return switch (explosionInteraction) {
             case NONE -> Explosion.BlockInteraction.KEEP;
-            case BLOCK -> getDestroyType(level, GameRules.RULE_BLOCK_EXPLOSION_DROP_DECAY);
-            case MOB -> level.getGameRules().getBooleanOr(GameRules.RULE_MOBGRIEFING, false)
-                    ? getDestroyType(level, GameRules.RULE_MOB_EXPLOSION_DROP_DECAY)
+            case BLOCK -> getDestroyType(level, GameRules.BLOCK_EXPLOSION_DROP_DECAY);
+            case MOB -> level.getGameRules().get(GameRules.MOB_GRIEFING)
+                    ? getDestroyType(level, GameRules.MOB_EXPLOSION_DROP_DECAY)
                     : Explosion.BlockInteraction.KEEP;
-            case TNT -> getDestroyType(level, GameRules.RULE_TNT_EXPLOSION_DROP_DECAY);
+            case TNT -> getDestroyType(level, GameRules.TNT_EXPLOSION_DROP_DECAY);
             case TRIGGER -> Explosion.BlockInteraction.TRIGGER_BLOCK;
         };
     }
 
-    private static Explosion.BlockInteraction getDestroyType(ServerLevel level, GameRules.Key<GameRules.BooleanValue> gameRules) {
-        return level.getGameRules().getBoolean(gameRules) ? Explosion.BlockInteraction.DESTROY_WITH_DECAY : Explosion.BlockInteraction.DESTROY;
+    private static Explosion.BlockInteraction getDestroyType(ServerLevel level, GameRule<Boolean> gameRules) {
+        return level.getGameRules().get(gameRules) ? Explosion.BlockInteraction.DESTROY_WITH_DECAY : Explosion.BlockInteraction.DESTROY;
     }
 
     private static ObjectArrayList<BlockPos> calculateBlocks(ServerLevel level, Explosion explosion, ExplosionDamageCalculator damageCalculator, Vec3 center, float radius, Explosion.BlockInteraction blockInteraction) {
@@ -196,11 +201,11 @@ public final class DNLCustomExplosion {
             y /= length;
             z /= length;
 
-            double exposure = Explosion.getSeenPercent(center, entity);
+            double exposure = ServerExplosion.getSeenPercent(center, entity);
             double impact = (1.0D - distanceRatio) * exposure;
             float damage = settings.damageMode.calculateDamage(impact, diameter, settings.maxDamage);
             if (damage > 0.0F) {
-                entity.hurt(damageSource, damage);
+                entity.hurtServer(level, damageSource, damage);
             }
 
             // 1.21 removed ProtectionEnchantment#getExplosionKnockbackAfterDampener;
@@ -227,7 +232,7 @@ public final class DNLCustomExplosion {
         if (settings.causesFire) {
             RandomSource random = level.getRandom();
             for (BlockPos blockPos : toBlow) {
-                if (random.nextInt(3) == 0 && level.getBlockState(blockPos).isAir() && level.getBlockState(blockPos.below()).isSolidRender(level, blockPos.below())) {
+                if (random.nextInt(3) == 0 && level.getBlockState(blockPos).isAir() && level.getBlockState(blockPos.below()).isSolidRender()) {
                     level.setBlockAndUpdate(blockPos, BaseFireBlock.getState(level, blockPos));
                 }
             }
@@ -249,7 +254,7 @@ public final class DNLCustomExplosion {
 
             Block block = blockState.getBlock();
             BlockPos immutablePos = blockPos.immutable();
-            level.getProfiler().push("explosion_blocks");
+            Profiler.get().push("explosion_blocks");
             if (block.dropFromExplosion(explosion)) {
                 BlockEntity blockEntity = blockState.hasBlockEntity() ? level.getBlockEntity(blockPos) : null;
                 LootParams.Builder lootParams = new LootParams.Builder(level)
@@ -267,7 +272,7 @@ public final class DNLCustomExplosion {
 
             level.setBlock(blockPos, Blocks.AIR.defaultBlockState(), 3);
             block.wasExploded(level, blockPos, explosion);
-            level.getProfiler().pop();
+            Profiler.get().pop();
         }
 
         for (Pair<ItemStack, BlockPos> drop : drops) {

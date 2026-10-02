@@ -276,8 +276,8 @@ public class DNLFabricClient implements ClientModInitializer {
         // 1.21: enchantments are holder-based via the ENCHANTMENTS component (not EnchantmentHelper.getEnchantments).
         for (var holder : stack.getEnchantments().keySet()) {
             var key = holder.unwrapKey().orElse(null);
-            if (key != null && DungeonNowLoading.MOD_ID.equals(key.location().getNamespace())) {
-                String descKey = "enchantment." + key.location().getNamespace() + "." + key.location().getPath() + ".desc";
+            if (key != null && DungeonNowLoading.MOD_ID.equals(key.identifier().getNamespace())) {
+                String descKey = "enchantment." + key.identifier().getNamespace() + "." + key.identifier().getPath() + ".desc";
                 lines.add(Component.translatable(descKey).withStyle(ChatFormatting.DARK_GRAY));
             }
         }

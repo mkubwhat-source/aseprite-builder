@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 public class SkullOfChaosItem extends Item implements BossSummoningItem {
 
     public SkullOfChaosItem(Properties properties) {
-        super(properties);
+        super(properties.enchantable(1));
     }
 
     @Override
@@ -54,7 +54,7 @@ public class SkullOfChaosItem extends Item implements BossSummoningItem {
                 level.playSound(null, player.blockPosition(), DNLSounds.CHAOS_SPAWNER_LAUGHTER.get(),
                         SoundSource.PLAYERS, 1.0F, 2.0F);
 
-                player.getCooldowns().addCooldown(this, 7);
+                player.getCooldowns().addCooldown(this.getDefaultInstance(), 7);
                 player.awardStat(Stats.ITEM_USED.get(this));
                 return InteractionResult.CONSUME;
             }
@@ -71,7 +71,7 @@ public class SkullOfChaosItem extends Item implements BossSummoningItem {
             level.playSound(null, player.blockPosition(), DNLSounds.CHAOS_SPAWNER_LAUGHTER.get(),
                     SoundSource.PLAYERS, 1.0F, 2.0F);
 
-            player.getCooldowns().addCooldown(this, 7);
+            player.getCooldowns().addCooldown(this.getDefaultInstance(), 7);
             player.awardStat(Stats.ITEM_USED.get(this));
 
             for (ChaosSpawnerEntity e : sleepingTargets) {
@@ -93,13 +93,5 @@ public class SkullOfChaosItem extends Item implements BossSummoningItem {
         }
     }
 
-    @Override
-    public boolean isEnchantable(ItemStack itemStack) {
-        return itemStack.getCount() == 1;
-    }
 
-    @Override
-    public int getEnchantmentValue() {
-        return 1;
-    }
 }

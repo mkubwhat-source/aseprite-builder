@@ -42,7 +42,7 @@ public class RepulsorItem extends Item {
     private static final String MODE_DEFAULT = "default";
     private static final String MODE_GOLDEN  = "golden";
 
-    public RepulsorItem(Item.Properties properties) { super(properties); }
+    public RepulsorItem(Item.Properties properties) { super(properties.repairable(Items.REDSTONE)); }
 
     @Override
     public InteractionResult useOn(UseOnContext ctx) {
@@ -79,8 +79,8 @@ public class RepulsorItem extends Item {
             return InteractionResult.FAIL;
 
         if (level instanceof ServerLevel server) {
-            Consumer<RepulsorEntity> consumer = EntityType.createDefaultStackConfig(server, stack, ctx.getPlayer());
-            RepulsorEntity rep = (RepulsorEntity)DNLEntityTypes.REPULSOR.get().create(server, consumer, placePos, EntitySpawnReason.SPAWN_EGG, true, true);
+            net.minecraft.world.entity.PostSpawnProcessor<RepulsorEntity> consumer = EntityType.createDefaultStackConfig(server, stack, ctx.getPlayer());
+            RepulsorEntity rep = (RepulsorEntity)DNLEntityTypes.REPULSOR.get().create(server, consumer, placePos, EntitySpawnReason.SPAWN_ITEM_USE, true, true);
             if (rep == null) return InteractionResult.FAIL;
 
             // Force exact placement + orientation
@@ -150,8 +150,4 @@ public class RepulsorItem extends Item {
     public static void setGolden(ItemStack stack)  { setCosmeticMode(stack, MODE_GOLDEN); }
     public static void setDefault(ItemStack stack) { setCosmeticMode(stack, MODE_DEFAULT); }
 
-    @Override
-    public boolean isValidRepairItem(ItemStack stack, ItemStack repairItem) {
-        return repairItem.is(Items.REDSTONE) || super.isValidRepairItem(stack, repairItem);
-    }
 }

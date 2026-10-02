@@ -1,16 +1,17 @@
 package dev.hexnowloading.dungeonnowloading.world.features.configs;
 
+
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
 import java.util.Optional;
 
-public class ArmorStandConfig implements FeatureConfiguration {
+public class ArmorStandConfig {
 
-    public static final Codec<ArmorStandConfig> CODEC = RecordCodecBuilder.create((configInstance) -> configInstance.group(
+    public static final MapCodec<ArmorStandConfig> CODEC = RecordCodecBuilder.mapCodec((configInstance) -> configInstance.group(
             BuiltInRegistries.ITEM.byNameCodec().optionalFieldOf("held_item").forGetter(config -> config.heldItem),
             BuiltInRegistries.ITEM.byNameCodec().optionalFieldOf("helmet").forGetter(config -> config.helmet),
             BuiltInRegistries.ITEM.byNameCodec().optionalFieldOf("chestplate").forGetter(config -> config.chestplate),

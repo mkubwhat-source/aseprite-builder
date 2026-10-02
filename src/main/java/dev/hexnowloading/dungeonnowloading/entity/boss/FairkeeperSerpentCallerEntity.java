@@ -937,9 +937,9 @@ public class FairkeeperSerpentCallerEntity extends Entity {
                 .relative(counterClockWiseDirection, this.getHorizontalOffset())
                 .above(this.getVerticalOffset());
 
-        Vec3 centeredClockWiseTargetPosition = clockWiseTargetPosition.getCenter();
+        Vec3 centeredClockWiseTargetPosition = net.minecraft.world.phys.Vec3.atCenterOf(clockWiseTargetPosition);
 
-        Vec3 centeredCounterClockWiseTargetPosition = counterClockWiseTargetPosition.getCenter();
+        Vec3 centeredCounterClockWiseTargetPosition = net.minecraft.world.phys.Vec3.atCenterOf(counterClockWiseTargetPosition);
 
         ((ServerLevel) this.level()).sendParticles(
                 ParticleTypes.EXPLOSION,
@@ -971,9 +971,9 @@ public class FairkeeperSerpentCallerEntity extends Entity {
                 .relative(counterClockWiseDirection, this.getHorizontalOffset())
                 .above(this.getVerticalOffset());
 
-        Vec3 centeredClockWiseTargetPosition = clockWiseTargetPosition.getCenter();
+        Vec3 centeredClockWiseTargetPosition = net.minecraft.world.phys.Vec3.atCenterOf(clockWiseTargetPosition);
 
-        Vec3 centeredCounterClockWiseTargetPosition = counterClockWiseTargetPosition.getCenter();
+        Vec3 centeredCounterClockWiseTargetPosition = net.minecraft.world.phys.Vec3.atCenterOf(counterClockWiseTargetPosition);
 
         BlockState stoneBricks = Blocks.STONE_BRICKS.defaultBlockState();
         ((ServerLevel) this.level()).sendParticles(
@@ -1007,9 +1007,9 @@ public class FairkeeperSerpentCallerEntity extends Entity {
                 .relative(counterClockWiseDirection, this.getHorizontalOffset())
                 .above(this.getVerticalOffset());
 
-        Vec3 centeredClockWiseTargetPosition = clockWiseTargetPosition.getCenter();
+        Vec3 centeredClockWiseTargetPosition = net.minecraft.world.phys.Vec3.atCenterOf(clockWiseTargetPosition);
 
-        Vec3 centeredCounterClockWiseTargetPosition = counterClockWiseTargetPosition.getCenter();
+        Vec3 centeredCounterClockWiseTargetPosition = net.minecraft.world.phys.Vec3.atCenterOf(counterClockWiseTargetPosition);
 
         int playerCount = playerUUIDs.size();
 

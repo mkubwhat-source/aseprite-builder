@@ -157,7 +157,7 @@ public class FairkeeperSpawnerBlockEntity extends BlockEntity {
         if (this.nextSpawnData != null) {
             return this.nextSpawnData;
         } else {
-            this.setNextSpawnData(level, blockPos, this.spawnPotentials.getRandom(randomSource).map(Weighted::value).orElseGet(SpawnData::new));
+            this.setNextSpawnData(level, blockPos, this.spawnPotentials.getRandom(randomSource).orElseGet(SpawnData::new));
             return this.nextSpawnData;
         }
     }
@@ -244,7 +244,7 @@ public class FairkeeperSpawnerBlockEntity extends BlockEntity {
         RandomSource randomSource = level.getRandom();
         SpawnData spawnData = this.getOrCreateNextSpawnData(level, randomSource, this.getBlockPos());
         CompoundTag compoundTag = spawnData.getEntityToSpawn();
-        Optional<EntityType<?>> entityType = EntityType.by(compoundTag);
+        Optional<EntityType<?>> entityType = NbtCompat.entityTypeOf(compoundTag);
         if (entityType.isEmpty()) return;
         if (!entityType.get().getCategory().isFriendly() && level.getDifficulty() == Difficulty.PEACEFUL) return;
         for (int i = 0; i < SPAWN_POS_TRIES; i++) {
@@ -277,7 +277,7 @@ public class FairkeeperSpawnerBlockEntity extends BlockEntity {
             level.gameEvent(mob1, GameEvent.ENTITY_PLACE, blockPos);
             mob1.spawnAnim();
             this.spawnPotentials.getRandom(randomSource).ifPresent((b) -> {
-                this.setNextSpawnData(level, blockPos, b.data());
+                this.setNextSpawnData(level, blockPos, b);
             });
             break;
         }

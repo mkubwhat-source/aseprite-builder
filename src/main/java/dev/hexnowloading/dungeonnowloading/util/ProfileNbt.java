@@ -4,7 +4,7 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
-import net.minecraft.world.item.component.ResolvableProfile;
+import net.minecraft.util.ExtraCodecs;
 
 /**
  * 1.21 removed NbtUtils.writeGameProfile/readGameProfile. GameProfile NBT now goes
@@ -14,17 +14,16 @@ public final class ProfileNbt {
     private ProfileNbt() {}
 
     public static Tag write(GameProfile profile) {
-        return ResolvableProfile.CODEC
-                .encodeStart(NbtOps.INSTANCE, new ResolvableProfile(profile))
+        return ExtraCodecs.STORED_GAME_PROFILE.codec()
+                .encodeStart(NbtOps.INSTANCE, profile)
                 .result()
                 .orElseGet(CompoundTag::new);
     }
 
     public static GameProfile read(CompoundTag tag) {
-        return ResolvableProfile.CODEC
+        return ExtraCodecs.STORED_GAME_PROFILE.codec()
                 .parse(NbtOps.INSTANCE, tag)
                 .result()
-                .map(ResolvableProfile::gameProfile)
                 .orElse(null);
     }
 }

@@ -1,5 +1,11 @@
 package dev.hexnowloading.dungeonnowloading.world.features.entities;
 
+
+
+
+import net.minecraft.world.entity.EntityTypes;
+import dev.hexnowloading.dungeonnowloading.world.features.DNLFeatureContext;
+import dev.hexnowloading.dungeonnowloading.world.features.DNLFeature;
 import dev.hexnowloading.dungeonnowloading.registry.DNLEnchantments;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.entity.util.EntityScale;
@@ -13,18 +19,15 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
-public class ZombieWithIronAxeFeature extends Feature<NoneFeatureConfiguration> {
+public class ZombieWithIronAxeFeature extends DNLFeature<DNLFeature.None> {
 
-    public ZombieWithIronAxeFeature() { super(NoneFeatureConfiguration.CODEC); }
+    public ZombieWithIronAxeFeature() { super(DNLFeature.None.INSTANCE); }
 
     @Override
-    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
+    public boolean place(DNLFeatureContext<DNLFeature.None> context) {
 
-        Zombie zombie = EntityType.ZOMBIE.create(context.level().getLevel());
+        Zombie zombie = EntityTypes.ZOMBIE.create(context.level().getLevel(), EntitySpawnReason.MOB_SUMMONED);
         zombie.setPersistenceRequired();
         zombie.snapTo((double)context.origin().getX() + 0.5D, context.origin().getY(), (double)context.origin().getZ() + 0.5D, 0.0F, 0.0F);
         zombie.finalizeSpawn(context.level(), context.level().getCurrentDifficultyAt(context.origin()), EntitySpawnReason.STRUCTURE, null);
@@ -41,7 +44,7 @@ public class ZombieWithIronAxeFeature extends Feature<NoneFeatureConfiguration> 
         zombie.setDropChance(EquipmentSlot.LEGS, 0.0F);
         zombie.setDropChance(EquipmentSlot.FEET, 0.0F);
         zombie.setLeftHanded(context.level().getRandom().nextFloat() < 0.05F);
-        zombie.lootTable = net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE, Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "entities/modified/iron_zombie"));
+        zombie.lootTable = java.util.Optional.of(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE, Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "entities/modified/iron_zombie")));
 
         context.level().addFreshEntityWithPassengers(zombie);
         return true;

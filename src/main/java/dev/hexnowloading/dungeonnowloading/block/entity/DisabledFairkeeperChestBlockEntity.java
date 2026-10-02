@@ -2,6 +2,8 @@ package dev.hexnowloading.dungeonnowloading.block.entity;
 
 
 
+
+import net.minecraft.world.entity.ContainerUser;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import dev.hexnowloading.dungeonnowloading.block.DisabledFairkeeperChestBlock;
@@ -89,7 +91,8 @@ public class DisabledFairkeeperChestBlockEntity extends RandomizableContainerBlo
     }
 
     @Override
-    public void startOpen(Player player) {
+    public void startOpen(ContainerUser containerUser) {
+        net.minecraft.world.entity.LivingEntity player = containerUser.getLivingEntity();
         if (!this.remove && !player.isSpectator()) {
             DisabledFairkeeperChestBlock.setFairkeeperChest(this.getLevel(), this.getBlockPos(), ChestStates.OPENING);
             DisabledFairkeeperChestBlockEntity.playSound(this.getLevel(), this.getBlockPos(), SoundEvents.CHEST_OPEN);
@@ -97,7 +100,8 @@ public class DisabledFairkeeperChestBlockEntity extends RandomizableContainerBlo
     }
 
     @Override
-    public void stopOpen(Player player) {
+    public void stopOpen(ContainerUser containerUser) {
+        net.minecraft.world.entity.LivingEntity player = containerUser.getLivingEntity();
         if (!this.remove && !player.isSpectator()) {
             DisabledFairkeeperChestBlock.setFairkeeperChest(this.getLevel(), this.getBlockPos(), ChestStates.CLOSING);
             DisabledFairkeeperChestBlockEntity.playSound(this.getLevel(), this.getBlockPos(), SoundEvents.CHEST_CLOSE);

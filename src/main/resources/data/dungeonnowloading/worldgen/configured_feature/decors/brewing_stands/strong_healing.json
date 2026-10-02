@@ -1,7 +1,0 @@
-{
-  "config": {
-    "type": "minecraft:potion",
-    "potion": "minecraft:strong_healing"
-  },
-  "type": "dungeonnowloading:brewing_stand"
-}
