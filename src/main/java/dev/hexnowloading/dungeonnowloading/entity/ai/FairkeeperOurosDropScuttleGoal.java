@@ -114,7 +114,7 @@ public class FairkeeperOurosDropScuttleGoal extends StoppableGoal {
 
         BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos(this.currentPart.getX(), this.currentPart.getY(), currentPart.getZ());
 
-        while (mutableBlockPos.getY() > level.getMinBuildHeight() && !level.getBlockState(mutableBlockPos).blocksMotion()) {
+        while (mutableBlockPos.getY() > level.getMinY() && !level.getBlockState(mutableBlockPos).blocksMotion()) {
             mutableBlockPos.move(Direction.DOWN);
         }
 

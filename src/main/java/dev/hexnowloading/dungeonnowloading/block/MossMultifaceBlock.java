@@ -1,6 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.block;
 
-import com.mojang.serialization.MapCodec;
+
+import net.minecraft.world.level.ScheduledTickAccess;
 
 import dev.hexnowloading.dungeonnowloading.registry.DNLItems;
 import net.minecraft.core.BlockPos;
@@ -23,12 +24,7 @@ import net.minecraft.world.level.material.Fluids;
 
 public class MossMultifaceBlock extends MultifaceBlock implements BonemealableBlock, SimpleWaterloggedBlock {
 
-    public static final MapCodec<MossMultifaceBlock> CODEC = simpleCodec(MossMultifaceBlock::new);
 
-    @Override
-    public MapCodec<MossMultifaceBlock> codec() {
-        return CODEC;
-    }
 
     private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     private final MultifaceSpreader spreader = new MultifaceSpreader(this);
@@ -45,12 +41,12 @@ public class MossMultifaceBlock extends MultifaceBlock implements BonemealableBl
     }
 
     @Override
-    public BlockState updateShape(BlockState blockState, Direction direction, BlockState blockState1, LevelAccessor levelAccessor, BlockPos blockPos, BlockPos blockPos1) {
+    public BlockState updateShape(BlockState blockState, LevelReader levelAccessor, ScheduledTickAccess scheduledTickAccess, BlockPos blockPos, Direction direction, BlockPos blockPos1, BlockState blockState1, RandomSource randomSource) {
         if (blockState.getValue(WATERLOGGED)) {
-            levelAccessor.scheduleTick(blockPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelAccessor));
+            scheduledTickAccess.scheduleTick(blockPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelAccessor));
         }
 
-        return super.updateShape(blockState, direction, blockState1, levelAccessor, blockPos, blockPos1);
+        return super.updateShape(blockState, levelAccessor, scheduledTickAccess, blockPos, direction, blockPos1, blockState1, randomSource);
     }
 
     @Override
@@ -81,7 +77,7 @@ public class MossMultifaceBlock extends MultifaceBlock implements BonemealableBl
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos) {
+    public boolean propagatesSkylightDown(BlockState blockState) {
         return blockState.getFluidState().isEmpty();
     }
 

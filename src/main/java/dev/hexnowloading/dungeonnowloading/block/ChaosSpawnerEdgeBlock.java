@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.block;
 
+
+import net.minecraft.server.level.ServerLevel;
 import dev.hexnowloading.dungeonnowloading.block.property.AllSides;
 import dev.hexnowloading.dungeonnowloading.registry.DNLBlocks;
 import dev.hexnowloading.dungeonnowloading.registry.DNLProperties;
@@ -23,7 +25,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -35,7 +36,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class ChaosSpawnerEdgeBlock extends Block implements SimpleWaterloggedBlock {
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     //public static final EnumProperty<Half> HALF = BlockStateProperties.HALF;
     public static final EnumProperty<AllSides> ALL_SIDES = DNLProperties.ALL_SIDES;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -145,9 +146,9 @@ public class ChaosSpawnerEdgeBlock extends Block implements SimpleWaterloggedBlo
     }
 
     @Override
-    public void onRemove(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState1, boolean b) {
+    protected void affectNeighborsAfterRemoval(BlockState blockState, ServerLevel level, BlockPos blockPos, boolean b) {
         brokenFrame(level, blockPos, blockState);
-        super.onRemove(blockState, level, blockPos, blockState1, b);
+        super.affectNeighborsAfterRemoval(blockState, level, blockPos, b);
     }
 
     private void playSound(Level level, BlockPos blockPos, float pitch) {

@@ -20,7 +20,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -62,7 +61,7 @@ public class ScepterOfSealedChaosItem extends Item {
                         ));
                 level.playSound(null, clicked, SoundEvents.AMETHYST_CLUSTER_HIT, SoundSource.PLAYERS, 1.0F, basic ? 1.2F : 0.9F);
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
         if (itemStack.getDamageValue() == itemStack.getMaxDamage()) {
             return InteractionResult.FAIL;
@@ -148,7 +147,7 @@ public class ScepterOfSealedChaosItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
+    public InteractionResult use(Level level, Player player, InteractionHand interactionHand) {
         return super.use(level, player, interactionHand);
     }
 

@@ -46,4 +46,12 @@ public class BallistaGolemStatueBlockEntity extends BlockEntity {
         RandomSource random = this.getLevel().getRandom();
         this.level.playSound(null, blockPos, soundType, SoundSource.BLOCKS, 1.0f, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
     }
+
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, net.minecraft.world.level.block.state.BlockState state) {
+        super.preRemoveSideEffects(pos, state);
+        if (this.level != null && state.getBlock() instanceof BallistaGolemStatueBlock statueBlock && statueBlock.playerDestroyed) {
+            summonBallistaGolemEntity(this.level, pos, state.getValue(BallistaGolemStatueBlock.FACING));
+        }
+    }
 }

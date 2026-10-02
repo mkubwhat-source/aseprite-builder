@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.item;
 
+
+import net.minecraft.util.Prediction;
 import dev.hexnowloading.dungeonnowloading.registry.DNLEnchantments;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -59,7 +61,7 @@ public final class ItemStackBreakProtectionHandler {
             if (!replaced) {
                 // Fallback: try to add to inventory, otherwise drop
                 if (!player.getInventory().add(scrap)) {
-                    player.drop(scrap, false);
+                    player.drop(scrap, false, Prediction.SERVER_ONLY);
                 }
             }
         }

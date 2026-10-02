@@ -30,7 +30,7 @@ public abstract class BucketItemMixin {
     @Inject(method = "Lnet/minecraft/world/item/BucketItem;use(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResultHolder;",
             at = @At("TAIL"))
     private void dnl$trackFairkeeperOnBucketUse(Level level, Player player, InteractionHand hand,
-                                                CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir) {
+                                                CallbackInfoReturnable<InteractionResult> cir) {
         if (level.isClientSide()) return;
         if (player.isCreative() || player.isSpectator()) return;
 

@@ -107,7 +107,7 @@ public class RepulsorItem extends Item {
         }
 
         stack.shrink(1);
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
 

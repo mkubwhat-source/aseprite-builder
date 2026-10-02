@@ -1,6 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.block;
 
-import com.mojang.serialization.MapCodec;
+
+
+import net.minecraft.world.entity.InsideBlockEffectApplier;
+import net.minecraft.world.level.ScheduledTickAccess;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -28,7 +31,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -41,14 +44,9 @@ import java.util.function.ToIntFunction;
 
 public class DungeonWallTorch extends HorizontalDirectionalBlock {
 
-    public static final MapCodec<DungeonWallTorch> CODEC = simpleCodec(DungeonWallTorch::new);
 
-    @Override
-    public MapCodec<DungeonWallTorch> codec() {
-        return CODEC;
-    }
 
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
     private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     private static final BooleanProperty LIT = BlockStateProperties.LIT;
     private static final VoxelShape NORTH_AABB = Block.box(4, 1, 9, 12, 16, 16);
@@ -116,7 +114,7 @@ public class DungeonWallTorch extends HorizontalDirectionalBlock {
     }
 
     @Override
-    public BlockState updateShape(BlockState blockState, Direction direction, BlockState blockState1, LevelAccessor levelAccessor, BlockPos blockPos, BlockPos blockPos1) {
+    public BlockState updateShape(BlockState blockState, LevelReader levelAccessor, ScheduledTickAccess scheduledTickAccess, BlockPos blockPos, Direction direction, BlockPos blockPos1, BlockState blockState1, RandomSource randomSource) {
         return direction.getOpposite() == blockState.getValue(FACING) && !blockState.canSurvive(levelAccessor, blockPos) ? Blocks.AIR.defaultBlockState() : blockState;
     }
 
@@ -134,31 +132,31 @@ public class DungeonWallTorch extends HorizontalDirectionalBlock {
     }
 
     @Override
-    protected net.minecraft.world.ItemInteractionResult useItemOn(ItemStack stack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult hitResult) {
+    protected net.minecraft.world.InteractionResult useItemOn(ItemStack stack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult hitResult) {
         if (player.getAbilities().mayBuild) {
             if (player.getItemInHand(interactionHand).isEmpty() && blockState.getValue(LIT)) {
                 setLit(level, blockState, blockPos, false);
                 level.playSound(null, blockPos, SoundEvents.CANDLE_EXTINGUISH, SoundSource.BLOCKS, 1.0F, 1.0F);
                 level.gameEvent(player, GameEvent.BLOCK_CHANGE, blockPos);
-                return net.minecraft.world.ItemInteractionResult.sidedSuccess(level.isClientSide());
+                return net.minecraft.world.InteractionResult.SUCCESS;
             }
             ItemStack flintAndSteel = player.getItemInHand(interactionHand);
             if (flintAndSteel.is(Items.FLINT_AND_STEEL) && !blockState.getValue(LIT)) {
                 if (flintAndSteel.getDamageValue() < flintAndSteel.getMaxDamage()) {
                     setLit(level, blockState, blockPos, true);
-                    if (player instanceof ServerPlayer) { flintAndSteel.hurtAndBreak(1, player, net.minecraft.world.entity.LivingEntity.getSlotForHand(interactionHand)); }
+                    if (player instanceof ServerPlayer) { flintAndSteel.hurtAndBreak(1, player, interactionHand.asEquipmentSlot()); }
                     level.playSound(player, blockPos, SoundEvents.FLINTANDSTEEL_USE,SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.4F + 0.8F);
                     level.gameEvent(player, GameEvent.BLOCK_CHANGE, blockPos);
-                    return net.minecraft.world.ItemInteractionResult.sidedSuccess(level.isClientSide());
+                    return net.minecraft.world.InteractionResult.SUCCESS;
                 }
             }
         }
-        return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return net.minecraft.world.InteractionResult.TRY_WITH_EMPTY_HAND;
 
     }
 
     @Override
-    public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
+    public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
         if (this.canBeLit(blockState) && entity instanceof Projectile projectile && projectile.isOnFire() && this.canBeLit(blockState)) {
             setLit(level, blockState, blockPos, true);
         }

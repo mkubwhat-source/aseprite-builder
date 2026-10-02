@@ -304,7 +304,7 @@ public class CopperCreepEntity extends PathfinderMob implements OwnableEntity, P
                 if (!itemStack.isDamageableItem()) {
                     itemStack.shrink(1);
                 } else {
-                    itemStack.hurtAndBreak(1, player, net.minecraft.world.entity.LivingEntity.getSlotForHand(interactionHand));
+                    itemStack.hurtAndBreak(1, player, interactionHand.asEquipmentSlot());
                 }
             }
 
@@ -331,7 +331,7 @@ public class CopperCreepEntity extends PathfinderMob implements OwnableEntity, P
             }
         }
 
-        return InteractionResult.sidedSuccess(this.level().isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     private void rightClickToSit(Player player) {
@@ -661,7 +661,7 @@ public class CopperCreepEntity extends PathfinderMob implements OwnableEntity, P
 
     private boolean hasClearSkyAbove() {
         BlockPos posAbove = this.blockPosition().above();
-        while (posAbove.getY() < this.level().getMaxBuildHeight()) {
+        while (posAbove.getY() < (this.level().getMaxY() + 1)) {
             if (!this.level().isEmptyBlock(posAbove)) {
                 return false;
             }

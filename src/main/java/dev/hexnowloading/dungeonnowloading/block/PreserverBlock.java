@@ -1,7 +1,8 @@
 package dev.hexnowloading.dungeonnowloading.block;
 
-import com.mojang.serialization.MapCodec;
 
+
+import net.minecraft.server.level.ServerPlayer;
 import dev.hexnowloading.dungeonnowloading.block.entity.PreserverBlockEntity;
 import dev.hexnowloading.dungeonnowloading.registry.DNLBlockEntityTypes;
 import net.minecraft.core.BlockPos;
@@ -21,20 +22,15 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import org.jetbrains.annotations.Nullable;
 
 public class PreserverBlock extends BaseEntityBlock {
 
-    public static final MapCodec<PreserverBlock> CODEC = simpleCodec(PreserverBlock::new);
 
-    @Override
-    public MapCodec<PreserverBlock> codec() {
-        return CODEC;
-    }
 
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
-    public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
 
     protected final Block blockType;
     private CompoundTag transferData;
@@ -88,7 +84,7 @@ public class PreserverBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void playerDestroy(Level level, Player player, BlockPos blockPos, BlockState state, BlockEntity blockEntity, ItemStack tool) {
+    public void playerDestroy(ServerLevel level, ServerPlayer player, BlockPos blockPos, BlockState state, BlockEntity blockEntity, ItemStack tool) {
         super.playerDestroy(level, player, blockPos, state, blockEntity, tool);
         if (!this.canPlayerDestroy() && !level.isClientSide() && !player.getAbilities().instabuild) {
             Direction direction = state.getValue(FACING);
@@ -109,7 +105,7 @@ public class PreserverBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void wasExploded(Level level, BlockPos blockPos, Explosion explosion) {
+    public void wasExploded(ServerLevel level, BlockPos blockPos, Explosion explosion) {
         if (level.isClientSide()) {
             return;
         }

@@ -56,19 +56,19 @@ public class ScorcherItem extends Item implements DNLAnimatedItem<ScorcherItem.S
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
         if (hand != InteractionHand.MAIN_HAND) {
-            return InteractionResultHolder.fail(stack);
+            return InteractionResult.FAIL;
         }
 
         if (ItemAnimationState.isAnimating(stack, ScorcherAnimationState.SCORCHER_STOP.getName(), level.getGameTime())) {
-            return InteractionResultHolder.fail(stack);
+            return InteractionResult.FAIL;
         }
 
         if (!hasFuel(player)) {
-            return InteractionResultHolder.fail(stack);
+            return InteractionResult.FAIL;
         }
 
         if (ItemAnimationState.isAnimating(stack, ScorcherAnimationState.SCORCHER_OVERHEAT.getName(), level.getGameTime())) {
@@ -77,14 +77,14 @@ public class ScorcherItem extends Item implements DNLAnimatedItem<ScorcherItem.S
                 playScorcherSounds(stack, player, DNLSounds.SCORCHER_STALL.get(), DNLSounds.SOUL_SCORCHER_STALL.get());
             }
 
-            return InteractionResultHolder.fail(stack);
+            return InteractionResult.FAIL;
         }
 
         player.startUsingItem(hand);
         if (!level.isClientSide()) {
-            return InteractionResultHolder.consume(stack);
+            return InteractionResult.CONSUME;
         } else {
-            return InteractionResultHolder.fail(stack);
+            return InteractionResult.FAIL;
         }
     }
 
@@ -347,9 +347,9 @@ public class ScorcherItem extends Item implements DNLAnimatedItem<ScorcherItem.S
         );
         Identifier sound;
         if (itemStack.is(DNLItems.SOUL_SCORCHER.get())) {
-            sound = soulScorcher.getLocation();
+            sound = soulScorcher.location();
         } else {
-            sound = scorcher.getLocation();
+            sound = scorcher.location();
         }
         for (ServerPlayer otherPlayer : nearbyPlayers) {
             Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(player.getId(), sound, SoundSource.PLAYERS), otherPlayer);
@@ -365,13 +365,13 @@ public class ScorcherItem extends Item implements DNLAnimatedItem<ScorcherItem.S
         );
         List<Identifier> soundsToStop = new ArrayList<>(List.of());
         if (itemStack.is(DNLItems.SOUL_SCORCHER.get())) {
-            soundsToStop.add(DNLSounds.SOUL_SCORCHER_START.get().getLocation());
-            soundsToStop.add(DNLSounds.SOUL_SCORCHER_SHOOT.get().getLocation());
-            soundsToStop.add(DNLSounds.SOUL_SCORCHER_OVERHEAT.get().getLocation());
+            soundsToStop.add(DNLSounds.SOUL_SCORCHER_START.get().location());
+            soundsToStop.add(DNLSounds.SOUL_SCORCHER_SHOOT.get().location());
+            soundsToStop.add(DNLSounds.SOUL_SCORCHER_OVERHEAT.get().location());
         } else {
-            soundsToStop.add(DNLSounds.SCORCHER_START.get().getLocation());
-            soundsToStop.add(DNLSounds.SCORCHER_SHOOT.get().getLocation());
-            soundsToStop.add(DNLSounds.SCORCHER_OVERHEAT.get().getLocation());
+            soundsToStop.add(DNLSounds.SCORCHER_START.get().location());
+            soundsToStop.add(DNLSounds.SCORCHER_SHOOT.get().location());
+            soundsToStop.add(DNLSounds.SCORCHER_OVERHEAT.get().location());
         }
         for (ServerPlayer otherPlayer : nearbyPlayers) {
             for (Identifier sound : soundsToStop) {
@@ -389,9 +389,9 @@ public class ScorcherItem extends Item implements DNLAnimatedItem<ScorcherItem.S
         );
         Identifier sound;
         if (itemStack.is(DNLItems.SOUL_SCORCHER.get())) {
-            sound = soulScorcher.getLocation();
+            sound = soulScorcher.location();
         } else {
-            sound = scorcher.getLocation();
+            sound = scorcher.location();
         }
         for (ServerPlayer otherPlayer : nearbyPlayers) {
             Services.NETWORK.sendToPlayer(new S2CStopTickingSoundPacket(player.getId(), sound, 20, true), otherPlayer);

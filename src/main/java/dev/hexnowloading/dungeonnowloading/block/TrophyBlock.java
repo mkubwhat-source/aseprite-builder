@@ -1,6 +1,11 @@
 package dev.hexnowloading.dungeonnowloading.block;
 
-import com.mojang.serialization.MapCodec;
+
+
+
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.world.level.LevelReader;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,12 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class TrophyBlock extends HorizontalDirectionalBlock implements SimpleWaterloggedBlock {
 
-    public static final MapCodec<TrophyBlock> CODEC = simpleCodec(TrophyBlock::new);
 
-    @Override
-    public MapCodec<TrophyBlock> codec() {
-        return CODEC;
-    }
 
     private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
@@ -44,11 +44,11 @@ public class TrophyBlock extends HorizontalDirectionalBlock implements SimpleWat
     }
 
     @Override
-    public BlockState updateShape(BlockState blockState, Direction direction, BlockState blockState2, LevelAccessor levelAccessor, BlockPos blockPos, BlockPos blockPos2) {
+    public BlockState updateShape(BlockState blockState, LevelReader levelAccessor, ScheduledTickAccess scheduledTickAccess, BlockPos blockPos, Direction direction, BlockPos blockPos2, BlockState blockState2, RandomSource randomSource) {
         if (blockState.getValue(WATERLOGGED)) {
-            levelAccessor.scheduleTick(blockPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelAccessor));
+            scheduledTickAccess.scheduleTick(blockPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelAccessor));
         }
-        return super.updateShape(blockState, direction, blockState2, levelAccessor, blockPos, blockPos2);
+        return super.updateShape(blockState, levelAccessor, scheduledTickAccess, blockPos, direction, blockPos2, blockState2, randomSource);
     }
 
     @Override

@@ -171,7 +171,7 @@ public class SealedChaosEntity extends PathfinderMob implements OwnableEntity {
                     player.getCooldowns().addCooldown(DNLItems.SCEPTER_OF_SEALED_CHAOS.get(), 20);
                     this.discardWithParticle();
                 }
-                return InteractionResult.sidedSuccess(this.level().isClientSide());
+                return InteractionResult.SUCCESS;
             }
         }
         return super.mobInteract(player, interactionHand);

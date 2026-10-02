@@ -274,7 +274,7 @@ public class SpawnerCarrierEntity extends Monster {
         if (!this.level().isClientSide() && locomotionLocked) {
             this.getNavigation().stop();
             this.setDeltaMovement(0.0, this.getDeltaMovement().y, 0.0);
-            this.hasImpulse = true; // helps syncing sometimes
+            this.needsSync = true; // helps syncing sometimes
         }
     }
 
@@ -709,7 +709,7 @@ public class SpawnerCarrierEntity extends Monster {
         );
 
         entity.hurtMarked = true;
-        entity.hasImpulse = true;
+        entity.needsSync = true;
         entity.setOnGround(false);
     }
     public boolean isSpawnedMinion(@Nullable Entity e) {

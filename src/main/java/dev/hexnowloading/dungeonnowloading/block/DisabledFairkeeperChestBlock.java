@@ -1,6 +1,5 @@
 package dev.hexnowloading.dungeonnowloading.block;
 
-import com.mojang.serialization.MapCodec;
 
 import dev.hexnowloading.dungeonnowloading.block.entity.DisabledFairkeeperChestBlockEntity;
 import dev.hexnowloading.dungeonnowloading.block.entity.FairkeeperChestBlockEntity;
@@ -28,7 +27,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -42,15 +40,10 @@ import java.util.List;
 
 public class DisabledFairkeeperChestBlock extends BaseEntityBlock implements SimpleWaterloggedBlock, EntityBlock {
 
-    public static final MapCodec<DisabledFairkeeperChestBlock> CODEC = simpleCodec(DisabledFairkeeperChestBlock::new);
 
-    @Override
-    public MapCodec<DisabledFairkeeperChestBlock> codec() {
-        return CODEC;
-    }
 
     public static final EnumProperty<ChestStates> CHEST_STATES = DNLProperties.CHEST_STATES;
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     private static final VoxelShape SHAPE_X = Block.box(1.5D, 0.0D, 1.5D, 14.5D, 15.0D, 14.5D);
     private static final VoxelShape SHAPE_Z = Block.box(1.5D, 0.0D, 1.5D, 14.5D, 15.0D, 14.5D);
@@ -98,18 +91,6 @@ public class DisabledFairkeeperChestBlock extends BaseEntityBlock implements Sim
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
-    @Override
-    public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState state, boolean moved) {
-        if (!oldState.is(state.getBlock())) {
-            BlockEntity blockentity = level.getBlockEntity(pos);
-            if (blockentity instanceof DisabledFairkeeperChestBlockEntity) {
-                Containers.dropContents(level, pos, (Container)blockentity);
-                level.updateNeighbourForOutputSignal(pos, this);
-            }
-
-            super.onRemove(oldState, level, pos, state, moved);
-        }
-    }
 
     protected Stat<Identifier> getOpenChestStat() { return Stats.CUSTOM.get(Stats.OPEN_CHEST); }
 
@@ -121,7 +102,7 @@ public class DisabledFairkeeperChestBlock extends BaseEntityBlock implements Sim
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (level.isClientSide()) {
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
         if (isChestBlockedByBlock(level, pos)) {
             return InteractionResult.SUCCESS;
@@ -154,7 +135,7 @@ public class DisabledFairkeeperChestBlock extends BaseEntityBlock implements Sim
 
     @Override
     public RenderShape getRenderShape(BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.INVISIBLE;
     }
 
     @Nullable

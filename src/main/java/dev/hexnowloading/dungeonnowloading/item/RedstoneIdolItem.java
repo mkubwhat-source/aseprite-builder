@@ -29,11 +29,11 @@ public class RedstoneIdolItem extends BlockItem implements BossSummoningItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
         if (level.isClientSide()) {
-            return InteractionResultHolder.pass(stack);
+            return InteractionResult.PASS;
         }
 
         AABB aabb = (new AABB(player.blockPosition())).inflate(32);
@@ -50,7 +50,7 @@ public class RedstoneIdolItem extends BlockItem implements BossSummoningItem {
 
                 player.getCooldowns().addCooldown(this, 7);
                 player.awardStat(Stats.ITEM_USED.get(this));
-                return InteractionResultHolder.consume(stack);
+                return InteractionResult.CONSUME;
             }
         }
 
@@ -66,11 +66,11 @@ public class RedstoneIdolItem extends BlockItem implements BossSummoningItem {
                 }
             }
             /*if (player instanceof ServerPlayer) {
-                itemStack.hurtAndBreak(1, player, net.minecraft.world.entity.LivingEntity.getSlotForHand(hand));
+                itemStack.hurtAndBreak(1, player, hand.asEquipmentSlot());
             }*/
-            return InteractionResultHolder.consume(stack);
+            return InteractionResult.CONSUME;
         }
-        return InteractionResultHolder.fail(stack);
+        return InteractionResult.FAIL;
     }
 
     @Override

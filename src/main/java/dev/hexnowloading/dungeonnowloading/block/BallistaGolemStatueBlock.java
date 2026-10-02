@@ -1,7 +1,10 @@
 package dev.hexnowloading.dungeonnowloading.block;
 
-import com.mojang.serialization.MapCodec;
 
+
+
+import net.minecraft.world.level.redstone.Orientation;
+import net.minecraft.server.level.ServerLevel;
 import dev.hexnowloading.dungeonnowloading.registry.DNLEnchantments;
 import dev.hexnowloading.dungeonnowloading.block.entity.BallistaGolemStatueBlockEntity;
 import dev.hexnowloading.dungeonnowloading.block.property.BallistaGolemStatueStates;
@@ -19,7 +22,7 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -28,14 +31,9 @@ import static dev.hexnowloading.dungeonnowloading.block.BallistaGolemStatuePartB
 
 public class BallistaGolemStatueBlock extends BaseEntityBlock implements EntityBlock {
 
-    public static final MapCodec<BallistaGolemStatueBlock> CODEC = simpleCodec(BallistaGolemStatueBlock::new);
 
-    @Override
-    public MapCodec<BallistaGolemStatueBlock> codec() {
-        return CODEC;
-    }
 
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
 
     public static final Map<BallistaGolemStatueStates, BlockPos> statePositions = Map.ofEntries(
             Map.entry(BallistaGolemStatueStates.TOP_N, new BlockPos(0, 2, -1)),    // North center
@@ -163,22 +161,12 @@ public class BallistaGolemStatueBlock extends BaseEntityBlock implements EntityB
     }
 
     @Override
-    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (!world.isClientSide() && state.getBlock() != newState.getBlock()) {
-            destroyAllBlocks(world, pos);
-            destroyBlocksAbove(world, pos);
-
-            if (playerDestroyed) {
-                if (state.getBlock() instanceof BallistaGolemStatueBlock) {
-                    BallistaGolemStatueBlockEntity blockEntity = (BallistaGolemStatueBlockEntity) world.getBlockEntity(pos);
-                    if (blockEntity != null) {
-                        blockEntity.summonBallistaGolemEntity(world, pos, state.getValue(FACING));
-                    }
-                }
-            }
-        }
-
-        super.onRemove(state, world, pos, newState, isMoving);
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel world, BlockPos pos, boolean isMoving) {
+        // 26.x: runs after the block (and its block entity) is gone; the golem summon happens in
+        // BallistaGolemStatueBlockEntity#preRemoveSideEffects while the block entity still exists.
+        destroyAllBlocks(world, pos);
+        destroyBlocksAbove(world, pos);
+        super.affectNeighborsAfterRemoval(state, world, pos, isMoving);
     }
 
     public static void destroyAllBlocks(Level world, BlockPos pos) {
@@ -213,7 +201,7 @@ public class BallistaGolemStatueBlock extends BaseEntityBlock implements EntityB
     }
 
     @Override
-    public void neighborChanged(BlockState blockState, Level level, BlockPos blockPos, Block block, BlockPos blockPos1, boolean b) {
+    public void neighborChanged(BlockState blockState, Level level, BlockPos blockPos, Block block, @Nullable Orientation orientation, boolean b) {
         if (level.isClientSide()) {
             return;
         }

@@ -1,7 +1,8 @@
 package dev.hexnowloading.dungeonnowloading.block;
 
-import com.mojang.serialization.MapCodec;
 
+
+import net.minecraft.world.level.redstone.Orientation;
 import dev.hexnowloading.dungeonnowloading.block.property.RedstoneLaneMode;
 import dev.hexnowloading.dungeonnowloading.entity.monster.ScuttleEntity;
 import dev.hexnowloading.dungeonnowloading.registry.DNLBlocks;
@@ -21,7 +22,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import org.jetbrains.annotations.Nullable;
@@ -31,14 +31,9 @@ import java.util.List;
 
 public class RedstoneLaneBlock extends DirectionalBlock {
 
-    public static final MapCodec<RedstoneLaneBlock> CODEC = simpleCodec(RedstoneLaneBlock::new);
 
-    @Override
-    public MapCodec<RedstoneLaneBlock> codec() {
-        return CODEC;
-    }
 
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
     public static final EnumProperty<RedstoneLaneMode> REDSTONE_LANE_MODE = DNLProperties.REDSTONE_LANE_MODE;
     public static final IntegerProperty REDSTONE_LANE_POWER = DNLProperties.REDSTONE_LANE_POWER;
 
@@ -125,7 +120,7 @@ public class RedstoneLaneBlock extends DirectionalBlock {
     }*/
 
     @Override
-    public void neighborChanged(BlockState blockState, Level level, BlockPos blockPos, Block block, BlockPos neighbourBlock, boolean b) {
+    public void neighborChanged(BlockState blockState, Level level, BlockPos blockPos, Block block, @Nullable Orientation orientation, boolean b) {
 
         if (blockState.getValue(REDSTONE_LANE_MODE) == RedstoneLaneMode.UNPOWERED) {
             if (level.getBlockState(neighbourBlock).is(Blocks.REDSTONE_BLOCK)) {
@@ -203,7 +198,7 @@ public class RedstoneLaneBlock extends DirectionalBlock {
         }
 
         if (originalPower == power) {
-            //level.neighborChanged(blockPos.above(), this, blockPos);
+            //level.neighborChanged(blockPos.above(), this, null);
             return;
         };
 
@@ -228,7 +223,7 @@ public class RedstoneLaneBlock extends DirectionalBlock {
             }
         }
 
-        level.neighborChanged(blockPos.above(), this, blockPos);
+        level.neighborChanged(blockPos.above(), this, null);
 
         updateConnectedNegihbors(neighborLaneBlockPosList, level, blockPos);
     }
@@ -252,7 +247,7 @@ public class RedstoneLaneBlock extends DirectionalBlock {
 
         poweredParticle(level, blockState, blockPos);
 
-        level.neighborChanged(blockPos.above(), this, blockPos);
+        level.neighborChanged(blockPos.above(), this, null);
 
         updateConnectedNeighborsWithExcluded(level, blockState, blockPos, neighbourBlock);
     }
@@ -276,7 +271,7 @@ public class RedstoneLaneBlock extends DirectionalBlock {
 
         poweredParticle(level, blockState, blockPos);
 
-        level.neighborChanged(blockPos.above(), this, blockPos);
+        level.neighborChanged(blockPos.above(), this, null);
 
         updateConnectedNeighborsWithExcluded(level, blockState, blockPos, neighbourBlock);
     }
@@ -300,7 +295,7 @@ public class RedstoneLaneBlock extends DirectionalBlock {
 
         poweredParticle(level, blockState, blockPos);
 
-        level.neighborChanged(blockPos.above(), this, blockPos);
+        level.neighborChanged(blockPos.above(), this, null);
 
         updateConnectedNeighborsWithExcluded(level, blockState, blockPos, neighbourBlock);
     }
@@ -324,7 +319,7 @@ public class RedstoneLaneBlock extends DirectionalBlock {
             poweredParticle(level, blockState, blockPos);
         }
 
-        level.neighborChanged(blockPos.above(), this, blockPos);
+        level.neighborChanged(blockPos.above(), this, null);
 
         updateConnectedNeighborsWithExcluded(level, blockState, blockPos, neighbourBlock);
 
@@ -332,7 +327,7 @@ public class RedstoneLaneBlock extends DirectionalBlock {
 
     private void updateConnectedNegihbors(List<BlockPos> blockPosList, Level level, BlockPos blockPos) {
         for (BlockPos pos : blockPosList) {
-            level.neighborChanged(pos, this, blockPos);
+            level.neighborChanged(pos, this, null);
         }
     }
 
@@ -340,7 +335,7 @@ public class RedstoneLaneBlock extends DirectionalBlock {
         List<BlockPos> updateTargets = getConnectionBlockPos(blockPos, blockState);
         for (BlockPos pos : updateTargets) {
             if (pos.equals(excludedBlockPos)) continue;
-            level.neighborChanged(pos, this, blockPos);
+            level.neighborChanged(pos, this, null);
         }
     }
 

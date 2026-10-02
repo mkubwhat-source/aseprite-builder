@@ -75,7 +75,7 @@ public class FairkeeperOurosBodyDropVertexPillarGoal extends StoppableGoal {
             level.addFreshEntity(stonePillar);
 
             BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos(dropPosition.x, dropPosition.y, dropPosition.z);
-            while (mutableBlockPos.getY() > level.getMinBuildHeight() && !level.getBlockState(mutableBlockPos).blocksMotion()) {
+            while (mutableBlockPos.getY() > level.getMinY() && !level.getBlockState(mutableBlockPos).blocksMotion()) {
                 mutableBlockPos.move(Direction.DOWN);
             }
 

@@ -1,6 +1,5 @@
 package dev.hexnowloading.dungeonnowloading.block;
 
-import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -16,12 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class PillarCapBlock extends DirectionalBlock {
 
-    public static final MapCodec<PillarCapBlock> CODEC = simpleCodec(PillarCapBlock::new);
 
-    @Override
-    public MapCodec<PillarCapBlock> codec() {
-        return CODEC;
-    }
 
     public PillarCapBlock(Properties properties) {
         super(properties);

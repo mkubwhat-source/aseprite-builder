@@ -748,7 +748,7 @@ public class FairkeeperBorosEntity extends Monster implements Boss, Enemy, Slumb
                 detectionBox
         );
         for (ServerPlayer player : nearbyPlayers) {
-            Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(this.getId(), DNLSounds.FAIRKEEPER_BOROS_SLITHER.get().getLocation(), SoundSource.HOSTILE, 3.0F, 1.0F, false, 16f, 0f), player);
+            Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(this.getId(), DNLSounds.FAIRKEEPER_BOROS_SLITHER.get().location(), SoundSource.HOSTILE, 3.0F, 1.0F, false, 16f, 0f), player);
         }
     }
 
@@ -760,7 +760,7 @@ public class FairkeeperBorosEntity extends Monster implements Boss, Enemy, Slumb
                 detectionBox
         );
         for (ServerPlayer player : nearbyPlayers) {
-            Services.NETWORK.sendToPlayer(new S2CStopTickingSoundPacket(this.getId(), DNLSounds.FAIRKEEPER_BOROS_SLITHER.get().getLocation(), 20, false), player);
+            Services.NETWORK.sendToPlayer(new S2CStopTickingSoundPacket(this.getId(), DNLSounds.FAIRKEEPER_BOROS_SLITHER.get().location(), 20, false), player);
         }
     }
 
@@ -772,7 +772,7 @@ public class FairkeeperBorosEntity extends Monster implements Boss, Enemy, Slumb
                 detectionBox
         );
         for (ServerPlayer player : nearbyPlayers) {
-            Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(this.getId(), DNLSounds.FAIRKEEPER_BOROS_FIRE_ATTACK.get().getLocation(), SoundSource.HOSTILE, 3.0F, 1.0F, false, 32f, 0f), player);
+            Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(this.getId(), DNLSounds.FAIRKEEPER_BOROS_FIRE_ATTACK.get().location(), SoundSource.HOSTILE, 3.0F, 1.0F, false, 32f, 0f), player);
         }
     }
 
@@ -784,7 +784,7 @@ public class FairkeeperBorosEntity extends Monster implements Boss, Enemy, Slumb
                 detectionBox
         );
         for (ServerPlayer player : nearbyPlayers) {
-            Services.NETWORK.sendToPlayer(new S2CStopTickingSoundPacket(this.getId(), DNLSounds.FAIRKEEPER_BOROS_FIRE_ATTACK.get().getLocation(), 20, true), player);
+            Services.NETWORK.sendToPlayer(new S2CStopTickingSoundPacket(this.getId(), DNLSounds.FAIRKEEPER_BOROS_FIRE_ATTACK.get().location(), 20, true), player);
         }
     }
 

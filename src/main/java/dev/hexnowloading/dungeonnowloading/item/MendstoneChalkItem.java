@@ -75,7 +75,7 @@ public class MendstoneChalkItem extends Item {
                         // consume 1 durability (unless creative)
                         if (player != null && !player.getAbilities().instabuild) {
                             if (stack.isDamageableItem()) {
-                                stack.hurtAndBreak(1, player, net.minecraft.world.entity.LivingEntity.getSlotForHand(ctx.getHand()));
+                                stack.hurtAndBreak(1, player, ctx.getHand().asEquipmentSlot());
                             } else {
                                 stack.shrink(1); // fallback if not damageable
                             }
@@ -86,7 +86,7 @@ public class MendstoneChalkItem extends Item {
                     }
                 }
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         // --- 2) PLACEMENT PATH: supports partial placement when <5 dur left ---
@@ -171,14 +171,14 @@ public class MendstoneChalkItem extends Item {
             // consume durability
             if (!creative) {
                 if (stack.isDamageableItem()) {
-                    stack.hurtAndBreak(consume, player, net.minecraft.world.entity.LivingEntity.getSlotForHand(ctx.getHand()));
+                    stack.hurtAndBreak(consume, player, ctx.getHand().asEquipmentSlot());
                 } else {
                     stack.shrink(1);
                 }
             }
         }
 
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
 
     }
 

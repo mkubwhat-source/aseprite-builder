@@ -27,7 +27,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class ChaosSpawnerBarrierEdgeBlock extends Block implements SimpleWaterloggedBlock {
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final EnumProperty<BarrierEdges> BARRIER_EDGE = DNLProperties.BARRIER_EDGES;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     protected static final VoxelShape NORTH_AABB = Block.box(0.0, 0.0, 1.0, 16.0, 16.0, 2.0);
@@ -120,7 +120,7 @@ public class ChaosSpawnerBarrierEdgeBlock extends Block implements SimpleWaterlo
                     case LEFT -> level.setBlock(blockPos, blockState.setValue(BARRIER_EDGE, BarrierEdges.UP), 3);
                 }
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }

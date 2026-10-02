@@ -1,6 +1,11 @@
 package dev.hexnowloading.dungeonnowloading.block;
 
-import com.mojang.serialization.MapCodec;
+
+
+
+import net.minecraft.world.level.redstone.Orientation;
+import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.world.level.LevelReader;
 
 import dev.hexnowloading.dungeonnowloading.registry.DNLSounds;
 import net.minecraft.core.BlockPos;
@@ -29,12 +34,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class SignalGateBlock extends DirectionalBlock {
 
-    public static final MapCodec<SignalGateBlock> CODEC = simpleCodec(SignalGateBlock::new);
 
-    @Override
-    public MapCodec<SignalGateBlock> codec() {
-        return CODEC;
-    }
     public static final IntegerProperty POWER = BlockStateProperties.POWER;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
@@ -77,7 +77,7 @@ public class SignalGateBlock extends DirectionalBlock {
             level.playSound(null, blockPos, DNLSounds.SIGNAL_GATE_CLICK.get(), SoundSource.BLOCKS, 1.0F, 1.0F + 1.0F * power / 15);
             this.startSignal(level, blockPos);
         }
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     /*@Override
@@ -102,25 +102,25 @@ public class SignalGateBlock extends DirectionalBlock {
     }
 
     @Override
-    public BlockState updateShape(BlockState blockState, Direction direction, BlockState blockState2, LevelAccessor levelAccessor, BlockPos blockPos, BlockPos blockPos2) {
+    public BlockState updateShape(BlockState blockState, LevelReader levelAccessor, ScheduledTickAccess scheduledTickAccess, BlockPos blockPos, Direction direction, BlockPos blockPos2, BlockState blockState2, RandomSource randomSource) {
         if (blockState.getValue(FACING) == direction) {
             this.startSignal(levelAccessor, blockPos);
         }
-        return super.updateShape(blockState, direction, blockState2, levelAccessor, blockPos, blockPos2);
+        return super.updateShape(blockState, levelAccessor, scheduledTickAccess, blockPos, direction, blockPos2, blockState2, randomSource);
     }
 
     @Override
-    public void neighborChanged(BlockState blockState, Level level, BlockPos blockPos, Block block, BlockPos blockPos1, boolean b) {
+    public void neighborChanged(BlockState blockState, Level level, BlockPos blockPos, Block block, @Nullable Orientation orientation, boolean b) {
         startSignal(level, blockPos);
-        super.neighborChanged(blockState, level, blockPos, block, blockPos1, b);
+        super.neighborChanged(blockState, level, blockPos, block, orientation, b);
     }
 
     /*@Override
-    public BlockState updateShape(BlockState blockState, Direction direction, BlockState blockState2, LevelAccessor levelAccessor, BlockPos blockPos, BlockPos blockPos2) {
+    public BlockState updateShape(BlockState blockState, LevelReader levelAccessor, ScheduledTickAccess scheduledTickAccess, BlockPos blockPos, Direction direction, BlockPos blockPos2, BlockState blockState2, RandomSource randomSource) {
         if (blockState.getValue(FACING) == direction && !blockState.getValue(POWERED).booleanValue() && this.getSignalInFront(levelAccessor, blockPos, blockState) == blockState.getValue(POWER)) {
             this.startSignal(levelAccessor, blockPos);
         }
-        return super.updateShape(blockState, direction, blockState2, levelAccessor, blockPos, blockPos2);
+        return super.updateShape(blockState, levelAccessor, scheduledTickAccess, blockPos, direction, blockPos2, blockState2, randomSource);
     }*/
 
     private void startSignal(LevelAccessor levelAccessor, BlockPos blockPos) {
@@ -132,8 +132,8 @@ public class SignalGateBlock extends DirectionalBlock {
     private void updateNeighborsInFront(Level level, BlockPos blockPos, BlockState blockState) {
         Direction direction = blockState.getValue(FACING);
         BlockPos blockPos1 = blockPos.relative(direction.getOpposite());
-        level.neighborChanged(blockPos1, this, blockPos);
-        level.updateNeighborsAtExceptFromFacing(blockPos1, this, direction);
+        level.neighborChanged(blockPos1, this, null);
+        level.updateNeighborsAtExceptFromFacing(blockPos1, this, direction, null);
     }
 
     private int getSignalInFront(LevelAccessor level, BlockPos blockPos, BlockState blockState) {
@@ -174,11 +174,8 @@ public class SignalGateBlock extends DirectionalBlock {
     }
 
     @Override
-    public void onRemove(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
-        if (blockState.is(blockState2.getBlock())) {
-            return;
-        }
-        if (!level.isClientSide() && blockState.getValue(POWERED).booleanValue() && level.getBlockTicks().hasScheduledTick(blockPos, this)) {
+    protected void affectNeighborsAfterRemoval(BlockState blockState, ServerLevel level, BlockPos blockPos, boolean bl) {
+        if (blockState.getValue(POWERED).booleanValue() && level.getBlockTicks().hasScheduledTick(blockPos, this)) {
             this.updateNeighborsInFront(level, blockPos, (BlockState)blockState.setValue(POWERED, false));
         }
     }

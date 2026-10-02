@@ -1,6 +1,5 @@
 package dev.hexnowloading.dungeonnowloading.block;
 
-import com.mojang.serialization.MapCodec;
 
 import dev.hexnowloading.dungeonnowloading.block.entity.FairkeeperChestBlockEntity;
 import dev.hexnowloading.dungeonnowloading.block.entity.FairkeeperSpawnerBlockEntity;
@@ -39,7 +38,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -53,14 +51,9 @@ import java.util.List;
 
 public class FairkeeperChestBlock extends BaseEntityBlock implements SimpleWaterloggedBlock, EntityBlock {
 
-    public static final MapCodec<FairkeeperChestBlock> CODEC = simpleCodec(FairkeeperChestBlock::new);
 
-    @Override
-    public MapCodec<FairkeeperChestBlock> codec() {
-        return CODEC;
-    }
     public static final EnumProperty<ChestStates> CHEST_STATES = DNLProperties.CHEST_STATES;
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty FAIRKEEPER_ALERT = DNLProperties.FAIRKEEPER_ALERT;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     private static final VoxelShape SHAPE_X = Block.box(1.5D, 0.0D, 1.5D, 14.5D, 15.0D, 14.5D);
@@ -114,18 +107,6 @@ public class FairkeeperChestBlock extends BaseEntityBlock implements SimpleWater
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
-    @Override
-    public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState state, boolean moved) {
-        if (!oldState.is(state.getBlock())) {
-            BlockEntity blockentity = level.getBlockEntity(pos);
-            if (blockentity instanceof FairkeeperChestBlockEntity fairkeeperChestBlock && fairkeeperChestBlock.isDisabled(fairkeeperChestBlock)) {
-                Containers.dropContents(level, pos, (Container)blockentity);
-                level.updateNeighbourForOutputSignal(pos, this);
-            }
-
-            super.onRemove(oldState, level, pos, state, moved);
-        }
-    }
 
     @Override
     public BlockState playerWillDestroy(Level level, BlockPos blockPos, BlockState blockState, Player player) {
@@ -151,7 +132,7 @@ public class FairkeeperChestBlock extends BaseEntityBlock implements SimpleWater
         }
 
         if (level.isClientSide()) {
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
         if (isChestBlockedByBlock(level, pos)) {
             return InteractionResult.SUCCESS;
@@ -251,7 +232,7 @@ public class FairkeeperChestBlock extends BaseEntityBlock implements SimpleWater
 
     @Override
     public RenderShape getRenderShape(BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.INVISIBLE;
     }
 
     @Nullable

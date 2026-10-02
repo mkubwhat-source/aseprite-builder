@@ -478,7 +478,7 @@ public class FairkeeperOurosPartEntity extends Monster implements Boss, Enemy, S
                 detectionBox
         );
         for (ServerPlayer player : nearbyPlayers) {
-            Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(this.getId(), DNLSounds.FAIRKEEPER_OUROS_CANNON_SHOOT.get().getLocation(), SoundSource.HOSTILE, 4.0F, 1.0F, true, 64f, 0f), player);
+            Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(this.getId(), DNLSounds.FAIRKEEPER_OUROS_CANNON_SHOOT.get().location(), SoundSource.HOSTILE, 4.0F, 1.0F, true, 64f, 0f), player);
         }
     }*/
 
@@ -490,7 +490,7 @@ public class FairkeeperOurosPartEntity extends Monster implements Boss, Enemy, S
                 detectionBox
         );
         for (ServerPlayer player : nearbyPlayers) {
-            Services.NETWORK.sendToPlayer(new S2CStopTickingSoundPacket(this.getId(), DNLSounds.FAIRKEEPER_OUROS_CANNON_SHOOT.get().getLocation(), 20, true), player);
+            Services.NETWORK.sendToPlayer(new S2CStopTickingSoundPacket(this.getId(), DNLSounds.FAIRKEEPER_OUROS_CANNON_SHOOT.get().location(), 20, true), player);
         }
     }*/
 

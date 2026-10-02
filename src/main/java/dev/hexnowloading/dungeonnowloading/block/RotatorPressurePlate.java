@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.block;
 
+
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -58,10 +60,10 @@ public class RotatorPressurePlate extends PressurePlateBlock {
             level.setBlock(blockPos, poweredState, Block.UPDATE_CLIENTS);
             this.updateNeighbours(level, blockPos);
             level.setBlocksDirty(blockPos, blockState, poweredState);
-            level.scheduleTick(new BlockPos(blockPos), this, this.getPressedTime());
+            level.scheduleTick(blockPos.immutable(), this, this.getPressedTime());
             level.playSound(null, blockPos, this.type.pressurePlateClickOn(), SoundSource.BLOCKS);
             level.gameEvent(player, GameEvent.BLOCK_ACTIVATE, blockPos);
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
     }
 
@@ -95,7 +97,7 @@ public class RotatorPressurePlate extends PressurePlateBlock {
         arrow.setXRot((float)(Mth.atan2(arrowVec.y, v) * 57.2957763671875));
         arrow.yRotO = arrow.getYRot();
         arrow.xRotO = arrow.getXRot();
-        arrow.hasImpulse = true;
+        arrow.needsSync = true;
     }
 
     /*private void checkPressed(@Nullable Entity entity, Level level, BlockPos blockPos, BlockState blockState, int i) {
@@ -117,13 +119,13 @@ public class RotatorPressurePlate extends PressurePlateBlock {
             level.gameEvent(entity, GameEvent.BLOCK_ACTIVATE, blockPos);
         }
         if (bl2) {
-            level.scheduleTick(new BlockPos(blockPos), this, this.getPressedTime());
+            level.scheduleTick(blockPos.immutable(), this, this.getPressedTime());
         }
     }*/
 
 
     @Override
-    public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
+    public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
         if (!level.isClientSide()) {
             boolean signalStrengthState = this.getSignalForState(blockState) > 0;
             boolean signalStrength = this.getSignalStrength(level, blockPos) > 0;

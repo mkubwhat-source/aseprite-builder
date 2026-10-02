@@ -46,4 +46,14 @@ public class ScuttleStatueBlockEntity extends BlockEntity {
         level.playSound(null, x, y, z, SoundEvents.WITHER_SHOOT, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.2F + 0.8F);
 
     }
+
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, net.minecraft.world.level.block.state.BlockState state) {
+        super.preRemoveSideEffects(pos, state);
+        if (state.getBlock() instanceof dev.hexnowloading.dungeonnowloading.block.ScuttleStatueBlock statueBlock
+                && statueBlock.playerDestroyed
+                && state.getValue(dev.hexnowloading.dungeonnowloading.block.ScuttleStatueBlock.HALF) == net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER) {
+            alert(pos, this);
+        }
+    }
 }

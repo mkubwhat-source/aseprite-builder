@@ -331,7 +331,7 @@ public class SeepingSoulEntity extends Entity {
                     ));
         }
 
-        return InteractionResult.sidedSuccess(this.level().isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     public boolean tryStartChanneling(Player player, ItemStack stack) {
@@ -550,7 +550,7 @@ public class SeepingSoulEntity extends Entity {
                 detectionBox
         );
         for (ServerPlayer player : nearbyPlayers) {
-            Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(this.getId(), soundEvent.getLocation(), SoundSource.HOSTILE), player);
+            Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(this.getId(), soundEvent.location(), SoundSource.HOSTILE), player);
         }
     }
 
@@ -562,7 +562,7 @@ public class SeepingSoulEntity extends Entity {
                 detectionBox
         );
         for (ServerPlayer player : nearbyPlayers) {
-            Services.NETWORK.sendToPlayer(new S2CStopTickingSoundPacket(this.getId(), DNLSounds.SEEPING_SOUL_AMBIENT.get().getLocation(), 20, true), player);
+            Services.NETWORK.sendToPlayer(new S2CStopTickingSoundPacket(this.getId(), DNLSounds.SEEPING_SOUL_AMBIENT.get().location(), 20, true), player);
         }
     }
 

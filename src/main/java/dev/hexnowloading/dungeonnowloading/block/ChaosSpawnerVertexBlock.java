@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.block;
 
+
+import net.minecraft.server.level.ServerLevel;
 import dev.hexnowloading.dungeonnowloading.registry.DNLBlocks;
 import dev.hexnowloading.dungeonnowloading.registry.DNLSounds;
 import net.minecraft.core.BlockPos;
@@ -25,7 +27,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class ChaosSpawnerVertexBlock extends Block implements SimpleWaterloggedBlock {
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final EnumProperty<Half> HALF = BlockStateProperties.HALF;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     protected static final VoxelShape TOP_NORTH_AABB = Shapes.or(Block.box(0.0, 14.0, 0.0, 16.0, 16.0, 16.0), Block.box(0.0, 0.0, 14.0, 16.0, 14.0, 16.0), Block.box(0.0, 0.0, 0.0, 2.0, 14.0, 14.0));
@@ -106,9 +108,9 @@ public class ChaosSpawnerVertexBlock extends Block implements SimpleWaterloggedB
     }
 
     @Override
-    public void onRemove(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState1, boolean b) {
+    protected void affectNeighborsAfterRemoval(BlockState blockState, ServerLevel level, BlockPos blockPos, boolean b) {
         brokenFrame(level, blockPos, blockState);
-        super.onRemove(blockState, level, blockPos, blockState1, b);
+        super.affectNeighborsAfterRemoval(blockState, level, blockPos, b);
     }
 
     private void playSound(Level level, BlockPos blockPos, float pitch) {

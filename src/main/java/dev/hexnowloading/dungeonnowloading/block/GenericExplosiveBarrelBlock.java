@@ -1,5 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.block;
 
+
+
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -66,7 +70,7 @@ public abstract class GenericExplosiveBarrelBlock extends FallingBlock implement
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos signalPos, boolean moved) {
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean moved) {
         if (!level.isClientSide() && level.hasNeighborSignal(pos)) {
             this.onImmediateTrigger(level, pos, null, TriggerCause.GENTLY_LIT_ON_FIRE);
         }
@@ -74,7 +78,7 @@ public abstract class GenericExplosiveBarrelBlock extends FallingBlock implement
 
     @Override
     public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if (FallingBlock.isFree(level.getBlockState(pos.below())) && pos.getY() >= level.getMinBuildHeight()) {
+        if (FallingBlock.isFree(level.getBlockState(pos.below())) && pos.getY() >= level.getMinY()) {
             FallingBlockEntity falling = FallingBlockEntity.fall(level, pos, state);
             falling.disableDrop();
             level.removeBlock(pos, false);
@@ -222,19 +226,19 @@ public abstract class GenericExplosiveBarrelBlock extends FallingBlock implement
         }
     }
 
-    protected net.minecraft.world.ItemInteractionResult useItemOn(ItemStack held, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected net.minecraft.world.InteractionResult useItemOn(ItemStack held, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (!held.is(Items.FLINT_AND_STEEL) && !held.is(Items.FIRE_CHARGE)) {
-            return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return net.minecraft.world.InteractionResult.TRY_WITH_EMPTY_HAND;
         } else {
             this.onImmediateTrigger(level, pos, player, TriggerCause.GENTLY_LIT_ON_FIRE);
             if (!player.isCreative()) {
                 if (held.is(Items.FLINT_AND_STEEL)) {
-                    held.hurtAndBreak(1, player, net.minecraft.world.entity.LivingEntity.getSlotForHand(hand));
+                    held.hurtAndBreak(1, player, hand.asEquipmentSlot());
                 } else {
                     held.shrink(1);
                 }
             }
-            return net.minecraft.world.ItemInteractionResult.sidedSuccess(level.isClientSide());
+            return net.minecraft.world.InteractionResult.SUCCESS;
         }
     }
 

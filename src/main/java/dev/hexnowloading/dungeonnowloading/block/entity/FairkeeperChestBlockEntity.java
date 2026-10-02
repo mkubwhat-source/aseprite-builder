@@ -695,4 +695,12 @@ public class FairkeeperChestBlockEntity extends RandomizableContainerBlockEntity
         this.actualRegion2Y = Math.min(y1, y2);
         this.actualRegion2Z = Math.min(z1, z2);
     }
+
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        // Only a disabled (opened/cleared) chest spills its contents when broken.
+        if (this.isDisabled(this)) {
+            super.preRemoveSideEffects(pos, state);
+        }
+    }
 }

@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.block;
 
+
+import net.minecraft.server.level.ServerPlayer;
 import dev.hexnowloading.dungeonnowloading.block.entity.BookPileBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -109,7 +111,7 @@ public class BookPileBlock extends PileBlock implements EntityBlock {
     }
 
     @Override
-    public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool) {
+    public void playerDestroy(ServerLevel level, ServerPlayer player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool) {
         if (!level.isClientSide() && level instanceof ServerLevel serverLevel && blockEntity instanceof BookPileBlockEntity pileBe) {
             Identifier tableId = pileBe.getLootTable();
 

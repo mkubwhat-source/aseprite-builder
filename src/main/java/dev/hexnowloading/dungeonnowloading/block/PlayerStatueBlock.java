@@ -1,6 +1,13 @@
 package dev.hexnowloading.dungeonnowloading.block;
 
-import com.mojang.serialization.MapCodec;
+
+
+
+
+import net.minecraft.util.Prediction;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.world.level.LevelReader;
 
 import dev.hexnowloading.dungeonnowloading.util.StackNbt;
 import dev.hexnowloading.dungeonnowloading.util.ItemNbt;
@@ -51,14 +58,9 @@ import java.util.Arrays;
 
 public class PlayerStatueBlock extends BaseEntityBlock implements EntityBlock, SimpleWaterloggedBlock {
 
-    public static final MapCodec<PlayerStatueBlock> CODEC = simpleCodec(PlayerStatueBlock::new);
 
-    @Override
-    public MapCodec<PlayerStatueBlock> codec() {
-        return CODEC;
-    }
 
-    //public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    //public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
     public static final IntegerProperty ROTATION = BlockStateProperties.ROTATION_16;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
@@ -108,9 +110,9 @@ public class PlayerStatueBlock extends BaseEntityBlock implements EntityBlock, S
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction dir, BlockState neighbor, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
-        if (state.getValue(WATERLOGGED)) level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
-        return super.updateShape(state, dir, neighbor, level, pos, neighborPos);
+    public BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos pos, Direction dir, BlockPos neighborPos, BlockState neighbor, RandomSource randomSource) {
+        if (state.getValue(WATERLOGGED)) scheduledTickAccess.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+        return super.updateShape(state, level, scheduledTickAccess, pos, dir, neighborPos, neighbor, randomSource);
     }
 
     // ---- shapes / render ----
@@ -123,7 +125,7 @@ public class PlayerStatueBlock extends BaseEntityBlock implements EntityBlock, S
     @Override
     public RenderShape getRenderShape(BlockState state) {
         // Use BER (BlockEntityRenderer) to draw the full-body model
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.INVISIBLE;
     }
 
     // ---- block entity ----
@@ -182,16 +184,16 @@ public class PlayerStatueBlock extends BaseEntityBlock implements EntityBlock, S
     // ---- interaction: Brush to cycle pose ----
 
     @Override
-    protected net.minecraft.world.ItemInteractionResult useItemOn(ItemStack held, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected net.minecraft.world.InteractionResult useItemOn(ItemStack held, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         var be = level.getBlockEntity(pos);
-        if (!(be instanceof PlayerStatueBlockEntity statue)) return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        if (!(be instanceof PlayerStatueBlockEntity statue)) return net.minecraft.world.InteractionResult.TRY_WITH_EMPTY_HAND;
 
         // ---- PEDESTAL MATERIAL INTERACTION (server) ----
         if (!level.isClientSide()) {
             // Waxed statues block material edits
             if (statue.isWaxed()) {
                 level.playSound(null, pos, SoundEvents.WAXED_SIGN_INTERACT_FAIL, SoundSource.BLOCKS, 1.0f, 1.0f);
-                return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                return net.minecraft.world.InteractionResult.TRY_WITH_EMPTY_HAND;
             }
 
             // (A) TAKE offering: allowed even if the player's hand is NOT empty
@@ -199,7 +201,7 @@ public class PlayerStatueBlock extends BaseEntityBlock implements EntityBlock, S
                 ItemStack out = statue.takeMaterial();
                 if (!out.isEmpty()) {
                     boolean added = player.addItem(out);
-                    if (!added) player.drop(out, false);
+                    if (!added) player.drop(out, false, Prediction.SERVER_ONLY);
                     level.playSound(null, pos, SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.5f, 1.0f);
 
                     String ownerName = "Someone";
@@ -221,7 +223,7 @@ public class PlayerStatueBlock extends BaseEntityBlock implements EntityBlock, S
                     );
                     player.sendOverlayMessage(msg);
                 }
-                return net.minecraft.world.ItemInteractionResult.CONSUME;
+                return net.minecraft.world.InteractionResult.CONSUME;
             }
 
             // (B) PLACE offering: only when empty; don't consume in Creative
@@ -234,17 +236,17 @@ public class PlayerStatueBlock extends BaseEntityBlock implements EntityBlock, S
                         held.shrink(1);
                     }
                     level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 0.6f, 1.2f);
-                    return net.minecraft.world.ItemInteractionResult.CONSUME;
+                    return net.minecraft.world.InteractionResult.CONSUME;
                 }
             }
         } else {
             if (statue.isOccupied() || PlayerStatueBlockEntity.tierFromItem(held) != PlayerStatueBlockEntity.NotchTier.NONE) {
-                return net.minecraft.world.ItemInteractionResult.SUCCESS;
+                return net.minecraft.world.InteractionResult.SUCCESS;
             }
         }
 
         // Keep your sign-editing behind the flag, unchanged
-        if (!ENABLE_SIGN_EDIT) return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        if (!ENABLE_SIGN_EDIT) return net.minecraft.world.InteractionResult.TRY_WITH_EMPTY_HAND;
 
         // --- BRUSH: cycle pose (like you had) ---
         if (held.is(Items.BRUSH)) {
@@ -257,14 +259,14 @@ public class PlayerStatueBlock extends BaseEntityBlock implements EntityBlock, S
                 level.playSound(null, pos, SoundEvents.BRUSH_GENERIC, SoundSource.BLOCKS, 0.6f, 1.2f);
                 level.levelEvent(2001, pos, Block.getId(state));
             }
-            return net.minecraft.world.ItemInteractionResult.sidedSuccess(level.isClientSide());
+            return net.minecraft.world.InteractionResult.SUCCESS;
         }
 
         // --- CLIENT: wait for server to decide (just like SignBlock) ---
         if (level.isClientSide()) {
             // If you want to mimic SignBlock exactly, return CONSUME here
             // so the client waits for the server to send the open-editor screen.
-            return statue.isWaxed() ? net.minecraft.world.ItemInteractionResult.SUCCESS : net.minecraft.world.ItemInteractionResult.CONSUME;
+            return statue.isWaxed() ? net.minecraft.world.InteractionResult.SUCCESS : net.minecraft.world.InteractionResult.CONSUME;
         }
 
         // --- SERVER below ---
@@ -272,12 +274,12 @@ public class PlayerStatueBlock extends BaseEntityBlock implements EntityBlock, S
         // If waxed: block edits (mirror sign behavior)
         if (statue.isWaxed()) {
             level.playSound(null, pos, SoundEvents.WAXED_SIGN_INTERACT_FAIL, SoundSource.BLOCKS, 1.0f, 1.0f);
-            return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return net.minecraft.world.InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
         // If another player is editing, block (mirror sign)
         if (otherPlayerIsEditing(player, statue)) {
-            return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return net.minecraft.world.InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
         // --- DYE / GLOW / UNGLOW like signs (only if not waxed and editable) ---
@@ -285,19 +287,19 @@ public class PlayerStatueBlock extends BaseEntityBlock implements EntityBlock, S
             statue.setAllText(Arrays.asList(statue.getLines()), dye.getDyeColor(), statue.isGlowingText());
             level.playSound(null, pos, SoundEvents.DYE_USE, SoundSource.BLOCKS, 0.8f, 1.0f);
             if (!player.isCreative()) held.shrink(1);
-            return net.minecraft.world.ItemInteractionResult.SUCCESS;
+            return net.minecraft.world.InteractionResult.SUCCESS;
         }
         if (held.is(Items.GLOW_INK_SAC)) {
             statue.setAllText(Arrays.asList(statue.getLines()), statue.getTextColor(), true);
             level.playSound(null, pos, SoundEvents.GLOW_INK_SAC_USE, SoundSource.BLOCKS, 0.8f, 1.0f);
             if (!player.isCreative()) held.shrink(1);
-            return net.minecraft.world.ItemInteractionResult.SUCCESS;
+            return net.minecraft.world.InteractionResult.SUCCESS;
         }
         if (held.is(Items.INK_SAC)) {
             statue.setAllText(Arrays.asList(statue.getLines()), statue.getTextColor(), false);
             level.playSound(null, pos, SoundEvents.INK_SAC_USE, SoundSource.BLOCKS, 0.8f, 1.0f);
             if (!player.isCreative()) held.shrink(1);
-            return net.minecraft.world.ItemInteractionResult.SUCCESS;
+            return net.minecraft.world.InteractionResult.SUCCESS;
         }
 
         // (Optional) Honeycomb/Axe for wax toggle like signs:
@@ -305,19 +307,19 @@ public class PlayerStatueBlock extends BaseEntityBlock implements EntityBlock, S
             if (statue.setWaxed(true)) {
                 level.playSound(null, pos, SoundEvents.HONEYCOMB_WAX_ON, SoundSource.BLOCKS, 1.0f, 1.0f);
                 if (!player.isCreative()) held.shrink(1);
-                return net.minecraft.world.ItemInteractionResult.SUCCESS;
+                return net.minecraft.world.InteractionResult.SUCCESS;
             }
         }
         if (held.is(Items.IRON_AXE) || held.is(Items.DIAMOND_AXE) || held.is(Items.NETHERITE_AXE) || held.is(Items.GOLDEN_AXE) || held.is(Items.STONE_AXE) || held.is(Items.WOODEN_AXE)) {
             if (statue.setWaxed(false)) {
                 level.playSound(null, pos, SoundEvents.AXE_WAX_OFF, SoundSource.BLOCKS, 1.0f, 1.0f);
-                return net.minecraft.world.ItemInteractionResult.SUCCESS;
+                return net.minecraft.world.InteractionResult.SUCCESS;
             }
         }
 
         // Server: empty hand opens editor
         if (!level.isClientSide() && held.isEmpty() && player instanceof ServerPlayer sp) {
-            if (statue.isWaxed()) return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            if (statue.isWaxed()) return net.minecraft.world.InteractionResult.TRY_WITH_EMPTY_HAND;
 
             statue.setAllowedEditor(sp.getUUID());
             statue.setChanged();
@@ -332,10 +334,10 @@ public class PlayerStatueBlock extends BaseEntityBlock implements EntityBlock, S
                     ),
                     sp
             );
-            return net.minecraft.world.ItemInteractionResult.SUCCESS;
+            return net.minecraft.world.InteractionResult.SUCCESS;
         }
 
-        return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return net.minecraft.world.InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     private static boolean otherPlayerIsEditing(Player player, PlayerStatueBlockEntity be) {

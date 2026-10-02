@@ -1092,7 +1092,7 @@ public class FairkeeperSerpentCallerEntity extends Entity {
     public InteractionResult interact(Player player, InteractionHand hand) {
         if (this.getPhase() < 1) {
             player.sendOverlayMessage(Component.translatable("entity.dungeonnowloading.fairkeeper_serpent_caller.right_click"));
-            return InteractionResult.sidedSuccess(this.level().isClientSide());
+            return InteractionResult.SUCCESS;
         }
         return super.interact(player, hand);
     }
@@ -1114,14 +1114,14 @@ public class FairkeeperSerpentCallerEntity extends Entity {
                 detectionBox
         );
         List<Identifier> soundsToStart = new ArrayList<>(List.of());
-        soundsToStart.add(DNLSounds.MUSIC_CLASH_OF_DUALITY_BASE.get().getLocation());
-        soundsToStart.add(DNLSounds.MUSIC_CLASH_OF_DUALITY_BOROS.get().getLocation());
-        soundsToStart.add(DNLSounds.MUSIC_CLASH_OF_DUALITY_OUROS.get().getLocation());
+        soundsToStart.add(DNLSounds.MUSIC_CLASH_OF_DUALITY_BASE.get().location());
+        soundsToStart.add(DNLSounds.MUSIC_CLASH_OF_DUALITY_BOROS.get().location());
+        soundsToStart.add(DNLSounds.MUSIC_CLASH_OF_DUALITY_OUROS.get().location());
         for (ServerPlayer player : nearbyPlayers) {
             for (Identifier sound : soundsToStart) {
                 Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(this.getId(), sound, SoundSource.MUSIC, 0, 1.0f, false, ARENA_SIZE, ARENA_SIZE), player);
             }
-            Services.NETWORK.sendToPlayer(new S2CFadeInTickingSoundPacket(this.getId(), DNLSounds.MUSIC_CLASH_OF_DUALITY_BASE.get().getLocation(), TickingSoundTarget.NEWEST, 1.0f, 60), player);
+            Services.NETWORK.sendToPlayer(new S2CFadeInTickingSoundPacket(this.getId(), DNLSounds.MUSIC_CLASH_OF_DUALITY_BASE.get().location(), TickingSoundTarget.NEWEST, 1.0f, 60), player);
             Services.NETWORK.sendToPlayer(new S2CFadeOutBackgroundMusicSoundPacket(60), player);
         }
     }
@@ -1134,14 +1134,14 @@ public class FairkeeperSerpentCallerEntity extends Entity {
                 detectionBox
         );
         for (ServerPlayer player : nearbyPlayers) {
-            Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(this.getId(), DNLSounds.MUSIC_CLASH_OF_DUALITY_BASE.get().getLocation(), SoundSource.MUSIC, 1, 1.0f, false, ARENA_SIZE, ARENA_SIZE), player);
+            Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(this.getId(), DNLSounds.MUSIC_CLASH_OF_DUALITY_BASE.get().location(), SoundSource.MUSIC, 1, 1.0f, false, ARENA_SIZE, ARENA_SIZE), player);
             if (this.isBorosDefeated > 2) {
-                Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(this.getId(), DNLSounds.MUSIC_CLASH_OF_DUALITY_OUROS.get().getLocation(), SoundSource.MUSIC, 1, 1.0f, false, ARENA_SIZE, ARENA_SIZE), player);
+                Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(this.getId(), DNLSounds.MUSIC_CLASH_OF_DUALITY_OUROS.get().location(), SoundSource.MUSIC, 1, 1.0f, false, ARENA_SIZE, ARENA_SIZE), player);
             } else if (this.isOurosDefeated > 2) {
-                Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(this.getId(), DNLSounds.MUSIC_CLASH_OF_DUALITY_BOROS.get().getLocation(), SoundSource.MUSIC, 1, 1.0f, false, ARENA_SIZE, ARENA_SIZE), player);
+                Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(this.getId(), DNLSounds.MUSIC_CLASH_OF_DUALITY_BOROS.get().location(), SoundSource.MUSIC, 1, 1.0f, false, ARENA_SIZE, ARENA_SIZE), player);
             } else {
-                Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(this.getId(), DNLSounds.MUSIC_CLASH_OF_DUALITY_OUROS.get().getLocation(), SoundSource.MUSIC, 0, 1.0f, false, ARENA_SIZE, ARENA_SIZE), player);
-                Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(this.getId(), DNLSounds.MUSIC_CLASH_OF_DUALITY_BOROS.get().getLocation(), SoundSource.MUSIC, 0, 1.0f, false, ARENA_SIZE, ARENA_SIZE), player);
+                Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(this.getId(), DNLSounds.MUSIC_CLASH_OF_DUALITY_OUROS.get().location(), SoundSource.MUSIC, 0, 1.0f, false, ARENA_SIZE, ARENA_SIZE), player);
+                Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(this.getId(), DNLSounds.MUSIC_CLASH_OF_DUALITY_BOROS.get().location(), SoundSource.MUSIC, 0, 1.0f, false, ARENA_SIZE, ARENA_SIZE), player);
             }
         }
     }
@@ -1155,9 +1155,9 @@ public class FairkeeperSerpentCallerEntity extends Entity {
         );
 
         List<Identifier> soundsToStop = new ArrayList<>(List.of());
-        soundsToStop.add(DNLSounds.MUSIC_CLASH_OF_DUALITY_BASE.get().getLocation());
-        soundsToStop.add(DNLSounds.MUSIC_CLASH_OF_DUALITY_BOROS.get().getLocation());
-        soundsToStop.add(DNLSounds.MUSIC_CLASH_OF_DUALITY_OUROS.get().getLocation());
+        soundsToStop.add(DNLSounds.MUSIC_CLASH_OF_DUALITY_BASE.get().location());
+        soundsToStop.add(DNLSounds.MUSIC_CLASH_OF_DUALITY_BOROS.get().location());
+        soundsToStop.add(DNLSounds.MUSIC_CLASH_OF_DUALITY_OUROS.get().location());
 
         for (ServerPlayer otherPlayer : nearbyPlayers) {
             for (Identifier sound : soundsToStop) {
@@ -1175,9 +1175,9 @@ public class FairkeeperSerpentCallerEntity extends Entity {
         );
 
         List<Identifier> soundsToStop = new ArrayList<>(List.of());
-        soundsToStop.add(DNLSounds.MUSIC_CLASH_OF_DUALITY_BASE.get().getLocation());
-        soundsToStop.add(DNLSounds.MUSIC_CLASH_OF_DUALITY_BOROS.get().getLocation());
-        soundsToStop.add(DNLSounds.MUSIC_CLASH_OF_DUALITY_OUROS.get().getLocation());
+        soundsToStop.add(DNLSounds.MUSIC_CLASH_OF_DUALITY_BASE.get().location());
+        soundsToStop.add(DNLSounds.MUSIC_CLASH_OF_DUALITY_BOROS.get().location());
+        soundsToStop.add(DNLSounds.MUSIC_CLASH_OF_DUALITY_OUROS.get().location());
 
         for (ServerPlayer otherPlayer : nearbyPlayers) {
             for (Identifier sound : soundsToStop) {
@@ -1195,7 +1195,7 @@ public class FairkeeperSerpentCallerEntity extends Entity {
         );
 
         for (ServerPlayer otherPlayer : nearbyPlayers) {
-            Services.NETWORK.sendToPlayer(new S2CFadeInTickingSoundPacket(this.getId(), DNLSounds.MUSIC_CLASH_OF_DUALITY_BOROS.get().getLocation(), TickingSoundTarget.NEWEST, 1.0f, 20), otherPlayer);
+            Services.NETWORK.sendToPlayer(new S2CFadeInTickingSoundPacket(this.getId(), DNLSounds.MUSIC_CLASH_OF_DUALITY_BOROS.get().location(), TickingSoundTarget.NEWEST, 1.0f, 20), otherPlayer);
         }
     }
 
@@ -1208,7 +1208,7 @@ public class FairkeeperSerpentCallerEntity extends Entity {
         );
 
         for (ServerPlayer otherPlayer : nearbyPlayers) {
-            Services.NETWORK.sendToPlayer(new S2CFadeInTickingSoundPacket(this.getId(), DNLSounds.MUSIC_CLASH_OF_DUALITY_OUROS.get().getLocation(), TickingSoundTarget.NEWEST, 1.0f, 20), otherPlayer);
+            Services.NETWORK.sendToPlayer(new S2CFadeInTickingSoundPacket(this.getId(), DNLSounds.MUSIC_CLASH_OF_DUALITY_OUROS.get().location(), TickingSoundTarget.NEWEST, 1.0f, 20), otherPlayer);
         }
     }
 

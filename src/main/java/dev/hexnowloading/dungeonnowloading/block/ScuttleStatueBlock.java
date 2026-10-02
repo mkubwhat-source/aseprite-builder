@@ -1,7 +1,10 @@
 package dev.hexnowloading.dungeonnowloading.block;
 
-import com.mojang.serialization.MapCodec;
 
+
+
+import net.minecraft.world.level.redstone.Orientation;
+import net.minecraft.server.level.ServerLevel;
 import dev.hexnowloading.dungeonnowloading.registry.DNLEnchantments;
 import dev.hexnowloading.dungeonnowloading.block.entity.ScuttleStatueBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -20,24 +23,18 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import org.jetbrains.annotations.Nullable;
 
 public class ScuttleStatueBlock extends BaseEntityBlock implements EntityBlock {
 
-    public static final MapCodec<ScuttleStatueBlock> CODEC = simpleCodec(ScuttleStatueBlock::new);
 
-    @Override
-    public MapCodec<ScuttleStatueBlock> codec() {
-        return CODEC;
-    }
 
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
 
-    private boolean playerDestroyed;
+    public boolean playerDestroyed;
     private boolean hasBeenSummoned;
 
     public ScuttleStatueBlock(Properties properties) {
@@ -67,7 +64,7 @@ public class ScuttleStatueBlock extends BaseEntityBlock implements EntityBlock {
         BlockPos blockPos = blockPlaceContext.getClickedPos();
         Level level = blockPlaceContext.getLevel();
         Direction direction = blockPlaceContext.getHorizontalDirection().getOpposite();
-        return blockPos.getY() < level.getMaxBuildHeight() - 1 && level.getBlockState(blockPos.above()).canBeReplaced(blockPlaceContext) ? this.defaultBlockState().setValue(FACING, direction).setValue(HALF, DoubleBlockHalf.LOWER) : null;
+        return blockPos.getY() < (level.getMaxY() + 1) - 1 && level.getBlockState(blockPos.above()).canBeReplaced(blockPlaceContext) ? this.defaultBlockState().setValue(FACING, direction).setValue(HALF, DoubleBlockHalf.LOWER) : null;
     }
 
     @Override
@@ -81,7 +78,7 @@ public class ScuttleStatueBlock extends BaseEntityBlock implements EntityBlock {
     }
 
     @Override
-    public void neighborChanged(BlockState blockState, Level level, BlockPos blockPos, Block block, BlockPos blockPos1, boolean b) {
+    public void neighborChanged(BlockState blockState, Level level, BlockPos blockPos, Block block, @Nullable Orientation orientation, boolean b) {
         if (level.isClientSide()) {
             return;
         }
@@ -109,7 +106,7 @@ public class ScuttleStatueBlock extends BaseEntityBlock implements EntityBlock {
         BlockPos upperBlockPos = blockPos.above();
         Direction direction = blockState.getValue(FACING);
         level.setBlock(upperBlockPos, this.defaultBlockState().setValue(FACING, direction).setValue(HALF, DoubleBlockHalf.UPPER), 3);
-        level.neighborChanged(upperBlockPos, this, upperBlockPos);
+        level.neighborChanged(upperBlockPos, this, null);
     }
 
     @Override
@@ -125,29 +122,14 @@ public class ScuttleStatueBlock extends BaseEntityBlock implements EntityBlock {
     }
 
     @Override
-    public void onRemove(BlockState blockState, Level level, BlockPos blockPos, BlockState newState, boolean isMoving) {
-
-        if (!level.isClientSide() && blockState.getBlock() != newState.getBlock()) {
-            if (blockState.getValue(HALF) == DoubleBlockHalf.UPPER) {
-                level.destroyBlock(blockPos.below(), false);
-            }
-            if (blockState.getValue(HALF) == DoubleBlockHalf.LOWER) {
-                level.destroyBlock(blockPos.above(), true);
-            }
-
-            if (playerDestroyed && blockState.getValue(HALF) == DoubleBlockHalf.LOWER) {
-                if (blockState.getBlock() instanceof ScuttleStatueBlock) {
-                    ScuttleStatueBlockEntity blockEntity = (ScuttleStatueBlockEntity) level.getBlockEntity(blockPos);
-                    if (blockEntity != null) {
-                        BlockPos summonPos = blockPos;
-                        blockEntity.alert(summonPos, blockEntity);
-                    }
-                }
-            }
-
+    protected void affectNeighborsAfterRemoval(BlockState blockState, ServerLevel level, BlockPos blockPos, boolean isMoving) {
+        if (blockState.getValue(HALF) == DoubleBlockHalf.UPPER) {
+            level.destroyBlock(blockPos.below(), false);
         }
-
-        super.onRemove(blockState, level, blockPos, newState, isMoving);
+        if (blockState.getValue(HALF) == DoubleBlockHalf.LOWER) {
+            level.destroyBlock(blockPos.above(), true);
+        }
+        super.affectNeighborsAfterRemoval(blockState, level, blockPos, isMoving);
     }
 
     @Nullable

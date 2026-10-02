@@ -11,7 +11,6 @@ import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.entity.client.model.copper_creep.CopperCreepModel;
 import dev.hexnowloading.dungeonnowloading.entity.passive.CopperCreepEntity;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;

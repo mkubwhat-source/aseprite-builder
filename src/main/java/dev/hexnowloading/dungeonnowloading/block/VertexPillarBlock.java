@@ -1,6 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.block;
 
-import com.mojang.serialization.MapCodec;
+
+
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.ScheduledTickAccess;
 
 import dev.hexnowloading.dungeonnowloading.block.entity.VertexPillarBlockEntity;
 import dev.hexnowloading.dungeonnowloading.registry.DNLBlockEntityTypes;
@@ -38,12 +41,7 @@ import java.util.stream.Collectors;
 
 public class VertexPillarBlock extends BaseEntityBlock implements EntityBlock, SimpleWaterloggedBlock {
 
-    public static final MapCodec<VertexPillarBlock> CODEC = simpleCodec(VertexPillarBlock::new);
 
-    @Override
-    public MapCodec<VertexPillarBlock> codec() {
-        return CODEC;
-    }
 
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -71,7 +69,7 @@ public class VertexPillarBlock extends BaseEntityBlock implements EntityBlock, S
     public BlockState getStateForPlacement(BlockPlaceContext blockPlaceContext) {
         BlockPos blockPos = blockPlaceContext.getClickedPos();
         Level level = blockPlaceContext.getLevel();
-        return blockPos.getY() < level.getMaxBuildHeight() - 1 && level.getBlockState(blockPos.above()).canBeReplaced(blockPlaceContext) ? this.defaultBlockState().setValue(HALF, DoubleBlockHalf.LOWER).setValue(WATERLOGGED, blockPlaceContext.getLevel().getFluidState(blockPlaceContext.getClickedPos()).getType() == Fluids.WATER) : null;
+        return blockPos.getY() < (level.getMaxY() + 1) - 1 && level.getBlockState(blockPos.above()).canBeReplaced(blockPlaceContext) ? this.defaultBlockState().setValue(HALF, DoubleBlockHalf.LOWER).setValue(WATERLOGGED, blockPlaceContext.getLevel().getFluidState(blockPlaceContext.getClickedPos()).getType() == Fluids.WATER) : null;
     }
 
     @Override
@@ -90,7 +88,7 @@ public class VertexPillarBlock extends BaseEntityBlock implements EntityBlock, S
     }
 
     @Override
-    public BlockState updateShape(BlockState blockState, Direction direction, BlockState oldBlockState, LevelAccessor levelAccessor, BlockPos blockPos, BlockPos oldBlockPos) {
+    public BlockState updateShape(BlockState blockState, LevelReader levelAccessor, ScheduledTickAccess scheduledTickAccess, BlockPos blockPos, Direction direction, BlockPos oldBlockPos, BlockState oldBlockState, RandomSource randomSource) {
         DoubleBlockHalf doubleBlockHalf = blockState.getValue(HALF);
         BlockState topBlockState = levelAccessor.getBlockState(blockPos.above());
         if (!blockState.canSurvive(levelAccessor, blockPos)) {
@@ -103,9 +101,9 @@ public class VertexPillarBlock extends BaseEntityBlock implements EntityBlock, S
             return Blocks.AIR.defaultBlockState();
         }
         if (blockState.getValue(WATERLOGGED)) {
-            levelAccessor.scheduleTick(blockPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelAccessor));
+            scheduledTickAccess.scheduleTick(blockPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelAccessor));
         }
-        return super.updateShape(blockState, direction, oldBlockState, levelAccessor, blockPos, oldBlockPos);
+        return super.updateShape(blockState, levelAccessor, scheduledTickAccess, blockPos, direction, oldBlockPos, oldBlockState, randomSource);
     }
 
     @Override

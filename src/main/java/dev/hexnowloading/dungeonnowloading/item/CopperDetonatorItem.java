@@ -15,7 +15,6 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
@@ -84,10 +83,10 @@ public class CopperDetonatorItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
         player.startUsingItem(hand);
-        return InteractionResultHolder.fail(itemStack);
+        return InteractionResult.FAIL;
     }
 
     @Override
@@ -131,7 +130,7 @@ public class CopperDetonatorItem extends Item {
                 if (consumeCopperBlockIfAvailable(player)) {
                     launchCreep(level, player, itemStack);
                     player.getCooldowns().addCooldown(this, SUMMON_COOLDOWN);
-                    itemStack.hurtAndBreak(1, player, net.minecraft.world.entity.LivingEntity.getSlotForHand(hand));
+                    itemStack.hurtAndBreak(1, player, hand.asEquipmentSlot());
                     player.swing(hand);
                 }
             }

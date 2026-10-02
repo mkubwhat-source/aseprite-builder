@@ -24,6 +24,6 @@ public interface LocomotionLockable {
         }
 
         this.applyLocomotionLock();
-        mob.hasImpulse = true;
+        mob.needsSync = true;
     }
 }

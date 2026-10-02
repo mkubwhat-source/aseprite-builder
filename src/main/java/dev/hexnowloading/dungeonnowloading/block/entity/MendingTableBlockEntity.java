@@ -278,4 +278,18 @@ public class MendingTableBlockEntity extends BlockEntity implements MenuProvider
     private boolean isSpecialMendingConversion(ItemStack stack) {
         return stack.is(DNLItems.MUSIC_DISC_BROKEN_AOTSUGI.get());
     }
+
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, net.minecraft.world.level.block.state.BlockState state) {
+        if (this.level == null) {
+            return;
+        }
+        for (int i = 0; i < 3; i++) {
+            ItemStack stack = this.getItem(i);
+            if (!stack.isEmpty()) {
+                net.minecraft.world.Containers.dropItemStack(this.level, pos.getX(), pos.getY(), pos.getZ(), stack.copy());
+            }
+        }
+        this.clearContent();
+    }
 }

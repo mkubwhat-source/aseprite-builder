@@ -1,6 +1,5 @@
 package dev.hexnowloading.dungeonnowloading.block;
 
-import com.mojang.serialization.MapCodec;
 
 import dev.hexnowloading.dungeonnowloading.block.entity.MendingAuraBlockEntity;
 import dev.hexnowloading.dungeonnowloading.registry.DNLParticleTypes;
@@ -24,7 +23,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.material.FluidState;
@@ -40,19 +38,14 @@ import java.util.List;
 
 public class MendingAuraBlock extends BaseEntityBlock implements SimpleWaterloggedBlock {
 
-    public static final MapCodec<MendingAuraBlock> CODEC = simpleCodec(MendingAuraBlock::new);
 
-    @Override
-    public MapCodec<MendingAuraBlock> codec() {
-        return CODEC;
-    }
 
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final BooleanProperty FENCE_LIKE = BooleanProperty.create("fence_like");
     public static final BooleanProperty WALL_LIKE = BooleanProperty.create("wall_like");
     public static final BooleanProperty STAIR_LIKE = BooleanProperty.create("stair_like");
     public static final BooleanProperty PANE_LIKE = BooleanProperty.create("pane_like");
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
     public static final EnumProperty<Half> HALF = BlockStateProperties.HALF;
     private static final SoundType SOUND_TYPE = new SoundType(1.0F, 1.0F, SoundEvents.STONE_BREAK, SoundEvents.STONE_STEP, DNLSounds.MENDING_AURA_POP.get(), SoundEvents.STONE_HIT, SoundEvents.STONE_FALL);
 
@@ -205,7 +198,7 @@ public class MendingAuraBlock extends BaseEntityBlock implements SimpleWaterlogg
         return 1.0F;
     }
 
-    public boolean propagatesSkylightDown(BlockState p_48740_, BlockGetter p_48741_, BlockPos p_48742_) {
+    public boolean propagatesSkylightDown(BlockState p_48740_) {
         return true;
     }
 
@@ -250,7 +243,7 @@ public class MendingAuraBlock extends BaseEntityBlock implements SimpleWaterlogg
     }
 
     @Override
-    public VoxelShape getOcclusionShape(BlockState state, BlockGetter blockGetter, BlockPos pos) {
+    public VoxelShape getOcclusionShape(BlockState state) {
         BlockState storedState = this.getStoredBlockState(blockGetter, pos);
         return storedState != null && storedState.canOcclude() ? storedState.getOcclusionShape(blockGetter, pos) : Shapes.empty();
     }
@@ -328,7 +321,7 @@ public class MendingAuraBlock extends BaseEntityBlock implements SimpleWaterlogg
             double y = blockPos.getY() + randomSource.nextDouble() + spawnOffset.y * (0.5F + randomSource.nextDouble() * 1.0F);
             double z = blockPos.getZ() + randomSource.nextDouble() + spawnOffset.z * (0.5F + randomSource.nextDouble() * 1.0F);
 
-            level.addParticle(DNLParticleTypes.MENDING_POP_AND_RUNE_PARTICLE.get(), true, x, y, z, -velocity.x, -velocity.y, -velocity.z);
+            level.addParticle(DNLParticleTypes.MENDING_POP_AND_RUNE_PARTICLE.get(), true, false, x, y, z, -velocity.x, -velocity.y, -velocity.z);
         }
     }
 }

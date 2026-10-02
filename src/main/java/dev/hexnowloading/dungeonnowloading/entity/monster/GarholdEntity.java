@@ -818,7 +818,7 @@ public class GarholdEntity extends Monster {
         );
 
         entity.hurtMarked = true;
-        entity.hasImpulse = true;
+        entity.needsSync = true;
         entity.setOnGround(false);
     }
 
@@ -964,7 +964,7 @@ public class GarholdEntity extends Monster {
                 detectionBox
         );
         for (ServerPlayer player : nearbyPlayers) {
-            Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(this.getId(), soundEvent.getLocation(), SoundSource.HOSTILE), player);
+            Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(this.getId(), soundEvent.location(), SoundSource.HOSTILE), player);
         }
     }
 
@@ -976,7 +976,7 @@ public class GarholdEntity extends Monster {
                 detectionBox
         );
         List<Identifier> soundsToStop = new ArrayList<>(List.of());
-        soundsToStop.add(DNLSounds.GARHOLD_CLOSING.get().getLocation());
+        soundsToStop.add(DNLSounds.GARHOLD_CLOSING.get().location());
         for (ServerPlayer player : nearbyPlayers) {
             for (Identifier sound : soundsToStop) {
                 Services.NETWORK.sendToPlayer(new S2CStopTickingSoundPacket(this.getId(), sound, 20, true), player);

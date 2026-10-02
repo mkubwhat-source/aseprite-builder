@@ -146,7 +146,7 @@ public class GarholdSideCaptureGoal extends Goal {
         if (mob.level().noCollision(mob, next)) {
             Vec3 v = mob.getDeltaMovement();
             mob.setDeltaMovement(step.x, v.y, step.z);
-            mob.hasImpulse = true;
+            mob.needsSync = true;
         } else {
             // end dash early on collision
             ticks = WINDUP_TICKS + DASH_TICKS;

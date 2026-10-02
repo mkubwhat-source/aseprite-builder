@@ -82,7 +82,7 @@ public class VertexBowItem extends BowItem {
                             arrow.igniteForSeconds(100);
                         }
 
-                        itemStack.hurtAndBreak(1, player, net.minecraft.world.entity.LivingEntity.getSlotForHand(player.getUsedItemHand()));
+                        itemStack.hurtAndBreak(1, player, player.getUsedItemHand().asEquipmentSlot());
                         if (b1 || player.getAbilities().instabuild && (projectile.is(Items.SPECTRAL_ARROW) || projectile.is(Items.TIPPED_ARROW))) {
                             arrow.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
                         }
@@ -124,14 +124,14 @@ public class VertexBowItem extends BowItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack itemInHand = player.getItemInHand(hand);
         boolean b = !player.getProjectile(itemInHand).isEmpty();
         if (!player.getAbilities().instabuild && !b) {
-            return InteractionResultHolder.fail(itemInHand);
+            return InteractionResult.FAIL;
         } else {
             player.startUsingItem(hand);
-            return InteractionResultHolder.consume(itemInHand);
+            return InteractionResult.CONSUME;
         }
     }
 

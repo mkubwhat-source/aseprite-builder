@@ -183,7 +183,7 @@ public class GarholdReturnToChainGoal extends Goal {
                 vel.z * xzDamping + addZ
         );
 
-        mob.hasImpulse = true;
+        mob.needsSync = true;
     }
 
     private BlockPos findNearestChainBottom(Level level, BlockPos center) {

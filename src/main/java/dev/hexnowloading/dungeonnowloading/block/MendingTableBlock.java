@@ -1,6 +1,11 @@
 package dev.hexnowloading.dungeonnowloading.block;
 
-import com.mojang.serialization.MapCodec;
+
+
+
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.world.level.LevelReader;
 
 import dev.hexnowloading.dungeonnowloading.block.entity.MendingTableBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -34,12 +39,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 //add implements menuprovider
 public class MendingTableBlock extends BaseEntityBlock implements SimpleWaterloggedBlock {
 
-    public static final MapCodec<MendingTableBlock> CODEC = simpleCodec(MendingTableBlock::new);
 
-    @Override
-    public MapCodec<MendingTableBlock> codec() {
-        return CODEC;
-    }
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     // Tight hitbox matching the model: base slab (0-6), central pillar (3-13 from y 4-10), and top slab (10-16)
@@ -54,30 +54,6 @@ public class MendingTableBlock extends BaseEntityBlock implements SimpleWaterlog
         registerDefaultState(stateDefinition.any().setValue(WATERLOGGED, false));
     }
 
-    @Override
-    public void onRemove(BlockState state, Level lvl, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (!state.is(newState.getBlock())) {
-            BlockEntity be = lvl.getBlockEntity(pos);
-            if (be instanceof MendingTableBlockEntity mending) {
-                NonNullList<ItemStack> drops = NonNullList.create();
-                for (int i = 0; i < 3; i++) {
-                    ItemStack stack = mending.getItem(i);
-                    if (!stack.isEmpty()) {
-                        drops.add(stack.copy());
-                    }
-                }
-                for (ItemStack stack : drops) {
-                    Containers.dropItemStack(lvl, pos.getX(), pos.getY(), pos.getZ(), stack);
-                }
-                mending.clearContent();
-                lvl.updateNeighbourForOutputSignal(pos, this);
-            } else if (be instanceof Container container) {
-                Containers.dropContents(lvl, pos, container);
-                lvl.updateNeighbourForOutputSignal(pos, this);
-            }
-        }
-        super.onRemove(state, lvl, pos, newState, isMoving);
-    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> b) {
@@ -95,11 +71,11 @@ public class MendingTableBlock extends BaseEntityBlock implements SimpleWaterlog
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+    public BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource randomSource) {
         if (state.getValue(BlockStateProperties.WATERLOGGED)) {
-            level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+            scheduledTickAccess.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
-        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
+        return super.updateShape(state, level, scheduledTickAccess, pos, direction, neighborPos, neighborState, randomSource);
     }
 
 

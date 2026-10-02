@@ -204,7 +204,7 @@ public class BallistaGolemEntity extends Monster implements Enemy, SlumberingEnt
                 detectionBox
         );
         for (ServerPlayer player : nearbyPlayers) {
-            Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(this.getId(), soundEvent.getLocation(), SoundSource.HOSTILE), player);
+            Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(this.getId(), soundEvent.location(), SoundSource.HOSTILE), player);
         }
     }
 
@@ -216,8 +216,8 @@ public class BallistaGolemEntity extends Monster implements Enemy, SlumberingEnt
                 detectionBox
         );
         List<Identifier> soundsToStop = new ArrayList<>(List.of());
-        soundsToStop.add(DNLSounds.BALLISTA_GOLEM_WAKING.get().getLocation());
-        soundsToStop.add(DNLSounds.BALLISTA_GOLEM_RELOAD.get().getLocation());
+        soundsToStop.add(DNLSounds.BALLISTA_GOLEM_WAKING.get().location());
+        soundsToStop.add(DNLSounds.BALLISTA_GOLEM_RELOAD.get().location());
         for (ServerPlayer player : nearbyPlayers) {
             for (Identifier sound : soundsToStop) {
                 Services.NETWORK.sendToPlayer(new S2CStopTickingSoundPacket(this.getId(), sound, 20, true), player);

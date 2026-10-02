@@ -1,5 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.block;
 
+
+
+import net.minecraft.world.level.redstone.Orientation;
+import net.minecraft.server.level.ServerLevel;
 import dev.hexnowloading.dungeonnowloading.registry.DNLEnchantments;
 import dev.hexnowloading.dungeonnowloading.block.entity.BallistaGolemStatueBlockEntity;
 import dev.hexnowloading.dungeonnowloading.block.property.BallistaGolemStatueStates;
@@ -19,7 +23,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,7 +30,7 @@ import java.util.Map;
 
 public class BallistaGolemStatuePartBlock extends Block implements SimpleWaterloggedBlock {
 
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
     public static final EnumProperty<BallistaGolemStatueStates> STATES = DNLProperties.BALLISTA_GOLEM_STATUE_PARTS;
     private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
@@ -45,32 +48,29 @@ public class BallistaGolemStatuePartBlock extends Block implements SimpleWaterlo
     }
 
     @Override
-    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (!world.isClientSide() && state.getBlock() != newState.getBlock()) {
-            BallistaGolemStatueStates partState = state.getValue(STATES);
-            Direction partFacing = state.getValue(FACING);
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel world, BlockPos pos, boolean isMoving) {
+        BallistaGolemStatueStates partState = state.getValue(STATES);
+        Direction partFacing = state.getValue(FACING);
 
-            BlockPos corePos = findCorePosition(pos, partState, partFacing);
+        BlockPos corePos = findCorePosition(pos, partState, partFacing);
 
-            BlockState coreState = world.getBlockState(corePos);
-            if (!(coreState.getBlock() instanceof BallistaGolemStatueBlock ballistaGolemStatueBlock)) {
-                return;
-            }
-
-            ballistaGolemStatueBlock.setPlayerDestroyed(this.playerDestroyedPart);
-
-            Direction coreFacing = coreState.getValue(FACING);
-
-            for (Map.Entry<BallistaGolemStatueStates, BlockPos> entry : BallistaGolemStatueBlock.statePositions.entrySet()) {
-                BlockPos relativePos = entry.getValue();
-                BlockPos adjustedPos = applyReverseRotation(relativePos, coreFacing);
-                BlockPos partPos = corePos.offset(adjustedPos);
-                world.destroyBlock(partPos, false);
-            }
-            world.destroyBlock(corePos, false);
+        BlockState coreState = world.getBlockState(corePos);
+        if (!(coreState.getBlock() instanceof BallistaGolemStatueBlock ballistaGolemStatueBlock)) {
+            return;
         }
 
-        super.onRemove(state, world, pos, newState, isMoving);
+        ballistaGolemStatueBlock.setPlayerDestroyed(this.playerDestroyedPart);
+
+        Direction coreFacing = coreState.getValue(FACING);
+
+        for (Map.Entry<BallistaGolemStatueStates, BlockPos> entry : BallistaGolemStatueBlock.statePositions.entrySet()) {
+            BlockPos relativePos = entry.getValue();
+            BlockPos adjustedPos = applyReverseRotation(relativePos, coreFacing);
+            BlockPos partPos = corePos.offset(adjustedPos);
+            world.destroyBlock(partPos, false);
+        }
+        world.destroyBlock(corePos, false);
+        super.affectNeighborsAfterRemoval(state, world, pos, isMoving);
     }
 
     @Override
@@ -107,7 +107,7 @@ public class BallistaGolemStatuePartBlock extends Block implements SimpleWaterlo
     }
 
     @Override
-    public void neighborChanged(BlockState blockState, Level level, BlockPos blockPos, Block block, BlockPos blockPos1, boolean b) {
+    public void neighborChanged(BlockState blockState, Level level, BlockPos blockPos, Block block, @Nullable Orientation orientation, boolean b) {
         if (level.isClientSide()) {
             return;
         }

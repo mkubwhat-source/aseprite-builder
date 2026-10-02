@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.block;
 
+
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import dev.hexnowloading.dungeonnowloading.registry.DNLDamageTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
@@ -55,7 +57,7 @@ public class SpikesBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
+    public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
         if (entity instanceof Player player && player.isCreative()) return;
         if (entity instanceof LivingEntity livingEntity && entity.isAlive()) {
             livingEntity.makeStuckInBlock(blockState, new Vec3(0.5F, 0.5F, 0.5F));

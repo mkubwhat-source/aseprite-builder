@@ -1,5 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.block;
 
+
+
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.level.redstone.Orientation;
 import dev.hexnowloading.dungeonnowloading.registry.DNLBlocks;
 import dev.hexnowloading.dungeonnowloading.registry.DNLTags;
 import net.minecraft.core.BlockPos;
@@ -37,7 +41,7 @@ public class StoneNotchBlock extends Block {
     }
 
     @Override
-    protected net.minecraft.world.ItemInteractionResult useItemOn(ItemStack itemInHand, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
+    protected net.minecraft.world.InteractionResult useItemOn(ItemStack itemInHand, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
         if (itemInHand.is(DNLTags.STONE_NOTCH_MATERIAL)) {
             if (blockState.is(DNLBlocks.STONE_NOTCH.get())) {
                 playSound(level, blockPos, SoundEvents.ITEM_FRAME_ADD_ITEM);
@@ -46,18 +50,18 @@ public class StoneNotchBlock extends Block {
                 if (!player.getAbilities().instabuild) {
                     itemInHand.shrink(1);
                 }
-                return net.minecraft.world.ItemInteractionResult.sidedSuccess(level.isClientSide());
+                return net.minecraft.world.InteractionResult.SUCCESS;
             } else {
-                return popOutMaterial(level, blockState, blockPos) ? net.minecraft.world.ItemInteractionResult.sidedSuccess(level.isClientSide()) : net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                return popOutMaterial(level, blockState, blockPos) ? net.minecraft.world.InteractionResult.SUCCESS : net.minecraft.world.InteractionResult.TRY_WITH_EMPTY_HAND;
             }
         }
         if (itemInHand.isEmpty()) {
             if (blockState.is(DNLBlocks.STONE_NOTCH.get())) {
-                return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                return net.minecraft.world.InteractionResult.TRY_WITH_EMPTY_HAND;
             }
-            return popOutMaterial(level, blockState, blockPos) ? net.minecraft.world.ItemInteractionResult.sidedSuccess(level.isClientSide()) : net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return popOutMaterial(level, blockState, blockPos) ? net.minecraft.world.InteractionResult.SUCCESS : net.minecraft.world.InteractionResult.TRY_WITH_EMPTY_HAND;
         }
-        return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return net.minecraft.world.InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     private void setNotchBlock(Item item, Level level, BlockPos blockPos) {
@@ -123,7 +127,7 @@ public class StoneNotchBlock extends Block {
     }
 
     @Override
-    public void neighborChanged(BlockState blockState, Level level, BlockPos blockPos, Block block, BlockPos blockPos1, boolean b) {
+    public void neighborChanged(BlockState blockState, Level level, BlockPos blockPos, Block block, @Nullable Orientation orientation, boolean b) {
         if (!level.isClientSide()) {
             if (!blockState.is(DNLBlocks.STONE_NOTCH.get()) && level.hasNeighborSignal(blockPos)) {
                 popOutMaterial(level, blockState, blockPos);
@@ -142,7 +146,7 @@ public class StoneNotchBlock extends Block {
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState blockState, Level level, BlockPos blockPos) {
+    public int getAnalogOutputSignal(BlockState blockState, Level level, BlockPos blockPos, Direction direction) {
         return notchMaterial.signalStrength;
     }
 

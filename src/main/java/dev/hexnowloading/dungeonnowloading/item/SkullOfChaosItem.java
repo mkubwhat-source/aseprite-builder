@@ -30,11 +30,11 @@ public class SkullOfChaosItem extends Item implements BossSummoningItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
         if (level.isClientSide()) {
-            return InteractionResultHolder.pass(stack);
+            return InteractionResult.PASS;
         }
 
         AABB aabb = new AABB(player.blockPosition()).inflate(16);
@@ -52,7 +52,7 @@ public class SkullOfChaosItem extends Item implements BossSummoningItem {
 
                 player.getCooldowns().addCooldown(this, 7);
                 player.awardStat(Stats.ITEM_USED.get(this));
-                return InteractionResultHolder.consume(stack);
+                return InteractionResult.CONSUME;
             }
         }
 
@@ -74,10 +74,10 @@ public class SkullOfChaosItem extends Item implements BossSummoningItem {
                 e.startBossFight(stack);
             }
 
-            return InteractionResultHolder.consume(stack);
+            return InteractionResult.CONSUME;
         }
 
-        return InteractionResultHolder.fail(stack);
+        return InteractionResult.FAIL;
     }
 
 

@@ -1,7 +1,12 @@
 package dev.hexnowloading.dungeonnowloading.block;
 
-import com.mojang.serialization.MapCodec;
 
+
+
+
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.redstone.Orientation;
 import dev.hexnowloading.dungeonnowloading.block.entity.FairkeeperChestBlockEntity;
 import dev.hexnowloading.dungeonnowloading.block.entity.FairkeeperSpawnerBlockEntity;
 import dev.hexnowloading.dungeonnowloading.registry.DNLBlockEntityTypes;
@@ -26,12 +31,7 @@ import java.util.List;
 
 public class FairkeeperSpawnerBlock extends BaseEntityBlock implements EntityBlock {
 
-    public static final MapCodec<FairkeeperSpawnerBlock> CODEC = simpleCodec(FairkeeperSpawnerBlock::new);
 
-    @Override
-    public MapCodec<FairkeeperSpawnerBlock> codec() {
-        return CODEC;
-    }
 
     public static final BooleanProperty FAIRKEEPER_ALERT = DNLProperties.FAIRKEEPER_ALERT;
 
@@ -42,7 +42,7 @@ public class FairkeeperSpawnerBlock extends BaseEntityBlock implements EntityBlo
 
 
     @Override
-    public void playerDestroy(Level level, Player player, BlockPos blockPos, BlockState blockState, @Nullable BlockEntity blockEntity, ItemStack itemStack) {
+    public void playerDestroy(ServerLevel level, ServerPlayer player, BlockPos blockPos, BlockState blockState, @Nullable BlockEntity blockEntity, ItemStack itemStack) {
         super.playerDestroy(level, player, blockPos, blockState, blockEntity, itemStack);
         if (blockEntity instanceof FairkeeperSpawnerBlockEntity fairkeeperSpawnerBlockEntity) {
             fairkeeperSpawnerBlockEntity.destroyed();
@@ -74,7 +74,7 @@ public class FairkeeperSpawnerBlock extends BaseEntityBlock implements EntityBlo
 
 
     @Override
-    public void neighborChanged(BlockState blockState, Level level, BlockPos blockPos, Block block, BlockPos blockPos1, boolean b) {
+    public void neighborChanged(BlockState blockState, Level level, BlockPos blockPos, Block block, @Nullable Orientation orientation, boolean b) {
         if (level.isClientSide()) {
             return;
         }

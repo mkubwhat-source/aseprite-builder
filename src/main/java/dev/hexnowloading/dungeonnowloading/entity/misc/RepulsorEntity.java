@@ -193,7 +193,7 @@ public class RepulsorEntity extends Mob {
                 this.setShieldHealth(this.getShieldHealth() + SHIELD_HEAL_AMOUNT);
             }
 
-            return InteractionResult.sidedSuccess(this.level().isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         return super.mobInteract(player, interactionHand);
@@ -293,7 +293,7 @@ public class RepulsorEntity extends Mob {
                                     -motion.y * 0.1f,
                                     -motion.z * 0.1f
                             ));
-                            thrownTrident.hasImpulse = true;
+                            thrownTrident.needsSync = true;
                         } else {
                             continue;
                         }

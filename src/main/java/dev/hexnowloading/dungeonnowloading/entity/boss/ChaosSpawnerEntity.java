@@ -355,7 +355,7 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
     public InteractionResult mobInteract(Player player, InteractionHand interactionHand) {
         if (this.isAlive() && this.entityData.get(PHASE) < 1 && this.getState() != State.AWAKENING) {
             player.sendOverlayMessage(Component.translatable("entity.dungeonnowloading.chaos_spawner.right_click"));
-            return InteractionResult.sidedSuccess(this.level().isClientSide());
+            return InteractionResult.SUCCESS;
         } else {
             return super.mobInteract(player, interactionHand);
         }
@@ -896,8 +896,8 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
                 detectionBox
         );
         List<Identifier> soundsToStart = new ArrayList<>(List.of());
-        soundsToStart.add(DNLSounds.MUSIC_HELLSPAWN_BASE.get().getLocation());
-        soundsToStart.add(DNLSounds.MUSIC_HELLSPAWN_OVERLAY.get().getLocation());
+        soundsToStart.add(DNLSounds.MUSIC_HELLSPAWN_BASE.get().location());
+        soundsToStart.add(DNLSounds.MUSIC_HELLSPAWN_OVERLAY.get().location());
         for (ServerPlayer player : nearbyPlayers) {
             for (Identifier sound : soundsToStart) {
                 Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(this.getId(), sound, SoundSource.MUSIC, 1.0F, 1.0f, false, radius, radius), player);
@@ -916,14 +916,14 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
         for (ServerPlayer player : nearbyPlayers) {
             Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(
                     this.getId(),
-                    DNLSounds.MUSIC_HELLSPAWN_BASE.get().getLocation(),
+                    DNLSounds.MUSIC_HELLSPAWN_BASE.get().location(),
                     SoundSource.MUSIC,
                     -1, 1.0f, 1.0f, false, radius, radius
             ), player);
             int overlayVol = (this.getPhase() > 1) ? 1 : 0;
             Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(
                     this.getId(),
-                    DNLSounds.MUSIC_HELLSPAWN_OVERLAY.get().getLocation(),
+                    DNLSounds.MUSIC_HELLSPAWN_OVERLAY.get().location(),
                     SoundSource.MUSIC,
                     -1, overlayVol, 1.0f, false, radius, radius
             ), player);
@@ -939,8 +939,8 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
         );
 
         List<Identifier> soundsToStop = new ArrayList<>(List.of());
-        soundsToStop.add(DNLSounds.MUSIC_HELLSPAWN_BASE.get().getLocation());
-        soundsToStop.add(DNLSounds.MUSIC_HELLSPAWN_OVERLAY.get().getLocation());
+        soundsToStop.add(DNLSounds.MUSIC_HELLSPAWN_BASE.get().location());
+        soundsToStop.add(DNLSounds.MUSIC_HELLSPAWN_OVERLAY.get().location());
 
         for (ServerPlayer otherPlayer : nearbyPlayers) {
             for (Identifier sound : soundsToStop) {
@@ -958,7 +958,7 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
         );
 
         for (ServerPlayer otherPlayer : nearbyPlayers) {
-            Services.NETWORK.sendToPlayer(new S2CFadeInTickingSoundPacket(this.getId(), DNLSounds.MUSIC_HELLSPAWN_OVERLAY.get().getLocation(), TickingSoundTarget.NEWEST, 1.0f, 20), otherPlayer);
+            Services.NETWORK.sendToPlayer(new S2CFadeInTickingSoundPacket(this.getId(), DNLSounds.MUSIC_HELLSPAWN_OVERLAY.get().location(), TickingSoundTarget.NEWEST, 1.0f, 20), otherPlayer);
         }
     }
 

@@ -56,19 +56,19 @@ public class DungeonDirectorBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected net.minecraft.world.ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected net.minecraft.world.InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 
-        if (level.isClientSide()) return net.minecraft.world.ItemInteractionResult.SUCCESS;
+        if (level.isClientSide()) return net.minecraft.world.InteractionResult.SUCCESS;
 
         if (player.getItemInHand(hand).is(DNLItems.ZONE_WAND.get())) {
-            return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return net.minecraft.world.InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
         BlockEntity be = level.getBlockEntity(pos);
-        if (!(be instanceof DungeonDirectorBlockEntity director)) return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        if (!(be instanceof DungeonDirectorBlockEntity director)) return net.minecraft.world.InteractionResult.TRY_WITH_EMPTY_HAND;
 
         if (!player.getAbilities().instabuild) {
-            return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return net.minecraft.world.InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
         if (player.getAbilities().instabuild && player.getItemInHand(hand).is(Items.BARRIER)) {
@@ -86,7 +86,7 @@ public class DungeonDirectorBlock extends Block implements EntityBlock {
                 player.sendOverlayMessage(Component.translatable("block.dungeonnowloading.dungeon_director.hint_retain"));
             }
 
-            return net.minecraft.world.ItemInteractionResult.CONSUME;
+            return net.minecraft.world.InteractionResult.CONSUME;
         }
 
         int n;
@@ -101,7 +101,7 @@ public class DungeonDirectorBlock extends Block implements EntityBlock {
         director.setChanged();
         level.sendBlockUpdated(pos, state, state, 3);
 
-        return net.minecraft.world.ItemInteractionResult.CONSUME;
+        return net.minecraft.world.InteractionResult.CONSUME;
     }
 
     @Override

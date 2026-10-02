@@ -1,7 +1,8 @@
 package dev.hexnowloading.dungeonnowloading.block;
 
-import com.mojang.serialization.MapCodec;
 
+
+import net.minecraft.world.level.redstone.Orientation;
 import dev.hexnowloading.dungeonnowloading.block.entity.DuriteQuellerBlockEntity;
 import dev.hexnowloading.dungeonnowloading.registry.DNLBlockEntityTypes;
 import net.minecraft.core.BlockPos;
@@ -21,12 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class DuriteQuellerBlock extends BaseEntityBlock {
 
-    public static final MapCodec<DuriteQuellerBlock> CODEC = simpleCodec(DuriteQuellerBlock::new);
 
-    @Override
-    public MapCodec<DuriteQuellerBlock> codec() {
-        return CODEC;
-    }
     public DuriteQuellerBlock(Properties props) {
         super(props);
         this.registerDefaultState(this.stateDefinition.any()
@@ -62,8 +58,7 @@ public class DuriteQuellerBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block,
-                                BlockPos fromPos, boolean isMoving) {
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean isMoving) {
         if (level.isClientSide()) return;
 
         boolean powered = level.hasNeighborSignal(pos);

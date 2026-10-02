@@ -1,5 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.block;
 
+
+
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.ScheduledTickAccess;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import dev.hexnowloading.dungeonnowloading.block.entity.DungeonBannerBlockEntity;
@@ -15,7 +19,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -25,19 +28,10 @@ import java.util.Map;
 
 public class DungeonBannerBlock extends HorizontalDirectionalBlock implements EntityBlock {
 
-    public static final com.mojang.serialization.MapCodec<DungeonBannerBlock> CODEC =
-            com.mojang.serialization.codecs.RecordCodecBuilder.mapCodec(instance -> instance.group(
-                    StringRepresentable.fromEnum(DungeonBannerVariant::values).fieldOf("variant").forGetter(b -> b.defaultVariant),
-                    propertiesCodec()
-            ).apply(instance, DungeonBannerBlock::new));
 
-    @Override
-    public com.mojang.serialization.MapCodec<DungeonBannerBlock> codec() {
-        return CODEC;
-    }
 
     public static final EnumProperty<DungeonBannerVariant> VARIANT = EnumProperty.create("variant", DungeonBannerVariant.class);
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
 
 
     private final DungeonBannerVariant defaultVariant;
@@ -99,15 +93,14 @@ public class DungeonBannerBlock extends HorizontalDirectionalBlock implements En
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction dir, BlockState neighborState,
-                                  LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+    public BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos pos, Direction dir, BlockPos neighborPos, BlockState neighborState, RandomSource randomSource) {
 
         // If the supporting block changed and we can’t survive, pop off.
         if (dir == state.getValue(FACING).getOpposite() && !state.canSurvive(level, pos)) {
             return Blocks.AIR.defaultBlockState();
         }
 
-        return super.updateShape(state, dir, neighborState, level, pos, neighborPos);
+        return super.updateShape(state, level, scheduledTickAccess, pos, dir, neighborPos, neighborState, randomSource);
     }
 
     @Override
@@ -130,7 +123,7 @@ public class DungeonBannerBlock extends HorizontalDirectionalBlock implements En
     public RenderShape getRenderShape(BlockState state) {
         // Use MODEL unless you *already* registered a BER for DNLBlockEntityTypes.DUNGEON_BANNER on Fabric client.
         //return RenderShape.MODEL;
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.INVISIBLE;
     }
 
     @Override

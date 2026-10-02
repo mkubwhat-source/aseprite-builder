@@ -432,7 +432,7 @@ public class FairkeeperOurosEntity extends Monster implements Boss, Enemy, Slumb
                 if (this.hasEffect(MobEffects.LEVITATION)) {
                     adjustedYVelocity += (0.05 * (double) (this.getEffect(MobEffects.LEVITATION).getAmplifier() + 1) - adjustedMovement.y) * 0.2;
                 } else if (this.level().isClientSide() && !this.level().hasChunkAt(blockBelow)) {
-                    if (this.getY() > (double) this.level().getMinBuildHeight()) {
+                    if (this.getY() > (double) this.level().getMinY()) {
                         adjustedYVelocity = -0.1; // Upward motion when outside chunk area
                     } else {
                         adjustedYVelocity = 0.0;
@@ -749,7 +749,7 @@ public class FairkeeperOurosEntity extends Monster implements Boss, Enemy, Slumb
                 detectionBox
         );
         for (ServerPlayer player : nearbyPlayers) {
-            Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(this.getId(), DNLSounds.FAIRKEEPER_OUROS_SLITHER.get().getLocation(), SoundSource.HOSTILE, 4.0F, 1.0F, false, 64f, 0f), player);
+            Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(this.getId(), DNLSounds.FAIRKEEPER_OUROS_SLITHER.get().location(), SoundSource.HOSTILE, 4.0F, 1.0F, false, 64f, 0f), player);
         }
     }
 
@@ -761,7 +761,7 @@ public class FairkeeperOurosEntity extends Monster implements Boss, Enemy, Slumb
                 detectionBox
         );
         for (ServerPlayer player : nearbyPlayers) {
-            Services.NETWORK.sendToPlayer(new S2CStopTickingSoundPacket(this.getId(), DNLSounds.FAIRKEEPER_OUROS_SLITHER.get().getLocation(), 20, false), player);
+            Services.NETWORK.sendToPlayer(new S2CStopTickingSoundPacket(this.getId(), DNLSounds.FAIRKEEPER_OUROS_SLITHER.get().location(), 20, false), player);
         }
     }
 
