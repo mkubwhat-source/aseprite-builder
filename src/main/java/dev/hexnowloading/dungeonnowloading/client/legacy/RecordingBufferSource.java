@@ -45,6 +45,12 @@ public final class RecordingBufferSource implements MultiBufferSource {
     public static void renderEntity(MultiBufferSource buffer, Entity entity, float partialTick, PoseStack poseStack, int packedLight) {
         if (buffer instanceof RecordingBufferSource source && source.collector != null && source.camera != null) {
             EntityRenderDispatcher dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
+            try {
+                entity.getId();
+            } catch (IllegalStateException unassigned) {
+                // display-only entities (spawner previews) are never added to a level; 26.x rejects id 0
+                entity.setId(-1);
+            }
             EntityRenderState state = dispatcher.extractEntity(entity, partialTick);
             state.lightCoords = packedLight;
             dispatcher.submit(state, source.camera, 0.0, 0.0, 0.0, poseStack, source.collector);

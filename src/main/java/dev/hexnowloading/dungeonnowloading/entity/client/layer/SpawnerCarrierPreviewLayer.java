@@ -119,6 +119,10 @@ public class SpawnerCarrierPreviewLayer<T extends SpawnerCarrierEntity, M extend
 
         carrier.previewEntityId = id;
         carrier.previewEntity = createDisplayEntity(carrier, id);
+        if (carrier.previewEntity != null) {
+            // like vanilla spawner display entities: never added to the level, so give it a placeholder id
+            carrier.previewEntity.setId(-1);
+        }
         return carrier.previewEntity;
     }
 

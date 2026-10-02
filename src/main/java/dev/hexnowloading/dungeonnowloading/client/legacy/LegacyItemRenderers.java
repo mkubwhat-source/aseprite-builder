@@ -35,6 +35,12 @@ public final class LegacyItemRenderers {
     public record Argument(ItemStack stack, ItemDisplayContext displayContext) {
     }
 
+    /** Registers a renderer that is created on first use (entity models are not baked yet at client init) and then reused. */
+    public static void registerLazy(Item item, java.util.function.Supplier<? extends BlockEntityWithoutLevelRenderer> factory) {
+        java.util.function.Supplier<? extends BlockEntityWithoutLevelRenderer> instance = com.google.common.base.Suppliers.memoize(factory::get);
+        register(item, (stack, ctx, pose, buffer, light, overlay) -> instance.get().renderByItem(stack, ctx, pose, buffer, light, overlay));
+    }
+
     public static void register(Item item, Renderer renderer) {
         Identifier id = BuiltInRegistries.ITEM.getKey(item);
         Unbaked unbaked = new Unbaked(renderer);

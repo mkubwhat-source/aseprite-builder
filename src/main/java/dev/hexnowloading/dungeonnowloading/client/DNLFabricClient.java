@@ -75,24 +75,18 @@ public class DNLFabricClient implements ClientModInitializer {
     private void registerItemRenderers() {
 
         // Block
-        LegacyItemRenderers.register(DNLItems.FAIRKEEPER_CHEST.get(), (stack, ctx, pose, buf, light, overlay) -> FairkeeperChestItemRenderer.getInstance().renderByItem(stack, ctx, pose, buf, light, overlay));
-        LegacyItemRenderers.register(DNLItems.WISE_FAIRKEEPER_CHEST.get(), (stack, ctx, pose, buf, light, overlay) -> WiseFairkeeperChestItemRenderer.getInstance().renderByItem(stack, ctx, pose, buf, light, overlay));
-        LegacyItemRenderers.register(DNLItems.FIERCE_FAIRKEEPER_CHEST.get(), (stack, ctx, pose, buf, light, overlay) -> FierceFairkeeperChestItemRenderer.getInstance().renderByItem(stack, ctx, pose, buf, light, overlay));
-        LegacyItemRenderers.register(DNLItems.PLAYER_STATUE.get(), (stack, ctx, pose, buf, light, overlay) -> PlayerStatueItemRenderer.getInstance().renderByItem(stack, ctx, pose, buf, light, overlay));
+        LegacyItemRenderers.registerLazy(DNLItems.FAIRKEEPER_CHEST.get(), FairkeeperChestItemRenderer::getInstance);
+        LegacyItemRenderers.registerLazy(DNLItems.WISE_FAIRKEEPER_CHEST.get(), WiseFairkeeperChestItemRenderer::getInstance);
+        LegacyItemRenderers.registerLazy(DNLItems.FIERCE_FAIRKEEPER_CHEST.get(), FierceFairkeeperChestItemRenderer::getInstance);
+        LegacyItemRenderers.registerLazy(DNLItems.PLAYER_STATUE.get(), PlayerStatueItemRenderer::getInstance);
         for (DungeonBannerBlock.DungeonBannerVariant variant : DungeonBannerBlock.DungeonBannerVariant.values()) {
-            LegacyItemRenderers.register(
-                    DNLItems.getBannerItem(variant).get(),
-                    (stack, displayContext, poseStack, buffer, light, overlay) -> {
-                        DungeonBannerBlockItemRenderer.getInstance()
-                                .renderByItem(stack, displayContext, poseStack, buffer, light, overlay);
-                    }
-            );
+            LegacyItemRenderers.registerLazy(DNLItems.getBannerItem(variant).get(), DungeonBannerBlockItemRenderer::getInstance);
         }
 
 
         // Item
-        LegacyItemRenderers.register(DNLItems.SCORCHER.get(), (stack, ctx, pose, buf, light, overlay) -> ScorcherRenderer.getInstance().renderByItem(stack, ctx, pose, buf, light, overlay));
-        LegacyItemRenderers.register(DNLItems.SOUL_SCORCHER.get(), (stack, ctx, pose, buf, light, overlay) -> ScorcherRenderer.getInstance().renderByItem(stack, ctx, pose, buf, light, overlay));
+        LegacyItemRenderers.registerLazy(DNLItems.SCORCHER.get(), ScorcherRenderer::getInstance);
+        LegacyItemRenderers.registerLazy(DNLItems.SOUL_SCORCHER.get(), ScorcherRenderer::getInstance);
         //LegacyItemRenderers.register(DNLItems.SCORCHER.get(), new DifferentProspectiveItemRenderer(DNLClientRegistry.SCORCHER_3D_MODEL, DNLClientRegistry.SCORCHER_3D_MODEL));
 
     }
