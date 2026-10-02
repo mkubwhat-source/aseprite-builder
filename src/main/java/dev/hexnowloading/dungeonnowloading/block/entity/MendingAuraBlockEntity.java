@@ -69,7 +69,7 @@ public class MendingAuraBlockEntity extends BlockEntity {
         super.saveAdditional(compoundTag);
 
         if (storedBlockState != null) {
-            NbtCompat.put(compoundTag, "StoredBlockState", BlockState.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, storedBlockState).result().orElseThrow());
+            NbtCompat.put(compoundTag, "StoredBlockState", BlockState.FULL_CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, storedBlockState).result().orElseThrow());
         }
 
         if (storedBlockNbt != null) {
@@ -84,7 +84,7 @@ public class MendingAuraBlockEntity extends BlockEntity {
         super.loadAdditional(compoundTag);
 
         if (NbtCompat.has(compoundTag, "StoredBlockState")) {
-            storedBlockState = BlockState.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, NbtCompat.getCompound(compoundTag, "StoredBlockState")).result().orElse(null);
+            storedBlockState = compoundTag.read("StoredBlockState", BlockState.CODEC).orElse(null);
         }
 
         if (NbtCompat.has(compoundTag, "StoredBlockNBT")) {
@@ -104,7 +104,7 @@ public class MendingAuraBlockEntity extends BlockEntity {
     public CompoundTag getUpdateTag(net.minecraft.core.HolderLookup.Provider registries) {
         CompoundTag compoundTag = new CompoundTag();
         if (storedBlockState != null) {
-            compoundTag.put("StoredBlockState", BlockState.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, storedBlockState).result().orElseThrow());
+            compoundTag.put("StoredBlockState", BlockState.FULL_CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, storedBlockState).result().orElseThrow());
         }
         compoundTag.putInt("RestoreTime", restoreTime);
         return compoundTag;

@@ -75,7 +75,7 @@ public class S2CMendingAuraSyncPacket implements DNLPacket {
     }
 
     private static CompoundTag encodeBlockState(BlockState state) {
-        Tag tag = BlockState.CODEC.encodeStart(NbtOps.INSTANCE, state).result().orElseThrow();
+        Tag tag = BlockState.FULL_CODEC.encodeStart(NbtOps.INSTANCE, state).result().orElseThrow();
         return tag instanceof CompoundTag compoundTag ? compoundTag : new CompoundTag();
     }
 }
