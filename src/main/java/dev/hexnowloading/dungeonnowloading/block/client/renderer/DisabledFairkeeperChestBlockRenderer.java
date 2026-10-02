@@ -10,7 +10,7 @@ import dev.hexnowloading.dungeonnowloading.block.entity.DisabledFairkeeperChestB
 import dev.hexnowloading.dungeonnowloading.block.entity.FairkeeperChestBlockEntity;
 import dev.hexnowloading.dungeonnowloading.registry.DNLBlocks;
 import dev.hexnowloading.dungeonnowloading.registry.DNLProperties;
-import net.minecraft.client.renderer.MultiBufferSource;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
@@ -33,8 +33,8 @@ public class DisabledFairkeeperChestBlockRenderer implements BlockEntityRenderer
         poseStack.pushPose();
         Direction facing = blockEntity.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
         poseStack.translate(0.5F, 1.5F, 0.5F);
-        poseStack.mulPose(facing.getRotation());
-        poseStack.mulPose(Axis.XP.rotationDegrees(90));
+        poseStack.rotate(facing.getRotation());
+        poseStack.rotate(Axis.XP.rotationDegrees(90));
         VertexConsumer vertexConsumer;
         if (blockEntity.getBlockState().is(DNLBlocks.FIERCE_FAIRKEEPER_CHEST.get())) {
             vertexConsumer = multiBufferSource.getBuffer(fairkeeperChestModel.renderType(TEXTURE_ON));

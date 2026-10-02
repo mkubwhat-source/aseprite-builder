@@ -1,15 +1,17 @@
 package dev.hexnowloading.dungeonnowloading.entity.client.layer;
 
+
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.entity.client.model.HollowModel;
 import dev.hexnowloading.dungeonnowloading.entity.client.renderer.HollowRenderer;
 import dev.hexnowloading.dungeonnowloading.entity.monster.HollowEntity;
-import net.minecraft.client.renderer.MultiBufferSource;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import dev.hexnowloading.dungeonnowloading.client.legacy.LivingEntityRenderer;
+import dev.hexnowloading.dungeonnowloading.client.legacy.RenderLayer;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.LightLayer;
@@ -34,7 +36,7 @@ public class HollowTransparentLayer<T extends HollowEntity, M extends HollowMode
                        float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 
         // 1) BODY (translucent + alpha logic)
-        VertexConsumer bodyVc = buffer.getBuffer(RenderType.entityTranslucent(TEXTURE));
+        VertexConsumer bodyVc = buffer.getBuffer(RenderTypes.entityTranslucent(TEXTURE));
 
         int light = entity.level().getBrightness(LightLayer.BLOCK, entity.blockPosition()); // 0..15
 
@@ -62,7 +64,7 @@ public class HollowTransparentLayer<T extends HollowEntity, M extends HollowMode
 
 
         // 2) EYES (always emissive, ignore lighting)
-        VertexConsumer eyeVc = buffer.getBuffer(RenderType.entityTranslucentEmissive(EYE_TEXTURE));
+        VertexConsumer eyeVc = buffer.getBuffer(RenderTypes.entityTranslucentEmissive(EYE_TEXTURE));
         this.getParentModel().renderToBuffer(
                 poseStack,
                 eyeVc,

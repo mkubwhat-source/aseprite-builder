@@ -1,11 +1,13 @@
 package dev.hexnowloading.dungeonnowloading.entity.client.model.copper_creep;
 
+
+import dev.hexnowloading.dungeonnowloading.client.legacy.HierarchicalModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.entity.client.animation.copper_creep.CopperCreepButlerAnimation;
 import dev.hexnowloading.dungeonnowloading.entity.passive.CopperCreepEntity;
-import net.minecraft.client.model.EntityModel;
+import dev.hexnowloading.dungeonnowloading.client.legacy.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;

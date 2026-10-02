@@ -1,14 +1,16 @@
 package dev.hexnowloading.dungeonnowloading.entity.client.layer;
 
+
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.entity.client.model.RepulsorModel;
 import dev.hexnowloading.dungeonnowloading.entity.client.renderer.RepulsorRenderer;
 import dev.hexnowloading.dungeonnowloading.entity.misc.RepulsorEntity;
-import net.minecraft.client.renderer.MultiBufferSource;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import dev.hexnowloading.dungeonnowloading.client.legacy.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 
@@ -19,7 +21,7 @@ public class RepulsorLayer<T extends RepulsorEntity, M extends RepulsorModel<T>>
 
     @Override
     public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLightIn, RepulsorEntity repulsorEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.entityTranslucentEmissive(EMISSIVE, true));
+        VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderTypes.entityTranslucentEmissive(EMISSIVE));
         if (repulsorEntity.getAge() >= 35) {
             if (repulsorEntity.getShieldHealth() <= RepulsorEntity.SHIELD_ALERT_THRESHOLD) {
                 float healthRation = repulsorEntity.getShieldHealth() / RepulsorEntity.SHIELD_ALERT_THRESHOLD;

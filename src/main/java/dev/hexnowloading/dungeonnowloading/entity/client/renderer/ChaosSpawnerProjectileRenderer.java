@@ -1,14 +1,16 @@
 package dev.hexnowloading.dungeonnowloading.entity.client.renderer;
 
+
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import dev.hexnowloading.dungeonnowloading.entity.client.model.ChaosSpawnerProjectileModel;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.entity.projectile.ChaosSpawnerProjectileEntity;
-import net.minecraft.client.renderer.MultiBufferSource;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import dev.hexnowloading.dungeonnowloading.client.legacy.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
@@ -27,10 +29,10 @@ public class ChaosSpawnerProjectileRenderer<T extends ChaosSpawnerProjectileEnti
     @Override
     public void render(ChaosSpawnerProjectileEntity chaosSpawnerProjectileEntity, float v, float v1, PoseStack poseStack, MultiBufferSource multiBufferSource, int i) {
         poseStack.pushPose();
-        //poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+        //poseStack.rotate(Axis.YP.rotationDegrees(180.0F));
         float yRot = Mth.rotLerp(v1, chaosSpawnerProjectileEntity.yRotO, chaosSpawnerProjectileEntity.getYRot());
         float xRot = Mth.lerp(v1, chaosSpawnerProjectileEntity.xRotO, chaosSpawnerProjectileEntity.getXRot());
-        poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
+        poseStack.rotate(Axis.ZP.rotationDegrees(180.0F));
         this.model.headAnim(yRot, xRot);
         VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RENDER_TYPE);
         if (chaosSpawnerProjectileEntity.tickCount > 4) {
@@ -48,6 +50,6 @@ public class ChaosSpawnerProjectileRenderer<T extends ChaosSpawnerProjectileEnti
     }
 
     static {
-        RENDER_TYPE = RenderType.entityTranslucent(TEXTURE);
+        RENDER_TYPE = RenderTypes.entityTranslucent(TEXTURE);
     }
 }

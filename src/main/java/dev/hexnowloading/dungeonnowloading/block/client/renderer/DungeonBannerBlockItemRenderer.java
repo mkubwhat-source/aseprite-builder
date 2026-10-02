@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.block.client.renderer;
 
+
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -10,7 +12,7 @@ import dev.hexnowloading.dungeonnowloading.block.client.model.DungeonBannerBlock
 import dev.hexnowloading.dungeonnowloading.item.blockitem.DungeonBannerBlockItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
@@ -58,12 +60,12 @@ public class DungeonBannerBlockItemRenderer extends BlockEntityWithoutLevelRende
                 Lighting.setupForFlatItems();
                 poseStack.translate(0.8, 0.8, 0.0);
                 poseStack.scale(0.6F, -0.6F, -0.6F);
-                poseStack.mulPose(Axis.YP.rotationDegrees(200f));
+                poseStack.rotate(Axis.YP.rotationDegrees(200f));
             }
             case FIXED -> {
                 poseStack.translate(0.5, 0.6, 0.2);
                 poseStack.scale(0.9f, -0.9f, -0.9f);
-                poseStack.mulPose(Axis.YP.rotationDegrees(180f));
+                poseStack.rotate(Axis.YP.rotationDegrees(180f));
             }
             case GROUND -> {
                 poseStack.translate(0.5, 0.5, 14F/16F);
@@ -72,11 +74,11 @@ public class DungeonBannerBlockItemRenderer extends BlockEntityWithoutLevelRende
             default -> {
                 poseStack.translate(0.5, 0.75, 0.5);
                 poseStack.scale(0.85f, -0.85f, -0.85f);
-                poseStack.mulPose(Axis.YP.rotationDegrees(110f));
+                poseStack.rotate(Axis.YP.rotationDegrees(110f));
             }
         }
 
-        RenderType type = RenderType.entityCutoutNoCull(tex);
+        RenderType type = RenderTypes.entityCutout(tex);
         VertexConsumer vc = buffer.getBuffer(type);
 
         model.renderToBuffer(poseStack, vc, packedLight, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);

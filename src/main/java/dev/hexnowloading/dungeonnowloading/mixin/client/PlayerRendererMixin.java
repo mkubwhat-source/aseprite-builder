@@ -5,7 +5,7 @@ import dev.hexnowloading.dungeonnowloading.item.ScorcherItem;
 import dev.hexnowloading.dungeonnowloading.item.client.DNLArmPose;
 import dev.hexnowloading.dungeonnowloading.platform.Services;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;

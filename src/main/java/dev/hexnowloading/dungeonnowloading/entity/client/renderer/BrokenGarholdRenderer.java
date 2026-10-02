@@ -4,9 +4,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.entity.client.model.BrokenGarholdModel;
 import dev.hexnowloading.dungeonnowloading.entity.monster.BrokenGarholdEntity;
-import net.minecraft.client.renderer.MultiBufferSource;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MobRenderer;
 import net.minecraft.resources.Identifier;
 
 public class BrokenGarholdRenderer<T extends BrokenGarholdEntity> extends MobRenderer<T, BrokenGarholdModel<T>> {

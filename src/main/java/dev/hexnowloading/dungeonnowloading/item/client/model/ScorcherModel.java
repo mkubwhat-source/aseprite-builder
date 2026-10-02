@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.item.client.model;
 
+
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
@@ -35,7 +37,7 @@ public class ScorcherModel extends AnimatedItemModel {
     private final ModelPart flameexit;
 
     public ScorcherModel(ModelPart root) {
-        super(RenderType::entityCutoutNoCull);
+        super(RenderTypes::entityCutout);
         this.root = root;
         this.scorcher = root.getChild("scorcher");
         this.vfx = this.scorcher.getChild("vfx");

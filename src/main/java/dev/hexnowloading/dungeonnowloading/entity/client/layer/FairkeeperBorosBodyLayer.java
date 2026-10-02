@@ -1,15 +1,17 @@
 package dev.hexnowloading.dungeonnowloading.entity.client.layer;
 
+
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.entity.boss.FairkeeperBorosPartEntity;
 import dev.hexnowloading.dungeonnowloading.entity.client.model.FairkeeperBorosBodyModel;
 import dev.hexnowloading.dungeonnowloading.entity.client.renderer.FairkeeperBorosBodyRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import dev.hexnowloading.dungeonnowloading.client.legacy.LivingEntityRenderer;
+import dev.hexnowloading.dungeonnowloading.client.legacy.RenderLayer;
 import net.minecraft.resources.Identifier;
 
 public class FairkeeperBorosBodyLayer<T extends FairkeeperBorosPartEntity, M extends FairkeeperBorosBodyModel<T>> extends RenderLayer<T, M> {
@@ -22,7 +24,7 @@ public class FairkeeperBorosBodyLayer<T extends FairkeeperBorosPartEntity, M ext
 
     @Override
     public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLightIn, FairkeeperBorosPartEntity fairkeeperBoros, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.entityTranslucentEmissive(TEXTURE_EMISSIVE, true));
+        VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderTypes.entityTranslucentEmissive(TEXTURE_EMISSIVE));
         this.getParentModel().renderToBuffer(poseStack, vertexConsumer, packedLightIn, LivingEntityRenderer.getOverlayCoords(fairkeeperBoros, 0), 0xFFFFFFFF);
     }
 }

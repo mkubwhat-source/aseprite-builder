@@ -6,7 +6,7 @@ import dev.hexnowloading.dungeonnowloading.entity.boss.ChaosSpawnerEntity;
 import dev.hexnowloading.dungeonnowloading.entity.client.layer.ChaosSpawnerLayer;
 import dev.hexnowloading.dungeonnowloading.entity.client.model.ChaosSpawnerModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MobRenderer;
 import net.minecraft.resources.Identifier;
 
 public class ChaosSpawnerRenderer<T extends ChaosSpawnerEntity> extends MobRenderer<T, ChaosSpawnerModel<T>> {

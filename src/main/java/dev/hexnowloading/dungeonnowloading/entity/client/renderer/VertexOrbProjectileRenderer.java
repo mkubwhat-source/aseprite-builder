@@ -1,14 +1,16 @@
 package dev.hexnowloading.dungeonnowloading.entity.client.renderer;
 
+
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.entity.client.model.VertexOrbProjectileModel;
 import dev.hexnowloading.dungeonnowloading.entity.projectile.VertexOrbProjectileEntity;
-import net.minecraft.client.renderer.MultiBufferSource;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import dev.hexnowloading.dungeonnowloading.client.legacy.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
@@ -16,7 +18,7 @@ import net.minecraft.world.phys.AABB;
 
 public class VertexOrbProjectileRenderer<T extends VertexOrbProjectileEntity> extends EntityRenderer<VertexOrbProjectileEntity> {
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/vertex_orb_projectile.png");
-    private static final RenderType RENDER_TYPE = RenderType.entityTranslucent(TEXTURE);
+    private static final RenderType RENDER_TYPE = RenderTypes.entityTranslucent(TEXTURE);
     private VertexOrbProjectileModel model;
 
     public VertexOrbProjectileRenderer(EntityRendererProvider.Context context) {

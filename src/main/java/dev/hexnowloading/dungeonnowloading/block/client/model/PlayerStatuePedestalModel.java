@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.block.client.model;
 
+
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
@@ -16,7 +18,7 @@ public class PlayerStatuePedestalModel extends Model {
     private final ModelPart Pedestal;
 
     public PlayerStatuePedestalModel(ModelPart root) {
-        super(RenderType::entityCutoutNoCull);
+        super(RenderTypes::entityCutout);
         this.Pedestal = root.getChild("Pedestal");
     }
 

@@ -1,14 +1,16 @@
 package dev.hexnowloading.dungeonnowloading.entity.client.renderer;
 
+
+import dev.hexnowloading.dungeonnowloading.client.legacy.HierarchicalModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.entity.client.model.copper_creep.CopperCreepButlerModel;
 import dev.hexnowloading.dungeonnowloading.entity.client.model.copper_creep.CopperCreepModel;
 import dev.hexnowloading.dungeonnowloading.entity.passive.CopperCreepEntity;
-import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.renderer.MultiBufferSource;
+import dev.hexnowloading.dungeonnowloading.client.legacy.EntityModel;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MobRenderer;
 //import net.minecraft.client.renderer.entity.layers.CopperCreepPowerLayer;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;

@@ -6,7 +6,7 @@ import dev.hexnowloading.dungeonnowloading.entity.boss.FairkeeperBorosPartEntity
 import dev.hexnowloading.dungeonnowloading.entity.client.layer.FairkeeperBorosBodyLayer;
 import dev.hexnowloading.dungeonnowloading.entity.client.model.FairkeeperBorosBodyModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MobRenderer;
 import net.minecraft.resources.Identifier;
 
 public class FairkeeperBorosBodyRenderer<T extends FairkeeperBorosPartEntity> extends MobRenderer<T, FairkeeperBorosBodyModel<T>> {

@@ -1,15 +1,17 @@
 package dev.hexnowloading.dungeonnowloading.entity.client.layer;
 
+
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.entity.client.model.ScuttleModel;
 import dev.hexnowloading.dungeonnowloading.entity.client.renderer.ScuttleRenderer;
 import dev.hexnowloading.dungeonnowloading.entity.monster.ScuttleEntity;
-import net.minecraft.client.renderer.MultiBufferSource;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import dev.hexnowloading.dungeonnowloading.client.legacy.LivingEntityRenderer;
+import dev.hexnowloading.dungeonnowloading.client.legacy.RenderLayer;
 import net.minecraft.resources.Identifier;
 
 public class ScuttleLayer<T extends ScuttleEntity, M extends ScuttleModel<T>> extends RenderLayer<T, M> {
@@ -19,7 +21,7 @@ public class ScuttleLayer<T extends ScuttleEntity, M extends ScuttleModel<T>> ex
 
     @Override
     public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLightIn, ScuttleEntity scuttleEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.entityTranslucentEmissive(TEXTURE_EMISSIVE, true));
+        VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderTypes.entityTranslucentEmissive(TEXTURE_EMISSIVE));
         if (scuttleEntity.isState(ScuttleEntity.ScuttleState.OPENING) && !scuttleEntity.isRenderHeating()) {
             scuttleEntity.setRenderOldTick(scuttleEntity.tickCount);
             scuttleEntity.setRenderHeating(true);

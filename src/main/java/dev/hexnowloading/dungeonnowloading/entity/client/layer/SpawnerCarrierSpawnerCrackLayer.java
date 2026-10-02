@@ -1,13 +1,15 @@
 package dev.hexnowloading.dungeonnowloading.entity.client.layer;
 
+
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.hexnowloading.dungeonnowloading.entity.client.model.SpawnerCarrierModel;
 import dev.hexnowloading.dungeonnowloading.entity.monster.SpawnerCarrierEntity;
-import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.RenderLayerParent;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import dev.hexnowloading.dungeonnowloading.client.legacy.EntityModel;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
+import dev.hexnowloading.dungeonnowloading.client.legacy.RenderLayerParent;
+import dev.hexnowloading.dungeonnowloading.client.legacy.RenderLayer;
 import net.minecraft.resources.Identifier;
 
 public class SpawnerCarrierSpawnerCrackLayer<T extends SpawnerCarrierEntity, M extends EntityModel<T>>
@@ -48,7 +50,7 @@ public class SpawnerCarrierSpawnerCrackLayer<T extends SpawnerCarrierEntity, M e
         model.getBodyPart().translateAndRotate(poseStack);
 
         // Render only the spawner part using crumbling render type
-        VertexConsumer vc = buffer.getBuffer(net.minecraft.client.renderer.RenderType.crumbling(DESTROY_STAGES[stage]));
+        VertexConsumer vc = buffer.getBuffer(net.minecraft.client.renderer.RenderTypes.crumbling(DESTROY_STAGES[stage]));
 
 // 128x128 model UVs vs 16x16 crack => tile 8x so pixels aren't huge
         VertexConsumer tiled = new TiledUvVertexConsumer(vc, 8.0f, 8.0f);

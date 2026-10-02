@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.block.client.renderer;
 
+
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.hexnowloading.dungeonnowloading.block.MendingAuraBlock;
@@ -7,7 +9,7 @@ import dev.hexnowloading.dungeonnowloading.block.entity.MendingAuraBlockEntity;
 import dev.hexnowloading.dungeonnowloading.registry.DNLBlocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.client.renderer.MultiBufferSource;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
@@ -71,7 +73,7 @@ public class MendingAuraBlockEntityRenderer implements BlockEntityRenderer<Mendi
         }
 
         if (needsInteractionShapeOverlay(storedState, storedModel, blockEntity)) {
-            renderInteractionShapeOverlay(storedState, blockEntity, poseStack, buffer.getBuffer(RenderType.entityTranslucent(TextureAtlas.LOCATION_BLOCKS, false)), auraSprite, packedOverlay);
+            renderInteractionShapeOverlay(storedState, blockEntity, poseStack, buffer.getBuffer(RenderTypes.entityTranslucent(TextureAtlas.LOCATION_BLOCKS, false)), auraSprite, packedOverlay);
         }
     }
 

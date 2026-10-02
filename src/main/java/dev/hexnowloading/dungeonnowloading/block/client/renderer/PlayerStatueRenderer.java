@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.block.client.renderer;
 
+
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
@@ -8,7 +10,7 @@ import dev.hexnowloading.dungeonnowloading.block.client.model.PlayerStatueModel;
 import dev.hexnowloading.dungeonnowloading.block.client.model.PlayerStatuePedestalModel;
 import dev.hexnowloading.dungeonnowloading.block.entity.PlayerStatueBlockEntity;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.MultiBufferSource;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -71,19 +73,19 @@ public class PlayerStatueRenderer implements BlockEntityRenderer<PlayerStatueBlo
 
         // --- pedestal (rotates with 4-way facing) ---
         pose.pushPose();
-        pose.mulPose(Axis.YP.rotationDegrees(pedestalYaw));
+        pose.rotate(Axis.YP.rotationDegrees(pedestalYaw));
         pose.translate(0f, 1.5005f, 0f);
-        pose.mulPose(Axis.YP.rotationDegrees(180f));
-        pose.mulPose(Axis.XP.rotationDegrees(180f));
+        pose.rotate(Axis.YP.rotationDegrees(180f));
+        pose.rotate(Axis.XP.rotationDegrees(180f));
 
-        var pedVx = buf.getBuffer(RenderType.entityCutoutNoCull(PEDESTAL_TEX));
+        var pedVx = buf.getBuffer(RenderTypes.entityCutout(PEDESTAL_TEX));
         pedestal.renderPedestal(pose, pedVx, light, overlay);
 
         var notchTex = notchOverlayTex(be);
         if (notchTex != null) {
             pose.pushPose();
             pose.scale(1.001f, 1.001f, 1.001f); // avoid z-fighting
-            var overlayVx = buf.getBuffer(RenderType.entityCutoutNoCull(notchTex));
+            var overlayVx = buf.getBuffer(RenderTypes.entityCutout(notchTex));
             pedestal.renderPedestal(pose, overlayVx, light, overlay);
             pose.popPose();
         }
@@ -91,14 +93,14 @@ public class PlayerStatueRenderer implements BlockEntityRenderer<PlayerStatueBlo
 
         // --- statue (rotates with 16-step rotation) ---
         pose.pushPose();
-        pose.mulPose(Axis.YP.rotationDegrees(statueYaw));
+        pose.rotate(Axis.YP.rotationDegrees(statueYaw));
         pose.translate(0f, 1.75f, 0f);
-        pose.mulPose(Axis.YP.rotationDegrees(180f));
-        pose.mulPose(Axis.XP.rotationDegrees(180f));
+        pose.rotate(Axis.YP.rotationDegrees(180f));
+        pose.rotate(Axis.XP.rotationDegrees(180f));
         var skin = StatueSkinCache.get(be.getOwner(), 0.60f, STONE_OVERLAY_TEX);
         statue.useSlimArms(skin.slim());
-        //var statVx = buf.getBuffer(RenderType.entityTranslucent(skin.texture()));
-        var statVx = buf.getBuffer(RenderType.armorCutoutNoCull(skin.texture()));
+        //var statVx = buf.getBuffer(RenderTypes.entityTranslucent(skin.texture()));
+        var statVx = buf.getBuffer(RenderTypes.armorCutoutNoCull(skin.texture()));
         statue.renderToBuffer(pose, statVx, light, overlay, 0xFFFFFFFF);
         pose.popPose();
 
@@ -148,11 +150,11 @@ public class PlayerStatueRenderer implements BlockEntityRenderer<PlayerStatueBlo
         pose.pushPose();
         {
             // rotate to the pedestal's "front"
-            pose.mulPose(Axis.YP.rotationDegrees(pedestalYaw));
+            pose.rotate(Axis.YP.rotationDegrees(pedestalYaw));
 
             // SOUTH face (front), slight z nudge forward
             pose.translate(0.0f, TEXT_Y, -TEXT_Z);
-            pose.mulPose(Axis.YP.rotationDegrees(180f));
+            pose.rotate(Axis.YP.rotationDegrees(180f));
 
             pose.scale(TEXT_SCALE, -TEXT_SCALE, TEXT_SCALE);
 

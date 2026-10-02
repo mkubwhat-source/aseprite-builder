@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.item.client.renderer;
 
+
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
@@ -11,7 +13,7 @@ import dev.hexnowloading.dungeonnowloading.network.ClientUtil;
 import dev.hexnowloading.dungeonnowloading.registry.DNLItems;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.client.renderer.MultiBufferSource;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
@@ -26,9 +28,9 @@ public class ScorcherRenderer extends BlockEntityWithoutLevelRenderer {
     private static final Identifier TEXTURE_EMISSIVE_FLAME = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/item/scorcher/scorcher_emissive_flame.png");
     private static final Identifier TEXTURE_EMISSIVE_SOUL_FLAME = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/item/scorcher/scorcher_emissive_soul_flame.png");
     private static final Identifier TEXTURE_EMISSIVE_HEAT = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/item/scorcher/scorcher_emissive_heat.png");
-    private static final RenderType RENDER_TYPE_EMISSIVE_FLAME = RenderType.entityTranslucent(TEXTURE_EMISSIVE_FLAME);
-    private static final RenderType RENDER_TYPE_EMISSIVE_SOUL_FLAME = RenderType.entityTranslucent(TEXTURE_EMISSIVE_SOUL_FLAME);
-    private static final RenderType RENDER_TYPE_EMISSIVE_HEAT = RenderType.entityTranslucent(TEXTURE_EMISSIVE_HEAT);
+    private static final RenderType RENDER_TYPE_EMISSIVE_FLAME = RenderTypes.entityTranslucent(TEXTURE_EMISSIVE_FLAME);
+    private static final RenderType RENDER_TYPE_EMISSIVE_SOUL_FLAME = RenderTypes.entityTranslucent(TEXTURE_EMISSIVE_SOUL_FLAME);
+    private static final RenderType RENDER_TYPE_EMISSIVE_HEAT = RenderTypes.entityTranslucent(TEXTURE_EMISSIVE_HEAT);
 
     private ScorcherModel model;
 

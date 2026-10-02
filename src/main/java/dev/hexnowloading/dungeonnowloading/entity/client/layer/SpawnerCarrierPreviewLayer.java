@@ -6,11 +6,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import dev.hexnowloading.dungeonnowloading.entity.client.model.SpawnerCarrierModel;
 import dev.hexnowloading.dungeonnowloading.entity.monster.SpawnerCarrierEntity;
-import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.renderer.MultiBufferSource;
+import dev.hexnowloading.dungeonnowloading.client.legacy.EntityModel;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.client.renderer.entity.RenderLayerParent;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import dev.hexnowloading.dungeonnowloading.client.legacy.RenderLayerParent;
+import dev.hexnowloading.dungeonnowloading.client.legacy.RenderLayer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
@@ -76,15 +76,15 @@ public class SpawnerCarrierPreviewLayer<T extends SpawnerCarrierEntity, M extend
         // ------------------------------------------------------------
         /*float yaw = Mth.rotLerp(partialTick, carrier.yBodyRotO, carrier.yBodyRot);
         float pitch = Mth.lerp(partialTick, carrier.xRotO, carrier.getXRot());
-        poseStack.mulPose(Axis.YP.rotationDegrees(-yaw));
-        poseStack.mulPose(Axis.XP.rotationDegrees(-pitch));*/
+        poseStack.rotate(Axis.YP.rotationDegrees(-yaw));
+        poseStack.rotate(Axis.XP.rotationDegrees(-pitch));*/
 
         // ------------------------------------------------------------
         // 4) Fix Blockbench coordinate flips (very common)
         // If it's upside down, this usually fixes it.
         // ------------------------------------------------------------
-        if (UPRIGHT_FIX_X_180) poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
-        if (UPRIGHT_FIX_Z_180) poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
+        if (UPRIGHT_FIX_X_180) poseStack.rotate(Axis.XP.rotationDegrees(180.0F));
+        if (UPRIGHT_FIX_Z_180) poseStack.rotate(Axis.ZP.rotationDegrees(180.0F));
 
         // ------------------------------------------------------------
         // 5) Vanilla spawner scaling (auto shrink big mobs)
@@ -97,9 +97,9 @@ public class SpawnerCarrierPreviewLayer<T extends SpawnerCarrierEntity, M extend
         // 6) Vanilla spawner offsets + rotations
         // ------------------------------------------------------------
         poseStack.translate(0.0F, -0.3F, 0.0F);
-        poseStack.mulPose(Axis.YP.rotationDegrees(lerpedSpin));
+        poseStack.rotate(Axis.YP.rotationDegrees(lerpedSpin));
         poseStack.translate(0.0F, -0.2F, 0.0F);
-        poseStack.mulPose(Axis.XP.rotationDegrees(-30.0F));
+        poseStack.rotate(Axis.XP.rotationDegrees(-30.0F));
         poseStack.scale(g, g, g);
 
         // ------------------------------------------------------------

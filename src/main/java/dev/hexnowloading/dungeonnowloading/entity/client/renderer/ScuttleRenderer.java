@@ -6,9 +6,9 @@ import dev.hexnowloading.dungeonnowloading.entity.client.layer.ScuttleLayer;
 import dev.hexnowloading.dungeonnowloading.entity.client.model.ScuttleModel;
 import dev.hexnowloading.dungeonnowloading.entity.monster.BallistaGolemEntity;
 import dev.hexnowloading.dungeonnowloading.entity.monster.ScuttleEntity;
-import net.minecraft.client.renderer.MultiBufferSource;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MobRenderer;
 import net.minecraft.resources.Identifier;
 
 public class ScuttleRenderer<T extends ScuttleEntity> extends MobRenderer<T, ScuttleModel<T>> {

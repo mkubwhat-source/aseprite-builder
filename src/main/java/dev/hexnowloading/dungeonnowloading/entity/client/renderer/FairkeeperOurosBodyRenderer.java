@@ -7,7 +7,7 @@ import dev.hexnowloading.dungeonnowloading.entity.boss.FairkeeperOurosPartEntity
 import dev.hexnowloading.dungeonnowloading.entity.client.layer.FairkeeperOurosBodyLayer;
 import dev.hexnowloading.dungeonnowloading.entity.client.model.FairkeeperOurosBodyModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MobRenderer;
 import net.minecraft.resources.Identifier;
 
 public class FairkeeperOurosBodyRenderer<T extends FairkeeperOurosPartEntity> extends MobRenderer<T, FairkeeperOurosBodyModel<T>> {
@@ -36,7 +36,7 @@ public class FairkeeperOurosBodyRenderer<T extends FairkeeperOurosPartEntity> ex
         super.setupRotations(entity, poseStack, ageInTicks, rotationYaw, partialTicks, scale);
 
         poseStack.translate(0.0F, entity.getBbHeight(), 0.0F);
-        poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
+        poseStack.rotate(Axis.ZP.rotationDegrees(180.0F));
     }
 
     @Override

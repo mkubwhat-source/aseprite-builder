@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.block.client.model;
 
+
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
@@ -18,7 +20,7 @@ public class DungeonBannerBlockModel extends Model {
     private final ModelPart Stick;
 
     public DungeonBannerBlockModel(ModelPart root) {
-        super(RenderType::armorCutoutNoCull);
+        super(RenderTypes::armorCutoutNoCull);
         this.BANNER = root.getChild("BANNER");
         this.Flag = this.BANNER.getChild("Flag");
         this.Stick = this.BANNER.getChild("Stick");

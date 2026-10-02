@@ -6,9 +6,9 @@ import dev.hexnowloading.dungeonnowloading.entity.client.layer.SpawnerCarrierPre
 import dev.hexnowloading.dungeonnowloading.entity.client.layer.SpawnerCarrierSpawnerCrackLayer;
 import dev.hexnowloading.dungeonnowloading.entity.client.model.SpawnerCarrierModel;
 import dev.hexnowloading.dungeonnowloading.entity.monster.SpawnerCarrierEntity;
-import net.minecraft.client.renderer.MultiBufferSource;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MobRenderer;
 import net.minecraft.resources.Identifier;
 
 public class SpawnerCarrierRenderer<T extends SpawnerCarrierEntity> extends MobRenderer<T, SpawnerCarrierModel<T>> {

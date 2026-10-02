@@ -8,8 +8,8 @@ import dev.hexnowloading.dungeonnowloading.entity.client.model.seeping_soul.Seep
 import dev.hexnowloading.dungeonnowloading.entity.client.model.seeping_soul.SeepingSoulRenderModel;
 import dev.hexnowloading.dungeonnowloading.entity.client.model.seeping_soul.SeepingSoulSerpentCallerModel;
 import dev.hexnowloading.dungeonnowloading.entity.misc.SeepingSoulEntity;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
+import dev.hexnowloading.dungeonnowloading.client.legacy.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
@@ -69,7 +69,7 @@ public class SeepingSoulRenderer extends EntityRenderer<SeepingSoulEntity> {
 
         poseStack.pushPose();
 
-        poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+        poseStack.rotate(Axis.YP.rotationDegrees(180.0F));
         poseStack.scale(-1.0f, -1.0F, 1.0F);
         poseStack.translate(0.0f, -1.5f, 0.0f);
 

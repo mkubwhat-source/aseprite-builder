@@ -1,12 +1,14 @@
 package dev.hexnowloading.dungeonnowloading.block.client.renderer;
 
+
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.block.DungeonBannerBlock;
 import dev.hexnowloading.dungeonnowloading.block.client.model.DungeonBannerBlockModel;
 import dev.hexnowloading.dungeonnowloading.block.entity.DungeonBannerBlockEntity;
-import net.minecraft.client.renderer.MultiBufferSource;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -69,12 +71,12 @@ public class DungeonBannerBlockRenderer implements BlockEntityRenderer<DungeonBa
 
         poseStack.scale(1.0F, -1.0F, -1.0F);
 
-        poseStack.mulPose(com.mojang.math.Axis.YP.rotationDegrees(yRot));
+        poseStack.rotate(com.mojang.math.Axis.YP.rotationDegrees(yRot));
 
         Identifier tex = TEX.get(variant);
         if (tex == null) return; // safety
 
-        RenderType type = RenderType.entityCutoutNoCull(tex);
+        RenderType type = RenderTypes.entityCutout(tex);
         VertexConsumer vc = bufferSource.getBuffer(type);
 
         waverBanner(be, partialTick);

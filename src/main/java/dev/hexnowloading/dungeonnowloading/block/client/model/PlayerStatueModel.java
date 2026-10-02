@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.block.client.model;
 
+
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
@@ -23,7 +25,7 @@ public class PlayerStatueModel extends Model {
     private final ModelPart LeftLeg;
 
     public PlayerStatueModel(ModelPart root) {
-        super(RenderType::armorCutoutNoCull);
+        super(RenderTypes::armorCutoutNoCull);
         this.Body = root.getChild("Body");
         this.Head = this.Body.getChild("Head");
         this.RightArmThick = this.Body.getChild("RightArmThick");

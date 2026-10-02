@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.block.client.model;
 
+
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
@@ -18,7 +20,7 @@ public class DisabledFairkeeperChestModel extends Model {
     public final ModelPart base;
 
     public DisabledFairkeeperChestModel(ModelPart root) {
-        super(RenderType::armorCutoutNoCull);
+        super(RenderTypes::armorCutoutNoCull);
 
         this.lid = root.getChild("lid");
         this.base = root.getChild("base");

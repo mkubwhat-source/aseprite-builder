@@ -5,9 +5,9 @@ import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.entity.client.layer.RepulsorLayer;
 import dev.hexnowloading.dungeonnowloading.entity.client.model.RepulsorModel;
 import dev.hexnowloading.dungeonnowloading.entity.misc.RepulsorEntity;
-import net.minecraft.client.renderer.MultiBufferSource;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MobRenderer;
 import net.minecraft.resources.Identifier;
 
 public class RepulsorRenderer<T extends RepulsorEntity> extends MobRenderer<T, RepulsorModel<T>> {

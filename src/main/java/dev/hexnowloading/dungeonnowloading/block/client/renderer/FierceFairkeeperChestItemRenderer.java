@@ -5,7 +5,7 @@ import dev.hexnowloading.dungeonnowloading.block.entity.DisabledFairkeeperChestB
 import dev.hexnowloading.dungeonnowloading.registry.DNLBlocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;

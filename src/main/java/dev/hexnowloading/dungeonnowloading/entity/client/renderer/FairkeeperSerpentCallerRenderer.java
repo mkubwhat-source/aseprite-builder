@@ -1,14 +1,16 @@
 package dev.hexnowloading.dungeonnowloading.entity.client.renderer;
 
+
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.entity.boss.FairkeeperSerpentCallerEntity;
 import dev.hexnowloading.dungeonnowloading.entity.client.model.FairkeeperSerpentCallerModel;
-import net.minecraft.client.renderer.MultiBufferSource;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import dev.hexnowloading.dungeonnowloading.client.legacy.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
@@ -18,8 +20,8 @@ public class FairkeeperSerpentCallerRenderer<T extends FairkeeperSerpentCallerEn
     private static final Identifier TEXTURE_INACTIVE = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/fairkeeper_serpent_caller/fairkeeper_serpent_caller_inactive.png");
     private static final Identifier TEXTURE_ACTIVE = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/fairkeeper_serpent_caller/fairkeeper_serpent_caller_active.png");
     private FairkeeperSerpentCallerModel model;
-    private static final RenderType RENDER_TYPE_INACTIVE = RenderType.entityTranslucent(TEXTURE_INACTIVE);
-    private static final RenderType RENDER_TYPE_ACTIVE = RenderType.entityTranslucent(TEXTURE_ACTIVE);
+    private static final RenderType RENDER_TYPE_INACTIVE = RenderTypes.entityTranslucent(TEXTURE_INACTIVE);
+    private static final RenderType RENDER_TYPE_ACTIVE = RenderTypes.entityTranslucent(TEXTURE_ACTIVE);
 
     public FairkeeperSerpentCallerRenderer(EntityRendererProvider.Context renderManager) {
         super(renderManager);
@@ -31,7 +33,7 @@ public class FairkeeperSerpentCallerRenderer<T extends FairkeeperSerpentCallerEn
         poseStack.pushPose();
         poseStack.scale(-1.0f, -1.0F, -1.0F);
         poseStack.translate(0.0f, -entity.getBbHeight() * 2.1F + 0.5F, 0.0f);
-        poseStack.mulPose(Axis.YP.rotationDegrees(- entityYaw));
+        poseStack.rotate(Axis.YP.rotationDegrees(- entityYaw));
         //float yRot = Mth.rotLerp(partialTicks, entity.yRotO, entity.getYRot());
         //this.model.headAnim(yRot);
         VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RENDER_TYPE_INACTIVE);

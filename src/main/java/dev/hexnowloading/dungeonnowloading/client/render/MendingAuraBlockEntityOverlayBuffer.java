@@ -1,10 +1,12 @@
 package dev.hexnowloading.dungeonnowloading.client.render;
 
+
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.client.renderer.MultiBufferSource;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -17,7 +19,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MendingAuraBlockEntityOverlayBuffer implements MultiBufferSource {
-    public static final RenderType RENDER_TYPE = RenderType.entityTranslucent(TextureAtlas.LOCATION_BLOCKS);
+    public static final RenderType RENDER_TYPE = RenderTypes.entityTranslucent(TextureAtlas.LOCATION_BLOCKS);
     private static final Identifier MENDING_AURA_SPRITE = Identifier.fromNamespaceAndPath("dungeonnowloading", "block/mending_aura_0");
     private static final float OVERLAY_OFFSET = 0.002F;
     private static final Map<Identifier, TextureMask> TEXTURE_MASK_CACHE = new ConcurrentHashMap<>();

@@ -1,13 +1,15 @@
 package dev.hexnowloading.dungeonnowloading.entity.client.renderer;
 
+
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.entity.client.model.VertexPillarProjectileModel;
 import dev.hexnowloading.dungeonnowloading.entity.projectile.VertexPillarProjectileEntity;
-import net.minecraft.client.renderer.MultiBufferSource;
+import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import dev.hexnowloading.dungeonnowloading.client.legacy.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
@@ -15,7 +17,7 @@ import net.minecraft.resources.Identifier;
 public class VertexPillarProjectileRenderer<T extends VertexPillarProjectileEntity> extends EntityRenderer<VertexPillarProjectileEntity> {
 
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/vertex_pillar.png");
-    private static final RenderType RENDER_TYPE = RenderType.entityTranslucent(TEXTURE);
+    private static final RenderType RENDER_TYPE = RenderTypes.entityTranslucent(TEXTURE);
     private VertexPillarProjectileModel model;
 
     public VertexPillarProjectileRenderer(EntityRendererProvider.Context context) {
