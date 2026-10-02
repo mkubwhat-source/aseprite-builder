@@ -9,6 +9,11 @@
       {
         "texture": "dungeonnowloading:spawner"
       }
+    ],
+    "humanoid_baby": [
+      {
+        "texture": "dungeonnowloading:spawner"
+      }
     ]
   }
 }
