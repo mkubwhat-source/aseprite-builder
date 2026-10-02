@@ -1,0 +1,60 @@
+{
+  "name": "dungeonnowloading:temple_of_duality/chamber/hard/group_1",
+  "fallback": "dungeonnowloading:temple_of_duality/chamber/end_fallback",
+  "elements": [
+    {
+      "weight": 20,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:temple_of_duality/chamber/hard/plate_hunt",
+        "processors": "dungeonnowloading:temple_of_duality/generic_degradation"
+      }
+    },
+    {
+      "weight": 20,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:temple_of_duality/chamber/hard/signal_tracker",
+        "processors": "dungeonnowloading:temple_of_duality/generic_degradation"
+      }
+    },
+    {
+      "weight": 20,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:temple_of_duality/chamber/hard/lava_lane",
+        "processors": "dungeonnowloading:temple_of_duality/generic_degradation"
+      }
+    },
+    {
+      "weight": 20,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:temple_of_duality/chamber/hard/lava_pit",
+        "processors": "dungeonnowloading:temple_of_duality/generic_degradation"
+      }
+    },
+    {
+      "weight": 20,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:temple_of_duality/chamber/hard/stone_notch_9",
+        "processors": "dungeonnowloading:temple_of_duality/generic_degradation"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:temple_of_duality/chamber/chamber_of_honor",
+        "processors": "dungeonnowloading:temple_of_duality/generic_degradation"
+      }
+    }
+  ]
+}

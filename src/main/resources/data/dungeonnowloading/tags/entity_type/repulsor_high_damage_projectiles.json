@@ -1,0 +1,9 @@
+{
+  "values": [
+    "minecraft:dragon_fireball",
+    "minecraft:fireball",
+    "dungeonnowloading:vertex_domain_projectile",
+    "dungeonnowloading:ballista_arrow",
+    "dungeonnowloading:borus_arrow"
+  ]
+}

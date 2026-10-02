@@ -1,0 +1,68 @@
+{
+  "fallback": "dungeonnowloading:labyrinth/spawners/random",
+  "elements": [
+    {
+      "weight": 30,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:labyrinth/spawners/zombie",
+        "processors": "dungeonnowloading:waterlogging_fix"
+      }
+    },
+    {
+      "weight": 20,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:labyrinth/spawners/skeleton",
+        "processors": "dungeonnowloading:waterlogging_fix"
+      }
+    },
+    {
+      "weight": 20,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:labyrinth/spawners/spider",
+        "processors": "dungeonnowloading:waterlogging_fix"
+      }
+    },
+    {
+      "weight": 5,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:labyrinth/spawners/cave_spider",
+        "processors": "dungeonnowloading:waterlogging_fix"
+      }
+    },
+    {
+      "weight": 15,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:labyrinth/spawners/creeper",
+        "processors": "dungeonnowloading:waterlogging_fix"
+      }
+    },
+    {
+      "weight": 5,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:labyrinth/spawners/silverfish",
+        "processors": "dungeonnowloading:waterlogging_fix"
+      }
+    },
+    {
+      "weight": 5,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:labyrinth/spawners/hollow",
+        "processors": "dungeonnowloading:waterlogging_fix"
+      }
+    }
+  ]
+}

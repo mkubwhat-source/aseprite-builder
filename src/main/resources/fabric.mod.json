@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${version}",
+  "name": "${mod_name}",
+  "description": "Dungeon Now Loading - dungeons, bosses and loot. Fabric port for Minecraft 26.3.",
+  "authors": [
+    "${mod_author}"
+  ],
+  "contact": {},
+  "license": "CC0-1.0",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "dev.hexnowloading.dungeonnowloading.DNLFabric"
+    ],
+    "client": [
+      "dev.hexnowloading.dungeonnowloading.client.DNLFabricClient"
+    ],
+    "cardinal-components": [
+      "dev.hexnowloading.dungeonnowloading.capabilities.CapabilityList"
+    ]
+  },
+  "mixins": [
+    "dungeonnowloading.mixins.json",
+    "dungeonnowloading.fabric.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-api": "*",
+    "minecraft": "~${minecraft_version}",
+    "java": ">=25",
+    "cardinal-components-base": "*",
+    "cardinal-components-entity": "*",
+    "forgeconfigapiport": "*"
+  },
+  "accessWidener": "dungeonnowloading.accesswidener",
+  "custom": {
+    "cardinal-components": [
+      "dungeonnowloading:fairkeeper_chest_positions",
+      "dungeonnowloading:dnl_arm_pose"
+    ]
+  }
+}

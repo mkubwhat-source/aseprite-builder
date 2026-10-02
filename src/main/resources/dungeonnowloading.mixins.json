@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.hexnowloading.dungeonnowloading.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+    "FireBlockAccessor",
+    "inventory.AnvilMenuMixin",
+    "items.ItemStackBreakProtectionMixin"
+  ],
+  "client": [
+    "MixinMinecraft"
+  ],
+  "server": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

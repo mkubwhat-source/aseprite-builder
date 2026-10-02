@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#X#",
+    "# #",
+    "   "
+  ],
+  "key": {
+    "#": {
+      "item": "dungeonnowloading:spawner_frame"
+    },
+    "X": {
+      "item": "dungeonnowloading:soul_silk"
+    }
+  },
+  "result": {
+    "id": "dungeonnowloading:spawner_helmet"
+  }
+}

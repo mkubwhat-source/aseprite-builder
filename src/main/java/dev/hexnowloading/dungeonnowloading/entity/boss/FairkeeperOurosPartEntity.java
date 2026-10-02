@@ -1,0 +1,728 @@
+package dev.hexnowloading.dungeonnowloading.entity.boss;
+
+import net.minecraft.core.Holder;
+import dev.hexnowloading.dungeonnowloading.entity.ai.FairkeeperOurosBodyDropScuttleGoal;
+import dev.hexnowloading.dungeonnowloading.entity.ai.FairkeeperOurosBodyDropVertexPillarGoal;
+import dev.hexnowloading.dungeonnowloading.entity.ai.FairkeeperOurosBodyShootVertexOrbGoal;
+import dev.hexnowloading.dungeonnowloading.entity.client.animation_duration.FairkeeperOurosBodyAnimationDuration;
+import dev.hexnowloading.dungeonnowloading.entity.projectile.VertexDomainProjectileEntity;
+import dev.hexnowloading.dungeonnowloading.entity.projectile.VertexOrbProjectileEntity;
+import dev.hexnowloading.dungeonnowloading.entity.util.AnimationChainer;
+import dev.hexnowloading.dungeonnowloading.entity.util.Boss;
+import dev.hexnowloading.dungeonnowloading.entity.util.EntityStates;
+import dev.hexnowloading.dungeonnowloading.entity.util.SlumberingEntity;
+import dev.hexnowloading.dungeonnowloading.registry.DNLMobEffects;
+import dev.hexnowloading.dungeonnowloading.registry.DNLSounds;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.AnimationState;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
+
+import javax.annotation.Nullable;
+import java.util.Optional;
+import java.util.UUID;
+
+public class FairkeeperOurosPartEntity extends Monster implements Boss, Enemy, SlumberingEntity, FairkeeperSerpentEntity {
+
+    private static final EntityDataAccessor<FairkeeperOurosPartState> STATE = SynchedEntityData.defineId(FairkeeperOurosPartEntity.class, EntityStates.FAIRKEEPER_OUROS_PART_STATE);
+    private static final EntityDataAccessor<FairkeeperOurosPartAnimationState> ANIMATION_STATE = SynchedEntityData.defineId(FairkeeperOurosPartEntity.class, EntityStates.FAIRKEEPER_OUROS_PART_ANIMATION_STATE);
+    private static final EntityDataAccessor<Optional<UUID>> PARENT_UUID = SynchedEntityData.defineId(FairkeeperOurosPartEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+
+    private static final EntityDataAccessor<Optional<UUID>> HEAD_UUID = SynchedEntityData.defineId(FairkeeperOurosPartEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<UUID>> CHILD_UUID = SynchedEntityData.defineId(FairkeeperOurosPartEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Float> CANNON_YAW = SynchedEntityData.defineId(FairkeeperOurosPartEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> CANNON_PITCH = SynchedEntityData.defineId(FairkeeperOurosPartEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Integer> BODY_INDEX = SynchedEntityData.defineId(FairkeeperOurosPartEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> DROPPER = SynchedEntityData.defineId(FairkeeperOurosPartEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> TAIL = SynchedEntityData.defineId(FairkeeperOurosPartEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> HEAD_MOVING = SynchedEntityData.defineId(FairkeeperOurosPartEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> MODEL_VISIBLE = SynchedEntityData.defineId(FairkeeperOurosPartEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> ROTATABLE = SynchedEntityData.defineId(FairkeeperOurosPartEntity.class, EntityDataSerializers.BOOLEAN);
+
+    public final AnimationState idleAnimationState = new AnimationState();
+    public final AnimationState cannonIdleAnimationState = new AnimationState();
+    public final AnimationState scuttleOpenAnimationState = new AnimationState();
+    public final AnimationState cannonOpenAnimationState = new AnimationState();
+    public final AnimationState scuttleCloseAnimationState = new AnimationState();
+    public final AnimationState cannonCloseAnimationState = new AnimationState();
+
+    private float previousTilt = 0.0F;
+    private BlockPos dropPosition;
+    private Entity shootingTarget;
+    private boolean cancelShooting;
+    private float inaccuracy;
+    public float prevCannonYaw = 0F;
+    public float cannonYaw = 0F;
+    public float prevCannonPitch = 0F;
+    public float cannonPitch = 0F;
+    private final AnimationChainer<FairkeeperOurosPartAnimationState> animationChainer = new AnimationChainer<>();
+
+
+    public FairkeeperOurosPartEntity(EntityType<? extends Monster> entityType, LivingEntity parent, LivingEntity head, int bodyIndex) {
+        super(entityType, parent.level());
+        this.setParent(parent);
+        this.setHead(head);
+        this.setBodyIndex(bodyIndex);
+        this.setArmor(isArmoredSegment());
+        this.setModelVisible(false);
+        this.setPersistenceRequired();
+    }
+
+    public FairkeeperOurosPartEntity(EntityType<? extends Monster> entityType, Level level) {
+        super(entityType, level);
+    }
+
+    public static AttributeSupplier.Builder createAttributes() {
+        return Monster.createMonsterAttributes()
+                .add(Attributes.MAX_HEALTH, 10.0D)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 1.0F)
+                .add(Attributes.ATTACK_DAMAGE, 8.0D);
+    }
+
+    @Override
+    protected void registerGoals() {
+        super.registerGoals();
+        this.goalSelector.addGoal(1, new FairkeeperOurosBodyDropVertexPillarGoal(this, FairkeeperOurosPartState.DROP_PILLAR));
+        this.goalSelector.addGoal(1, new FairkeeperOurosBodyDropScuttleGoal(this, FairkeeperOurosPartState.DROP_SCUTTLE));
+        this.goalSelector.addGoal(1, new FairkeeperOurosBodyShootVertexOrbGoal(this, FairkeeperOurosPartState.SHOOT_ORB));
+    }
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(PARENT_UUID, Optional.empty());
+        builder.define(CHILD_UUID, Optional.empty());
+        builder.define(HEAD_UUID, Optional.empty());
+        builder.define(BODY_INDEX, 0);
+        builder.define(TAIL, false);
+        builder.define(DROPPER, false);
+        builder.define(HEAD_MOVING, false);
+        builder.define(MODEL_VISIBLE, true);
+        builder.define(ROTATABLE, true);
+        builder.define(CANNON_PITCH, 0F);
+        builder.define(CANNON_YAW, 0F);
+        builder.define(STATE, FairkeeperOurosPartState.IDLE);
+        builder.define(ANIMATION_STATE, FairkeeperOurosPartAnimationState.NONE);
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag compoundTag) {
+        super.addAdditionalSaveData(compoundTag);
+        if (this.getParentId() != null) {
+            compoundTag.putUUID("ParentUUID", this.getParentId());
+        }
+        if (this.getChildId() != null) {
+            compoundTag.putUUID("ChildUUID", this.getChildId());
+        }
+        if (this.getHeadId() != null) {
+            compoundTag.putUUID("HeadUUID", this.getHeadId());
+        }
+        compoundTag.putBoolean("TailPart", isTail());
+        compoundTag.putInt("BodyIndex", getBodyIndex());
+        compoundTag.putBoolean("Armor", hasArmor());
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag compoundTag) {
+        super.readAdditionalSaveData(compoundTag);
+        if (compoundTag.hasUUID("ParentUUID")) {
+            this.setParentId(compoundTag.getUUID("ParentUUID"));
+        }
+        if (compoundTag.hasUUID("ChildUUID")) {
+            this.setChildId(compoundTag.getUUID("ChildUUID"));
+        }
+        if (compoundTag.hasUUID("HeadUUID")) {
+            this.setHeadId(compoundTag.getUUID("HeadUUID"));
+        }
+        this.setTail(compoundTag.getBoolean("TailPart"));
+        this.setBodyIndex(compoundTag.getInt("BodyIndex"));
+        this.setArmor(compoundTag.getBoolean("Armor"));
+    }
+
+    @Override
+    public void tick() {
+        Entity parent = getParent();
+        if (parent != null && !this.level().isClientSide) {
+            this.setNoGravity(true);
+            if (this.getHead() instanceof FairkeeperOurosEntity headEntity) {
+
+                int historyIndex = (this.getBodyIndex() + 1) * FairkeeperOurosEntity.SEGMENT_DELAY_STEP;
+                synchronized (headEntity.getPositionHistory()) {
+                    if (headEntity.getPositionHistory().size() > historyIndex) {
+                        this.setModelVisible(true);
+
+                        Vec3 targetPos = headEntity.getSegmentTargetPosition(this.getBodyIndex() + 1);
+                        // Move towards the target position
+                        this.setPos(
+                                lerp(this.getX(), targetPos.x, 0.5),
+                                lerp(this.getY(), targetPos.y, 0.5),
+                                lerp(this.getZ(), targetPos.z, 0.5)
+                        );
+
+                        // Align rotation with the head's historical rotation
+                        Vec3 nextPos = headEntity.getPositionHistory().stream().skip(historyIndex - 1).findFirst().orElse(targetPos);
+                        /*if (headEntity.isState(FairkeeperOurosEntity.FairkeeperOurosState.AWAKENING)) {
+                            this.enableRotation = false;
+                        }*/
+                        if (!this.isRotatable()) {
+                            Vec3 awakenEndPos = headEntity.getAwakenEndPos();
+                            if (awakenEndPos == null) {
+                                this.setRotatable(true);
+                            } else {
+                                double dy = awakenEndPos.y - (this.getY() + this.getBbHeight());
+
+                                if (dy * dy < 5.0F * 5.0F) {
+                                    this.setRotatable(true);
+                                }
+                            }
+                        }
+                        if (this.isRotatable() && this.isHeadEntityMoving()) {
+                            alignRotation(this.position(), targetPos);
+                        }
+                    }
+                }
+
+                this.setHeadEntityMoving(headEntity.getDeltaMovement().lengthSqr() > 0.01);
+
+            }
+
+        } else if (!this.level().isClientSide) {
+            remove(RemovalReason.DISCARDED);
+        }
+
+        if (this.level().isClientSide && this.isState(FairkeeperOurosPartState.SHOOT_ORB)) {
+            this.prevCannonYaw = this.cannonYaw;
+            this.prevCannonPitch = this.cannonPitch;
+
+            this.cannonYaw = this.entityData.get(CANNON_YAW);
+            this.cannonPitch = this.entityData.get(CANNON_PITCH);
+        }
+        super.tick();
+    }
+
+    private void animationControl() {
+        if (this.level().isClientSide) return;
+
+        if (this.entityData.get(ANIMATION_STATE) == FairkeeperOurosPartAnimationState.NONE) {
+            this.transitionTo(FairkeeperOurosPartAnimationState.IDLE);
+        }
+
+        animationChainer.tick(this::transitionTo);
+    }
+
+    private double lerp(double start, double end, double factor) {
+        return start + (end - start) * factor;
+    }
+
+    private void alignRotation(Vec3 currentPos, Vec3 targetPos) {
+        double deltaX = targetPos.x - currentPos.x;
+        double deltaZ = targetPos.z - currentPos.z;
+        float yaw = (float) (Math.atan2(deltaZ, deltaX) * (180 / Math.PI)) - 90;
+        this.setYRot(yaw);
+    }
+
+    @Override
+    protected void customServerAiStep() {
+
+        this.animationControl();
+
+        if (this.isHeadEntityMoving()) {
+            this.performContactDamage();
+        }
+
+        if (!this.isState(FairkeeperOurosPartState.SHOOT_ORB) && this.isCancelShooting()) {
+            this.level().playSound(null, this.blockPosition(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS, 4.0f, (1.0f + (this.level().random.nextFloat() - this.level().random.nextFloat()) * 0.2f) * 0.7f);
+            ((ServerLevel) (this.level())).sendParticles(ParticleTypes.EXPLOSION, this.getX(), this.getY(), this.getZ(), 1, 0.0D, 0.0D, 0.0D, 1.0D);
+            this.playCannonCancelAnimation(null);
+            this.setCancelShooting(false);
+        }
+
+        super.customServerAiStep();
+    }
+
+    private void vertexTransmissionEffectImmunity() {
+        this.removeEffect(DNLMobEffects.vertexTransmission());
+    }
+
+    private void performContactDamage() {
+        this.level().getEntities(this, this.getBoundingBox(), this::canPerformContactDamageTo)
+                .forEach(entity -> {
+                    entity.push(this);
+                    LivingEntity head = (LivingEntity) this.getHead();
+                    if (head != null) {
+                        entity.hurt(entity.level().damageSources().mobAttack(head), (float) (head.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.5F));
+                    }
+                });
+    }
+
+    private boolean canPerformContactDamageTo(Entity entity) {
+        if (entity instanceof FairkeeperOurosEntity head) {
+            return !this.getHeadId().equals(head.getUUID());
+        }
+        if (entity instanceof FairkeeperOurosPartEntity part) {
+            return !this.getHeadId().equals(part.getHeadId());
+        }
+        return !(entity instanceof VertexOrbProjectileEntity) && !(entity instanceof VertexDomainProjectileEntity);
+    }
+
+    @Override
+    public boolean hurt(DamageSource damageSource, float damageAmount) {
+
+        if (damageSource.getEntity() instanceof FairkeeperSerpentEntity) {
+            if (damageSource.getDirectEntity() instanceof AbstractArrow arrow) {
+                arrow.remove(RemovalReason.DISCARDED);
+            }
+            return false;
+        }
+
+        if (!this.hasArmor() || damageSource.isCreativePlayer()) {
+            float damage = damageAmount;
+
+            if (this.isTail()) {
+                damage = damageAmount * 2;
+            }
+
+            if (damage >= 5 && (this.getAnimationState().equals(FairkeeperOurosPartAnimationState.CANNON_IDLE) || this.getAnimationState().equals(FairkeeperOurosPartAnimationState.CANNON_OPEN) || this.getAnimationState().equals(FairkeeperOurosPartAnimationState.CANNON_CLOSE))) {
+                this.setCancelShooting(true);
+            }
+
+            FairkeeperOurosEntity head = (FairkeeperOurosEntity) this.getHead();
+            if (head != null) {
+                head.hurt(damageSource, damage);
+            }
+
+            return super.hurt(damageSource, 0);
+        }
+
+        if (damageSource.is(DamageTypes.EXPLOSION) || (damageSource.getDirectEntity() instanceof LivingEntity livingEntity && livingEntity.canDisableShield())) {
+            this.setArmor(false);
+        }
+
+        return false;
+    }
+
+    @Override
+    protected void tickDeath() {
+        this.deathTime++;
+    }
+
+    @Override
+    public boolean canBeAffected(MobEffectInstance mobEffectInstance) {
+        Holder<MobEffect> effect = mobEffectInstance.getEffect();
+        if (effect == MobEffects.POISON || effect == DNLMobEffects.vertexTransmission()) {
+            return false;
+        }
+        return super.canBeAffected(mobEffectInstance);
+    }
+
+    public void aimCannonAtPlayer(Entity targetPlayer) {
+        Vec3 cannonPos = this.position().add(0, this.getBbHeight() * 0.5, 0);
+        Vec3 playerPos = targetPlayer.position().add(0, targetPlayer.getBbHeight() * 0.5, 0);
+
+        Vec3 dir = playerPos.subtract(cannonPos);
+
+        float targetYaw = (float) Math.toDegrees(Math.atan2(dir.z, dir.x)) - 90.0F;
+        float horizontalDistance = (float) Math.sqrt(dir.x * dir.x + dir.z * dir.z);
+        float targetPitch = (float) Math.toDegrees(Math.atan2(dir.y, horizontalDistance));
+
+        // Get current values
+        float currentYaw = this.entityData.get(CANNON_YAW);
+        float currentPitch = this.entityData.get(CANNON_PITCH);
+
+        // Lerp for smooth pitch
+        float smoothedPitch = Mth.lerp(0.2f, currentPitch, targetPitch);
+
+        // For yaw, we wrap around so lerp still works across -180/+180 boundary
+        float deltaYaw = Mth.wrapDegrees(targetYaw - currentYaw);
+        float smoothedYaw = currentYaw + deltaYaw * 0.2f;
+
+        // Set updated values
+        this.entityData.set(CANNON_YAW, smoothedYaw);
+        this.entityData.set(CANNON_PITCH, smoothedPitch);
+    }
+
+    private void resetAnimations() {
+        this.idleAnimationState.stop();
+        this.scuttleOpenAnimationState.stop();
+        this.scuttleCloseAnimationState.stop();
+        this.cannonOpenAnimationState.stop();
+        this.cannonCloseAnimationState.stop();
+        this.cannonIdleAnimationState.stop();
+    }
+
+    @Override
+    public void onSyncedDataUpdated(EntityDataAccessor<?> entityDataAccessor) {
+        if (ANIMATION_STATE.equals(entityDataAccessor)) {
+            FairkeeperOurosPartAnimationState animationState = this.entityData.get(ANIMATION_STATE);
+            this.resetAnimations();
+            switch (animationState) {
+                case IDLE -> this.idleAnimationState.startIfStopped(this.tickCount);
+                case SCUTTLE_OPEN -> this.scuttleOpenAnimationState.startIfStopped(this.tickCount);
+                case SCUTTLE_CLOSE -> this.scuttleCloseAnimationState.startIfStopped(this.tickCount);
+                case CANNON_OPEN -> this.cannonOpenAnimationState.startIfStopped(this.tickCount);
+                case CANNON_CLOSE -> this.cannonCloseAnimationState.startIfStopped(this.tickCount);
+                case CANNON_IDLE -> this.cannonIdleAnimationState.startIfStopped(this.tickCount);
+            }
+        }
+        super.onSyncedDataUpdated(entityDataAccessor);
+    }
+
+    public FairkeeperOurosPartEntity transitionTo(FairkeeperOurosPartAnimationState state) {
+        this.entityData.set(ANIMATION_STATE, state);
+        return this;
+    }
+
+    public void playVertexPillarDoorOpenAnimation(Runnable runnable) {
+        this.animationChainer.reset();
+        this.animationChainer.enqueue(AnimationChainer.AnimationStep.of(FairkeeperOurosPartAnimationState.SCUTTLE_OPEN, FairkeeperOurosBodyAnimationDuration.SCUTTLE_OPEN, () -> this.playVertexPillarDoorOpenSound(this.getX(), this.getY(), this.getZ()), runnable));
+        //this.animationChainer.enqueue(AnimationChainer.AnimationStep.of(FairkeeperOurosPartAnimationState.SCUTTLE_CLOSE, FairkeeperOurosBodyAnimationDuration.SCUTTLE_CLOSE.lengthInSeconds()));
+    }
+
+    public void playScuttleDoorOpenAnimation(Runnable runnable) {
+        this.animationChainer.reset();
+        this.animationChainer.enqueue(AnimationChainer.AnimationStep.of(FairkeeperOurosPartAnimationState.SCUTTLE_OPEN, FairkeeperOurosBodyAnimationDuration.SCUTTLE_OPEN, () -> this.playScuttleDoorOpenSound(this.getX(), this.getY(), this.getZ()), runnable));
+        //this.animationChainer.enqueue(AnimationChainer.AnimationStep.of(FairkeeperOurosPartAnimationState.SCUTTLE_CLOSE, FairkeeperOurosBodyAnimationDuration.SCUTTLE_CLOSE.lengthInSeconds()));
+    }
+
+    public void playScuttleDoorCloseAnimation(Runnable runnable) {
+        this.animationChainer.reset();
+        this.animationChainer.enqueue(AnimationChainer.AnimationStep.of(FairkeeperOurosPartAnimationState.SCUTTLE_CLOSE, FairkeeperOurosBodyAnimationDuration.SCUTTLE_CLOSE, () -> this.playDoorCloseSound(this.getX(), this.getY(), this.getZ()), runnable));
+    }
+
+    public boolean playDoorCloseAnimation() {
+        if (!this.animationChainer.isEmpty()) return false;
+        this.animationChainer.reset();
+        this.animationChainer.enqueue(AnimationChainer.AnimationStep.of(FairkeeperOurosPartAnimationState.SCUTTLE_CLOSE, FairkeeperOurosBodyAnimationDuration.SCUTTLE_CLOSE, () -> this.playDoorCloseSound(this.getX(), this.getY(), this.getZ()), null));
+        this.animationChainer.enqueue(AnimationChainer.AnimationStep.of(FairkeeperOurosPartAnimationState.IDLE, 0F));
+        return true;
+    }
+
+    public void playCannonSetupAnimation(Runnable runnable) {
+        this.animationChainer.reset();
+        this.animationChainer.enqueue(AnimationChainer.AnimationStep.of(FairkeeperOurosPartAnimationState.CANNON_OPEN, FairkeeperOurosBodyAnimationDuration.CANNON_OPEN, () -> this.playCannonDoorOpenSound(this.getX(), this.getY(), this.getZ()), runnable));
+        this.animationChainer.enqueue(AnimationChainer.AnimationStep.of(FairkeeperOurosPartAnimationState.CANNON_IDLE, 0f));
+    }
+
+    public void playCannonPackAnimation(Runnable runnable) {
+        this.animationChainer.reset();
+        this.animationChainer.enqueue(AnimationChainer.AnimationStep.of(FairkeeperOurosPartAnimationState.CANNON_CLOSE, FairkeeperOurosBodyAnimationDuration.CANNON_CLOSE, () -> this.playDoorCloseSound(this.getX(), this.getY(), this.getZ()), runnable));
+        this.animationChainer.enqueue(AnimationChainer.AnimationStep.of(FairkeeperOurosPartAnimationState.IDLE, 0f));
+    }
+
+    public void playCannonCancelAnimation(Runnable runnable) {
+        this.animationChainer.reset();
+        this.animationChainer.enqueue(AnimationChainer.AnimationStep.of(FairkeeperOurosPartAnimationState.SCUTTLE_CLOSE, FairkeeperOurosBodyAnimationDuration.SCUTTLE_CLOSE, () -> {
+            this.playCannonBreakSound(this.getX(), this.getY(), this.getZ());
+        }, runnable));
+        this.animationChainer.enqueue(AnimationChainer.AnimationStep.of(FairkeeperOurosPartAnimationState.IDLE, 0f));
+    }
+
+    public void playCannonDoorOpenSound(double x, double y, double z) {
+        this.level().playSound(null, x, y, z, DNLSounds.FAIRKEEPER_OUROS_CANNON_DOOR_OPEN.get(), this.getSoundSource(), 4.0F, 1.0F);
+    }
+
+    public void playCannonBreakSound(double x, double y, double z) {
+        this.level().playSound(null, x, y, z, DNLSounds.FAIRKEEPER_OUROS_CANNON_BREAK.get(), this.getSoundSource(), 4.0F, 1.0F);
+    }
+
+    public void playDoorCloseSound(double x, double y, double z) {
+        this.level().playSound(null, x, y, z, DNLSounds.FAIRKEEPER_OUROS_DOOR_CLOSE.get(), this.getSoundSource(), 4.0F, 1.0F);
+    }
+
+    public void playVertexPillarDoorOpenSound(double x, double y, double z) {
+        this.level().playSound(null, x, y, z, DNLSounds.FAIRKEEPER_OUROS_PILLAR_DOOR_OPEN.get(), this.getSoundSource(), 4.0F, 1.0F);
+    }
+
+    public void playScuttleDoorOpenSound(double x, double y, double z) {
+        this.level().playSound(null, x, y, z, DNLSounds.FAIRKEEPER_OUROS_SCUTTLE_DOOR_OPEN.get(), this.getSoundSource(), 4.0F, 1.0F);
+    }
+
+    public void playVertexOrbShootSound(double x, double y, double z) {
+        this.level().playSound(null, x, y, z, DNLSounds.FAIRKEEPER_OUROS_CANNON_SHOOT.get(), this.getSoundSource(), 4.0F, 1.0F);
+    }
+
+    /*public void playVertexOrbShootSound() {
+        float radius = 64.0f;
+        AABB detectionBox = this.getBoundingBox().inflate(radius);
+        List<ServerPlayer> nearbyPlayers = this.level().getEntitiesOfClass(
+                ServerPlayer.class,
+                detectionBox
+        );
+        for (ServerPlayer player : nearbyPlayers) {
+            Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(this.getId(), DNLSounds.FAIRKEEPER_OUROS_CANNON_SHOOT.get().getLocation(), SoundSource.HOSTILE, 4.0F, 1.0F, true, 64f, 0f), player);
+        }
+    }*/
+
+  /*  public void stopVertexOrbShootSound() {
+        float radius = 64.0f;
+        AABB detectionBox = this.getBoundingBox().inflate(radius);
+        List<ServerPlayer> nearbyPlayers = this.level().getEntitiesOfClass(
+                ServerPlayer.class,
+                detectionBox
+        );
+        for (ServerPlayer player : nearbyPlayers) {
+            Services.NETWORK.sendToPlayer(new S2CStopTickingSoundPacket(this.getId(), DNLSounds.FAIRKEEPER_OUROS_CANNON_SHOOT.get().getLocation(), 20, true), player);
+        }
+    }*/
+
+    public void shootVertexOrb(Entity target, float inaccuracy) {
+        this.setShootingTarget(target);
+        this.setInaccuracy(inaccuracy);
+        this.setState(FairkeeperOurosPartState.SHOOT_ORB);
+    }
+
+    public float getInaccuracy() {
+        return inaccuracy;
+    }
+
+    public void setInaccuracy(float inaccuracy) {
+        this.inaccuracy = inaccuracy;
+    }
+
+    public Entity getShootingTarget() {
+        return this.shootingTarget;
+    }
+
+    public void setShootingTarget(Entity target) {
+        this.shootingTarget = target;
+    }
+
+    public void dropVertexPillar(BlockPos dropPosition) {
+        this.setState(FairkeeperOurosPartState.DROP_PILLAR);
+        this.setDropPosition(dropPosition);
+    }
+
+    public void dropScuttle() {
+        this.setState(FairkeeperOurosPartState.DROP_SCUTTLE);
+    }
+
+    public BlockPos getDropPosition() {
+        return this.dropPosition;
+    }
+
+    public void setDropPosition(BlockPos dropPosition) {
+        this.dropPosition = dropPosition;
+    }
+
+    @Override
+    public boolean isInWall() {
+        return false;
+    }
+
+    @Override
+    public void push(Entity entity) {
+    }
+
+    @Override
+    public boolean isPushable() {
+        return false;
+    }
+
+    @Override
+    public boolean isPushedByFluid() {
+        return false;
+    }
+
+    @Override
+    protected boolean updateInWaterStateAndDoFluidPushing() {
+        return false;
+    }
+
+    @Override
+    protected void checkFallDamage(double $$0, boolean $$1, BlockState $$2, BlockPos $$3) {
+    }
+
+    @Override
+    protected int calculateFallDamage(float $$0, float $$1) {
+        return 0;
+    }
+
+    @Override
+    public boolean causeFallDamage(float v, float v1, DamageSource damageSource) {
+        return false;
+    }
+
+    @Override
+    public void resetBoss() {
+
+    }
+
+    @Override
+    public boolean resetCondition() {
+        return false;
+    }
+
+    @Override
+    public BlockPos resetRegionCenter() {
+        return null;
+    }
+
+    @Override
+    public boolean isSlumbering() {
+        return false;
+    }
+
+    @Override
+    public boolean isStationary() {
+        return false;
+    }
+
+    public Entity getHead() {
+        UUID id = getHeadId();
+        if (id != null && !this.level().isClientSide) {
+            return ((ServerLevel) this.level()).getEntity(id);
+        }
+        return null;
+    }
+
+    public void setHead(Entity entity) {
+        this.setHeadId(entity.getUUID());
+    }
+
+    public UUID getHeadId() { return this.entityData.get(HEAD_UUID).orElse(null); }
+
+    public void setHeadId(@Nullable UUID uniqueId) {
+        this.entityData.set(HEAD_UUID, Optional.ofNullable(uniqueId));
+    }
+
+    public int getBodyIndex() {
+        return this.entityData.get(BODY_INDEX);
+    }
+
+    public void setBodyIndex(int index) { this.entityData.set(BODY_INDEX, index); }
+
+    @Nullable
+    public UUID getParentId() { return this.entityData.get(PARENT_UUID).orElse(null); }
+
+    public void setParentId(@Nullable UUID uniqueId) {
+        this.entityData.set(PARENT_UUID, Optional.ofNullable(uniqueId));
+    }
+
+    public void setParent(Entity entity) {
+        this.setParentId(entity.getUUID());
+    }
+
+    public Entity getParent() {
+        UUID id = getParentId();
+        if (id != null && !this.level().isClientSide) {
+            return ((ServerLevel) this.level()).getEntity(id);
+        }
+        return null;
+    }
+
+    @Nullable
+    public UUID getChildId() { return this.entityData.get(CHILD_UUID).orElse(null); }
+
+    public void setChildId(@Nullable UUID uniqueId) {
+        this.entityData.set(CHILD_UUID, Optional.ofNullable(uniqueId));
+    }
+
+    public void setChild(Entity entity) {
+        this.setChildId(entity.getUUID());
+    }
+
+    public Entity getChild() {
+        UUID id = getChildId();
+        if (id != null && !this.level().isClientSide) {
+            return ((ServerLevel) this.level()).getEntity(id);
+        }
+        return null;
+    }
+
+    public float getPreviousTilt() { return this.previousTilt; }
+
+    public void setPreviousTilt(float tilt) { this.previousTilt = tilt; }
+
+    public boolean isHeadEntityMoving() {
+        return this.entityData.get(HEAD_MOVING);
+    }
+
+    public void setHeadEntityMoving(boolean moving) {
+        this.entityData.set(HEAD_MOVING, moving);
+    }
+
+    public boolean isModelVisible() {
+        return this.entityData.get(MODEL_VISIBLE);
+    }
+
+    public void setModelVisible(boolean moving) {
+        this.entityData.set(MODEL_VISIBLE, moving);
+    }
+
+    public boolean isArmoredSegment() { return false; }
+
+    public boolean hasArmor() { return this.entityData.get(DROPPER); }
+
+    public void setArmor(boolean armor) { this.entityData.set(DROPPER, armor); }
+
+    public boolean isTail() { return this.entityData.get(TAIL); }
+
+    public void setTail(boolean tail) { this.entityData.set(TAIL, tail); }
+
+    public void setRotatable(boolean enableRotation) { this.entityData.set(ROTATABLE, enableRotation); }
+
+    public boolean isRotatable() { return this.entityData.get(ROTATABLE); }
+
+    public float getCannonTargetYaw() { return this.entityData.get(CANNON_YAW); }
+
+    public float getCannonTargetPitch() { return this.entityData.get(CANNON_PITCH); }
+
+    public boolean isCancelShooting() { return this.cancelShooting; }
+
+    public void setCancelShooting(boolean b) { this.cancelShooting = b; }
+
+    public boolean isState(FairkeeperOurosPartState state) {
+        return this.entityData.get(STATE) == state;
+    }
+
+    public void setState(FairkeeperOurosPartState state) {
+        this.entityData.set(STATE, state);
+    }
+
+    public AnimationChainer<FairkeeperOurosPartAnimationState> getAnimationChainer() {
+        return this.animationChainer;
+    }
+
+    public FairkeeperOurosPartEntity.FairkeeperOurosPartAnimationState getAnimationState() { return this.entityData.get(ANIMATION_STATE); }
+
+    public enum FairkeeperOurosPartAnimationState {
+        NONE,
+        IDLE,
+        CANNON_IDLE,
+        CANNON_OPEN,
+        CANNON_CLOSE,
+        SCUTTLE_OPEN,
+        SCUTTLE_CLOSE
+    }
+
+    public enum FairkeeperOurosPartState {
+        IDLE,
+        DROP_SCUTTLE,
+        DROP_PILLAR,
+        SHOOT_ORB
+    }
+
+}

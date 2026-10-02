@@ -1,0 +1,195 @@
+package dev.hexnowloading.dungeonnowloading.block;
+
+import com.mojang.serialization.MapCodec;
+
+import dev.hexnowloading.dungeonnowloading.block.entity.VertexPillarBlockEntity;
+import dev.hexnowloading.dungeonnowloading.registry.DNLBlockEntityTypes;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.SectionPos;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+public class VertexPillarBlock extends BaseEntityBlock implements EntityBlock, SimpleWaterloggedBlock {
+
+    public static final MapCodec<VertexPillarBlock> CODEC = simpleCodec(VertexPillarBlock::new);
+
+    @Override
+    public MapCodec<VertexPillarBlock> codec() {
+        return CODEC;
+    }
+
+    public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+    private static final VoxelShape SHAPE = Block.box(2, 0, 2, 14, 16, 14);
+    private static final int RANGE = 19;
+
+    public VertexPillarBlock(Properties properties) {
+        super(properties);
+        this.registerDefaultState(this.defaultBlockState().setValue(WATERLOGGED, Boolean.FALSE).setValue(HALF, DoubleBlockHalf.LOWER));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> blockBlockStateBuilder) {
+        blockBlockStateBuilder.add(WATERLOGGED);
+        blockBlockStateBuilder.add(HALF);
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
+        return SHAPE;
+    }
+
+    @Nullable
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext blockPlaceContext) {
+        BlockPos blockPos = blockPlaceContext.getClickedPos();
+        Level level = blockPlaceContext.getLevel();
+        return blockPos.getY() < level.getMaxBuildHeight() - 1 && level.getBlockState(blockPos.above()).canBeReplaced(blockPlaceContext) ? this.defaultBlockState().setValue(HALF, DoubleBlockHalf.LOWER).setValue(WATERLOGGED, blockPlaceContext.getLevel().getFluidState(blockPlaceContext.getClickedPos()).getType() == Fluids.WATER) : null;
+    }
+
+    @Override
+    public FluidState getFluidState(BlockState state) {
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+    }
+
+    @Override
+    public boolean canSurvive(BlockState blockState, LevelReader levelReader, BlockPos blockPos) {
+        BlockPos blockPos1 = blockPos.below();
+        return this.mayPlaceOn(levelReader.getBlockState(blockPos1), levelReader, blockPos1);
+    }
+
+    private boolean mayPlaceOn(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos) {
+        return !blockState.getCollisionShape(blockGetter, blockPos).getFaceShape(Direction.UP).isEmpty() || blockState.isFaceSturdy(blockGetter, blockPos, Direction.UP);
+    }
+
+    @Override
+    public BlockState updateShape(BlockState blockState, Direction direction, BlockState oldBlockState, LevelAccessor levelAccessor, BlockPos blockPos, BlockPos oldBlockPos) {
+        DoubleBlockHalf doubleBlockHalf = blockState.getValue(HALF);
+        BlockState topBlockState = levelAccessor.getBlockState(blockPos.above());
+        if (!blockState.canSurvive(levelAccessor, blockPos)) {
+            return Blocks.AIR.defaultBlockState();
+        }
+        if (doubleBlockHalf == DoubleBlockHalf.LOWER && !topBlockState.hasProperty(HALF)) {
+            return Blocks.AIR.defaultBlockState();
+        }
+        if (doubleBlockHalf == DoubleBlockHalf.LOWER && topBlockState.hasProperty(HALF) && topBlockState.getValue(HALF) != DoubleBlockHalf.UPPER) {
+            return Blocks.AIR.defaultBlockState();
+        }
+        if (blockState.getValue(WATERLOGGED)) {
+            levelAccessor.scheduleTick(blockPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelAccessor));
+        }
+        return super.updateShape(blockState, direction, oldBlockState, levelAccessor, blockPos, oldBlockPos);
+    }
+
+    @Override
+    public void setPlacedBy(Level level, BlockPos blockPos, BlockState blockState, @Nullable LivingEntity livingEntity, ItemStack itemStack) {
+        BlockPos upperBlockPos = blockPos.above();
+        level.setBlock(upperBlockPos, this.defaultBlockState().setValue(HALF, DoubleBlockHalf.UPPER), Block.UPDATE_ALL);
+        if (!level.isClientSide) {
+            linkOnPlaced(level, blockPos);
+        }
+    }
+
+    public static void linkOnPlaced(Level level, BlockPos blockPos) {
+        VertexPillarBlockEntity thisBE = (VertexPillarBlockEntity) level.getBlockEntity(blockPos);
+        if (thisBE == null) return;
+
+        float inflate = 0.1F;
+
+        double maxRangeX = blockPos.getX() + inflate + RANGE;
+        double minRangeX = blockPos.getX() - inflate - RANGE;
+        double maxRangeY = blockPos.getY() + inflate + RANGE;
+        double minRangeY = blockPos.getY() - inflate - RANGE;
+        double maxRangeZ = blockPos.getZ() + inflate + RANGE;
+        double minRangeZ = blockPos.getZ() - inflate - RANGE;
+
+        Map<BlockPos, BlockEntity> blockEntityMap = new HashMap<>();
+        int chunkMaxX = SectionPos.blockToSectionCoord(maxRangeX);
+        int chunkMinX = SectionPos.blockToSectionCoord(minRangeX);
+        int chunkMaxZ = SectionPos.blockToSectionCoord(maxRangeZ);
+        int chunkMinZ = SectionPos.blockToSectionCoord(minRangeZ);
+        for (int x = 0; chunkMinX + x <= chunkMaxX; x++) {
+            for (int z = 0; chunkMinZ + z <= chunkMaxZ; z++) {
+                blockEntityMap.putAll(level.getChunk(chunkMinX + x, chunkMinZ + z).getBlockEntities());
+            }
+        }
+
+        /*Map<BlockPos, BlockEntity> filteredMap = blockEntityMap.entrySet()
+                .stream()
+                .filter(e -> (e.getValue() instanceof ShieldingStonePillarBlockEntity blockEntity && blockEntity.getBlockState().getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.LOWER))
+                .filter(e -> e.getKey().getX() < maxRangeX && e.getKey().getX() >= minRangeX && e.getKey().getY() < maxRangeY && e.getKey().getY() >= minRangeY && e.getKey().getZ() < maxRangeZ && e.getKey().getZ() >= minRangeZ)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));*/
+
+        double range = RANGE * RANGE;
+
+        Map<BlockPos, BlockEntity> filteredMap = blockEntityMap.entrySet()
+                .stream()
+                .filter(e -> (e.getValue() instanceof VertexPillarBlockEntity blockEntity && blockEntity.getBlockState().getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.LOWER))
+                .filter(e -> {
+                            float x = e.getKey().getX() - blockPos.getX();
+                            float y = e.getKey().getY() - blockPos.getY();
+                            float z = e.getKey().getZ() - blockPos.getZ();
+                            return x * x + y * y + z * z < range;
+                        }
+                )
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        if (!filteredMap.isEmpty()) {
+            List<BlockPos> blockPosList = filteredMap.keySet().stream()
+                    .filter(e -> !e.equals(blockPos))
+                    .sorted(Comparator.comparingDouble(e -> e.distSqr(blockPos)))
+                    .toList();
+            for (BlockPos pos : blockPosList) {
+                BlockEntity linkingBE = level.getBlockEntity(pos);
+                if (linkingBE instanceof VertexPillarBlockEntity shieldingStonePillar) {
+                    thisBE.addLink(pos);
+                    shieldingStonePillar.addLink(blockPos);
+                }
+            }
+        }
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+        return new VertexPillarBlockEntity(blockPos, blockState);
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
+        return  createTickerHelper(blockEntityType, DNLBlockEntityTypes.VERTEX_PILLAR.get(), VertexPillarBlockEntity::tick);
+    }
+
+    @Override
+    public RenderShape getRenderShape(BlockState blockState) {
+        return RenderShape.MODEL;
+    }
+}

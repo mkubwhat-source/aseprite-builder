@@ -1,0 +1,60 @@
+{
+  "name": "dungeonnowloading:temple_of_duality/chamber/hard/group_2",
+  "fallback": "dungeonnowloading:temple_of_duality/chamber/end_fallback",
+  "elements": [
+    {
+      "weight": 20,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:temple_of_duality/chamber/hard/maze",
+        "processors": "dungeonnowloading:temple_of_duality/generic_degradation"
+      }
+    },
+    {
+      "weight": 20,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:temple_of_duality/chamber/hard/redstone_lane",
+        "processors": "dungeonnowloading:temple_of_duality/generic_degradation"
+      }
+    },
+    {
+      "weight": 20,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:temple_of_duality/chamber/hard/spider_pillar",
+        "processors": "dungeonnowloading:temple_of_duality/generic_degradation"
+      }
+    },
+    {
+      "weight": 20,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:temple_of_duality/chamber/hard/round_parkour",
+        "processors": "dungeonnowloading:temple_of_duality/generic_degradation"
+      }
+    },
+    {
+      "weight": 20,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:temple_of_duality/chamber/hard/creeper",
+        "processors": "dungeonnowloading:temple_of_duality/generic_degradation"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:temple_of_duality/chamber/chamber_of_honor",
+        "processors": "dungeonnowloading:temple_of_duality/generic_degradation"
+      }
+    }
+  ]
+}

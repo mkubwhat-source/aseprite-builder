@@ -1,0 +1,12 @@
+{
+  "variants": {
+    "facing=north,fairkeeper_alert=false": { "model": "dungeonnowloading:block/fairkeeper_chest" },
+    "facing=east,fairkeeper_alert=false":  { "model": "dungeonnowloading:block/fairkeeper_chest", "y":  90},
+    "facing=south,fairkeeper_alert=false": { "model": "dungeonnowloading:block/fairkeeper_chest", "y": 180 },
+    "facing=west,fairkeeper_alert=false":  { "model": "dungeonnowloading:block/fairkeeper_chest", "y": 270 },
+    "facing=north,fairkeeper_alert=true": { "model": "dungeonnowloading:block/fairkeeper_chest" },
+    "facing=east,fairkeeper_alert=true":  { "model": "dungeonnowloading:block/fairkeeper_chest", "y":  90},
+    "facing=south,fairkeeper_alert=true": { "model": "dungeonnowloading:block/fairkeeper_chest", "y": 180 },
+    "facing=west,fairkeeper_alert=true":  { "model": "dungeonnowloading:block/fairkeeper_chest", "y": 270 }
+  }
+}

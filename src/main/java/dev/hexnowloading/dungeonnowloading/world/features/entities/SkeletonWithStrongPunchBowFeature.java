@@ -1,0 +1,62 @@
+package dev.hexnowloading.dungeonnowloading.world.features.entities;
+
+import dev.hexnowloading.dungeonnowloading.registry.DNLEnchantments;
+import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
+import dev.hexnowloading.dungeonnowloading.entity.util.EntityScale;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.monster.Skeleton;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+
+public class SkeletonWithStrongPunchBowFeature extends Feature<NoneFeatureConfiguration> {
+
+    public SkeletonWithStrongPunchBowFeature() { super(NoneFeatureConfiguration.CODEC); }
+
+    @Override
+    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
+
+        Skeleton skeleton = EntityType.SKELETON.create(context.level().getLevel());
+        skeleton.setPersistenceRequired();
+        skeleton.moveTo((double)context.origin().getX() + 0.5D, context.origin().getY(), (double)context.origin().getZ() + 0.5D, 0.0F, 0.0F);
+        skeleton.finalizeSpawn(context.level(), context.level().getCurrentDifficultyAt(context.origin()), MobSpawnType.STRUCTURE, null);
+        EntityScale.scaleMobAttributes(skeleton);
+        skeleton.setItemSlot(EquipmentSlot.MAINHAND, strongPunchBow(context.level().registryAccess()));
+        skeleton.setItemSlot(EquipmentSlot.HEAD, trimArmor(context.level().registryAccess(), Items.DIAMOND_HELMET));
+        skeleton.setItemSlot(EquipmentSlot.CHEST, trimArmor(context.level().registryAccess(), Items.DIAMOND_CHESTPLATE));
+        skeleton.setItemSlot(EquipmentSlot.LEGS, trimArmor(context.level().registryAccess(), Items.DIAMOND_LEGGINGS));
+        skeleton.setItemSlot(EquipmentSlot.FEET, trimArmor(context.level().registryAccess(), Items.DIAMOND_BOOTS));
+        skeleton.setDropChance(EquipmentSlot.MAINHAND, 0.0F);
+        skeleton.setDropChance(EquipmentSlot.OFFHAND, 0.0F);
+        skeleton.setDropChance(EquipmentSlot.HEAD, 0.0F);
+        skeleton.setDropChance(EquipmentSlot.CHEST, 0.0F);
+        skeleton.setDropChance(EquipmentSlot.LEGS, 0.0F);
+        skeleton.setDropChance(EquipmentSlot.FEET, 0.0F);
+        skeleton.setLeftHanded(context.level().getRandom().nextFloat() < 0.05F);
+        skeleton.lootTable = net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "entities/modified/diamond_skeleton"));
+
+        context.level().addFreshEntity(skeleton);
+        return true;
+    }
+
+    private static ItemStack strongPunchBow(net.minecraft.core.HolderLookup.Provider registries) {
+        ItemStack itemStack = new ItemStack(Items.BOW);
+        itemStack.enchant(DNLEnchantments.holder(registries, Enchantments.POWER), 5);
+        itemStack.enchant(DNLEnchantments.holder(registries, Enchantments.PUNCH), 2);
+        return itemStack;
+    }
+
+    private static ItemStack trimArmor(net.minecraft.core.HolderLookup.Provider registries, Item item) {
+        ItemStack itemStack = new ItemStack(item);
+        dev.hexnowloading.dungeonnowloading.util.ArmorTrimUtil.applyTrim(registries, itemStack, "netherite", "wild");
+        return itemStack;
+    }
+}

@@ -1,0 +1,578 @@
+package dev.hexnowloading.dungeonnowloading.block.client.renderer;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import dev.hexnowloading.dungeonnowloading.block.MendingAuraBlock;
+import dev.hexnowloading.dungeonnowloading.block.entity.MendingAuraBlockEntity;
+import dev.hexnowloading.dungeonnowloading.registry.DNLBlocks;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.texture.SpriteContents;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+public class MendingAuraBlockEntityRenderer implements BlockEntityRenderer<MendingAuraBlockEntity> {
+
+    private static final int U_OFFSET = 4;
+    private static final int V_OFFSET = 5;
+    private static final int VERTEX_STRIDE = 8;
+    private static final int VERTEX_COUNT = 4;
+    private static final int MAX_MASKED_PIXELS_PER_QUAD = 4096;
+    private static final float SHAPE_OVERLAY_EPSILON = 0.001F;
+    public static final Map<TextureAtlasSprite, Map<BakedQuad, List<BakedQuad>>> GLOBAL_REMAPPED_QUAD_CACHE = new IdentityHashMap<>();
+    public MendingAuraBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
+    }
+
+    @Override
+    public void render(MendingAuraBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
+        BlockState storedState = blockEntity.getStoredBlockState();
+        if (storedState == null || storedState.getBlock() instanceof MendingAuraBlock) {
+            return;
+        }
+
+        Minecraft minecraft = Minecraft.getInstance();
+        BlockRenderDispatcher dispatcher = minecraft.getBlockRenderer();
+        BakedModel storedModel = dispatcher.getBlockModel(storedState);
+        TextureAtlasSprite auraSprite = dispatcher.getBlockModel(DNLBlocks.MENDING_AURA.get().defaultBlockState()).getParticleIcon();
+
+        if (blockEntity.getLevel() == null) {
+            return;
+        }
+
+        if (needsInteractionShapeOverlay(storedState, storedModel, blockEntity)) {
+            renderInteractionShapeOverlay(storedState, blockEntity, poseStack, buffer.getBuffer(RenderType.entityTranslucent(TextureAtlas.LOCATION_BLOCKS, false)), auraSprite, packedOverlay);
+        }
+    }
+
+    private static boolean needsInteractionShapeOverlay(BlockState state, BakedModel model, MendingAuraBlockEntity blockEntity) {
+        return model.isCustomRenderer() || !hasAnyBakedQuads(state, model, blockEntity.getBlockPos());
+    }
+
+    private static boolean hasAnyBakedQuads(BlockState state, BakedModel model, BlockPos pos) {
+        RandomSource random = RandomSource.create(state.getSeed(pos));
+        for (Direction direction : Direction.values()) {
+            if (!model.getQuads(state, direction, random).isEmpty()) {
+                return true;
+            }
+        }
+        return !model.getQuads(state, null, random).isEmpty();
+    }
+
+    private static void renderInteractionShapeOverlay(BlockState storedState, MendingAuraBlockEntity blockEntity, PoseStack poseStack, VertexConsumer consumer, TextureAtlasSprite auraSprite, int packedOverlay) {
+        if (blockEntity.getLevel() == null) {
+            return;
+        }
+
+        VoxelShape shape = storedState.getInteractionShape(blockEntity.getLevel(), blockEntity.getBlockPos());
+        if (shape.isEmpty()) {
+            shape = storedState.getShape(blockEntity.getLevel(), blockEntity.getBlockPos(), CollisionContext.empty());
+        }
+        if (shape.isEmpty()) {
+            shape = Shapes.block();
+        }
+
+        PoseStack.Pose pose = poseStack.last();
+        Matrix4f matrix = pose.pose();
+        Set<Direction> culledDirections = EnumSet.noneOf(Direction.class);
+        for (Direction direction : Direction.values()) {
+            if (!AuraTextureModel.shouldRenderAgainstNeighborAura(storedState, blockEntity.getLevel(), blockEntity.getBlockPos(), direction)) {
+                culledDirections.add(direction);
+            }
+        }
+        shape.forAllBoxes((minX, minY, minZ, maxX, maxY, maxZ) -> renderBox(
+                consumer,
+                matrix,
+                pose,
+                auraSprite,
+                packedOverlay,
+                culledDirections,
+                inflateBox(minX, minY, minZ, maxX, maxY, maxZ)
+        ));
+    }
+
+    private static AABB inflateBox(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+        return new AABB(
+                Math.max(0.0D, minX - SHAPE_OVERLAY_EPSILON),
+                Math.max(0.0D, minY - SHAPE_OVERLAY_EPSILON),
+                Math.max(0.0D, minZ - SHAPE_OVERLAY_EPSILON),
+                Math.min(1.0D, maxX + SHAPE_OVERLAY_EPSILON),
+                Math.min(1.0D, maxY + SHAPE_OVERLAY_EPSILON),
+                Math.min(1.0D, maxZ + SHAPE_OVERLAY_EPSILON)
+        );
+    }
+
+    private static void renderBox(VertexConsumer consumer, Matrix4f matrix, PoseStack.Pose pose, TextureAtlasSprite auraSprite, int packedOverlay, Set<Direction> culledDirections, AABB box) {
+        float minX = (float) box.minX;
+        float minY = (float) box.minY;
+        float minZ = (float) box.minZ;
+        float maxX = (float) box.maxX;
+        float maxY = (float) box.maxY;
+        float maxZ = (float) box.maxZ;
+
+        if (minX > 0.0F || !culledDirections.contains(Direction.WEST)) renderFace(consumer, matrix, pose, auraSprite, packedOverlay, minX, minY, minZ, minX, maxY, minZ, minX, maxY, maxZ, minX, minY, maxZ, Direction.WEST, minZ, maxZ, minY, maxY);
+        if (maxX < 1.0F || !culledDirections.contains(Direction.EAST)) renderFace(consumer, matrix, pose, auraSprite, packedOverlay, maxX, minY, maxZ, maxX, maxY, maxZ, maxX, maxY, minZ, maxX, minY, minZ, Direction.EAST, minZ, maxZ, minY, maxY);
+        if (minZ > 0.0F || !culledDirections.contains(Direction.NORTH)) renderFace(consumer, matrix, pose, auraSprite, packedOverlay, maxX, minY, minZ, maxX, maxY, minZ, minX, maxY, minZ, minX, minY, minZ, Direction.NORTH, minX, maxX, minY, maxY);
+        if (maxZ < 1.0F || !culledDirections.contains(Direction.SOUTH)) renderFace(consumer, matrix, pose, auraSprite, packedOverlay, minX, minY, maxZ, minX, maxY, maxZ, maxX, maxY, maxZ, maxX, minY, maxZ, Direction.SOUTH, minX, maxX, minY, maxY);
+        if (maxY < 1.0F || !culledDirections.contains(Direction.UP)) renderFace(consumer, matrix, pose, auraSprite, packedOverlay, minX, maxY, maxZ, minX, maxY, minZ, maxX, maxY, minZ, maxX, maxY, maxZ, Direction.UP, minX, maxX, minZ, maxZ);
+        if (minY > 0.0F || !culledDirections.contains(Direction.DOWN)) renderFace(consumer, matrix, pose, auraSprite, packedOverlay, minX, minY, minZ, minX, minY, maxZ, maxX, minY, maxZ, maxX, minY, minZ, Direction.DOWN, minX, maxX, minZ, maxZ);
+    }
+
+    private static void renderFace(VertexConsumer consumer, Matrix4f matrix, PoseStack.Pose pose, TextureAtlasSprite auraSprite, int packedOverlay, float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float x4, float y4, float z4, Direction direction, float minUBlock, float maxUBlock, float minVBlock, float maxVBlock) {
+        float u0 = spriteU(auraSprite, minUBlock * 16.0F);
+        float u1 = spriteU(auraSprite, maxUBlock * 16.0F);
+        float v0 = spriteV(auraSprite, minVBlock * 16.0F);
+        float v1 = spriteV(auraSprite, maxVBlock * 16.0F);
+        vertex(consumer, matrix, pose, packedOverlay, direction, x1, y1, z1, u0, v1);
+        vertex(consumer, matrix, pose, packedOverlay, direction, x2, y2, z2, u0, v0);
+        vertex(consumer, matrix, pose, packedOverlay, direction, x3, y3, z3, u1, v0);
+        vertex(consumer, matrix, pose, packedOverlay, direction, x4, y4, z4, u1, v1);
+    }
+
+    private static void vertex(VertexConsumer consumer, Matrix4f matrix, PoseStack.Pose pose, int packedOverlay, Direction direction, float x, float y, float z, float u, float v) {
+        consumer.addVertex(matrix, x, y, z)
+                .setColor(255, 255, 255, 255)
+                .setUv(u, v)
+                .setOverlay(packedOverlay)
+                .setLight(LightTexture.FULL_BRIGHT)
+                .setNormal(pose, direction.getStepX(), direction.getStepY(), direction.getStepZ());
+    }
+
+    private static List<BakedQuad> remapQuad(BakedQuad quad, TextureAtlasSprite auraSprite, float normalOffset) {
+        TextureAtlasSprite originalSprite = quad.getSprite();
+        SpriteContents originalContents = originalSprite.contents();
+        UvBounds uvBounds = UvBounds.from(quad, originalSprite);
+
+        if (uvBounds.isDegenerate() || !hasTransparentPixels(originalContents, uvBounds)) {
+            return Collections.singletonList(remapFullQuad(quad, auraSprite, normalOffset));
+        }
+
+        int xStart = Math.max(0, (int) Math.floor(uvBounds.minU / 16.0F * originalContents.width()));
+        int xEnd = Math.min(originalContents.width(), (int) Math.ceil(uvBounds.maxU / 16.0F * originalContents.width()));
+        int yStart = Math.max(0, (int) Math.floor(uvBounds.minV / 16.0F * originalContents.height()));
+        int yEnd = Math.min(originalContents.height(), (int) Math.ceil(uvBounds.maxV / 16.0F * originalContents.height()));
+
+        if ((xEnd - xStart) * (yEnd - yStart) > MAX_MASKED_PIXELS_PER_QUAD) {
+            return Collections.singletonList(remapFullQuad(quad, auraSprite, normalOffset));
+        }
+
+        boolean[][] opaquePixels = new boolean[yEnd - yStart][xEnd - xStart];
+        for (int y = yStart; y < yEnd; y++) {
+            for (int x = xStart; x < xEnd; x++) {
+                opaquePixels[y - yStart][x - xStart] = !originalContents.isTransparent(0, x, y);
+            }
+        }
+
+        return remapOpaqueRectangles(quad, originalSprite, auraSprite, uvBounds, originalContents, opaquePixels, xStart, yStart, normalOffset);
+    }
+
+    private static BakedQuad remapFullQuad(BakedQuad quad, TextureAtlasSprite auraSprite, float normalOffset) {
+        int[] vertices = quad.getVertices().clone();
+        TextureAtlasSprite originalSprite = quad.getSprite();
+        UvBounds uvBounds = UvBounds.from(quad, originalSprite);
+        QuadAuraUvMapper auraUvMapper = QuadAuraUvMapper.from(quad, originalSprite, uvBounds);
+
+        for (int vertex = 0; vertex < VERTEX_COUNT; vertex++) {
+            int vertexOffset = vertex * VERTEX_STRIDE;
+            int uIndex = vertexOffset + U_OFFSET;
+            int vIndex = vertexOffset + V_OFFSET;
+            Vec3f position = new Vec3f(
+                    Float.intBitsToFloat(vertices[vertexOffset]),
+                    Float.intBitsToFloat(vertices[vertexOffset + 1]),
+                    Float.intBitsToFloat(vertices[vertexOffset + 2])
+            );
+            Vec2f auraUv = auraUvMapper.map(position);
+
+            vertices[uIndex] = Float.floatToRawIntBits(spriteU(auraSprite, auraUv.u));
+            vertices[vIndex] = Float.floatToRawIntBits(spriteV(auraSprite, auraUv.v));
+        }
+        offsetVertices(vertices, quad.getDirection(), normalOffset);
+
+        return new BakedQuad(vertices, -1, quad.getDirection(), auraSprite, quad.isShade());
+    }
+
+    private static BakedQuad remapPixelQuad(BakedQuad quad, TextureAtlasSprite originalSprite, TextureAtlasSprite auraSprite, UvBounds uvBounds, float minU, float maxU, float minV, float maxV, float normalOffset) {
+        int[] sourceVertices = quad.getVertices();
+        int[] vertices = sourceVertices.clone();
+        Direction direction = quad.getDirection();
+        QuadAuraUvMapper auraUvMapper = QuadAuraUvMapper.from(quad, originalSprite, uvBounds);
+
+        for (int vertex = 0; vertex < VERTEX_COUNT; vertex++) {
+            int vertexOffset = vertex * VERTEX_STRIDE;
+            float sourceU = spriteLocalU(originalSprite, Float.intBitsToFloat(sourceVertices[vertexOffset + U_OFFSET]));
+            float sourceV = spriteLocalV(originalSprite, Float.intBitsToFloat(sourceVertices[vertexOffset + V_OFFSET]));
+            float targetU = closerToMax(sourceU, uvBounds.minU, uvBounds.maxU) ? maxU : minU;
+            float targetV = closerToMax(sourceV, uvBounds.minV, uvBounds.maxV) ? maxV : minV;
+            float s = (targetU - uvBounds.minU) / (uvBounds.maxU - uvBounds.minU);
+            float t = (targetV - uvBounds.minV) / (uvBounds.maxV - uvBounds.minV);
+
+            Vec3f position = interpolatePosition(quad, originalSprite, uvBounds, s, t);
+            vertices[vertexOffset] = Float.floatToRawIntBits(position.x);
+            vertices[vertexOffset + 1] = Float.floatToRawIntBits(position.y);
+            vertices[vertexOffset + 2] = Float.floatToRawIntBits(position.z);
+            offsetVertex(vertices, vertexOffset, direction, normalOffset);
+            Vec2f auraUv = auraUvMapper.map(position);
+            vertices[vertexOffset + U_OFFSET] = Float.floatToRawIntBits(spriteU(auraSprite, auraUv.u));
+            vertices[vertexOffset + V_OFFSET] = Float.floatToRawIntBits(spriteV(auraSprite, auraUv.v));
+        }
+
+        return new BakedQuad(vertices, -1, quad.getDirection(), auraSprite, quad.isShade());
+    }
+
+    private static List<BakedQuad> remapOpaqueRectangles(BakedQuad quad, TextureAtlasSprite originalSprite, TextureAtlasSprite auraSprite, UvBounds uvBounds, SpriteContents originalContents, boolean[][] opaquePixels, int xStart, int yStart, float normalOffset) {
+        List<BakedQuad> maskedQuads = new ArrayList<>();
+        boolean[][] usedPixels = new boolean[opaquePixels.length][opaquePixels[0].length];
+
+        for (int localY = 0; localY < opaquePixels.length; localY++) {
+            for (int localX = 0; localX < opaquePixels[localY].length; localX++) {
+                if (!opaquePixels[localY][localX] || usedPixels[localY][localX]) {
+                    continue;
+                }
+
+                int width = findRectangleWidth(opaquePixels, usedPixels, localX, localY);
+                int height = findRectangleHeight(opaquePixels, usedPixels, localX, localY, width);
+                markRectangleUsed(usedPixels, localX, localY, width, height);
+
+                int x = xStart + localX;
+                int y = yStart + localY;
+                float minU = x / (float) originalContents.width() * 16.0F;
+                float maxU = (x + width) / (float) originalContents.width() * 16.0F;
+                float minV = y / (float) originalContents.height() * 16.0F;
+                float maxV = (y + height) / (float) originalContents.height() * 16.0F;
+                maskedQuads.add(remapPixelQuad(quad, originalSprite, auraSprite, uvBounds, minU, maxU, minV, maxV, normalOffset));
+            }
+        }
+
+        return maskedQuads;
+    }
+
+    private static void offsetVertices(int[] vertices, Direction direction, float offset) {
+        if (offset == 0.0F) {
+            return;
+        }
+
+        for (int vertex = 0; vertex < VERTEX_COUNT; vertex++) {
+            offsetVertex(vertices, vertex * VERTEX_STRIDE, direction, offset);
+        }
+    }
+
+    private static void offsetVertex(int[] vertices, int vertexOffset, Direction direction, float offset) {
+        if (offset == 0.0F) {
+            return;
+        }
+
+        vertices[vertexOffset] = Float.floatToRawIntBits(Float.intBitsToFloat(vertices[vertexOffset]) + direction.getStepX() * offset);
+        vertices[vertexOffset + 1] = Float.floatToRawIntBits(Float.intBitsToFloat(vertices[vertexOffset + 1]) + direction.getStepY() * offset);
+        vertices[vertexOffset + 2] = Float.floatToRawIntBits(Float.intBitsToFloat(vertices[vertexOffset + 2]) + direction.getStepZ() * offset);
+    }
+
+    private static int findRectangleWidth(boolean[][] opaquePixels, boolean[][] usedPixels, int startX, int startY) {
+        int width = 0;
+        while (startX + width < opaquePixels[startY].length && opaquePixels[startY][startX + width] && !usedPixels[startY][startX + width]) {
+            width++;
+        }
+        return width;
+    }
+
+    private static int findRectangleHeight(boolean[][] opaquePixels, boolean[][] usedPixels, int startX, int startY, int width) {
+        int height = 1;
+        while (startY + height < opaquePixels.length) {
+            for (int x = startX; x < startX + width; x++) {
+                if (!opaquePixels[startY + height][x] || usedPixels[startY + height][x]) {
+                    return height;
+                }
+            }
+            height++;
+        }
+        return height;
+    }
+
+    private static void markRectangleUsed(boolean[][] usedPixels, int startX, int startY, int width, int height) {
+        for (int y = startY; y < startY + height; y++) {
+            for (int x = startX; x < startX + width; x++) {
+                usedPixels[y][x] = true;
+            }
+        }
+    }
+
+    private static boolean hasTransparentPixels(SpriteContents contents, UvBounds uvBounds) {
+        int xStart = Math.max(0, (int) Math.floor(uvBounds.minU / 16.0F * contents.width()));
+        int xEnd = Math.min(contents.width(), (int) Math.ceil(uvBounds.maxU / 16.0F * contents.width()));
+        int yStart = Math.max(0, (int) Math.floor(uvBounds.minV / 16.0F * contents.height()));
+        int yEnd = Math.min(contents.height(), (int) Math.ceil(uvBounds.maxV / 16.0F * contents.height()));
+
+        for (int y = yStart; y < yEnd; y++) {
+            for (int x = xStart; x < xEnd; x++) {
+                if (contents.isTransparent(0, x, y)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean closerToMax(float value, float min, float max) {
+        return Math.abs(value - max) < Math.abs(value - min);
+    }
+
+    private static Vec3f interpolatePosition(BakedQuad quad, TextureAtlasSprite sprite, UvBounds uvBounds, float s, float t) {
+        Vec3f minMin = findNearestPosition(quad, sprite, uvBounds.minU, uvBounds.minV);
+        Vec3f maxMin = findNearestPosition(quad, sprite, uvBounds.maxU, uvBounds.minV);
+        Vec3f maxMax = findNearestPosition(quad, sprite, uvBounds.maxU, uvBounds.maxV);
+        Vec3f minMax = findNearestPosition(quad, sprite, uvBounds.minU, uvBounds.maxV);
+
+        Vec3f top = lerp(minMin, maxMin, s);
+        Vec3f bottom = lerp(minMax, maxMax, s);
+        return lerp(top, bottom, t);
+    }
+
+    private static Vec3f findNearestPosition(BakedQuad quad, TextureAtlasSprite sprite, float targetU, float targetV) {
+        int[] vertices = quad.getVertices();
+        int closestVertexOffset = 0;
+        float closestDistance = Float.MAX_VALUE;
+
+        for (int vertex = 0; vertex < VERTEX_COUNT; vertex++) {
+            int vertexOffset = vertex * VERTEX_STRIDE;
+            float localU = spriteLocalU(sprite, Float.intBitsToFloat(vertices[vertexOffset + U_OFFSET]));
+            float localV = spriteLocalV(sprite, Float.intBitsToFloat(vertices[vertexOffset + V_OFFSET]));
+            float distance = Math.abs(localU - targetU) + Math.abs(localV - targetV);
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                closestVertexOffset = vertexOffset;
+            }
+        }
+
+        return new Vec3f(
+                Float.intBitsToFloat(vertices[closestVertexOffset]),
+                Float.intBitsToFloat(vertices[closestVertexOffset + 1]),
+                Float.intBitsToFloat(vertices[closestVertexOffset + 2])
+        );
+    }
+
+    private static Vec3f lerp(Vec3f from, Vec3f to, float amount) {
+        return new Vec3f(
+                from.x + (to.x - from.x) * amount,
+                from.y + (to.y - from.y) * amount,
+                from.z + (to.z - from.z) * amount
+        );
+    }
+
+    public static class AuraTextureModel implements BakedModel {
+        private final BakedModel wrapped;
+        private final TextureAtlasSprite auraSprite;
+        @Nullable
+        private final BlockAndTintGetter level;
+        @Nullable
+        private final BlockPos pos;
+        private final Map<TextureAtlasSprite, Map<BakedQuad, List<BakedQuad>>> remappedQuadCache;
+        private final float vertexOffset;
+
+        public AuraTextureModel(BakedModel wrapped, TextureAtlasSprite auraSprite, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos, Map<TextureAtlasSprite, Map<BakedQuad, List<BakedQuad>>> remappedQuadCache) {
+            this(wrapped, auraSprite, level, pos, remappedQuadCache, 0.0F);
+        }
+
+        public AuraTextureModel(BakedModel wrapped, TextureAtlasSprite auraSprite, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos, Map<TextureAtlasSprite, Map<BakedQuad, List<BakedQuad>>> remappedQuadCache, float vertexOffset) {
+            this.wrapped = wrapped;
+            this.auraSprite = auraSprite;
+            this.level = level;
+            this.pos = pos;
+            this.remappedQuadCache = remappedQuadCache;
+            this.vertexOffset = vertexOffset;
+        }
+
+        @Override
+        public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction direction, RandomSource random) {
+            if (state != null && direction != null && this.level != null && this.pos != null && !shouldRenderAgainstNeighborAura(state, this.level, this.pos, direction)) {
+                return Collections.emptyList();
+            }
+
+            List<BakedQuad> remappedQuads = new ArrayList<>();
+            Map<BakedQuad, List<BakedQuad>> cachedQuadsBySource = this.remappedQuadCache.computeIfAbsent(this.auraSprite, sprite -> new IdentityHashMap<>());
+            for (BakedQuad quad : this.wrapped.getQuads(state, direction, random)) {
+                remappedQuads.addAll(cachedQuadsBySource.computeIfAbsent(quad, sourceQuad -> remapQuad(sourceQuad, this.auraSprite, this.vertexOffset)));
+            }
+            return remappedQuads;
+        }
+
+        @Override
+        public boolean useAmbientOcclusion() {
+            return this.wrapped.useAmbientOcclusion();
+        }
+
+        @Override
+        public boolean isGui3d() {
+            return this.wrapped.isGui3d();
+        }
+
+        @Override
+        public boolean usesBlockLight() {
+            return false;
+        }
+
+        @Override
+        public boolean isCustomRenderer() {
+            return this.wrapped.isCustomRenderer();
+        }
+
+        @Override
+        public TextureAtlasSprite getParticleIcon() {
+            return this.auraSprite;
+        }
+
+        @Override
+        public ItemTransforms getTransforms() {
+            return this.wrapped.getTransforms();
+        }
+
+        @Override
+        public ItemOverrides getOverrides() {
+            return this.wrapped.getOverrides();
+        }
+
+        public static boolean shouldRenderAgainstNeighborAura(BlockState storedState, BlockAndTintGetter level, BlockPos pos, Direction direction) {
+            BlockPos neighborPos = pos.relative(direction);
+            BlockEntity blockEntity = level.getBlockEntity(neighborPos);
+            if (!(blockEntity instanceof MendingAuraBlockEntity mendingAuraBlockEntity)) {
+                return true;
+            }
+
+            BlockState neighborStoredState = mendingAuraBlockEntity.getStoredBlockState();
+            if (neighborStoredState == null || neighborStoredState.getBlock() instanceof MendingAuraBlock) {
+                return true;
+            }
+
+            if (storedState.skipRendering(neighborStoredState, direction)) {
+                return false;
+            }
+            if (!neighborStoredState.canOcclude()) {
+                return true;
+            }
+
+            VoxelShape shape = storedState.getFaceOcclusionShape(level, pos, direction);
+            if (shape.isEmpty()) {
+                return true;
+            }
+
+            VoxelShape neighborShape = neighborStoredState.getFaceOcclusionShape(level, neighborPos, direction.getOpposite());
+            return Shapes.joinIsNotEmpty(shape, neighborShape, BooleanOp.ONLY_FIRST);
+        }
+    }
+
+    private record UvBounds(float minU, float maxU, float minV, float maxV) {
+        private static UvBounds from(BakedQuad quad, TextureAtlasSprite sprite) {
+            int[] vertices = quad.getVertices();
+            float minU = Float.MAX_VALUE;
+            float maxU = -Float.MAX_VALUE;
+            float minV = Float.MAX_VALUE;
+            float maxV = -Float.MAX_VALUE;
+
+            for (int vertex = 0; vertex < VERTEX_COUNT; vertex++) {
+                int vertexOffset = vertex * VERTEX_STRIDE;
+                float localU = spriteLocalU(sprite, Float.intBitsToFloat(vertices[vertexOffset + U_OFFSET]));
+                float localV = spriteLocalV(sprite, Float.intBitsToFloat(vertices[vertexOffset + V_OFFSET]));
+                minU = Math.min(minU, localU);
+                maxU = Math.max(maxU, localU);
+                minV = Math.min(minV, localV);
+                maxV = Math.max(maxV, localV);
+            }
+
+            return new UvBounds(minU, maxU, minV, maxV);
+        }
+
+        private boolean isDegenerate() {
+            return this.maxU <= this.minU || this.maxV <= this.minV;
+        }
+    }
+
+    private record QuadAuraUvMapper(Vec3f origin, Vec3f uAxis, Vec3f vAxis, float uLength, float vLength, float uLengthSquared, float vLengthSquared) {
+        private static QuadAuraUvMapper from(BakedQuad quad, TextureAtlasSprite sprite, UvBounds uvBounds) {
+            Vec3f origin = findNearestPosition(quad, sprite, uvBounds.minU, uvBounds.minV);
+            Vec3f uEnd = findNearestPosition(quad, sprite, uvBounds.maxU, uvBounds.minV);
+            Vec3f vEnd = findNearestPosition(quad, sprite, uvBounds.minU, uvBounds.maxV);
+            Vec3f uAxis = subtract(uEnd, origin);
+            Vec3f vAxis = subtract(vEnd, origin);
+            float uLengthSquared = lengthSquared(uAxis);
+            float vLengthSquared = lengthSquared(vAxis);
+            return new QuadAuraUvMapper(origin, uAxis, vAxis, (float) Math.sqrt(uLengthSquared), (float) Math.sqrt(vLengthSquared), uLengthSquared, vLengthSquared);
+        }
+
+        private Vec2f map(Vec3f position) {
+            Vec3f relative = subtract(position, this.origin);
+            float u = this.uLengthSquared == 0.0F ? 0.0F : dot(relative, this.uAxis) / this.uLengthSquared * this.uLength * 16.0F;
+            float v = this.vLengthSquared == 0.0F ? 0.0F : dot(relative, this.vAxis) / this.vLengthSquared * this.vLength * 16.0F;
+            return new Vec2f(clampSpriteCoordinate(u), clampSpriteCoordinate(v));
+        }
+    }
+
+    private static Vec3f subtract(Vec3f value, Vec3f subtrahend) {
+        return new Vec3f(value.x - subtrahend.x, value.y - subtrahend.y, value.z - subtrahend.z);
+    }
+
+    private static float dot(Vec3f a, Vec3f b) {
+        return a.x * b.x + a.y * b.y + a.z * b.z;
+    }
+
+    private static float lengthSquared(Vec3f value) {
+        return dot(value, value);
+    }
+
+    private static float clampSpriteCoordinate(float value) {
+        return Math.max(0.0F, Math.min(16.0F, value));
+    }
+
+    // 1.21 changed TextureAtlasSprite.getU/getV (and getUOffset/getVOffset) from a 0..16 "sixteenths"
+    // convention to a normalized 0..1 fraction across the sprite. The remapping math here is written
+    // throughout in 0..16 units, so these helpers translate at the API boundary: spriteU/spriteV take
+    // 0..16 -> atlas coord, spriteLocalU/spriteLocalV give back 0..16 sprite-local from an atlas coord.
+    private static float spriteU(TextureAtlasSprite sprite, float u16) {
+        return sprite.getU(u16 / 16.0F);
+    }
+
+    private static float spriteV(TextureAtlasSprite sprite, float v16) {
+        return sprite.getV(v16 / 16.0F);
+    }
+
+    private static float spriteLocalU(TextureAtlasSprite sprite, float atlasU) {
+        return sprite.getUOffset(atlasU) * 16.0F;
+    }
+
+    private static float spriteLocalV(TextureAtlasSprite sprite, float atlasV) {
+        return sprite.getVOffset(atlasV) * 16.0F;
+    }
+
+    private record Vec2f(float u, float v) {
+    }
+
+    private record Vec3f(float x, float y, float z) {
+    }
+}

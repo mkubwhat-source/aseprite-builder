@@ -1,0 +1,78 @@
+{
+  "name": "dungeonnowloading:temple_of_duality/chamber/end_fallback",
+  "fallback": "dungeonnowloading:temple_of_duality/chamber/end_fallback",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:temple_of_duality/chamber/end/wall",
+        "processors": "dungeonnowloading:temple_of_duality/generic_degradation"
+      }
+    },
+    {
+      "weight": 30,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:temple_of_duality/chamber/end/torch",
+        "processors": "dungeonnowloading:temple_of_duality/generic_degradation"
+      }
+    },
+    {
+      "weight": 10,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:temple_of_duality/chamber/end/statue",
+        "processors": "dungeonnowloading:temple_of_duality/end_statue"
+      }
+    },
+    {
+      "weight": 20,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:temple_of_duality/chamber/end/diamond",
+        "processors": "dungeonnowloading:temple_of_duality/generic_degradation"
+      }
+    },
+    {
+      "weight": 20,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:temple_of_duality/chamber/end/durite",
+        "processors": "dungeonnowloading:temple_of_duality/generic_degradation"
+      }
+    },
+    {
+      "weight": 7,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:temple_of_duality/chamber/end/diamond_triple",
+        "processors": "dungeonnowloading:temple_of_duality/generic_degradation"
+      }
+    },
+    {
+      "weight": 7,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:temple_of_duality/chamber/end/diamond_ore",
+        "processors": "dungeonnowloading:temple_of_duality/generic_degradation"
+      }
+    },
+    {
+      "weight": 6,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:temple_of_duality/chamber/end/diamond_block",
+        "processors": "dungeonnowloading:temple_of_duality/generic_degradation"
+      }
+    }
+  ]
+}

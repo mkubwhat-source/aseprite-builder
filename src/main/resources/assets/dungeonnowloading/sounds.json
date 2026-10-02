@@ -1,0 +1,1103 @@
+{
+  "music_clash_of_duality_base": {
+    "subtitle": "sounds.dungeonnowloading.music_clash_of_duality_base",
+    "sounds": [
+      {
+        "name": "dungeonnowloading:music/clash_of_duality_base_callister_corvus",
+        "stream": true
+      }
+    ]
+  },
+  "music_clash_of_duality_boros": {
+    "subtitle": "sounds.dungeonnowloading.music_clash_of_duality_boros",
+    "sounds": [
+      {
+        "name": "dungeonnowloading:music/clash_of_duality_boros_callister_corvus",
+        "stream": true
+      }
+    ]
+  },
+  "music_clash_of_duality_ouros": {
+    "subtitle": "sounds.dungeonnowloading.music_clash_of_duality_ouros",
+    "sounds": [
+      {
+        "name": "dungeonnowloading:music/clash_of_duality_ouros_callister_corvus",
+        "stream": true
+      }
+    ]
+  },
+  "music_temple_of_duality": {
+    "subtitle": "sounds.dungeonnowloading.music_temple_of_duality",
+    "sounds": [
+      {
+        "name": "dungeonnowloading:music/hike_callister_corvus",
+        "stream": true
+      },
+      {
+        "name": "dungeonnowloading:music/nightstride_callister_corvus",
+        "stream": true
+      }
+    ]
+  },
+  "music_hellspawn_base": {
+    "subtitle": "sounds.dungeonnowloading.music_hellspawn_base",
+    "sounds": [
+      {
+        "name": "dungeonnowloading:music/hellspawn_base_callister_corvus",
+        "stream": true
+      }
+    ]
+  },
+  "music_hellspawn_overlay": {
+    "subtitle": "sounds.dungeonnowloading.music_hellspawn_overlay",
+    "sounds": [
+      {
+        "name": "dungeonnowloading:music/hellspawn_overlay_callister_corvus",
+        "stream": true
+      }
+    ]
+  },
+  "disc_aotsugi": {
+    "subtitle": "sounds.dungeonnowloading.disc_aotsugi",
+    "sounds": [
+      {
+        "name": "dungeonnowloading:music/disc_aotsugi_callister_corvus",
+        "stream": true
+      }
+    ]
+  },
+  "disc_broken_aotsugi": {
+    "subtitle": "sounds.dungeonnowloading.disc_broken_aotsugi",
+    "sounds": [
+      {
+        "name": "dungeonnowloading:music/disc_broken_aotsugi_callister_corvus",
+        "stream": true
+      }
+    ]
+  },
+  "disc_hellspawn": {
+    "subtitle": "sounds.dungeonnowloading.disc_hellspawn",
+    "sounds": [
+      {
+        "name": "dungeonnowloading:music/disc_hellspawn_callister_corvus",
+        "stream": true
+      }
+    ]
+  },
+  "disc_clash_of_duality_boros": {
+    "subtitle": "sounds.dungeonnowloading.disc_clash_of_duality_boros",
+    "sounds": [
+      {
+        "name": "dungeonnowloading:music/disc_clash_of_duality_boros_callister_corvus",
+        "stream": true
+      }
+    ]
+  },
+  "disc_clash_of_duality_ouros": {
+    "subtitle": "sounds.dungeonnowloading.disc_clash_of_duality_ouros",
+    "sounds": [
+      {
+        "name": "dungeonnowloading:music/disc_clash_of_duality_ouros_callister_corvus",
+        "stream": true
+      }
+    ]
+  },
+  "disc_clash_of_duality_pythonic_overdrive": {
+    "subtitle": "sounds.dungeonnowloading.disc_clash_of_duality_pythonic_overdrive",
+    "sounds": [
+      {
+        "name": "dungeonnowloading:music/disc_clash_of_duality_pythonic_overdrive_callister_corvus",
+        "stream": true
+      }
+    ]
+  },
+  "scorcher_overheat": {
+    "subtitle": "sounds.dungeonnowloading.scorcher_overheat",
+    "sounds": [
+      "dungeonnowloading:item/scorcher/scorcher_overheat_0",
+      "dungeonnowloading:item/scorcher/scorcher_overheat_1",
+      "dungeonnowloading:item/scorcher/scorcher_overheat_2"
+    ]
+  },
+  "scorcher_shoot": {
+    "subtitle": "sounds.dungeonnowloading.scorcher_shoot",
+    "sounds": [
+      "dungeonnowloading:item/scorcher/scorcher_shoot_0",
+      "dungeonnowloading:item/scorcher/scorcher_shoot_1",
+      "dungeonnowloading:item/scorcher/scorcher_shoot_2"
+    ]
+  },
+  "scorcher_stall": {
+    "subtitle": "sounds.dungeonnowloading.scorcher_stall",
+    "sounds": [
+      "dungeonnowloading:item/scorcher/scorcher_stall_0",
+      "dungeonnowloading:item/scorcher/scorcher_stall_1",
+      "dungeonnowloading:item/scorcher/scorcher_stall_2"
+    ]
+  },
+  "scorcher_start": {
+    "subtitle": "sounds.dungeonnowloading.scorcher_start",
+    "sounds": [
+      "dungeonnowloading:item/scorcher/scorcher_start_0",
+      "dungeonnowloading:item/scorcher/scorcher_start_1",
+      "dungeonnowloading:item/scorcher/scorcher_start_2"
+    ]
+  },
+  "scorcher_stop": {
+    "subtitle": "sounds.dungeonnowloading.scorcher_stop",
+    "sounds": [
+      "dungeonnowloading:item/scorcher/scorcher_stop_0",
+      "dungeonnowloading:item/scorcher/scorcher_stop_1",
+      "dungeonnowloading:item/scorcher/scorcher_stop_2"
+    ]
+  },
+  "scorcher_unstable": {
+    "subtitle": "sounds.dungeonnowloading.scorcher_unstable",
+    "sounds": [
+      "dungeonnowloading:item/scorcher/scorcher_unstable"
+    ]
+  },
+  "soul_scorcher_overheat": {
+    "subtitle": "sounds.dungeonnowloading.soul_scorcher_overheat",
+    "sounds": [
+      "dungeonnowloading:item/soul_scorcher/soul_scorcher_overheat_0",
+      "dungeonnowloading:item/soul_scorcher/soul_scorcher_overheat_1",
+      "dungeonnowloading:item/soul_scorcher/soul_scorcher_overheat_2"
+    ]
+  },
+  "soul_scorcher_shoot": {
+    "subtitle": "sounds.dungeonnowloading.soul_scorcher_shoot",
+    "sounds": [
+      "dungeonnowloading:item/soul_scorcher/soul_scorcher_shoot_0",
+      "dungeonnowloading:item/soul_scorcher/soul_scorcher_shoot_1",
+      "dungeonnowloading:item/soul_scorcher/soul_scorcher_shoot_2"
+    ]
+  },
+  "soul_scorcher_stall": {
+    "subtitle": "sounds.dungeonnowloading.soul_scorcher_stall",
+    "sounds": [
+      "dungeonnowloading:item/soul_scorcher/soul_scorcher_stall_0",
+      "dungeonnowloading:item/soul_scorcher/soul_scorcher_stall_1",
+      "dungeonnowloading:item/soul_scorcher/soul_scorcher_stall_2"
+    ]
+  },
+  "soul_scorcher_start": {
+    "subtitle": "sounds.dungeonnowloading.soul_scorcher_start",
+    "sounds": [
+      "dungeonnowloading:item/soul_scorcher/soul_scorcher_start_0",
+      "dungeonnowloading:item/soul_scorcher/soul_scorcher_start_1",
+      "dungeonnowloading:item/soul_scorcher/soul_scorcher_start_2"
+    ]
+  },
+  "mending_table_mend": {
+    "subtitle": "sounds.dungeonnowloading.mending_table_mend",
+    "sounds": [
+      "dungeonnowloading:block/mending_table/mending_table_mend_0",
+      "dungeonnowloading:block/mending_table/mending_table_mend_1",
+      "dungeonnowloading:block/mending_table/mending_table_mend_2",
+      "dungeonnowloading:block/mending_table/mending_table_mend_3",
+      "dungeonnowloading:block/mending_table/mending_table_mend_4"
+    ]
+  },
+  "soul_scorcher_stop": {
+    "subtitle": "sounds.dungeonnowloading.soul_scorcher_stop",
+    "sounds": [
+      "dungeonnowloading:item/soul_scorcher/soul_scorcher_stop_0",
+      "dungeonnowloading:item/soul_scorcher/soul_scorcher_stop_1",
+      "dungeonnowloading:item/soul_scorcher/soul_scorcher_stop_2"
+    ]
+  },
+  "soul_scorcher_unstable": {
+    "subtitle": "sounds.dungeonnowloading.soul_scorcher_unstable",
+    "sounds": [
+      "dungeonnowloading:item/soul_scorcher/soul_scorcher_unstable"
+    ]
+  },
+  "fairkeeper_serpent_caller_activated": {
+    "subtitle": "sounds.dungeonnowloading.fairkeeper_serpent_caller_activated",
+    "sounds": [
+      "dungeonnowloading:entity/fairkeeper_serpent_caller/fairkeeper_serpent_caller_activated"
+    ]
+  },
+  "repulsor_barrier_build": {
+    "subtitle": "sounds.dungeonnowloading.repulsor_barrier_build",
+    "sounds": [
+      "dungeonnowloading:entity/repulsor/repulsor_barrier_build_0",
+      "dungeonnowloading:entity/repulsor/repulsor_barrier_build_1"
+    ]
+  },
+  "repulsor_fizzle": {
+    "subtitle": "sounds.dungeonnowloading.repulsor_fizzle",
+    "sounds": [
+      "dungeonnowloading:entity/repulsor/repulsor_fizzle_0",
+      "dungeonnowloading:entity/repulsor/repulsor_fizzle_1"
+    ]
+  },
+  "repulsor_alert": {
+    "subtitle": "sounds.dungeonnowloading.repulsor_alert",
+    "sounds": [
+      "dungeonnowloading:entity/repulsor/repulsor_50_alert_0",
+      "dungeonnowloading:entity/repulsor/repulsor_50_alert_1"
+    ]
+  },
+  "repulsor_blink": {
+    "subtitle": "sounds.dungeonnowloading.repulsor_blink",
+    "sounds": [
+      "dungeonnowloading:entity/repulsor/repulsor_blink_0"
+    ]
+  },
+  "repulsor_break": {
+    "subtitle": "sounds.dungeonnowloading.repulsor_break",
+    "sounds": [
+      "dungeonnowloading:entity/repulsor/repulsor_break_0",
+      "dungeonnowloading:entity/repulsor/repulsor_break_1"
+    ]
+  },
+  "repulsor_place": {
+    "subtitle": "sounds.dungeonnowloading.repulsor_place",
+    "sounds": [
+      "dungeonnowloading:entity/repulsor/repulsor_place_0",
+      "dungeonnowloading:entity/repulsor/repulsor_place_1"
+    ]
+  },
+  "repulsor_recharge": {
+    "subtitle": "sounds.dungeonnowloading.repulsor_recharge",
+    "sounds": [
+      "dungeonnowloading:entity/repulsor/repulsor_recharge_0",
+      "dungeonnowloading:entity/repulsor/repulsor_recharge_1",
+      "dungeonnowloading:entity/repulsor/repulsor_recharge_2"
+    ]
+  },
+  "seeping_soul_ambient": {
+    "subtitle": "sounds.dungeonnowloading.seeping_soul_ambient",
+    "sounds": [
+      "dungeonnowloading:entity/seeping_soul/seeping_soul_ambient_0",
+      "dungeonnowloading:entity/seeping_soul/seeping_soul_ambient_1",
+      "dungeonnowloading:entity/seeping_soul/seeping_soul_ambient_2"
+    ]
+  },
+  "seeping_soul_dissipate": {
+    "subtitle": "sounds.dungeonnowloading.seeping_soul_dissipate",
+    "sounds": [
+      "dungeonnowloading:entity/seeping_soul/seeping_soul_dissipate"
+    ]
+  },
+  "seeping_soul_expand": {
+    "subtitle": "sounds.dungeonnowloading.seeping_soul_expand",
+    "sounds": [
+      "dungeonnowloading:entity/seeping_soul/seeping_soul_expand"
+    ]
+  },
+  "seeping_soul_hurt": {
+    "subtitle": "sounds.dungeonnowloading.seeping_soul_hurt",
+    "sounds": [
+      "dungeonnowloading:entity/seeping_soul/seeping_soul_hurt_0",
+      "dungeonnowloading:entity/seeping_soul/seeping_soul_hurt_1",
+      "dungeonnowloading:entity/seeping_soul/seeping_soul_hurt_2"
+    ]
+  },
+  "seeping_soul_recall": {
+    "subtitle": "sounds.dungeonnowloading.seeping_soul_recall",
+    "sounds": [
+      "dungeonnowloading:entity/seeping_soul/seeping_soul_recall"
+    ]
+  },
+  "seeping_soul_replace": {
+    "subtitle": "sounds.dungeonnowloading.seeping_soul_replace",
+    "sounds": [
+      "dungeonnowloading:entity/seeping_soul/seeping_soul_replace"
+    ]
+  },
+  "vertex_arrow_bootup": {
+    "subtitle": "sounds.dungeonnowloading.vertex_arrow_bootup",
+    "sounds": [
+      "dungeonnowloading:entity/vertex_arrow/vertex_arrow_bootup_0",
+      "dungeonnowloading:entity/vertex_arrow/vertex_arrow_bootup_1"
+    ]
+  },
+  "vertex_arrow_damage": {
+    "subtitle": "sounds.dungeonnowloading.vertex_arrow_damage",
+    "sounds": [
+      "dungeonnowloading:entity/vertex_arrow/vertex_arrow_damage_0",
+      "dungeonnowloading:entity/vertex_arrow/vertex_arrow_damage_1"
+    ]
+  },
+  "vertex_node_connect": {
+    "subtitle": "sounds.dungeonnowloading.vertex_node_connect",
+    "sounds": [
+      "dungeonnowloading:misc/vertex_node/vertex_node_connect_0",
+      "dungeonnowloading:misc/vertex_node/vertex_node_connect_1"
+    ]
+  },
+  "vertex_bow_arrow_convert": {
+    "subtitle": "sounds.dungeonnowloading.vertex_bow_arrow_convert",
+    "sounds": [
+      "dungeonnowloading:item/vertex_bow/vertex_bow_arrow_convert_0",
+      "dungeonnowloading:item/vertex_bow/vertex_bow_arrow_convert_1"
+    ]
+  },
+  "vertex_bow_pull": {
+    "subtitle": "sounds.dungeonnowloading.vertex_bow_pull",
+    "sounds": [
+      "dungeonnowloading:item/vertex_bow/vertex_bow_pull_0",
+      "dungeonnowloading:item/vertex_bow/vertex_bow_pull_1"
+    ]
+  },
+  "mendstone_chalk_draw": {
+    "subtitle": "sounds.dungeonnowloading.mendstone_chalk_draw",
+    "sounds": [
+      "dungeonnowloading:item/mendstone_chalk/mendstone_chalk_draw_0",
+      "dungeonnowloading:item/mendstone_chalk/mendstone_chalk_draw_1",
+      "dungeonnowloading:item/mendstone_chalk/mendstone_chalk_draw_2"
+    ]
+  },
+  "mendstone_chalk_mark_break": {
+    "subtitle": "sounds.dungeonnowloading.mendstone_chalk_mark_break",
+    "sounds": [
+      "dungeonnowloading:block/mendstone_chalk_mark/mendstone_chalk_mark_break_0",
+      "dungeonnowloading:block/mendstone_chalk_mark/mendstone_chalk_mark_break_1",
+      "dungeonnowloading:block/mendstone_chalk_mark/mendstone_chalk_mark_break_2"
+    ]
+  },
+  "mendstone_chalk_mark_crack": {
+    "subtitle": "sounds.dungeonnowloading.mendstone_chalk_mark_crack",
+    "sounds": [
+      "dungeonnowloading:block/mendstone_chalk_mark/mendstone_chalk_mark_crack_0",
+      "dungeonnowloading:block/mendstone_chalk_mark/mendstone_chalk_mark_crack_1",
+      "dungeonnowloading:block/mendstone_chalk_mark/mendstone_chalk_mark_crack_2"
+    ]
+  },
+  "signal_gate_click": {
+    "subtitle": "sounds.dungeonnowloading.signal_gate_click",
+    "sounds": [
+      "dungeonnowloading:block/signal_gate_click"
+    ]
+  },
+  "overcharged_redstone_block_component_detonation": {
+    "subtitle": "sounds.dungeonnowloading.overcharged_redstone_block_component_detonation",
+    "sounds": [
+      "dungeonnowloading:block/overcharged_redstone_block/overcharged_redstone_block_component_detonation_0",
+      "dungeonnowloading:block/overcharged_redstone_block/overcharged_redstone_block_component_detonation_1"
+    ]
+  },
+  "overcharged_redstone_block_dust_combustion": {
+    "subtitle": "sounds.dungeonnowloading.overcharged_redstone_block_dust_combustion",
+    "sounds": [
+      "dungeonnowloading:block/overcharged_redstone_block/overcharged_redstone_block_dust_combustion_0",
+      "dungeonnowloading:block/overcharged_redstone_block/overcharged_redstone_block_dust_combustion_1"
+    ]
+  },
+  "overcharged_redstone_block_tnt_explosion": {
+    "subtitle": "sounds.dungeonnowloading.overcharged_redstone_block_tnt_explosion",
+    "sounds": [
+      "dungeonnowloading:block/overcharged_redstone_block/overcharged_redstone_block_tnt_explosion_0",
+      "dungeonnowloading:block/overcharged_redstone_block/overcharged_redstone_block_tnt_explosion_1"
+    ]
+  },
+  "durite_queller_activate": {
+    "subtitle": "sounds.dungeonnowloading.durite_queller_activate",
+    "sounds": [
+      "dungeonnowloading:block/durite_queller/durite_queller_activate_0",
+      "dungeonnowloading:block/durite_queller/durite_queller_activate_1",
+      "dungeonnowloading:block/durite_queller/durite_queller_activate_2"
+    ]
+  },
+  "durite_queller_crystal_grow": {
+    "subtitle": "sounds.dungeonnowloading.durite_queller_crystal_grow",
+    "sounds": [
+      "dungeonnowloading:block/durite_queller/durite_queller_crystal_grow_0",
+      "dungeonnowloading:block/durite_queller/durite_queller_crystal_grow_1",
+      "dungeonnowloading:block/durite_queller/durite_queller_crystal_grow_2"
+    ]
+  },
+  "durite_queller_replace_preserver": {
+    "subtitle": "sounds.dungeonnowloading.durite_queller_replace_preserver",
+    "sounds": [
+      "dungeonnowloading:block/durite_queller/durite_queller_replace_preserver_0",
+      "dungeonnowloading:block/durite_queller/durite_queller_replace_preserver_1",
+      "dungeonnowloading:block/durite_queller/durite_queller_replace_preserver_2"
+    ]
+  },
+  "mending_aura_pop": {
+    "subtitle": "sounds.dungeonnowloading.mending_aura_pop",
+    "sounds": [
+      "dungeonnowloading:block/mending_aura/mending_aura_pop_0",
+      "dungeonnowloading:block/mending_aura/mending_aura_pop_1",
+      "dungeonnowloading:block/mending_aura/mending_aura_pop_2",
+      "dungeonnowloading:block/mending_aura/mending_aura_pop_3",
+      "dungeonnowloading:block/mending_aura/mending_aura_pop_4",
+      "dungeonnowloading:block/mending_aura/mending_aura_pop_5"
+    ]
+  },
+  "chaos_spawner_diamond_notch_break": {
+    "subtitle": "sounds.dungeonnowloading.chaos_spawner_diamond_notch_break",
+    "sounds": [
+      "dungeonnowloading:block/chaos_spawner_block/chaos_spawner_diamond_notch_break_0",
+      "dungeonnowloading:block/chaos_spawner_block/chaos_spawner_diamond_notch_break_1"
+    ]
+  },
+  "chaos_spawner_diamond_notch_hit": {
+    "subtitle": "sounds.dungeonnowloading.chaos_spawner_diamond_notch_hit",
+    "sounds": [
+      "dungeonnowloading:block/chaos_spawner_block/chaos_spawner_diamond_notch_hit_0",
+      "dungeonnowloading:block/chaos_spawner_block/chaos_spawner_diamond_notch_hit_1",
+      "dungeonnowloading:block/chaos_spawner_block/chaos_spawner_diamond_notch_hit_2",
+      "dungeonnowloading:block/chaos_spawner_block/chaos_spawner_diamond_notch_hit_3"
+    ]
+  },
+  "chaos_spawner_diamond_notch_regenerate": {
+    "subtitle": "sounds.dungeonnowloading.chaos_spawner_diamond_notch_regenerate",
+    "sounds": [
+      "dungeonnowloading:block/chaos_spawner_block/chaos_spawner_diamond_notch_regenerate_0",
+      "dungeonnowloading:block/chaos_spawner_block/chaos_spawner_diamond_notch_regenerate_1",
+      "dungeonnowloading:block/chaos_spawner_block/chaos_spawner_diamond_notch_regenerate_2",
+      "dungeonnowloading:block/chaos_spawner_block/chaos_spawner_diamond_notch_regenerate_3"
+    ]
+  },
+  "chaos_spawner_barrier_break": {
+    "subtitle": "sounds.dungeonnowloading.chaos_spawner_barrier_break",
+    "sounds": [
+      "dungeonnowloading:mob/chaos_spawner/chaos_spawner_barrier_break_0",
+      "dungeonnowloading:mob/chaos_spawner/chaos_spawner_barrier_break_1",
+      "dungeonnowloading:mob/chaos_spawner/chaos_spawner_barrier_break_2",
+      "dungeonnowloading:mob/chaos_spawner/chaos_spawner_barrier_break_3"
+    ]
+  },
+  "chaos_spawner_barrier_regenerate": {
+    "subtitle": "sounds.dungeonnowloading.chaos_spawner_barrier_regenerate",
+    "sounds": [
+      "dungeonnowloading:mob/chaos_spawner/chaos_spawner_barrier_regenerate_0",
+      "dungeonnowloading:mob/chaos_spawner/chaos_spawner_barrier_regenerate_1",
+      "dungeonnowloading:mob/chaos_spawner/chaos_spawner_barrier_regenerate_2"
+    ]
+  },
+  "chaos_spawner_build_up": {
+    "subtitle": "sounds.dungeonnowloading.chaos_spawner_build_up",
+    "sounds": [
+      "dungeonnowloading:mob/chaos_spawner/chaos_spawner_build_up"
+    ]
+  },
+  "chaos_spawner_shockwave": {
+    "subtitle": "sounds.dungeonnowloading.chaos_spawner_shockwave",
+    "sounds": [
+      "dungeonnowloading:mob/chaos_spawner/chaos_spawner_shockwave"
+    ]
+  },
+  "chaos_spawner_shoot": {
+    "subtitle": "sounds.dungeonnowloading.chaos_spawner_shoot",
+    "sounds": [
+      "dungeonnowloading:mob/chaos_spawner/chaos_spawner_shoot_0",
+      "dungeonnowloading:mob/chaos_spawner/chaos_spawner_shoot_1",
+      "dungeonnowloading:mob/chaos_spawner/chaos_spawner_shoot_2"
+    ]
+  },
+  "chaos_spawner_laughter": {
+    "subtitle": "sounds.dungeonnowloading.chaos_spawner_laughter",
+    "sounds": [
+      "dungeonnowloading:mob/chaos_spawner/chaos_spawner_laughter"
+    ]
+  },
+  "chaos_spawner_chain_break": {
+    "subtitle": "sounds.dungeonnowloading.chaos_spawner_chain_break",
+    "sounds": [
+      "dungeonnowloading:mob/chaos_spawner/chaos_spawner_chain_break"
+    ]
+  },
+  "chaos_spawner_hurt": {
+    "subtitle": "sounds.dungeonnowloading.chaos_spawner_hurt",
+    "sounds": [
+      "dungeonnowloading:mob/chaos_spawner/chaos_spawner_hurt_0",
+      "dungeonnowloading:mob/chaos_spawner/chaos_spawner_hurt_1",
+      "dungeonnowloading:mob/chaos_spawner/chaos_spawner_hurt_2"
+    ]
+  },
+  "chaos_spawner_death": {
+    "subtitle": "sounds.dungeonnowloading.chaos_spawner_death",
+    "sounds": [
+      "dungeonnowloading:mob/chaos_spawner/chaos_spawner_death"
+    ]
+  },
+  "hollow_ambient": {
+    "subtitle": "sounds.dungeonnowloading.hollow_ambient",
+    "sounds": [
+      "dungeonnowloading:mob/hollow/hollow_ambient_0",
+      "dungeonnowloading:mob/hollow/hollow_ambient_1",
+      "dungeonnowloading:mob/hollow/hollow_ambient_2"
+    ]
+  },
+  "hollow_hurt": {
+    "subtitle": "sounds.dungeonnowloading.hollow_hurt",
+    "sounds": [
+      "dungeonnowloading:mob/hollow/hollow_hurt_0",
+      "dungeonnowloading:mob/hollow/hollow_hurt_1",
+      "dungeonnowloading:mob/hollow/hollow_hurt_2"
+    ]
+  },
+  "hollow_death": {
+    "subtitle": "sounds.dungeonnowloading.hollow_death",
+    "sounds": [
+      "dungeonnowloading:mob/hollow/hollow_death"
+    ]
+  },
+  "whimper_ambient": {
+    "subtitle": "sounds.dungeonnowloading.whimper_ambient",
+    "sounds": [
+      "dungeonnowloading:mob/whimper/whimper_ambient_0",
+      "dungeonnowloading:mob/whimper/whimper_ambient_1",
+      "dungeonnowloading:mob/whimper/whimper_ambient_2"
+    ]
+  },
+  "whimper_hurt": {
+    "subtitle": "sounds.dungeonnowloading.whimper_hurt",
+    "sounds": [
+      "dungeonnowloading:mob/whimper/whimper_hurt"
+    ]
+  },
+  "whimper_death": {
+    "subtitle": "sounds.dungeonnowloading.whimper_death",
+    "sounds": [
+      "dungeonnowloading:mob/whimper/whimper_death"
+    ]
+  },
+  "scuttle_waking": {
+    "subtitle": "sounds.dungeonnowloading.scuttle_waking",
+    "sounds": [
+      "dungeonnowloading:mob/scuttle/scuttle_waking"
+    ]
+  },
+  "scuttle_step": {
+    "subtitle": "sounds.dungeonnowloading.scuttle_step",
+    "sounds": [
+      "dungeonnowloading:mob/scuttle/scuttle_step_0",
+      "dungeonnowloading:mob/scuttle/scuttle_step_1"
+    ]
+  },
+  "scuttle_idle": {
+    "subtitle": "sounds.dungeonnowloading.scuttle_idle",
+    "sounds": [
+      "dungeonnowloading:mob/scuttle/scuttle_idle_0",
+      "dungeonnowloading:mob/scuttle/scuttle_idle_1"
+    ]
+  },
+  "scuttle_shooting_open": {
+    "subtitle": "sounds.dungeonnowloading.scuttle_shooting_open",
+    "sounds": [
+      "dungeonnowloading:mob/scuttle/scuttle_shooting_0_open"
+    ]
+  },
+  "scuttle_shooting_charge": {
+    "subtitle": "sounds.dungeonnowloading.scuttle_shooting_charge",
+    "sounds": [
+      "dungeonnowloading:mob/scuttle/scuttle_shooting_1_charge"
+    ]
+  },
+  "scuttle_shooting_burst": {
+    "subtitle": "sounds.dungeonnowloading.scuttle_shooting_burst",
+    "sounds": [
+      "dungeonnowloading:mob/scuttle/scuttle_shooting_2_burst"
+    ]
+  },
+  "scuttle_shooting_flame": {
+    "subtitle": "sounds.dungeonnowloading.scuttle_shooting_flame",
+    "sounds": [
+      "dungeonnowloading:mob/scuttle/scuttle_shooting_3_flame_0",
+      "dungeonnowloading:mob/scuttle/scuttle_shooting_3_flame_1",
+      "dungeonnowloading:mob/scuttle/scuttle_shooting_3_flame_2",
+      "dungeonnowloading:mob/scuttle/scuttle_shooting_3_flame_3"
+    ]
+  },
+  "scuttle_shooting_stop": {
+    "subtitle": "sounds.dungeonnowloading.scuttle_shooting_stop",
+    "sounds": [
+      "dungeonnowloading:mob/scuttle/scuttle_shooting_4_stop"
+    ]
+  },
+  "scuttle_shooting_close": {
+    "subtitle": "sounds.dungeonnowloading.scuttle_shooting_close",
+    "sounds": [
+      "dungeonnowloading:mob/scuttle/scuttle_shooting_5_close"
+    ]
+  },
+  "scuttle_deflect": {
+    "subtitle": "sounds.dungeonnowloading.scuttle_deflect",
+    "sounds": [
+      "dungeonnowloading:mob/scuttle/scuttle_deflect_0",
+      "dungeonnowloading:mob/scuttle/scuttle_deflect_1"
+    ]
+  },
+  "scuttle_hurt": {
+    "subtitle": "sounds.dungeonnowloading.scuttle_hurt",
+    "sounds": [
+      "dungeonnowloading:mob/scuttle/scuttle_hurt_0",
+      "dungeonnowloading:mob/scuttle/scuttle_hurt_1",
+      "dungeonnowloading:mob/scuttle/scuttle_hurt_2"
+    ]
+  },
+  "scuttle_death": {
+    "subtitle": "sounds.dungeonnowloading.scuttle_death",
+    "sounds": [
+      "dungeonnowloading:mob/scuttle/scuttle_death"
+    ]
+  },
+  "sealed_chaos_bullet_hit": {
+    "subtitle": "sounds.dungeonnowloading.sealed_chaos_bullet_hit",
+    "sounds": [
+      "dungeonnowloading:mob/sealed_chaos/sealed_chaos_bullet_hit_0",
+      "dungeonnowloading:mob/sealed_chaos/sealed_chaos_bullet_hit_1",
+      "dungeonnowloading:mob/sealed_chaos/sealed_chaos_bullet_hit_2"
+    ]
+  },
+  "sealed_chaos_bullet_shoot": {
+    "subtitle": "sounds.dungeonnowloading.sealed_chaos_bullet_shoot",
+    "sounds": [
+      "dungeonnowloading:mob/sealed_chaos/sealed_chaos_bullet_shoot_0",
+      "dungeonnowloading:mob/sealed_chaos/sealed_chaos_bullet_shoot_1"
+    ]
+  },
+  "sealed_chaos_place": {
+    "subtitle": "sounds.dungeonnowloading.sealed_chaos_place",
+    "sounds": [
+      "dungeonnowloading:mob/sealed_chaos/sealed_chaos_place_0",
+      "dungeonnowloading:mob/sealed_chaos/sealed_chaos_place_1",
+      "dungeonnowloading:mob/sealed_chaos/sealed_chaos_place_2"
+    ]
+  },
+  "sealed_chaos_take": {
+    "subtitle": "sounds.dungeonnowloading.sealed_chaos_take",
+    "sounds": [
+      "dungeonnowloading:mob/sealed_chaos/sealed_chaos_take_0",
+      "dungeonnowloading:mob/sealed_chaos/sealed_chaos_take_1",
+      "dungeonnowloading:mob/sealed_chaos/sealed_chaos_take_2"
+    ]
+  },
+  "sealed_chaos_hurt": {
+    "subtitle": "sounds.dungeonnowloading.sealed_chaos_hurt",
+    "sounds": [
+      "dungeonnowloading:mob/sealed_chaos/sealed_chaos_hurt_0",
+      "dungeonnowloading:mob/sealed_chaos/sealed_chaos_hurt_1",
+      "dungeonnowloading:mob/sealed_chaos/sealed_chaos_hurt_2"
+    ]
+  },
+  "sealed_chaos_death": {
+    "subtitle": "sounds.dungeonnowloading.sealed_chaos_death",
+    "sounds": [
+      "dungeonnowloading:mob/sealed_chaos/sealed_chaos_death_0",
+      "dungeonnowloading:mob/sealed_chaos/sealed_chaos_death_1"
+    ]
+  },
+  "spawner_carrier_charge": {
+    "subtitle": "sounds.dungeonnowloading.spawner_carrier_charge",
+    "sounds": [
+      "dungeonnowloading:mob/spawner_carrier/spawner_carrier_charge_0",
+      "dungeonnowloading:mob/spawner_carrier/spawner_carrier_charge_1",
+      "dungeonnowloading:mob/spawner_carrier/spawner_carrier_charge_2"
+    ]
+  },
+  "spawner_carrier_death": {
+    "subtitle": "sounds.dungeonnowloading.spawner_carrier_death",
+    "sounds": [
+      "dungeonnowloading:mob/spawner_carrier/spawner_carrier_death_0",
+      "dungeonnowloading:mob/spawner_carrier/spawner_carrier_death_1"
+    ]
+  },
+  "spawner_carrier_hurt": {
+    "subtitle": "sounds.dungeonnowloading.spawner_carrier_hurt",
+    "sounds": [
+      "dungeonnowloading:mob/spawner_carrier/spawner_carrier_hurt_0",
+      "dungeonnowloading:mob/spawner_carrier/spawner_carrier_hurt_1",
+      "dungeonnowloading:mob/spawner_carrier/spawner_carrier_hurt_2"
+    ]
+  },
+  "spawner_carrier_idle": {
+    "subtitle": "sounds.dungeonnowloading.spawner_carrier_idle",
+    "sounds": [
+      "dungeonnowloading:mob/spawner_carrier/spawner_carrier_idle_0",
+      "dungeonnowloading:mob/spawner_carrier/spawner_carrier_idle_1",
+      "dungeonnowloading:mob/spawner_carrier/spawner_carrier_idle_2",
+      "dungeonnowloading:mob/spawner_carrier/spawner_carrier_idle_3"
+    ]
+  },
+  "spawner_carrier_smash": {
+    "subtitle": "sounds.dungeonnowloading.spawner_carrier_smash",
+    "sounds": [
+      "dungeonnowloading:mob/spawner_carrier/spawner_carrier_smash_0",
+      "dungeonnowloading:mob/spawner_carrier/spawner_carrier_smash_1"
+    ]
+  },
+  "spawner_carrier_spawn_mob": {
+    "subtitle": "sounds.dungeonnowloading.spawner_carrier_spawn_mob",
+    "sounds": [
+      "dungeonnowloading:mob/spawner_carrier/spawner_carrier_spawn_mob_0",
+      "dungeonnowloading:mob/spawner_carrier/spawner_carrier_spawn_mob_1"
+    ]
+  },
+  "spawner_carrier_spawner_break": {
+    "subtitle": "sounds.dungeonnowloading.spawner_carrier_spawner_break",
+    "sounds": [
+      "dungeonnowloading:mob/spawner_carrier/spawner_carrier_spawner_break_0",
+      "dungeonnowloading:mob/spawner_carrier/spawner_carrier_spawner_break_1"
+    ]
+  },
+  "spawner_carrier_step": {
+    "subtitle": "sounds.dungeonnowloading.spawner_carrier_step",
+    "sounds": [
+      "dungeonnowloading:mob/spawner_carrier/spawner_carrier_step_0",
+      "dungeonnowloading:mob/spawner_carrier/spawner_carrier_step_1",
+      "dungeonnowloading:mob/spawner_carrier/spawner_carrier_step_2",
+      "dungeonnowloading:mob/spawner_carrier/spawner_carrier_step_3"
+    ]
+  },
+  "copper_creep_death": {
+    "subtitle": "sounds.dungeonnowloading.copper_creep_death",
+    "sounds": [
+      "dungeonnowloading:mob/copper_creep/copper_creep_death_0",
+      "dungeonnowloading:mob/copper_creep/copper_creep_death_1"
+    ]
+  },
+  "copper_creep_hit": {
+    "subtitle": "sounds.dungeonnowloading.copper_creep_hit",
+    "sounds": [
+      "dungeonnowloading:mob/copper_creep/copper_creep_hit_0",
+      "dungeonnowloading:mob/copper_creep/copper_creep_hit_1",
+      "dungeonnowloading:mob/copper_creep/copper_creep_hit_2"
+    ]
+  },
+  "copper_creep_land": {
+    "subtitle": "sounds.dungeonnowloading.copper_creep_land",
+    "sounds": [
+      "dungeonnowloading:mob/copper_creep/copper_creep_land_0",
+      "dungeonnowloading:mob/copper_creep/copper_creep_land_1"
+    ]
+  },
+  "copper_creep_prime": {
+    "subtitle": "sounds.dungeonnowloading.copper_creep_prime",
+    "sounds": [
+      "dungeonnowloading:mob/copper_creep/copper_creep_prime_0",
+      "dungeonnowloading:mob/copper_creep/copper_creep_prime_1"
+    ]
+  },
+  "copper_creep_sit_down": {
+    "subtitle": "sounds.dungeonnowloading.copper_creep_sit_down",
+    "sounds": [
+      "dungeonnowloading:mob/copper_creep/copper_creep_sit_down_0",
+      "dungeonnowloading:mob/copper_creep/copper_creep_sit_down_1"
+    ]
+  },
+  "copper_creep_spawn": {
+    "subtitle": "sounds.dungeonnowloading.copper_creep_spawn",
+    "sounds": [
+      "dungeonnowloading:mob/copper_creep/copper_creep_spawn_0",
+      "dungeonnowloading:mob/copper_creep/copper_creep_spawn_1"
+    ]
+  },
+  "copper_creep_stand_up": {
+    "subtitle": "sounds.dungeonnowloading.copper_creep_stand_up",
+    "sounds": [
+      "dungeonnowloading:mob/copper_creep/copper_creep_stand_up_0",
+      "dungeonnowloading:mob/copper_creep/copper_creep_stand_up_1"
+    ]
+  },
+  "copper_creep_step": {
+    "subtitle": "sounds.dungeonnowloading.copper_creep_step",
+    "sounds": [
+      "dungeonnowloading:mob/copper_creep/copper_creep_step_0",
+      "dungeonnowloading:mob/copper_creep/copper_creep_step_1",
+      "dungeonnowloading:mob/copper_creep/copper_creep_step_2"
+    ]
+  },
+  "copper_detonator_beep": {
+    "subtitle": "sounds.dungeonnowloading.copper_detonator_beep",
+    "sounds": [
+      "dungeonnowloading:mob/copper_creep/copper_detonator_beep_0",
+      "dungeonnowloading:mob/copper_creep/copper_detonator_beep_1",
+      "dungeonnowloading:mob/copper_creep/copper_detonator_beep_2"
+    ]
+  },
+  "copper_detonator_ready": {
+    "subtitle": "sounds.dungeonnowloading.copper_detonator_ready",
+    "sounds": [
+      "dungeonnowloading:mob/copper_creep/copper_detonator_ready_0",
+      "dungeonnowloading:mob/copper_creep/copper_detonator_ready_1"
+    ]
+  },
+  "ballista_golem_death": {
+    "subtitle": "sounds.dungeonnowloading.ballista_golem_death",
+    "sounds": [
+      "dungeonnowloading:mob/ballista_golem/ballista_golem_death_0",
+      "dungeonnowloading:mob/ballista_golem/ballista_golem_death_1"
+    ]
+  },
+  "ballista_golem_hurt": {
+    "subtitle": "sounds.dungeonnowloading.ballista_golem_hurt",
+    "sounds": [
+      "dungeonnowloading:mob/ballista_golem/ballista_golem_hurt_0",
+      "dungeonnowloading:mob/ballista_golem/ballista_golem_hurt_1",
+      "dungeonnowloading:mob/ballista_golem/ballista_golem_hurt_2"
+    ]
+  },
+  "ballista_golem_reload": {
+    "subtitle": "sounds.dungeonnowloading.ballista_golem_reload",
+    "sounds": [
+      "dungeonnowloading:mob/ballista_golem/ballista_golem_reload"
+    ]
+  },
+  "ballista_golem_shoot": {
+    "subtitle": "sounds.dungeonnowloading.ballista_golem_shoot",
+    "sounds": [
+      "dungeonnowloading:mob/ballista_golem/ballista_golem_shoot"
+    ]
+  },
+  "ballista_golem_step": {
+    "subtitle": "sounds.dungeonnowloading.ballista_golem_step",
+    "sounds": [
+      "dungeonnowloading:mob/ballista_golem/ballista_golem_step_0",
+      "dungeonnowloading:mob/ballista_golem/ballista_golem_step_1",
+      "dungeonnowloading:mob/ballista_golem/ballista_golem_step_2"
+    ]
+  },
+  "ballista_golem_waking": {
+    "subtitle": "sounds.dungeonnowloading.ballista_golem_waking",
+    "sounds": [
+      "dungeonnowloading:mob/ballista_golem/ballista_golem_waking"
+    ]
+  },
+  "fairkeeper_boros_beam": {
+    "subtitle": "sounds.dungeonnowloading.fairkeeper_boros_beam",
+    "sounds": [
+      "dungeonnowloading:mob/fairkeeper_boros/fairkeeper_boros_beam"
+    ]
+  },
+  "fairkeeper_boros_heal": {
+    "subtitle": "sounds.dungeonnowloading.fairkeeper_boros_heal",
+    "sounds": [
+      "dungeonnowloading:mob/fairkeeper_boros/fairkeeper_boros_heal"
+    ]
+  },
+  "fairkeeper_boros_armor_break": {
+    "subtitle": "sounds.dungeonnowloading.fairkeeper_boros_armor_break",
+    "sounds": [
+      "dungeonnowloading:mob/fairkeeper/boros/boros_armor_break_0",
+      "dungeonnowloading:mob/fairkeeper/boros/boros_armor_break_1"
+    ]
+  },
+  "fairkeeper_boros_armor_hit": {
+    "subtitle": "sounds.dungeonnowloading.fairkeeper_boros_armor_hit",
+    "sounds": [
+      "dungeonnowloading:mob/fairkeeper/boros/boros_armor_hit_0",
+      "dungeonnowloading:mob/fairkeeper/boros/boros_armor_hit_1",
+      "dungeonnowloading:mob/fairkeeper/boros/boros_armor_hit_2"
+    ]
+  },
+  "fairkeeper_boros_arrow_shoot": {
+    "subtitle": "sounds.dungeonnowloading.fairkeeper_boros_arrow_shoot",
+    "sounds": [
+      "dungeonnowloading:mob/fairkeeper/boros/boros_arrow_shoot"
+    ]
+  },
+  "fairkeeper_boros_arrow_warning": {
+    "subtitle": "sounds.dungeonnowloading.fairkeeper_boros_arrow_warning",
+    "sounds": [
+      "dungeonnowloading:mob/fairkeeper/boros/boros_arrow_warning"
+    ]
+  },
+  "fairkeeper_boros_death": {
+    "subtitle": "sounds.dungeonnowloading.fairkeeper_boros_death",
+    "sounds": [
+      "dungeonnowloading:mob/fairkeeper/boros/boros_death"
+    ]
+  },
+  "fairkeeper_boros_fire_attack": {
+    "subtitle": "sounds.dungeonnowloading.fairkeeper_boros_fire_attack",
+    "sounds": [
+      "dungeonnowloading:mob/fairkeeper/boros/boros_fire_attack"
+    ]
+  },
+  "fairkeeper_boros_hurt": {
+    "subtitle": "sounds.dungeonnowloading.fairkeeper_boros_hurt",
+    "sounds": [
+      "dungeonnowloading:mob/fairkeeper/boros/boros_hurt_0",
+      "dungeonnowloading:mob/fairkeeper/boros/boros_hurt_1",
+      "dungeonnowloading:mob/fairkeeper/boros/boros_hurt_2"
+    ]
+  },
+  "fairkeeper_boros_slither": {
+    "subtitle": "sounds.dungeonnowloading.fairkeeper_boros_slither",
+    "sounds": [
+      "dungeonnowloading:mob/fairkeeper/boros/boros_slither_0",
+      "dungeonnowloading:mob/fairkeeper/boros/boros_slither_1",
+      "dungeonnowloading:mob/fairkeeper/boros/boros_slither_2",
+      "dungeonnowloading:mob/fairkeeper/boros/boros_slither_3"
+    ]
+  },
+  "fairkeeper_ouros_cannon_break": {
+    "subtitle": "sounds.dungeonnowloading.fairkeeper_ouros_cannon_break",
+    "sounds": [
+      "dungeonnowloading:mob/fairkeeper/ouros/ouros_cannon_break_0",
+      "dungeonnowloading:mob/fairkeeper/ouros/ouros_cannon_break_1"
+    ]
+  },
+  "fairkeeper_ouros_cannon_shoot": {
+    "subtitle": "sounds.dungeonnowloading.fairkeeper_ouros_cannon_shoot",
+    "sounds": [
+      "dungeonnowloading:mob/fairkeeper/ouros/ouros_cannon_shoot_0",
+      "dungeonnowloading:mob/fairkeeper/ouros/ouros_cannon_shoot_1",
+      "dungeonnowloading:mob/fairkeeper/ouros/ouros_cannon_shoot_2"
+    ]
+  },
+  "fairkeeper_ouros_death": {
+    "subtitle": "sounds.dungeonnowloading.fairkeeper_ouros_death",
+    "sounds": [
+      "dungeonnowloading:mob/fairkeeper/ouros/ouros_death"
+    ]
+  },
+  "fairkeeper_ouros_door_cannon_spawn": {
+    "subtitle": "sounds.dungeonnowloading.fairkeeper_ouros_door_cannon_spawn",
+    "sounds": [
+      "dungeonnowloading:mob/fairkeeper/ouros/ouros_door_cannon_spawn_0",
+      "dungeonnowloading:mob/fairkeeper/ouros/ouros_door_cannon_spawn_1",
+      "dungeonnowloading:mob/fairkeeper/ouros/ouros_door_cannon_spawn_2"
+    ]
+  },
+  "fairkeeper_ouros_door_close": {
+    "subtitle": "sounds.dungeonnowloading.fairkeeper_ouros_door_close",
+    "sounds": [
+      "dungeonnowloading:mob/fairkeeper/ouros/ouros_door_close_0",
+      "dungeonnowloading:mob/fairkeeper/ouros/ouros_door_close_1"
+    ]
+  },
+  "fairkeeper_ouros_door_pillar_spawn": {
+    "subtitle": "sounds.dungeonnowloading.fairkeeper_ouros_door_pillar_spawn",
+    "sounds": [
+      "dungeonnowloading:mob/fairkeeper/ouros/ouros_door_pillar_spawn_0",
+      "dungeonnowloading:mob/fairkeeper/ouros/ouros_door_pillar_spawn_1"
+    ]
+  },
+  "fairkeeper_ouros_door_scuttle_spawn": {
+    "subtitle": "sounds.dungeonnowloading.fairkeeper_ouros_door_scuttle_spawn",
+    "sounds": [
+      "dungeonnowloading:mob/fairkeeper/ouros/ouros_door_scuttle_spawn"
+    ]
+  },
+  "fairkeeper_ouros_shoot_vertex_domain": {
+    "subtitle": "sounds.dungeonnowloading.fairkeeper_ouros_shoot_vertex_domain",
+    "sounds": [
+      "dungeonnowloading:mob/fairkeeper/ouros/ouros_shoot_vertex_domain_0",
+      "dungeonnowloading:mob/fairkeeper/ouros/ouros_shoot_vertex_domain_1"
+    ]
+  },
+  "fairkeeper_ouros_pillar_land": {
+    "subtitle": "sounds.dungeonnowloading.fairkeeper_ouros_pillar_land",
+    "sounds": [
+      "dungeonnowloading:mob/fairkeeper/ouros/ouros_pillar_land_0",
+      "dungeonnowloading:mob/fairkeeper/ouros/ouros_pillar_land_1"
+    ]
+  },
+  "fairkeeper_ouros_hurt": {
+    "subtitle": "sounds.dungeonnowloading.fairkeeper_ouros_hurt",
+    "sounds": [
+      "dungeonnowloading:mob/fairkeeper/ouros/ouros_hurt_0",
+      "dungeonnowloading:mob/fairkeeper/ouros/ouros_hurt_1",
+      "dungeonnowloading:mob/fairkeeper/ouros/ouros_hurt_2"
+    ]
+  },
+  "fairkeeper_ouros_slither": {
+    "subtitle": "sounds.dungeonnowloading.fairkeeper_ouros_slither",
+    "sounds": [
+      "dungeonnowloading:mob/fairkeeper/ouros/ouros_slither_0",
+      "dungeonnowloading:mob/fairkeeper/ouros/ouros_slither_1",
+      "dungeonnowloading:mob/fairkeeper/ouros/ouros_slither_2",
+      "dungeonnowloading:mob/fairkeeper/ouros/ouros_slither_3"
+    ]
+  },
+  "fairkeepers_intro": {
+    "subtitle": "sounds.dungeonnowloading.fairkeepers_intro",
+    "sounds": [
+      "dungeonnowloading:mob/fairkeeper/fairkeepers_intro"
+    ]
+  },
+  "fairkeeper_mouth_close": {
+    "subtitle": "sounds.dungeonnowloading.fairkeeper_mouth_close",
+    "sounds": [
+      "dungeonnowloading:mob/fairkeeper/fairkeeper_mouth_close"
+    ]
+  },
+  "fairkeeper_mouth_open": {
+    "subtitle": "sounds.dungeonnowloading.fairkeeper_mouth_open",
+    "sounds": [
+      "dungeonnowloading:mob/fairkeeper/fairkeeper_mouth_open"
+    ]
+  },
+  "garhold_charge_dive": {
+    "subtitle": "sounds.dungeonnowloading.garhold_charge_dive",
+    "sounds": [
+      "dungeonnowloading:mob/garhold/garhold_charge_dive_0",
+      "dungeonnowloading:mob/garhold/garhold_charge_dive_1"
+    ]
+  },
+  "garhold_closing": {
+    "subtitle": "sounds.dungeonnowloading.garhold_closing",
+    "sounds": [
+      "dungeonnowloading:mob/garhold/garhold_closing_0",
+      "dungeonnowloading:mob/garhold/garhold_closing_1"
+    ]
+  },
+  "garhold_death": {
+    "subtitle": "sounds.dungeonnowloading.garhold_death",
+    "sounds": [
+      "dungeonnowloading:mob/garhold/garhold_death_0",
+      "dungeonnowloading:mob/garhold/garhold_death_1"
+    ]
+  },
+  "garhold_flap": {
+    "subtitle": "sounds.dungeonnowloading.garhold_flap",
+    "sounds": [
+      "dungeonnowloading:mob/garhold/garhold_flap_0",
+      "dungeonnowloading:mob/garhold/garhold_flap_1",
+      "dungeonnowloading:mob/garhold/garhold_flap_2",
+      "dungeonnowloading:mob/garhold/garhold_flap_3"
+    ]
+  },
+  "garhold_hurt": {
+    "subtitle": "sounds.dungeonnowloading.garhold_hurt",
+    "sounds": [
+      "dungeonnowloading:mob/garhold/garhold_hurt_0",
+      "dungeonnowloading:mob/garhold/garhold_hurt_1",
+      "dungeonnowloading:mob/garhold/garhold_hurt_2"
+    ]
+  },
+  "garhold_land_dive": {
+    "subtitle": "sounds.dungeonnowloading.garhold_land_dive",
+    "sounds": [
+      "dungeonnowloading:mob/garhold/garhold_land_dive_0",
+      "dungeonnowloading:mob/garhold/garhold_land_dive_1"
+    ]
+  },
+  "garhold_release": {
+    "subtitle": "sounds.dungeonnowloading.garhold_release",
+    "sounds": [
+      "dungeonnowloading:mob/garhold/garhold_release_0",
+      "dungeonnowloading:mob/garhold/garhold_release_1"
+    ]
+  },
+  "garhold_side_bar_close": {
+    "subtitle": "sounds.dungeonnowloading.garhold_side_bar_close",
+    "sounds": [
+      "dungeonnowloading:mob/garhold/garhold_side_bar_close_0",
+      "dungeonnowloading:mob/garhold/garhold_side_bar_close_1"
+    ]
+  },
+  "garhold_side_bar_open": {
+    "subtitle": "sounds.dungeonnowloading.garhold_side_bar_open",
+    "sounds": [
+      "dungeonnowloading:mob/garhold/garhold_side_bar_open_0",
+      "dungeonnowloading:mob/garhold/garhold_side_bar_open_1"
+    ]
+  },
+  "garhold_teleport": {
+    "subtitle": "sounds.dungeonnowloading.garhold_teleport",
+    "sounds": [
+      "dungeonnowloading:mob/garhold/garhold_teleport_0",
+      "dungeonnowloading:mob/garhold/garhold_teleport_1"
+    ]
+  }
+}

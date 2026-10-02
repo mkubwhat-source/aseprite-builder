@@ -1,0 +1,165 @@
+package dev.hexnowloading.dungeonnowloading.item.client.renderer;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
+import dev.hexnowloading.dungeonnowloading.item.ScorcherItem;
+import dev.hexnowloading.dungeonnowloading.item.client.ItemAnimationState;
+import dev.hexnowloading.dungeonnowloading.item.client.animation.ScorcherAnimation;
+import dev.hexnowloading.dungeonnowloading.item.client.model.ScorcherModel;
+import dev.hexnowloading.dungeonnowloading.network.ClientUtil;
+import dev.hexnowloading.dungeonnowloading.registry.DNLItems;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
+
+import static dev.hexnowloading.dungeonnowloading.item.ScorcherItem.getHeatLevel;
+import static dev.hexnowloading.dungeonnowloading.item.ScorcherItem.getTimeStamp;
+
+public class ScorcherRenderer extends BlockEntityWithoutLevelRenderer {
+
+    private static final ResourceLocation TEXTURE_EMISSIVE_FLAME = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/item/scorcher/scorcher_emissive_flame.png");
+    private static final ResourceLocation TEXTURE_EMISSIVE_SOUL_FLAME = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/item/scorcher/scorcher_emissive_soul_flame.png");
+    private static final ResourceLocation TEXTURE_EMISSIVE_HEAT = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/item/scorcher/scorcher_emissive_heat.png");
+    private static final RenderType RENDER_TYPE_EMISSIVE_FLAME = RenderType.entityTranslucent(TEXTURE_EMISSIVE_FLAME);
+    private static final RenderType RENDER_TYPE_EMISSIVE_SOUL_FLAME = RenderType.entityTranslucent(TEXTURE_EMISSIVE_SOUL_FLAME);
+    private static final RenderType RENDER_TYPE_EMISSIVE_HEAT = RenderType.entityTranslucent(TEXTURE_EMISSIVE_HEAT);
+
+    private ScorcherModel model;
+
+    public ScorcherRenderer() {
+        super(ClientUtil.getClient().getBlockEntityRenderDispatcher(), ClientUtil.getClient().getEntityModels());
+    }
+
+    @Override
+    public void renderByItem(ItemStack itemStack, ItemDisplayContext itemDisplayContext, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+        poseStack.pushPose();
+
+        if (this.model == null) {
+            this.model = new ScorcherModel(ClientUtil.getClient().getEntityModels().bakeLayer(ScorcherModel.LAYER_LOCATION));
+        }
+
+        poseStack.translate(0.5, 1.5, 0.5);
+        poseStack.translate(0, 0, 0.0);
+        poseStack.scale(-1.0F, -1.0f, 1.0f);
+
+
+        float flameAlpha = 0.0f;
+        float heatAlpha = 0.0f;
+
+        VertexConsumer vertexConsumer = bufferSource.getBuffer(this.model.renderType(ScorcherModel.TEXTURE));
+        if (itemStack.is(DNLItems.SOUL_SCORCHER.get())) {
+            vertexConsumer = bufferSource.getBuffer(this.model.renderType(ScorcherModel.TEXTURE_SOUL));
+        }
+
+        if (itemStack.getItem() instanceof ScorcherItem scorcherItem) {
+            Player player = ClientUtil.getClientPlayer();
+            if (player == null) {
+                poseStack.popPose();
+                return;
+            }
+            animateOutsideInventory(player, itemStack, itemDisplayContext);
+            this.model.setUpAnim(scorcherItem, player, itemStack, getPartialTick());
+            // 1.21 no longer clips the BEWLR's emissive (entityTranslucent) passes to the GUI/hotbar
+            // slot, so a "hanging" flame/heat alpha would bleed out of inventory slots. 1.20.1 only
+            // ever showed the fire in-hand (GUI clipped it), so gate the emissive passes to hands.
+            if (onlyRenderInHands(itemDisplayContext)) {
+                flameAlpha = getFlameAlpha(player, itemStack);
+                heatAlpha = getHeat(player, itemStack);
+            }
+        }
+
+        this.model.renderToBuffer(poseStack, vertexConsumer, packedLight, packedOverlay, 0xFFFFFFFF);
+
+        if (flameAlpha > 0.0F) {
+            VertexConsumer emissiveFlame = bufferSource.getBuffer(RENDER_TYPE_EMISSIVE_FLAME);
+            if (itemStack.is(DNLItems.SOUL_SCORCHER.get())) {
+                emissiveFlame = bufferSource.getBuffer(RENDER_TYPE_EMISSIVE_SOUL_FLAME);
+            }
+            this.model.renderToBuffer(poseStack, emissiveFlame, LightTexture.FULL_BRIGHT, packedOverlay, net.minecraft.util.FastColor.ARGB32.colorFromFloat(flameAlpha, 1.0F, 1.0F, 1.0F));
+        }
+
+        if (heatAlpha > 0.0F) {
+            VertexConsumer emissiveHeat = bufferSource.getBuffer(RENDER_TYPE_EMISSIVE_HEAT);
+            this.model.renderToBuffer(poseStack, emissiveHeat, LightTexture.FULL_BRIGHT, packedOverlay, net.minecraft.util.FastColor.ARGB32.colorFromFloat(heatAlpha, 1.0F, 1.0F, 1.0F));
+        }
+        poseStack.popPose();
+    }
+
+
+    private boolean onlyRenderInHands(ItemDisplayContext itemDisplayContext) {
+        return itemDisplayContext == ItemDisplayContext.FIRST_PERSON_LEFT_HAND || itemDisplayContext == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND || itemDisplayContext == ItemDisplayContext.THIRD_PERSON_LEFT_HAND || itemDisplayContext == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
+    }
+
+    private void animateOutsideInventory(Player player, ItemStack stack, ItemDisplayContext itemDisplayContext) {
+        long storedGameTime = getTimeStamp(stack);
+        long currentGameTime = player.level().getGameTime();
+
+        if (storedGameTime == currentGameTime) return;
+
+        if (itemDisplayContext != ItemDisplayContext.GROUND) return;
+
+        if (!ItemAnimationState.isAnimating(stack, ScorcherItem.ScorcherAnimationState.SCORCHER_OVERHEAT.getName(), currentGameTime)) {
+            if (ItemAnimationState.isAnimating(stack, ScorcherItem.ScorcherAnimationState.SCORCHER_SHOOT.getName(), currentGameTime)) {
+                ItemAnimationState.start(stack, ScorcherItem.ScorcherAnimationState.SCORCHER_STOP.getName(), currentGameTime, (long) (ScorcherAnimation.SCORCHER_STOP.lengthInSeconds() * 20L), false, true);
+            } else if (!ItemAnimationState.isAnimating(stack, ScorcherItem.ScorcherAnimationState.SCORCHER_STOP.getName(), currentGameTime)) {
+                ItemAnimationState.stopAll(stack);
+            }
+        }
+    }
+
+    private float getHeat(Player player, ItemStack itemStack) {
+        long storedGameTime = getTimeStamp(itemStack);
+        long currentGameTime = player.level().getGameTime();
+        float heatLevel = getHeatLevel(itemStack);
+
+        if (storedGameTime == currentGameTime) {
+            return Math.min(heatLevel, 1.0f);
+        } else {
+            long timeElapsed = currentGameTime - storedGameTime;
+            float heatDecayPerTick = 1.0f / (6.0f * 20);
+
+            float newHeatLevel = Math.max(0.0f, heatLevel - (timeElapsed * heatDecayPerTick));
+            return Math.min(newHeatLevel, 1.0F);
+        }
+    }
+
+    private float getFlameAlpha(Player player, ItemStack itemStack) {
+        long gameTime = player.level().getGameTime();
+        float partialTick = getPartialTick();
+        if (ItemAnimationState.isAnimatingOrHanging(itemStack, ScorcherItem.ScorcherAnimationState.SCORCHER_ACTIVATED.getName(), gameTime)) {
+            return Math.min(ItemAnimationState.getProgress(itemStack, ScorcherItem.ScorcherAnimationState.SCORCHER_ACTIVATED.getName(), gameTime, getPartialTick()), 1.0F);
+        } else if (ItemAnimationState.isAnimatingOrHanging(itemStack, ScorcherItem.ScorcherAnimationState.SCORCHER_STOP.getName(), gameTime)) {
+            return 1.0F - ItemAnimationState.getProgress(itemStack, ScorcherItem.ScorcherAnimationState.SCORCHER_STOP.getName(), gameTime, getPartialTick());
+        } else if (ItemAnimationState.isAnimatingOrHanging(itemStack, ScorcherItem.ScorcherAnimationState.SCORCHER_SHOOT.getName(), gameTime)) {
+            return 1.0F;
+        } else if (ItemAnimationState.isAnimating(itemStack, ScorcherItem.ScorcherAnimationState.SCORCHER_OVERHEAT.getName(), gameTime)) {
+            float totalOverheatDuration = 8.0f * 20;
+            float fadeStartTime = (8.0f - 1.25f) * 20;
+
+            float progress = ItemAnimationState.getProgress(itemStack, ScorcherItem.ScorcherAnimationState.SCORCHER_OVERHEAT.getName(), gameTime, partialTick);
+            float totalTicksElapsed = progress * totalOverheatDuration;
+
+            if (totalTicksElapsed < fadeStartTime) {
+                return 1.0F;
+            }
+
+            float fadeProgress = (totalTicksElapsed - fadeStartTime) / (totalOverheatDuration - fadeStartTime);
+            return Math.max(0.0F, 1.0F - fadeProgress);
+        }
+        return 0;
+    }
+
+    private float getPartialTick() {
+        return (ClientUtil.getClientLevel() != null) ? ClientUtil.getClient().getTimer().getGameTimeDeltaPartialTick(false) : 0;
+    }
+
+    public static ScorcherRenderer getInstance() {
+        return new ScorcherRenderer();
+    }
+}

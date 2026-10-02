@@ -1,0 +1,74 @@
+{
+  "fallback": "dungeonnowloading:labyrinth/spawners/random_maze_mobs",
+  "elements": [
+    {
+      "weight": 4,
+      "element": {
+        "element_type": "minecraft:empty_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:labyrinth/hanging_spawners/skeleton",
+        "processors": "dungeonnowloading:waterlogging_fix"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:labyrinth/hanging_spawners/zombie",
+        "processors": "dungeonnowloading:waterlogging_fix"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:labyrinth/hanging_spawners/cave_spider",
+        "processors": "dungeonnowloading:waterlogging_fix"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:labyrinth/hanging_spawners/hollow",
+        "processors": "dungeonnowloading:waterlogging_fix"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:labyrinth/hanging_spawners/creeper",
+        "processors": "dungeonnowloading:waterlogging_fix"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:labyrinth/hanging_spawners/silverfish",
+        "processors": "dungeonnowloading:waterlogging_fix"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "dungeonnowloading:labyrinth/decors/hanging_lantern",
+        "processors": "dungeonnowloading:waterlogging_fix"
+      }
+    }
+  ]
+}
