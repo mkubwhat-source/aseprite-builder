@@ -1,0 +1,42 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "property": "minecraft:using_item",
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "dungeonnowloading:item/vertex_bow"
+    },
+    "on_true": {
+      "type": "minecraft:range_dispatch",
+      "property": "minecraft:use_duration",
+      "scale": 0.05,
+      "fallback": {
+        "type": "minecraft:model",
+        "model": "dungeonnowloading:item/vertex_bow_pulling_0"
+      },
+      "entries": [
+        {
+          "threshold": 0.43,
+          "model": {
+            "type": "minecraft:model",
+            "model": "dungeonnowloading:item/vertex_bow_pulling_1"
+          }
+        },
+        {
+          "threshold": 0.6,
+          "model": {
+            "type": "minecraft:model",
+            "model": "dungeonnowloading:item/vertex_bow_pulling_2"
+          }
+        },
+        {
+          "threshold": 1.0,
+          "model": {
+            "type": "minecraft:model",
+            "model": "dungeonnowloading:item/vertex_bow_pulling_3"
+          }
+        }
+      ]
+    }
+  }
+}

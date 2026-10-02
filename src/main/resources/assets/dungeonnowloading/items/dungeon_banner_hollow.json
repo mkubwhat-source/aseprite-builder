@@ -1,0 +1,9 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "dungeonnowloading:item/dungeon_banner_hollow",
+    "model": {
+      "type": "dungeonnowloading:dungeon_banner_hollow"
+    }
+  }
+}

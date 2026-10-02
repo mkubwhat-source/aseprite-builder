@@ -22,7 +22,7 @@ public abstract class TextureSheetParticle extends SingleQuadParticle {
     }
 
     private static TextureAtlasSprite placeholderSprite() {
-        return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(TextureAtlas.LOCATION_PARTICLES).missingSprite();
+        return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(net.minecraft.data.AtlasIds.PARTICLES).missingSprite();
     }
 
     public void pickSprite(SpriteSet sprites) {

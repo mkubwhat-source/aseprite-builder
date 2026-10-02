@@ -1,5 +1,4 @@
 {
-  "parent": "minecraft:builtin/entity",
   "display": {
     "firstperson_lefthand": {
       "rotation": [
@@ -90,5 +89,8 @@
         0
       ]
     }
+  },
+  "textures": {
+    "particle": "dungeonnowloading:block/dungeon_banner_particle"
   }
 }

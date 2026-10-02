@@ -1,0 +1,9 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "dungeonnowloading:item/fairkeeper_chest",
+    "model": {
+      "type": "dungeonnowloading:fairkeeper_chest"
+    }
+  }
+}

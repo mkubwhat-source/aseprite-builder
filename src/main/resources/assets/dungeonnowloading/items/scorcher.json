@@ -1,0 +1,9 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "dungeonnowloading:item/scorcher",
+    "model": {
+      "type": "dungeonnowloading:scorcher"
+    }
+  }
+}

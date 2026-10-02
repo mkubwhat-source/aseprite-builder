@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AbstractClientPlayer.class)
 public class AbstractClientPlayerMixin {
-    @Inject(method = "Lnet/minecraft/client/player/AbstractClientPlayer;getFieldOfViewModifier()F", at = @At("RETURN"), cancellable = true)
+    @Inject(method = "getFieldOfViewModifier(ZF)F", at = @At("RETURN"), cancellable = true)
     private void modifyFov(CallbackInfoReturnable<Float> cir) {
         AbstractClientPlayer player = (AbstractClientPlayer) (Object) this;
 

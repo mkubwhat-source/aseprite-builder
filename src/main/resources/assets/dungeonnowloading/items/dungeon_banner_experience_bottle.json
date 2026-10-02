@@ -1,0 +1,9 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "dungeonnowloading:item/dungeon_banner_experience_bottle",
+    "model": {
+      "type": "dungeonnowloading:dungeon_banner_experience_bottle"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "property": "dungeonnowloading:golden_mode",
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "dungeonnowloading:item/repulsor"
+    },
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "dungeonnowloading:item/repulsor_golden"
+    }
+  }
+}

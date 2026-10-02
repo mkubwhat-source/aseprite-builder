@@ -1,0 +1,9 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "dungeonnowloading:item/player_statue",
+    "model": {
+      "type": "dungeonnowloading:player_statue"
+    }
+  }
+}

@@ -75,10 +75,10 @@ public class DNLFabricClient implements ClientModInitializer {
     private void registerItemRenderers() {
 
         // Block
-        LegacyItemRenderers.register(DNLItems.FAIRKEEPER_CHEST.get(), FairkeeperChestItemRenderer.getInstance()::renderByItem);
-        LegacyItemRenderers.register(DNLItems.WISE_FAIRKEEPER_CHEST.get(), WiseFairkeeperChestItemRenderer.getInstance()::renderByItem);
-        LegacyItemRenderers.register(DNLItems.FIERCE_FAIRKEEPER_CHEST.get(), FierceFairkeeperChestItemRenderer.getInstance()::renderByItem);
-        LegacyItemRenderers.register(DNLItems.PLAYER_STATUE.get(), PlayerStatueItemRenderer.getInstance()::renderByItem);
+        LegacyItemRenderers.register(DNLItems.FAIRKEEPER_CHEST.get(), (stack, ctx, pose, buf, light, overlay) -> FairkeeperChestItemRenderer.getInstance().renderByItem(stack, ctx, pose, buf, light, overlay));
+        LegacyItemRenderers.register(DNLItems.WISE_FAIRKEEPER_CHEST.get(), (stack, ctx, pose, buf, light, overlay) -> WiseFairkeeperChestItemRenderer.getInstance().renderByItem(stack, ctx, pose, buf, light, overlay));
+        LegacyItemRenderers.register(DNLItems.FIERCE_FAIRKEEPER_CHEST.get(), (stack, ctx, pose, buf, light, overlay) -> FierceFairkeeperChestItemRenderer.getInstance().renderByItem(stack, ctx, pose, buf, light, overlay));
+        LegacyItemRenderers.register(DNLItems.PLAYER_STATUE.get(), (stack, ctx, pose, buf, light, overlay) -> PlayerStatueItemRenderer.getInstance().renderByItem(stack, ctx, pose, buf, light, overlay));
         for (DungeonBannerBlock.DungeonBannerVariant variant : DungeonBannerBlock.DungeonBannerVariant.values()) {
             LegacyItemRenderers.register(
                     DNLItems.getBannerItem(variant).get(),
@@ -91,8 +91,8 @@ public class DNLFabricClient implements ClientModInitializer {
 
 
         // Item
-        LegacyItemRenderers.register(DNLItems.SCORCHER.get(), ScorcherRenderer.getInstance()::renderByItem);
-        LegacyItemRenderers.register(DNLItems.SOUL_SCORCHER.get(), ScorcherRenderer.getInstance()::renderByItem);
+        LegacyItemRenderers.register(DNLItems.SCORCHER.get(), (stack, ctx, pose, buf, light, overlay) -> ScorcherRenderer.getInstance().renderByItem(stack, ctx, pose, buf, light, overlay));
+        LegacyItemRenderers.register(DNLItems.SOUL_SCORCHER.get(), (stack, ctx, pose, buf, light, overlay) -> ScorcherRenderer.getInstance().renderByItem(stack, ctx, pose, buf, light, overlay));
         //LegacyItemRenderers.register(DNLItems.SCORCHER.get(), new DifferentProspectiveItemRenderer(DNLClientRegistry.SCORCHER_3D_MODEL, DNLClientRegistry.SCORCHER_3D_MODEL));
 
     }

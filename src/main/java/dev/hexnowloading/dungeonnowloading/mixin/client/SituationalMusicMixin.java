@@ -21,8 +21,6 @@ public abstract class SituationalMusicMixin {
 
     @Shadow @Nullable public LocalPlayer player;
 
-    @Shadow @Nullable public Screen screen;
-
     @Inject(method = "getSituationalMusic", at = @At("HEAD"), cancellable = true)
     private void injectStructureMusic(CallbackInfoReturnable<Music> cir) {
 
@@ -41,7 +39,7 @@ public abstract class SituationalMusicMixin {
 
         //TODO: Needs rewrite once more structure musics are added.
 
-        Music music = (Music) Optionull.map(screen, Screen::getBackgroundMusic);
+        Music music = (Music) Optionull.map(((Minecraft) (Object) this).gui.screen(), Screen::getBackgroundMusic);
 
         if (music == null && player != null) {
             if (S2CStructureDetectionPacket.isClientInStructure()) {

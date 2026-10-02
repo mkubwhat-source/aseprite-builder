@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "dungeonnowloading:spawner"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "dungeonnowloading:spawner"
+      }
+    ]
+  }
+}

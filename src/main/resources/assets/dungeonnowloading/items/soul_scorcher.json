@@ -1,0 +1,9 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "dungeonnowloading:item/soul_scorcher",
+    "model": {
+      "type": "dungeonnowloading:soul_scorcher"
+    }
+  }
+}
