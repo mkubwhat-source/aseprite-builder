@@ -212,7 +212,7 @@ public class RepulsorEntity extends Mob {
     }
 
     @Override
-    public boolean hurt(DamageSource damageSource, float f) {
+    public boolean hurtServer(ServerLevel hurtLevel, DamageSource damageSource, float f) {
         if (this.isInvulnerableTo(damageSource)) {
             return false;
         } else {
@@ -311,7 +311,7 @@ public class RepulsorEntity extends Mob {
                             AABB area = thrownPotion.getBoundingBox().inflate(4.0D, 2.0D, 4.0D);
                             for (LivingEntity living : this.level().getEntitiesOfClass(LivingEntity.class, area, ThrownPotion.WATER_SENSITIVE_OR_ON_FIRE)) {
                                 if (living.isSensitiveToWater()) {
-                                    living.hurt(this.damageSources().indirectMagic(this, null), 1.0F);
+                                    living.hurtOrSimulate(this.damageSources().indirectMagic(this, null), 1.0F);
                                 }
                                 if (living.isOnFire() && living.isAlive()) {
                                     living.extinguishFire();

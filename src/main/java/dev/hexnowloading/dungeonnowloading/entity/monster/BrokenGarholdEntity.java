@@ -245,9 +245,9 @@ public class BrokenGarholdEntity extends Monster {
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel hurtLevel, DamageSource source, float amount) {
         if (this.level().isClientSide()) {
-            return super.hurt(source, amount);
+            return super.hurtServer(hurtLevel, source, amount);
         }
 
         Entity attacker = source.getEntity();
@@ -256,7 +256,7 @@ public class BrokenGarholdEntity extends Monster {
             amount = Math.min(amount, 4.0F);
         }
 
-        boolean ok = super.hurt(source, amount);
+        boolean ok = super.hurtServer(hurtLevel, source, amount);
         if (!ok) return false;
 
         // Only count real damage events
@@ -301,7 +301,7 @@ public class BrokenGarholdEntity extends Monster {
     }
 
     @Override
-    public boolean causeFallDamage(float distance, float multiplier, DamageSource source) {
+    public boolean causeFallDamage(double distance, float multiplier, DamageSource source) {
         return false;
     }
 

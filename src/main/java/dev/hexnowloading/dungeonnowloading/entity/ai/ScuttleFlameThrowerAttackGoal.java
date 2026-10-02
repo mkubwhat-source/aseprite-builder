@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.entity.ai;
 
+
+import net.minecraft.server.level.ServerLevel;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import net.minecraft.resources.Identifier;
 import dev.hexnowloading.dungeonnowloading.entity.monster.ScuttleEntity;
@@ -76,7 +78,7 @@ public class ScuttleFlameThrowerAttackGoal extends Goal {
             List<Player> targets = scuttleEntity.level().getEntitiesOfClass(Player.class, aabb);
             for (Player player : targets) {
                 player.igniteForSeconds(5);
-                scuttleEntity.doHurtTarget(player);
+                scuttleEntity.doHurtTarget((ServerLevel) scuttleEntity.level(), player);
             }
         }
         if (this.attackTicks > 0) {

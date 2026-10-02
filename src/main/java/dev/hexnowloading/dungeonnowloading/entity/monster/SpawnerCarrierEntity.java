@@ -279,8 +279,8 @@ public class SpawnerCarrierEntity extends Monster {
     }
 
     @Override
-    protected void customServerAiStep() {
-        super.customServerAiStep();
+    protected void customServerAiStep(ServerLevel serverLevel) {
+        super.customServerAiStep(serverLevel);
 
         if (!(this.level() instanceof ServerLevel level)) return;
         if (this.isSpawnerBroken()) return;
@@ -487,8 +487,8 @@ public class SpawnerCarrierEntity extends Monster {
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
-        boolean didHurt = super.hurt(source, amount);
+    public boolean hurtServer(ServerLevel hurtLevel, DamageSource source, float amount) {
+        boolean didHurt = super.hurtServer(hurtLevel, source, amount);
         if (!didHurt) return false;
 
         // Server only
@@ -554,7 +554,7 @@ public class SpawnerCarrierEntity extends Monster {
 
 
     @Override
-    public boolean doHurtTarget(Entity entity) {
+    public boolean doHurtTarget(ServerLevel serverLevel, Entity entity) {
         return false;
     }
 
@@ -666,7 +666,7 @@ public class SpawnerCarrierEntity extends Monster {
 
             boolean blockedByShield = player.isBlocking() && player.isDamageSourceBlocked(src);
 
-            player.hurt(src, dmg);
+            player.hurtOrSimulate(src, dmg);
 
             if (blockedByShield) {
                 player.stopUsingItem();
@@ -689,7 +689,7 @@ public class SpawnerCarrierEntity extends Monster {
                 && box.intersects(target.getBoundingBox())
                 && !this.isSpawnedMinion(target)) {
 
-            target.hurt(src, dmg);
+            target.hurtOrSimulate(src, dmg);
             applySmashKnockback(target);
         }
     }

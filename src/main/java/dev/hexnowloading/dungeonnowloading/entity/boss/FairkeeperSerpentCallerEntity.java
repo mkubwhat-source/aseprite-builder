@@ -1100,12 +1100,12 @@ public class FairkeeperSerpentCallerEntity extends Entity {
     }
 
     @Override
-    public boolean hurt(DamageSource damageSource, float v) {
+    public boolean hurtServer(ServerLevel hurtLevel, DamageSource damageSource, float v) {
         if (!this.level().isClientSide() && !this.isRemoved() && damageSource.isCreativePlayer()) {
             this.kill();
             return true;
         }
-        return super.hurt(damageSource, v);
+        return super.hurtServer(hurtLevel, damageSource, v);
     }
 
     private void playBossMusic() {

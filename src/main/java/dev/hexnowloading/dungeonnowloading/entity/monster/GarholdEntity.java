@@ -375,8 +375,8 @@ public class GarholdEntity extends Monster {
     }
 
     @Override
-    protected void customServerAiStep() {
-        super.customServerAiStep();
+    protected void customServerAiStep(ServerLevel serverLevel) {
+        super.customServerAiStep(serverLevel);
         if (sideCaptureCooldownTicks > 0) sideCaptureCooldownTicks--;
 
         boolean chainLocked = isPushableState();
@@ -590,7 +590,7 @@ public class GarholdEntity extends Monster {
     }
 
     @Override
-    public boolean causeFallDamage(float distance, float multiplier, DamageSource source) {
+    public boolean causeFallDamage(double distance, float multiplier, DamageSource source) {
         return false;
     }
 
@@ -670,14 +670,14 @@ public class GarholdEntity extends Monster {
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel hurtLevel, DamageSource source, float amount) {
         Entity attacker = source.getEntity();
 
         if (attacker instanceof LivingEntity p && this.hasPassenger(p)) {
             amount *= 0.5f;
         }
 
-        boolean ok = super.hurt(source, amount);
+        boolean ok = super.hurtServer(hurtLevel, source, amount);
 
         if (ok && this.isGarholdState(GarholdState.CHAINED)) {
             boolean protectedFromNormalDetach = (chainedPassengerHoldTicks > 0) || (chainedDetachLockoutTicks > 0);
@@ -789,7 +789,7 @@ public class GarholdEntity extends Monster {
 
             boolean blockedByShield = (e instanceof Player p) && p.isBlocking() && p.isDamageSourceBlocked(src);
 
-            e.hurt(src, dmg);
+            e.hurtOrSimulate(src, dmg);
 
             if (blockedByShield) {
                 Player p = (Player) e;

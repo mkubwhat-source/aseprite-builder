@@ -599,7 +599,7 @@ public class CopperCreepEntity extends PathfinderMob implements OwnableEntity, P
             this.igniteForSeconds(8);
         }
 
-//        this.hurt(this.damageSources().lightningBolt(), 5.0F);
+//        this.hurtOrSimulate(this.damageSources().lightningBolt(), 5.0F);
 
         this.entityData.set(DATA_IS_POWERED, true);
     }
@@ -687,8 +687,8 @@ public class CopperCreepEntity extends PathfinderMob implements OwnableEntity, P
     }
 
     @Override
-    public boolean hurt(DamageSource damageSource, float amount) {
-        boolean hurt = super.hurt(damageSource, amount);
+    public boolean hurtServer(ServerLevel hurtLevel, DamageSource damageSource, float amount) {
+        boolean hurt = super.hurtServer(hurtLevel, damageSource, amount);
         if (hurt && !this.level().isClientSide()) {
             if (this.getState() == State.SITTING) {
                 this.standUp();

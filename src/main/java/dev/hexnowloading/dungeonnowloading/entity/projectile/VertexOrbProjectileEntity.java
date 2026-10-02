@@ -407,7 +407,7 @@ public class VertexOrbProjectileEntity extends ModelledProjectileEntity {
             owner = livingEntity;
         }
         if (targetEntity instanceof LivingEntity target) {
-            return target.hurt(this.level().damageSources().mobProjectile(this, owner), damage);
+            return target.hurtOrSimulate(this.level().damageSources().mobProjectile(this, owner), damage);
         }
         return false;
     }
@@ -436,15 +436,15 @@ public class VertexOrbProjectileEntity extends ModelledProjectileEntity {
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource damageSource) {
+    public boolean isInvulnerableTo(ServerLevel serverLevel, DamageSource damageSource) {
         if (damageSource.is(DamageTypes.EXPLOSION)) {
             return true;
         }
-        return super.isInvulnerableTo(damageSource);
+        return super.isInvulnerableTo(serverLevel, damageSource);
     }
 
     @Override
-    public boolean hurt(DamageSource damageSource, float f) {
+    public boolean hurtServer(ServerLevel hurtLevel, DamageSource damageSource, float f) {
         boolean bl;
         if (this.isInvulnerableTo(damageSource)) {
             return false;

@@ -149,7 +149,7 @@ public class VertexPillarProjectileEntity extends ModelledProjectileEntity {
         double a = x * x + z * z;
 
         mob.push(x / a * 6.0F, 0.2F, z / a * 6.0F);
-        mob.hurt(this.damageSources().mobProjectile(this, (LivingEntity) this.getOwner()), actualDamage);
+        mob.hurtOrSimulate(this.damageSources().mobProjectile(this, (LivingEntity) this.getOwner()), actualDamage);
     }
 
     protected Block getPillarBlock() {

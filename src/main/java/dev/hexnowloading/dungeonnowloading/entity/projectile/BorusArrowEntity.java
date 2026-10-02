@@ -1,6 +1,8 @@
 package dev.hexnowloading.dungeonnowloading.entity.projectile;
 
 
+
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityTypes;
 import dev.hexnowloading.dungeonnowloading.entity.util.ProjectileUtils;
 import dev.hexnowloading.dungeonnowloading.registry.DNLEntityTypes;
@@ -128,7 +130,7 @@ public class BorusArrowEntity extends AbstractArrow {
             target.igniteForSeconds(15);
         }
 
-        if (target.hurt(damageSource, (float) damage)) {
+        if (target.hurtOrSimulate(damageSource, (float) damage)) {
             if (isEnderman) {
                 return;
             }

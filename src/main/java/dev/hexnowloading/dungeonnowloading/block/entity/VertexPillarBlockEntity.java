@@ -138,7 +138,7 @@ public class VertexPillarBlockEntity extends BlockEntity {
             if (entity instanceof FairkeeperSerpentEntity) {
                 continue;
             }
-            entity.hurt(entity.level().damageSources().magic(), DAMAGE);
+            entity.hurtOrSimulate(entity.level().damageSources().magic(), DAMAGE);
             entity.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, SLOWNESS_DURATION, SLOWNESS_AMPLIFIER));
         }
 

@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.potion;
 
+
+import net.minecraft.server.level.ServerLevel;
 import dev.hexnowloading.dungeonnowloading.components.VertexNode;
 import dev.hexnowloading.dungeonnowloading.registry.DNLSounds;
 import dev.hexnowloading.dungeonnowloading.util.DNLMath;
@@ -61,7 +63,7 @@ public class VertexTransmissionEffect extends MobEffect {
                     this.setNoConnectionBeamDamageCase(uuid, false);        // Resets it back
                 }
 
-                entity.hurt(entity.level().damageSources().magic(), damageAmount);
+                entity.hurtOrSimulate(entity.level().damageSources().magic(), damageAmount);
 
                 entity.level().playSound(
                         null,

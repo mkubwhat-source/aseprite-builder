@@ -3,6 +3,8 @@ package dev.hexnowloading.dungeonnowloading.entity.projectile;
 
 
 
+
+import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
@@ -391,7 +393,7 @@ public class VertexDomainProjectileEntity extends ModelledProjectileEntity {
             owner = livingEntity;
         }
         if (targetEntity instanceof LivingEntity target) {
-            return target.hurt(this.level().damageSources().mobProjectile(this, owner), damage);
+            return target.hurtOrSimulate(this.level().damageSources().mobProjectile(this, owner), damage);
         }
         return false;
     }
@@ -499,7 +501,7 @@ public class VertexDomainProjectileEntity extends ModelledProjectileEntity {
     }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean canBeCollidedWith(@Nullable Entity other) {
         return this.getDyingTick() <= 0;
     }
 
@@ -517,11 +519,11 @@ public class VertexDomainProjectileEntity extends ModelledProjectileEntity {
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource damageSource) {
+    public boolean isInvulnerableTo(ServerLevel serverLevel, DamageSource damageSource) {
         if (damageSource.is(DamageTypes.EXPLOSION)) {
             return true;
         }
-        return super.isInvulnerableTo(damageSource);
+        return super.isInvulnerableTo(serverLevel, damageSource);
     }
 
     @Override
@@ -561,7 +563,7 @@ public class VertexDomainProjectileEntity extends ModelledProjectileEntity {
 
 
     @Override
-    public boolean hurt(DamageSource damageSource, float f) {
+    public boolean hurtServer(ServerLevel hurtLevel, DamageSource damageSource, float f) {
         boolean bl;
         if (this.isInvulnerableTo(damageSource)) {
             return false;

@@ -251,7 +251,7 @@ public class FairkeeperOurosPartEntity extends Monster implements Boss, Enemy, S
     }
 
     @Override
-    protected void customServerAiStep() {
+    protected void customServerAiStep(ServerLevel serverLevel) {
 
         this.animationControl();
 
@@ -266,7 +266,7 @@ public class FairkeeperOurosPartEntity extends Monster implements Boss, Enemy, S
             this.setCancelShooting(false);
         }
 
-        super.customServerAiStep();
+        super.customServerAiStep(serverLevel);
     }
 
     private void vertexTransmissionEffectImmunity() {
@@ -279,7 +279,7 @@ public class FairkeeperOurosPartEntity extends Monster implements Boss, Enemy, S
                     entity.push(this);
                     LivingEntity head = (LivingEntity) this.getHead();
                     if (head != null) {
-                        entity.hurt(entity.level().damageSources().mobAttack(head), (float) (head.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.5F));
+                        entity.hurtOrSimulate(entity.level().damageSources().mobAttack(head), (float) (head.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.5F));
                     }
                 });
     }
@@ -295,7 +295,7 @@ public class FairkeeperOurosPartEntity extends Monster implements Boss, Enemy, S
     }
 
     @Override
-    public boolean hurt(DamageSource damageSource, float damageAmount) {
+    public boolean hurtServer(ServerLevel hurtLevel, DamageSource damageSource, float damageAmount) {
 
         if (damageSource.getEntity() instanceof FairkeeperSerpentEntity) {
             if (damageSource.getDirectEntity() instanceof AbstractArrow arrow) {
@@ -317,10 +317,10 @@ public class FairkeeperOurosPartEntity extends Monster implements Boss, Enemy, S
 
             FairkeeperOurosEntity head = (FairkeeperOurosEntity) this.getHead();
             if (head != null) {
-                head.hurt(damageSource, damage);
+                head.hurtOrSimulate(damageSource, damage);
             }
 
-            return super.hurt(damageSource, 0);
+            return super.hurtServer(hurtLevel, damageSource, 0);
         }
 
         if (damageSource.is(DamageTypes.EXPLOSION) || (damageSource.getDirectEntity() instanceof LivingEntity livingEntity && livingEntity.canDisableShield())) {
@@ -567,7 +567,7 @@ public class FairkeeperOurosPartEntity extends Monster implements Boss, Enemy, S
     }
 
     @Override
-    public boolean causeFallDamage(float v, float v1, DamageSource damageSource) {
+    public boolean causeFallDamage(double v, float v1, DamageSource damageSource) {
         return false;
     }
 

@@ -3,6 +3,10 @@ package dev.hexnowloading.dungeonnowloading.entity.monster;
 
 
 
+
+
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.server.level.ServerLevel;
 import dev.hexnowloading.dungeonnowloading.util.DNLGameRules;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
@@ -124,7 +128,7 @@ public class BallistaGolemEntity extends Monster implements Enemy, SlumberingEnt
     }
 
     @Override
-    protected void customServerAiStep() {
+    protected void customServerAiStep(ServerLevel serverLevel) {
         if (this.isSlumbering()) {
             this.setState(BallistaGolemState.AWAKENING);
             this.triggerWakingUpAnimation();
@@ -163,7 +167,7 @@ public class BallistaGolemEntity extends Monster implements Enemy, SlumberingEnt
                 this.jumpFromGround();
             }
         }
-        super.customServerAiStep();
+        super.customServerAiStep(serverLevel);
     }
 
     @Override
@@ -172,7 +176,7 @@ public class BallistaGolemEntity extends Monster implements Enemy, SlumberingEnt
     }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean canBeCollidedWith(@Nullable Entity other) {
         return this.isSlumbering();
     }
 
@@ -248,11 +252,11 @@ public class BallistaGolemEntity extends Monster implements Enemy, SlumberingEnt
     }
 
     @Override
-    public boolean hurt(DamageSource damageSource, float amount) {
+    public boolean hurtServer(ServerLevel hurtLevel, DamageSource damageSource, float amount) {
         if (damageSource.getDirectEntity() instanceof AbstractArrow) {
             return false;
         }
-        return super.hurt(damageSource, amount);
+        return super.hurtServer(hurtLevel, damageSource, amount);
     }
 
     @Override

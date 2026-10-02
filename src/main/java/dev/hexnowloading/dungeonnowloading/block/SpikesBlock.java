@@ -1,6 +1,8 @@
 package dev.hexnowloading.dungeonnowloading.block;
 
 
+
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.InsideBlockEffectApplier;
 import dev.hexnowloading.dungeonnowloading.registry.DNLDamageTypes;
 import net.minecraft.core.BlockPos;
@@ -62,8 +64,8 @@ public class SpikesBlock extends Block implements SimpleWaterloggedBlock {
         if (entity instanceof LivingEntity livingEntity && entity.isAlive()) {
             livingEntity.makeStuckInBlock(blockState, new Vec3(0.5F, 0.5F, 0.5F));
             if (!level.isClientSide()) {
-                //livingEntity.hurt(level.damageSources().cactus(), damage);
-                livingEntity.hurt(DNLDamageTypes.getDamageSource(level, DNLDamageTypes.SPIKE), damage);
+                //livingEntity.hurtOrSimulate(level.damageSources().cactus(), damage);
+                livingEntity.hurtOrSimulate(DNLDamageTypes.getDamageSource(level, DNLDamageTypes.SPIKE), damage);
             }
         }
     }

@@ -199,7 +199,7 @@ public class FairkeeperBorosPartEntity extends Monster implements Boss, Enemy, S
     }
 
     @Override
-    protected void customServerAiStep() {
+    protected void customServerAiStep(ServerLevel serverLevel) {
         if (this.isTail()) {
             //this.setPathOnFire();
         }
@@ -208,7 +208,7 @@ public class FairkeeperBorosPartEntity extends Monster implements Boss, Enemy, S
             this.performContactDamage();
         }
 
-        super.customServerAiStep();
+        super.customServerAiStep(serverLevel);
     }
 
     private void vertexTransmissionEffectImmunity() {
@@ -228,7 +228,7 @@ public class FairkeeperBorosPartEntity extends Monster implements Boss, Enemy, S
                     entity.push(this);
                     LivingEntity head = (LivingEntity) this.getHead();
                     if (head != null) {
-                        entity.hurt(entity.level().damageSources().mobAttack(head), (float) (head.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.5F));
+                        entity.hurtOrSimulate(entity.level().damageSources().mobAttack(head), (float) (head.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.5F));
                     }
                 });
     }
@@ -244,7 +244,7 @@ public class FairkeeperBorosPartEntity extends Monster implements Boss, Enemy, S
     }
 
     @Override
-    public boolean hurt(DamageSource damageSource, float damageAmount) {
+    public boolean hurtServer(ServerLevel hurtLevel, DamageSource damageSource, float damageAmount) {
 
         if (damageSource.getEntity() instanceof FairkeeperSerpentEntity) {
             if (damageSource.getDirectEntity() instanceof AbstractArrow arrow) {
@@ -264,9 +264,9 @@ public class FairkeeperBorosPartEntity extends Monster implements Boss, Enemy, S
             FairkeeperBorosEntity head = (FairkeeperBorosEntity) this.getHead();
             if (head != null) {
                 head.setDamageFromOtherSegment(true);
-                head.hurt(damageSource, damage);
+                head.hurtOrSimulate(damageSource, damage);
             }
-            return super.hurt(damageSource, 0);
+            return super.hurtServer(hurtLevel, damageSource, 0);
         }
 
         if (damageSource.is(DNLTags.FAIRKEEPER_BOROS_ARMOR_HURTABLE) || (damageSource.getDirectEntity() instanceof LivingEntity livingEntity && livingEntity.getMainHandItem().getItem() instanceof PickaxeItem)) {
@@ -278,11 +278,11 @@ public class FairkeeperBorosPartEntity extends Monster implements Boss, Enemy, S
                     serverLevel.sendParticles(ParticleTypes.EXPLOSION, this.getX(), this.getY(), this.getZ(), 1, 0, 0, 0, 0);
                 }
                 this.level().playSound(null, this.blockPosition(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.HOSTILE, 1.0F, 1.0F);
-                return super.hurt(damageSource, 0);
+                return super.hurtServer(hurtLevel, damageSource, 0);
             } else {
                 //this.level().playSound(null, this.blockPosition(), SoundEvents.SHIELD_BREAK, SoundSource.HOSTILE, 1.0F, 1.0F);
                 this.level().playSound(null, this.blockPosition(), DNLSounds.FAIRKEEPER_BOROS_ARMOR_BREAK.get(), SoundSource.HOSTILE, 1.0F, 1.0F);
-                return super.hurt(damageSource, nonKillableDamage);
+                return super.hurtServer(hurtLevel, damageSource, nonKillableDamage);
             }
         }
 
@@ -342,7 +342,7 @@ public class FairkeeperBorosPartEntity extends Monster implements Boss, Enemy, S
     }
 
     @Override
-    public boolean causeFallDamage(float v, float v1, DamageSource damageSource) {
+    public boolean causeFallDamage(double v, float v1, DamageSource damageSource) {
         return false;
     }
 

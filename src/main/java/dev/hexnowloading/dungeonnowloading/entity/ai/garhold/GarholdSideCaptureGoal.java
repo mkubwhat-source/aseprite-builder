@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.entity.ai.garhold;
 
+
+import net.minecraft.server.level.ServerLevel;
 import dev.hexnowloading.dungeonnowloading.entity.monster.GarholdEntity;
 import dev.hexnowloading.dungeonnowloading.entity.monster.GarholdEntity.GarholdState;
 import net.minecraft.util.Mth;
@@ -158,7 +160,7 @@ public class GarholdSideCaptureGoal extends Goal {
         if (mob.level().isClientSide()) return;
         if (!hit.isAlive()) return;
         if (hit instanceof Player p && p.isCreative()) return;
-        mob.doHurtTarget(hit);
+        mob.doHurtTarget((ServerLevel) mob.level(), hit);
     }
     private LivingEntity findHitTargetSwept(Vec3 step) {
 

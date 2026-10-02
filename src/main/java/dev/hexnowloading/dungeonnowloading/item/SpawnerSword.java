@@ -3,6 +3,8 @@ package dev.hexnowloading.dungeonnowloading.item;
 
 
 
+
+import net.minecraft.server.level.ServerLevel;
 import dev.hexnowloading.dungeonnowloading.registry.DNLTags;
 import java.util.function.Consumer;
 import net.minecraft.world.item.component.TooltipDisplay;
@@ -50,7 +52,7 @@ public class SpawnerSword extends Item {
             }
 
             // Always apply: 1 + reckless level.
-            attacker.hurt(attacker.damageSources().magic(), selfDamage);
+            attacker.hurtOrSimulate(attacker.damageSources().magic(), selfDamage);
         }
         return;
     }

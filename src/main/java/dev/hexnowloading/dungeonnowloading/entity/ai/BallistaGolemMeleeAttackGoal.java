@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.entity.ai;
 
+
+import net.minecraft.server.level.ServerLevel;
 import dev.hexnowloading.dungeonnowloading.entity.monster.BallistaGolemEntity;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntitySelector;
@@ -112,7 +114,7 @@ public class BallistaGolemMeleeAttackGoal extends Goal {
         if (distanceSq <= attackRangeSq && --this.ticksUntilNextAttack <= 0) {
             this.ticksUntilNextAttack = this.adjustedTickDelay(20);
             this.mob.swing(InteractionHand.MAIN_HAND);
-            this.mob.doHurtTarget(target);
+            this.mob.doHurtTarget((ServerLevel) mob.level(), target);
             if (target instanceof Player player && player.isBlocking()) {
                 player.disableShield();
             }

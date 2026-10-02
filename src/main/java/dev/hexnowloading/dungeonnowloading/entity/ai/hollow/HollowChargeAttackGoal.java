@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.entity.ai.hollow;
 
+
+import net.minecraft.server.level.ServerLevel;
 import dev.hexnowloading.dungeonnowloading.entity.monster.HollowEntity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -66,7 +68,7 @@ public class HollowChargeAttackGoal extends Goal {
         }
 
         if (hollowEntity.getBoundingBox().intersects(target.getBoundingBox())) {
-            hollowEntity.doHurtTarget(target);
+            hollowEntity.doHurtTarget((ServerLevel) hollowEntity.level(), target);
             hollowEntity.startChargeCooldown(HollowEntity.CHARGE_HIT_COOLDOWN_TICKS); // 2s
             return;
         }

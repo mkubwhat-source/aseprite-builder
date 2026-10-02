@@ -67,7 +67,7 @@ public class ChaosSpawnerPushGoal extends Goal {
         double z = mob.getZ() - chaosSpawnerEntity.getZ();
         double a = Math.max(x * x + z * z, 0.001);
         mob.push(x / a * knockbackStrength, 0.2, z / a * knockbackStrength);
-        mob.hurt(chaosSpawnerEntity.damageSources().noAggroMobAttack(chaosSpawnerEntity), damageAmount);
+        mob.hurtOrSimulate(chaosSpawnerEntity.damageSources().noAggroMobAttack(chaosSpawnerEntity), damageAmount);
     }
 
     private void pushNearbyPlayers(Player player) {
@@ -83,7 +83,7 @@ public class ChaosSpawnerPushGoal extends Goal {
         double z = player.getZ() - chaosSpawnerEntity.getZ();
         double a = Math.max(x * x + z * z, 0.001);
         player.push(x / a * knockbackStrength, 0.2, z / a * knockbackStrength);
-        player.hurt(chaosSpawnerEntity.damageSources().mobAttack(chaosSpawnerEntity), damageAmount);
+        player.hurtOrSimulate(chaosSpawnerEntity.damageSources().mobAttack(chaosSpawnerEntity), damageAmount);
     }
 
     private void shootGhostBurst(int bullets) {

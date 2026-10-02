@@ -167,7 +167,7 @@ public class ChaosSpawnerProjectileEntity extends Entity {
                     if (this.getOwner() instanceof ChaosSpawnerEntity) {
                         damageAmount = (int) (((ChaosSpawnerEntity) owner).getAttackDamage() * 0.5F);
                     }
-                    boolean entityHurted = target.hurt(this.damageSources().mobProjectile(this, (LivingEntity) owner), (float) damageAmount);
+                    boolean entityHurted = target.hurtOrSimulate(this.damageSources().mobProjectile(this, (LivingEntity) owner), (float) damageAmount);
                     if (target instanceof Player player && player.isBlocking()) {
                         player.disableShield();
                     }
@@ -180,7 +180,7 @@ public class ChaosSpawnerProjectileEntity extends Entity {
                 if (target instanceof SealedChaosEntity) {
                     if (!(((SealedChaosEntity) owner).getOwnerUUID() == (((SealedChaosEntity) target).getOwnerUUID()))) {
                         int damageAmount = (int) (((SealedChaosEntity) owner).getAttributeValue(Attributes.ATTACK_DAMAGE));
-                        boolean entityHurted = target.hurt(this.damageSources().mobProjectile(this, (LivingEntity) this.getOwner()), (float) damageAmount);
+                        boolean entityHurted = target.hurtOrSimulate(this.damageSources().mobProjectile(this, (LivingEntity) this.getOwner()), (float) damageAmount);
                         if (entityHurted && target.isAlive()) {
                             applyPostAttackEffects(owner, target);
                         }
@@ -188,14 +188,14 @@ public class ChaosSpawnerProjectileEntity extends Entity {
                 } else if (target instanceof LivingEntity) {
                     if (!(((SealedChaosEntity) owner).getOwnerUUID() == (target.getUUID()))) {
                         int damageAmount = (int) (((SealedChaosEntity) owner).getAttributeValue(Attributes.ATTACK_DAMAGE));
-                        boolean entityHurted = target.hurt(this.damageSources().mobProjectile(this, (LivingEntity) this.getOwner()), (float) damageAmount);
+                        boolean entityHurted = target.hurtOrSimulate(this.damageSources().mobProjectile(this, (LivingEntity) this.getOwner()), (float) damageAmount);
                         if (entityHurted && target.isAlive()) {
                             applyPostAttackEffects(owner, target);
                         }
                     }
                 } else {
                     int damageAmount = (int) (((SealedChaosEntity) owner).getAttributeValue(Attributes.ATTACK_DAMAGE));
-                    boolean entityHurted = target.hurt(this.damageSources().mobProjectile(this, (LivingEntity) this.getOwner()), (float) damageAmount);
+                    boolean entityHurted = target.hurtOrSimulate(this.damageSources().mobProjectile(this, (LivingEntity) this.getOwner()), (float) damageAmount);
                     if (entityHurted && target.isAlive()) {
                         applyPostAttackEffects(owner, target);
                     }
@@ -277,7 +277,10 @@ public class ChaosSpawnerProjectileEntity extends Entity {
     }
 
     @Override
-    public void lerpMotion(double x, double y, double z) {
+    public void lerpMotion(Vec3 lerpMovement) {
+        double x = lerpMovement.x;
+        double y = lerpMovement.y;
+        double z = lerpMovement.z;
         this.setDeltaMovement(x, y, z);
         if (this.xRotO == 0.0F && this.yRotO == 0.0F) {
             float f = Mth.sqrt((float) (x * x + z * z));

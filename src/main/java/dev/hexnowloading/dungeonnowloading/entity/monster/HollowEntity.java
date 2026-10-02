@@ -162,15 +162,15 @@ public class HollowEntity extends Monster {
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel hurtLevel, DamageSource source, float amount) {
         if (this.level().isClientSide()) return false;
 
         if (source.getEntity() instanceof Player p && p.getAbilities().instabuild) {
-            return super.hurt(source, amount);
+            return super.hurtServer(hurtLevel, source, amount);
         }
 
         if (this.hasEffect(net.minecraft.world.effect.MobEffects.GLOWING)) {
-            return super.hurt(source, amount);
+            return super.hurtServer(hurtLevel, source, amount);
         }
 
         if (source.getEntity() instanceof LivingEntity attacker) {
@@ -178,21 +178,21 @@ public class HollowEntity extends Monster {
             if (source.getDirectEntity() == attacker) {
                 ItemStack weapon = attacker.getMainHandItem();
                 if (!weapon.isEmpty() && EnchantmentHelper.getItemEnchantmentLevel(DNLEnchantments.holder(this.level(), Enchantments.SMITE), weapon) > 0) {
-                    return super.hurt(source, amount);
+                    return super.hurtServer(hurtLevel, source, amount);
                 }
             }
         }
 
         if (this.isNormallyHittable()) {
             if (source.getEntity() instanceof Player) {
-                return super.hurt(source, amount);
+                return super.hurtServer(hurtLevel, source, amount);
             }
         }
 
         if (source.getDirectEntity() instanceof Arrow arrow) {
             // tipped arrows should damage
             if (ArrowUtil.hasPotionEffects(arrow)) {
-                return super.hurt(source, amount);
+                return super.hurtServer(hurtLevel, source, amount);
             }
             // non-tipped arrows should not damage
             return false;
@@ -202,7 +202,7 @@ public class HollowEntity extends Monster {
             return false;
         }
 
-        return super.hurt(source, amount);
+        return super.hurtServer(hurtLevel, source, amount);
     }
 
     @Override

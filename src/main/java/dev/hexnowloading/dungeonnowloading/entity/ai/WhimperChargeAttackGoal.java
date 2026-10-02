@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.entity.ai;
 
+
+import net.minecraft.server.level.ServerLevel;
 import dev.hexnowloading.dungeonnowloading.entity.passive.WhimperEntity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -91,7 +93,7 @@ public class WhimperChargeAttackGoal extends Goal {
         // Use a reach-based sphere/box check around the target instead.
         if (!this.hasHitThisCharge && isInStrikeRange(target)) {
             this.whimper.playAnimation(WhimperEntity.WhimperAnimationState.ATTACK);
-            this.whimper.doHurtTarget(target);
+            this.whimper.doHurtTarget((ServerLevel) whimper.level(), target);
             this.hasHitThisCharge = true;
             this.whimper.setCharging(false);
             this.whimper.getMoveControl().setWantedPosition(this.whimper.getX(), this.whimper.getY(), this.whimper.getZ(), 0.0);

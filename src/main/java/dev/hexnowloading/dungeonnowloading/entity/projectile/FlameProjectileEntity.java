@@ -1,6 +1,8 @@
 package dev.hexnowloading.dungeonnowloading.entity.projectile;
 
 
+
+import net.minecraft.server.level.ServerLevel;
 import dev.hexnowloading.dungeonnowloading.util.DNLGameRules;
 import dev.hexnowloading.dungeonnowloading.entity.util.ProjectileUtils;
 import dev.hexnowloading.dungeonnowloading.particle.type.ScalableParticleType;
@@ -110,11 +112,11 @@ public class FlameProjectileEntity extends ThrowableItemProjectile {
             if (targetLivingEntity.hasEffect(MobEffects.FIRE_RESISTANCE)) {
                 return;
             }
-            if (this.getDamage() > 0 && target.hurt(this.damageSources().mobProjectile(this, livingEntity), this.getDamage()) && target.isAlive()) {
+            if (this.getDamage() > 0 && target.hurtOrSimulate(this.damageSources().mobProjectile(this, livingEntity), this.getDamage()) && target.isAlive()) {
                 if (this.level() instanceof net.minecraft.server.level.ServerLevel sl) { net.minecraft.world.item.enchantment.EnchantmentHelper.doPostAttackEffects(sl, target, this.damageSources().mobProjectile(this, livingEntity)); }
                 return;
             }
-            if (target.hurt(this.damageSources().mobProjectile(this, livingEntity), (float) damageAmount) && target.isAlive()) {
+            if (target.hurtOrSimulate(this.damageSources().mobProjectile(this, livingEntity), (float) damageAmount) && target.isAlive()) {
                 if (this.level() instanceof net.minecraft.server.level.ServerLevel sl) { net.minecraft.world.item.enchantment.EnchantmentHelper.doPostAttackEffects(sl, target, this.damageSources().mobProjectile(this, livingEntity)); }
             }
         }

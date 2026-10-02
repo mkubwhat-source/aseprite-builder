@@ -3,6 +3,8 @@ package dev.hexnowloading.dungeonnowloading.entity.util;
 
 
 
+
+import net.minecraft.world.phys.Vec3;
 import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
@@ -129,7 +131,10 @@ public abstract class ModelledProjectileEntity extends Entity implements Traceab
     }
 
     @Override
-    public void lerpMotion(double x, double y, double z) {
+    public void lerpMotion(Vec3 lerpMovement) {
+        double x = lerpMovement.x;
+        double y = lerpMovement.y;
+        double z = lerpMovement.z;
         this.setDeltaMovement(x, y, z);
         /*if (this.xRotO == 0.0F && this.yRotO == 0.0F) {
             float f = Mth.sqrt()

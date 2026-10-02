@@ -3,6 +3,8 @@ package dev.hexnowloading.dungeonnowloading.entity.passive;
 
 
 
+
+import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
@@ -151,7 +153,7 @@ public class SealedChaosEntity extends PathfinderMob implements OwnableEntity {
     }
 
     @Override
-    protected void customServerAiStep() {
+    protected void customServerAiStep(ServerLevel serverLevel) {
         if (this.getDespawnTick() > 0) {
             int despawnTick = this.getDespawnTick() - 1;
             if (despawnTick <= 0) {
@@ -159,7 +161,7 @@ public class SealedChaosEntity extends PathfinderMob implements OwnableEntity {
             }
             setDespawnTick(despawnTick);
         }
-        super.customServerAiStep();
+        super.customServerAiStep(serverLevel);
     }
 
     @Override
@@ -225,7 +227,7 @@ public class SealedChaosEntity extends PathfinderMob implements OwnableEntity {
     }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean canBeCollidedWith(@Nullable Entity other) {
         return this.isAlive();
     }
 

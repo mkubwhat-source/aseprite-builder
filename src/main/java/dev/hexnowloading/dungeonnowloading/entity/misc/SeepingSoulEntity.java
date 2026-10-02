@@ -230,7 +230,7 @@ public class SeepingSoulEntity extends Entity {
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel hurtLevel, DamageSource source, float amount) {
         if (this.level().isClientSide()) return true;
 
         setHurtTicks(HURT_FLASH_TICKS);

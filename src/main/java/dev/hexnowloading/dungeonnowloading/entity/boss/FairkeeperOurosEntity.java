@@ -406,7 +406,7 @@ public class FairkeeperOurosEntity extends Monster implements Boss, Enemy, Slumb
 
                     if (collisionDamage > 0.0F) {
                         this.playSound(this.getFallDamageSound((int) collisionDamage), 1.0F, 1.0F);
-                        this.hurt(this.damageSources().flyIntoWall(), collisionDamage);
+                        this.hurtOrSimulate(this.damageSources().flyIntoWall(), collisionDamage);
                     }
                 }
 
@@ -487,7 +487,7 @@ public class FairkeeperOurosEntity extends Monster implements Boss, Enemy, Slumb
     }
 
     @Override
-    protected void customServerAiStep() {
+    protected void customServerAiStep(ServerLevel serverLevel) {
         if (this.isState(FairkeeperOurosState.AWAKENING)) this.enableBossBar();
         this.segmentControl();
         this.slitheringSoundControl();
@@ -495,7 +495,7 @@ public class FairkeeperOurosEntity extends Monster implements Boss, Enemy, Slumb
         this.performContactDamage();
         this.abilityCooldown();
         this.blockDestructionTick();
-        super.customServerAiStep();
+        super.customServerAiStep(serverLevel);
         this.bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
     }
 
@@ -517,7 +517,7 @@ public class FairkeeperOurosEntity extends Monster implements Boss, Enemy, Slumb
         this.level().getEntities(this, this.getBoundingBox(), this::canPerformContactDamageTo)
                 .forEach(entity -> {
                     entity.push(this);
-                    entity.hurt(entity.level().damageSources().mobAttack(this), (float) (this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.5F));
+                    entity.hurtOrSimulate(entity.level().damageSources().mobAttack(this), (float) (this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.5F));
                 });
     }
 
@@ -605,7 +605,7 @@ public class FairkeeperOurosEntity extends Monster implements Boss, Enemy, Slumb
     }
 
     @Override
-    public boolean hurt(DamageSource damageSource, float amount) {
+    public boolean hurtServer(ServerLevel hurtLevel, DamageSource damageSource, float amount) {
         if (damageSource.getEntity() instanceof FairkeeperSerpentEntity) {
             if (damageSource.getDirectEntity() instanceof AbstractArrow arrow) {
                 arrow.remove(RemovalReason.DISCARDED);
@@ -617,7 +617,7 @@ public class FairkeeperOurosEntity extends Monster implements Boss, Enemy, Slumb
     }
 
     private boolean hurtAndTrackAttackers(DamageSource source, float amount) {
-        boolean result = super.hurt(source, amount);
+        boolean result = super.hurtOrSimulate(source, amount);
         Entity attacker = source.getEntity();
 
         if (attacker instanceof LivingEntity livingEntity) {
@@ -839,7 +839,7 @@ public class FairkeeperOurosEntity extends Monster implements Boss, Enemy, Slumb
     }
 
     @Override
-    public boolean causeFallDamage(float v, float v1, DamageSource damageSource) {
+    public boolean causeFallDamage(double v, float v1, DamageSource damageSource) {
         return false;
     }
 

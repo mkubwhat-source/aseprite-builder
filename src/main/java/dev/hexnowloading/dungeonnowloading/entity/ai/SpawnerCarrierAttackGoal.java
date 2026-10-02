@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.entity.ai;
 
+
+import net.minecraft.server.level.ServerLevel;
 import dev.hexnowloading.dungeonnowloading.entity.monster.SpawnerCarrierEntity;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -20,7 +22,7 @@ public class SpawnerCarrierAttackGoal extends MeleeAttackGoal {
         if (this.isTimeToAttack() && this.mob.getSensing().hasLineOfSight(target) && isWithinWidenedRange(target)) {
             this.resetAttackCooldown();
             this.mob.swing(InteractionHand.MAIN_HAND);
-            this.mob.doHurtTarget(target);
+            this.mob.doHurtTarget((ServerLevel) mob.level(), target);
         }
     }
 

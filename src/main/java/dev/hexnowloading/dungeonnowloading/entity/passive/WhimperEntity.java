@@ -192,7 +192,7 @@ public class WhimperEntity extends PathfinderMob implements OwnableEntity {
     }
 
     @Override
-    protected void customServerAiStep() {
+    protected void customServerAiStep(ServerLevel serverLevel) {
         if (this.getDespawnTick() > 0) {
             int despawnTick = this.getDespawnTick() - 1;
             if (despawnTick <= 0) {
@@ -200,7 +200,7 @@ public class WhimperEntity extends PathfinderMob implements OwnableEntity {
             }
             setDespawnTick(despawnTick);
         }
-        super.customServerAiStep();
+        super.customServerAiStep(serverLevel);
     }
 
     private void discardWithParticle() {

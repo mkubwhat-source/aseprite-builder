@@ -3,6 +3,8 @@ package dev.hexnowloading.dungeonnowloading.entity.monster;
 
 
 
+
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -163,7 +165,7 @@ public class ScuttleEntity extends Monster implements Enemy, SlumberingEntity {
     }
 
     @Override
-    protected void customServerAiStep() {
+    protected void customServerAiStep(ServerLevel serverLevel) {
         if (this.isSlumbering()) {
             this.setState(ScuttleState.AWAKENING);
             this.triggerWakingUpAnimation();
@@ -178,7 +180,7 @@ public class ScuttleEntity extends Monster implements Enemy, SlumberingEntity {
                 this.triggerIdleClosedAnimation();
             }
         }
-        super.customServerAiStep();
+        super.customServerAiStep(serverLevel);
     }
 
     @Override
@@ -193,14 +195,14 @@ public class ScuttleEntity extends Monster implements Enemy, SlumberingEntity {
     }
 
     @Override
-    public boolean hurt(DamageSource damageSource, float damage) {
+    public boolean hurtServer(ServerLevel hurtLevel, DamageSource damageSource, float damage) {
         if (!this.isAttackingState() && damageSource.getDirectEntity() instanceof AbstractArrow) {
             return false;
         }
         if (damageSource.getDirectEntity() instanceof FlameProjectileEntity) {
             return false;
         }
-        boolean hurtFr = super.hurt(damageSource, damage);
+        boolean hurtFr = super.hurtServer(hurtLevel, damageSource, damage);
 
         if (hurtFr) {
             this.playDeflectSound();
@@ -208,7 +210,7 @@ public class ScuttleEntity extends Monster implements Enemy, SlumberingEntity {
 
         return hurtFr;
         /*if (damageSource.is(DNLTags.SCUTTLE_HURTABLE) || this.isAttackingState() || damageSource.isCreativePlayer()) {
-            boolean hurtFr = super.hurt(damageSource, damage);
+            boolean hurtFr = super.hurtServer(hurtLevel, damageSource, damage);
             if (hurtFr) {
                 this.playDeflectSound();
             }
@@ -218,7 +220,7 @@ public class ScuttleEntity extends Monster implements Enemy, SlumberingEntity {
     }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean canBeCollidedWith(@Nullable Entity other) {
         return this.isSlumbering();
     }
 

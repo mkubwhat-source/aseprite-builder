@@ -5,6 +5,8 @@ package dev.hexnowloading.dungeonnowloading.entity.boss;
 
 
 
+
+import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
@@ -78,7 +80,6 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAnimationEntity, WeightedTargetProvider {
@@ -363,7 +364,7 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
     }
 
     @Override
-    protected void customServerAiStep() {
+    protected void customServerAiStep(ServerLevel serverLevel) {
         if (this.getAwakeningTick() > 0) {
             int k1 = this.getAwakeningTick() - 1;
             if (k1 == 99) {
@@ -405,7 +406,7 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
         if (this.getPhase() == 0 && this.getState().equals(State.IDLE)) {
             this.setDataState(State.SLEEPING);
         }
-        super.customServerAiStep();
+        super.customServerAiStep(serverLevel);
         this.bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
     }
 
@@ -435,7 +436,7 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
                 if (livingEntity == this) {
                     continue;
                 }
-                this.doHurtTarget(livingEntity);
+                this.doHurtTarget((ServerLevel) this.level(), livingEntity);
             }
         }
     }
@@ -665,7 +666,7 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
     }
 
     @Override
-    public boolean hurt(DamageSource damageSource, float damage) {
+    public boolean hurtServer(ServerLevel hurtLevel, DamageSource damageSource, float damage) {
         if (!damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && !damageSource.isCreativePlayer() && (this.entityData.get(DATA_STATE) == State.SLEEPING || this.entityData.get(DATA_STATE) == State.AWAKENING)) {
             return false;
         }
@@ -964,7 +965,7 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
     }
 
     /*@Override
-    public boolean canBeCollidedWith() {
+    public boolean canBeCollidedWith(@Nullable Entity other) {
         return this.isAlive();
     }*/
 
@@ -1101,7 +1102,7 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
     }
 
     private boolean hurtAndTrackAttackers(DamageSource source, float amount) {
-        boolean result = super.hurt(source, amount);
+        boolean result = super.hurtOrSimulate(source, amount);
         Entity attacker = source.getEntity();
 
         if (attacker instanceof LivingEntity livingEntity) {
