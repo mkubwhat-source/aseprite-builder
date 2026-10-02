@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 // recompute the affected block via a raycast at TAIL instead (mirror neoforge BucketItemMixin).
 @Mixin(BucketItem.class)
 public abstract class BucketItemMixin {
-    @Inject(method = "Lnet/minecraft/world/item/BucketItem;use(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResultHolder;",
+    @Inject(method = "Lnet/minecraft/world/item/BucketItem;use(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResult;",
             at = @At("TAIL"))
     private void dnl$trackFairkeeperOnBucketUse(Level level, Player player, InteractionHand hand,
                                                 CallbackInfoReturnable<InteractionResult> cir) {

@@ -34,8 +34,9 @@ public class LivingDamageMixin {
         return 100;
     }*/
 
-    @ModifyVariable(method = "Lnet/minecraft/world/entity/LivingEntity;actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/damagesource/CombatTracker;recordDamage(Lnet/minecraft/world/damagesource/DamageSource;F)V", shift = At.Shift.BEFORE), ordinal = 0, require = 0)
-    private float dungeonnowloading_onLivingDamage(float f, DamageSource damageSource) {
+    // "Damage" event: final damage after armor/absorption, right before it is applied.
+    @ModifyVariable(method = "actuallyHurt(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/damagesource/CombatTracker;recordDamage(Lnet/minecraft/world/damagesource/DamageSource;F)V", shift = At.Shift.BEFORE), ordinal = 0, argsOnly = true)
+    private float dungeonnowloading_onLivingDamage(float f, net.minecraft.server.level.ServerLevel level, DamageSource damageSource) {
         LivingEntity target = (LivingEntity) (Object) this;
         Entity attackerEntity = damageSource.getEntity();
         float totalDamage = f;
@@ -45,8 +46,9 @@ public class LivingDamageMixin {
         return totalDamage;
     }
 
-    @ModifyVariable(method = "Lnet/minecraft/world/entity/LivingEntity;actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;this.isInvulnerableTo((ServerLevel) this.level(), Lnet/minecraft/world/damagesource/DamageSource;)Z", shift = At.Shift.AFTER), ordinal = 0, require = 0)
-    private float dungeonnowloading_onLivingHurt(float f, DamageSource damageSource) {
+    // "Hurt" event: incoming damage before armor reductions.
+    @ModifyVariable(method = "actuallyHurt(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At("HEAD"), ordinal = 0, argsOnly = true)
+    private float dungeonnowloading_onLivingHurt(float f, net.minecraft.server.level.ServerLevel level, DamageSource damageSource) {
         LivingEntity target = (LivingEntity) (Object) this;
         Entity attackerEntity = damageSource.getEntity();
         if (attackerEntity instanceof LivingEntity attacker) {

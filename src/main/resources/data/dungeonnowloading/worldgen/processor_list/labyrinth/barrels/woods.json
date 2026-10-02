@@ -13,8 +13,8 @@
             "probability": 0.25
           },
           "output_state": {
-            "Name": "minecraft:spruce_wood",
-            "Properties": {
+            "id": "minecraft:spruce_wood",
+            "properties": {
               "axis": "x"
             }
           }
@@ -26,87 +26,85 @@
       "input_block": "minecraft:red_carpet",
       "weighted_list_of_replacement_blocks": [
         {
-          "blockstate" : {
-            "Name": "minecraft:air"
-          },
+          "blockstate": "minecraft:air",
           "weight": 100
         },
         {
-          "blockstate" : {
-            "Name": "dungeonnowloading:cobblestone_pebbles",
-            "Properties": {
+          "blockstate": {
+            "id": "dungeonnowloading:cobblestone_pebbles",
+            "properties": {
               "pile": "1"
             }
           },
           "weight": 4
         },
         {
-          "blockstate" : {
-            "Name": "dungeonnowloading:cobblestone_pebbles",
-            "Properties": {
+          "blockstate": {
+            "id": "dungeonnowloading:cobblestone_pebbles",
+            "properties": {
               "pile": "2"
             }
           },
           "weight": 3
         },
         {
-          "blockstate" : {
-            "Name": "dungeonnowloading:cobblestone_pebbles",
-            "Properties": {
+          "blockstate": {
+            "id": "dungeonnowloading:cobblestone_pebbles",
+            "properties": {
               "pile": "3"
             }
           },
           "weight": 2
         },
         {
-          "blockstate" : {
-            "Name": "dungeonnowloading:cobblestone_pebbles",
-            "Properties": {
+          "blockstate": {
+            "id": "dungeonnowloading:cobblestone_pebbles",
+            "properties": {
               "pile": "4"
             }
           },
           "weight": 1
         },
         {
-          "blockstate" : {
-            "Name": "dungeonnowloading:mossy_cobblestone_pebbles",
-            "Properties": {
+          "blockstate": {
+            "id": "dungeonnowloading:mossy_cobblestone_pebbles",
+            "properties": {
               "pile": "1"
             }
           },
           "weight": 4
         },
         {
-          "blockstate" : {
-            "Name": "dungeonnowloading:mossy_cobblestone_pebbles",
-            "Properties": {
+          "blockstate": {
+            "id": "dungeonnowloading:mossy_cobblestone_pebbles",
+            "properties": {
               "pile": "2"
             }
           },
           "weight": 3
         },
         {
-          "blockstate" : {
-            "Name": "dungeonnowloading:mossy_cobblestone_pebbles",
-            "Properties": {
+          "blockstate": {
+            "id": "dungeonnowloading:mossy_cobblestone_pebbles",
+            "properties": {
               "pile": "3"
             }
           },
           "weight": 2
         },
         {
-          "blockstate" : {
-            "Name": "dungeonnowloading:mossy_cobblestone_pebbles",
-            "Properties": {
+          "blockstate": {
+            "id": "dungeonnowloading:mossy_cobblestone_pebbles",
+            "properties": {
               "pile": "4"
             }
           },
           "weight": 1
         },
         {
-          "blockstate" : {
-            "Name": "minecraft:spruce_leaves",
-            "Properties": {
+          "blockstate": {
+            "id": "minecraft:spruce_leaves",
+            "properties": {
               "persistent": "true",
               "distance": "7"
             }
@@ -114,21 +112,15 @@
           "weight": 20
         },
         {
-          "blockstate" : {
-            "Name": "minecraft:lantern"
-          },
+          "blockstate": "minecraft:lantern",
           "weight": 5
         },
         {
-          "blockstate" : {
-            "Name": "minecraft:spruce_pressure_plate"
-          },
+          "blockstate": "minecraft:spruce_pressure_plate",
           "weight": 20
         },
         {
-          "blockstate" : {
-            "Name": "dungeonnowloading:explosive_barrel"
-          },
+          "blockstate": "dungeonnowloading:explosive_barrel",
           "weight": 20
         }
       ]

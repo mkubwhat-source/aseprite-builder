@@ -26,11 +26,12 @@ public class FabricRegistryHelper implements RegistryHelper {
     public <T> Supplier<T> register(Registry<? super T> registry, String name, Supplier<T> entry) {
         ResourceKey<?> key = ResourceKey.create(registry.key(), DungeonNowLoading.id(name));
         T value;
+        ResourceKey<?> outer = PendingRegistration.current(); // registrations can nest via static initialisers
         PendingRegistration.set(key);
         try {
             value = entry.get();
         } finally {
-            PendingRegistration.set(null);
+            PendingRegistration.set(outer);
         }
         Registry.register(registry, DungeonNowLoading.id(name), value);
         return () -> value;

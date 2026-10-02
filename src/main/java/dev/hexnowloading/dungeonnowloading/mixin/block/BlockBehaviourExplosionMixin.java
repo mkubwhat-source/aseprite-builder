@@ -33,11 +33,9 @@ import java.util.function.BiConsumer;
 public abstract class BlockBehaviourExplosionMixin {
 
     @Inject(method = "onExplosionHit", at = @At("HEAD"), cancellable = true)
-    private void dnl_onExplosionHit(BlockState state, Level level, BlockPos pos, Explosion explosion,
+    private void dnl_onExplosionHit(BlockState state, ServerLevel serverLevel, BlockPos pos, Explosion explosion,
                                     BiConsumer<ItemStack, BlockPos> dropConsumer, CallbackInfo ci) {
-        if (!(level instanceof ServerLevel serverLevel)) {
-            return;
-        }
+        Level level = serverLevel;
 
         ExplosionDestructionManager.reset();
         serverLevel.gameEvent(null, DNLGameEvents.holder(DNLGameEvents.BLOCK_DESTROYED_BY_EXPLOSION), Vec3.atCenterOf(pos));

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dungeonnowloading:scorcher"
+        "recipes": "dungeonnowloading:scorcher"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

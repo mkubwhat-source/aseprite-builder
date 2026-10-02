@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dungeonnowloading:soul_scorcher"
+        "recipes": "dungeonnowloading:soul_scorcher"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

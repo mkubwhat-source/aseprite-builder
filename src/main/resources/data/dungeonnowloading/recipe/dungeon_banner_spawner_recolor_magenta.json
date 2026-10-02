@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "tag": "dungeonnowloading:dungeon_banner_spawner_recolor_to_magenta"
-    },
-    {
-      "item": "minecraft:magenta_dye"
-    }
+    "#dungeonnowloading:dungeon_banner_spawner_recolor_to_magenta",
+    "minecraft:magenta_dye"
   ],
   "result": {
     "count": 1,

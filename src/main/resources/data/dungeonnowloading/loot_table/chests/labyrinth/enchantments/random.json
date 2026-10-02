@@ -4,28 +4,32 @@
     {
       "rolls": 1,
       "entries": [
-        { "type": "minecraft:item", "name": "minecraft:book", "weight": 60 },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:book",
+          "weight": 60
+        },
         {
           "type": "minecraft:item",
           "name": "minecraft:paper",
           "weight": 35,
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": { "type": "minecraft:uniform", "min": 1.0, "max": 3.0 }
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 1.0,
+              "max": 3.0
             }
-          ]
+          }
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:book",
           "weight": 5,
-          "functions": [
-            {
-              "function": "minecraft:enchant_randomly",
-              "treasure": false
-            }
-          ]
+          "modifier": {
+            "type": "minecraft:enchant_randomly",
+            "treasure": false
+          }
         }
       ]
     }

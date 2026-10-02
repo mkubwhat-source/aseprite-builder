@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "minecraft:bordered_stone_from_stone_stonecutting"
+        "recipes": "minecraft:bordered_stone_from_stone_stonecutting"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

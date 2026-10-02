@@ -7,17 +7,19 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:diamond",
-          "functions": [
+          "modifier": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 8,
                 "max": 16
               }
             },
             {
-              "function": "minecraft:enchanted_count_increase",
+              "type": "minecraft:enchanted_count_increase",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 0,
                 "max": 1
               },
@@ -33,17 +35,19 @@
         {
           "type": "minecraft:item",
           "name": "dungeonnowloading:mendstone",
-          "functions": [
+          "modifier": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 5,
                 "max": 7
               }
             },
             {
-              "function": "minecraft:enchanted_count_increase",
+              "type": "minecraft:enchanted_count_increase",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 0,
                 "max": 1
               },
@@ -59,17 +63,19 @@
         {
           "type": "minecraft:item",
           "name": "dungeonnowloading:durite",
-          "functions": [
+          "modifier": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 8,
                 "max": 16
               }
             },
             {
-              "function": "minecraft:enchanted_count_increase",
+              "type": "minecraft:enchanted_count_increase",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 0,
                 "max": 1
               },
@@ -85,17 +91,19 @@
         {
           "type": "minecraft:item",
           "name": "dungeonnowloading:spawner_fragment",
-          "functions": [
+          "modifier": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 8,
                 "max": 16
               }
             },
             {
-              "function": "minecraft:enchanted_count_increase",
+              "type": "minecraft:enchanted_count_increase",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 0,
                 "max": 1
               },
@@ -111,29 +119,29 @@
         {
           "type": "minecraft:item",
           "name": "dungeonnowloading:spawner_frame",
-          "functions": [
+          "modifier": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 4,
                 "max": 8
               }
             },
             {
-              "function": "minecraft:enchanted_count_increase",
+              "type": "minecraft:enchanted_count_increase",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 0,
                 "max": 1
               },
               "enchantment": "minecraft:looting"
             }
           ],
-          "conditions": [
-            {
-              "condition": "minecraft:random_chance",
-              "chance": 0.5
-            }
-          ]
+          "condition": {
+            "type": "minecraft:random_chance",
+            "chance": 0.5
+          }
         }
       ]
     },
@@ -143,29 +151,29 @@
         {
           "type": "minecraft:item",
           "name": "dungeonnowloading:spawner_blade",
-          "functions": [
+          "modifier": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 2,
                 "max": 4
               }
             },
             {
-              "function": "minecraft:enchanted_count_increase",
+              "type": "minecraft:enchanted_count_increase",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 0,
                 "max": 1
               },
               "enchantment": "minecraft:looting"
             }
           ],
-          "conditions": [
-            {
-              "condition": "minecraft:random_chance",
-              "chance": 0.25
-            }
-          ]
+          "condition": {
+            "type": "minecraft:random_chance",
+            "chance": 0.25
+          }
         }
       ]
     },
@@ -175,14 +183,15 @@
         {
           "type": "minecraft:item",
           "name": "dungeonnowloading:chaotic_hexahedron",
-          "functions": [
+          "modifier": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": 1
             },
             {
-              "function": "minecraft:enchanted_count_increase",
+              "type": "minecraft:enchanted_count_increase",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 0,
                 "max": 1
               },

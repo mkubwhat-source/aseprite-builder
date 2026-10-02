@@ -8,29 +8,27 @@
           "type": "minecraft:item",
           "name": "minecraft:iron_helmet",
           "weight": 9,
-          "functions": [
-            {
-              "function": "minecraft:enchant_with_levels",
-              "levels": {
-                "min": 15,
-                "max": 30
-              }
+          "modifier": {
+            "type": "minecraft:enchant_with_levels",
+            "levels": {
+              "type": "minecraft:uniform",
+              "min": 15,
+              "max": 30
             }
-          ]
+          }
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:iron_boots",
           "weight": 9,
-          "functions": [
-            {
-              "function": "minecraft:enchant_with_levels",
-              "levels": {
-                "min": 15,
-                "max": 30
-              }
+          "modifier": {
+            "type": "minecraft:enchant_with_levels",
+            "levels": {
+              "type": "minecraft:uniform",
+              "min": 15,
+              "max": 30
             }
-          ]
+          }
         },
         {
           "type": "minecraft:item",

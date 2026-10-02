@@ -7,15 +7,14 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:arrow",
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 16,
-                "max": 32
-              }
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 16,
+              "max": 32
             }
-          ]
+          }
         }
       ]
     },
@@ -25,15 +24,14 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:redstone",
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 16,
-                "max": 32
-              }
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 16,
+              "max": 32
             }
-          ]
+          }
         }
       ]
     },
@@ -43,15 +41,14 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:cobblestone",
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 3,
-                "max": 27
-              }
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 3,
+              "max": 27
             }
-          ]
+          }
         }
       ]
     }

@@ -15,12 +15,9 @@ public class StructurePoolMixin {
      * @return - The higher weight that is a more reasonable limit.
      */
     @ModifyConstant(
-            // Fabric loom dev + production use intermediary names at runtime; the 150 weight-limit
-            // lives in StructureTemplatePool.method_28886 (the codec-builder method). require=0 as a
-            // safety net if the name shifts.
-            method = "method_28886",
+            // 26.x is unobfuscated: the 150 weight-limit lives in the DIRECT_CODEC builder lambda.
+            method = "lambda$static$0",
             constant = @Constant(intValue = 150),
-            remap = false,
             require = 0
     )
     private static int dungeonnowloading_increaseWeightLimit(int constant) {

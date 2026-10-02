@@ -3,143 +3,127 @@
   "pools": [
     {
       "bonus_rolls": 0.0,
-      "conditions": [
-        {
-          "block": "dungeonnowloading:book_pile",
-          "condition": "minecraft:block_state_property",
-          "properties": {
-            "pile": "1"
-          }
-        }
-      ],
       "entries": [
         {
           "type": "minecraft:item",
-          "functions": [
+          "name": "minecraft:book",
+          "modifier": [
             {
-              "conditions": [
-                {
-                  "chance": 0.25,
-                  "condition": "minecraft:random_chance"
-                }
-              ],
-              "function": "minecraft:enchant_randomly"
+              "type": "minecraft:enchant_randomly",
+              "condition": {
+                "type": "minecraft:random_chance",
+                "chance": 0.25
+              }
             },
             {
+              "type": "minecraft:set_count",
               "add": false,
-              "count": 1.0,
-              "function": "minecraft:set_count"
+              "count": 1.0
             }
-          ],
-          "name": "minecraft:book"
+          ]
         }
       ],
-      "rolls": 1.0
+      "rolls": 1.0,
+      "condition": {
+        "type": "minecraft:match_block",
+        "blocks": "dungeonnowloading:book_pile",
+        "state": {
+          "pile": "1"
+        }
+      }
     },
     {
       "bonus_rolls": 0.0,
-      "conditions": [
-        {
-          "block": "dungeonnowloading:book_pile",
-          "condition": "minecraft:block_state_property",
-          "properties": {
-            "pile": "2"
-          }
-        }
-      ],
       "entries": [
         {
           "type": "minecraft:item",
-          "functions": [
+          "name": "minecraft:book",
+          "modifier": [
             {
-              "conditions": [
-                {
-                  "chance": 0.25,
-                  "condition": "minecraft:random_chance"
-                }
-              ],
-              "function": "minecraft:enchant_randomly"
+              "type": "minecraft:enchant_randomly",
+              "condition": {
+                "type": "minecraft:random_chance",
+                "chance": 0.25
+              }
             },
             {
+              "type": "minecraft:set_count",
               "add": false,
-              "count": 1.0,
-              "function": "minecraft:set_count"
+              "count": 1.0
             }
-          ],
-          "name": "minecraft:book"
+          ]
         }
       ],
-      "rolls": 2.0
+      "rolls": 2.0,
+      "condition": {
+        "type": "minecraft:match_block",
+        "blocks": "dungeonnowloading:book_pile",
+        "state": {
+          "pile": "2"
+        }
+      }
     },
     {
       "bonus_rolls": 0.0,
-      "conditions": [
-        {
-          "block": "dungeonnowloading:book_pile",
-          "condition": "minecraft:block_state_property",
-          "properties": {
-            "pile": "3"
-          }
-        }
-      ],
       "entries": [
         {
           "type": "minecraft:item",
-          "functions": [
+          "name": "minecraft:book",
+          "modifier": [
             {
-              "conditions": [
-                {
-                  "chance": 0.25,
-                  "condition": "minecraft:random_chance"
-                }
-              ],
-              "function": "minecraft:enchant_randomly"
+              "type": "minecraft:enchant_randomly",
+              "condition": {
+                "type": "minecraft:random_chance",
+                "chance": 0.25
+              }
             },
             {
+              "type": "minecraft:set_count",
               "add": false,
-              "count": 1.0,
-              "function": "minecraft:set_count"
+              "count": 1.0
             }
-          ],
-          "name": "minecraft:book"
+          ]
         }
       ],
-      "rolls": 3.0
+      "rolls": 3.0,
+      "condition": {
+        "type": "minecraft:match_block",
+        "blocks": "dungeonnowloading:book_pile",
+        "state": {
+          "pile": "3"
+        }
+      }
     },
     {
       "bonus_rolls": 0.0,
-      "conditions": [
-        {
-          "block": "dungeonnowloading:book_pile",
-          "condition": "minecraft:block_state_property",
-          "properties": {
-            "pile": "4"
-          }
-        }
-      ],
       "entries": [
         {
           "type": "minecraft:item",
-          "functions": [
+          "name": "minecraft:book",
+          "modifier": [
             {
-              "conditions": [
-                {
-                  "chance": 0.25,
-                  "condition": "minecraft:random_chance"
-                }
-              ],
-              "function": "minecraft:enchant_randomly"
+              "type": "minecraft:enchant_randomly",
+              "condition": {
+                "type": "minecraft:random_chance",
+                "chance": 0.25
+              }
             },
             {
+              "type": "minecraft:set_count",
               "add": false,
-              "count": 1.0,
-              "function": "minecraft:set_count"
+              "count": 1.0
             }
-          ],
-          "name": "minecraft:book"
+          ]
         }
       ],
-      "rolls": 4.0
+      "rolls": 4.0,
+      "condition": {
+        "type": "minecraft:match_block",
+        "blocks": "dungeonnowloading:book_pile",
+        "state": {
+          "pile": "4"
+        }
+      }
     }
   ],
   "random_sequence": "dungeonnowloading:blocks/book_pile"

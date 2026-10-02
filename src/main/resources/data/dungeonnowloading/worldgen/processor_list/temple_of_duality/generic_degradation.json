@@ -11,9 +11,7 @@
             "predicate_type": "minecraft:block_match",
             "block": "minecraft:red_stained_glass"
           },
-          "output_state": {
-            "Name": "minecraft:stone"
-          }
+          "output_state": "minecraft:stone"
         },
         {
           "location_predicate": {
@@ -24,8 +22,8 @@
             "block": "minecraft:green_wool"
           },
           "output_state": {
-            "Name": "minecraft:jungle_leaves",
-            "Properties": {
+            "id": "minecraft:jungle_leaves",
+            "properties": {
               "distance": "7",
               "persistent": "true",
               "waterlogged": "false"
@@ -41,9 +39,7 @@
             "block": "minecraft:stone_bricks",
             "probability": 0.5
           },
-          "output_state": {
-            "Name": "minecraft:mossy_stone_bricks"
-          }
+          "output_state": "minecraft:mossy_stone_bricks"
         },
         {
           "location_predicate": {
@@ -54,9 +50,7 @@
             "block": "minecraft:moss_carpet",
             "probability": 0.5
           },
-          "output_state": {
-            "Name": "minecraft:air"
-          }
+          "output_state": "minecraft:air"
         },
         {
           "location_predicate": {
@@ -67,9 +61,7 @@
             "block": "minecraft:jungle_leaves",
             "probability": 0.1
           },
-          "output_state": {
-            "Name": "minecraft:melon"
-          }
+          "output_state": "minecraft:melon"
         },
         {
           "location_predicate": {
@@ -80,9 +72,7 @@
             "block": "minecraft:lily_pad",
             "probability": 0.9
           },
-          "output_state": {
-            "Name": "minecraft:air"
-          }
+          "output_state": "minecraft:air"
         }
       ]
     },
@@ -91,15 +81,11 @@
       "input_block": "minecraft:orange_wool",
       "weighted_list_of_replacement_blocks": [
         {
-          "blockstate" : {
-            "Name": "dungeonnowloading:redstone_stone_notch"
-          },
+          "blockstate": "dungeonnowloading:redstone_stone_notch",
           "weight": 49
         },
         {
-          "blockstate" : {
-            "Name": "dungeonnowloading:diamond_stone_notch"
-          },
+          "blockstate": "dungeonnowloading:diamond_stone_notch",
           "weight": 1
         }
       ]
@@ -109,21 +95,15 @@
       "input_block": "dungeonnowloading:stone_tiles",
       "weighted_list_of_replacement_blocks": [
         {
-          "blockstate" : {
-            "Name": "dungeonnowloading:stone_tiles"
-          },
+          "blockstate": "dungeonnowloading:stone_tiles",
           "weight": 15
         },
         {
-          "blockstate" : {
-            "Name": "dungeonnowloading:cracked_stone_tiles"
-          },
+          "blockstate": "dungeonnowloading:cracked_stone_tiles",
           "weight": 4
         },
         {
-          "blockstate" : {
-            "Name": "dungeonnowloading:polished_stone"
-          },
+          "blockstate": "dungeonnowloading:polished_stone",
           "weight": 1
         }
       ]
@@ -133,78 +113,76 @@
       "input_block": "dungeonnowloading:cobblestone_pebbles",
       "weighted_list_of_replacement_blocks": [
         {
-          "blockstate" : {
-            "Name": "minecraft:air"
-          },
+          "blockstate": "minecraft:air",
           "weight": 20
         },
         {
-          "blockstate" : {
-            "Name": "dungeonnowloading:cobblestone_pebbles",
-            "Properties": {
+          "blockstate": {
+            "id": "dungeonnowloading:cobblestone_pebbles",
+            "properties": {
               "pile": "1"
             }
           },
           "weight": 4
         },
         {
-          "blockstate" : {
-            "Name": "dungeonnowloading:cobblestone_pebbles",
-            "Properties": {
+          "blockstate": {
+            "id": "dungeonnowloading:cobblestone_pebbles",
+            "properties": {
               "pile": "2"
             }
           },
           "weight": 3
         },
         {
-          "blockstate" : {
-            "Name": "dungeonnowloading:cobblestone_pebbles",
-            "Properties": {
+          "blockstate": {
+            "id": "dungeonnowloading:cobblestone_pebbles",
+            "properties": {
               "pile": "3"
             }
           },
           "weight": 2
         },
         {
-          "blockstate" : {
-            "Name": "dungeonnowloading:cobblestone_pebbles",
-            "Properties": {
+          "blockstate": {
+            "id": "dungeonnowloading:cobblestone_pebbles",
+            "properties": {
               "pile": "4"
             }
           },
           "weight": 1
         },
         {
-          "blockstate" : {
-            "Name": "dungeonnowloading:mossy_cobblestone_pebbles",
-            "Properties": {
+          "blockstate": {
+            "id": "dungeonnowloading:mossy_cobblestone_pebbles",
+            "properties": {
               "pile": "1"
             }
           },
           "weight": 4
         },
         {
-          "blockstate" : {
-            "Name": "dungeonnowloading:mossy_cobblestone_pebbles",
-            "Properties": {
+          "blockstate": {
+            "id": "dungeonnowloading:mossy_cobblestone_pebbles",
+            "properties": {
               "pile": "2"
             }
           },
           "weight": 3
         },
         {
-          "blockstate" : {
-            "Name": "dungeonnowloading:mossy_cobblestone_pebbles",
-            "Properties": {
+          "blockstate": {
+            "id": "dungeonnowloading:mossy_cobblestone_pebbles",
+            "properties": {
               "pile": "3"
             }
           },
           "weight": 2
         },
         {
-          "blockstate" : {
-            "Name": "dungeonnowloading:mossy_cobblestone_pebbles",
-            "Properties": {
+          "blockstate": {
+            "id": "dungeonnowloading:mossy_cobblestone_pebbles",
+            "properties": {
               "pile": "4"
             }
           },
@@ -217,66 +195,56 @@
       "input_block": "minecraft:white_carpet",
       "weighted_list_of_replacement_blocks": [
         {
-          "blockstate" : {
-            "Name": "minecraft:air"
-          },
+          "blockstate": "minecraft:air",
           "weight": 112
         },
         {
-          "blockstate" : {
-            "Name": "minecraft:decorated_pot"
-          },
+          "blockstate": "minecraft:decorated_pot",
           "weight": 8
         },
         {
-          "blockstate" : {
-            "Name": "minecraft:potted_bamboo"
-          },
+          "blockstate": "minecraft:potted_bamboo",
           "weight": 4
         },
         {
-          "blockstate" : {
-            "Name": "minecraft:potted_jungle_sapling"
-          },
+          "blockstate": "minecraft:potted_jungle_sapling",
           "weight": 4
         },
         {
-          "blockstate" : {
-            "Name": "minecraft:flower_pot"
-          },
+          "blockstate": "minecraft:flower_pot",
           "weight": 4
         },
         {
-          "blockstate" : {
-            "Name": "minecraft:candle",
-            "Properties": {
+          "blockstate": {
+            "id": "minecraft:candle",
+            "properties": {
               "candles": "1"
             }
           },
           "weight": 2
         },
         {
-          "blockstate" : {
-            "Name": "minecraft:candle",
-            "Properties": {
+          "blockstate": {
+            "id": "minecraft:candle",
+            "properties": {
               "candles": "2"
             }
           },
           "weight": 2
         },
         {
-          "blockstate" : {
-            "Name": "minecraft:candle",
-            "Properties": {
+          "blockstate": {
+            "id": "minecraft:candle",
+            "properties": {
               "candles": "3"
             }
           },
           "weight": 2
         },
         {
-          "blockstate" : {
-            "Name": "minecraft:candle",
-            "Properties": {
+          "blockstate": {
+            "id": "minecraft:candle",
+            "properties": {
               "candles": "4"
             }
           },
@@ -289,21 +257,17 @@
       "input_block": "minecraft:seagrass",
       "weighted_list_of_replacement_blocks": [
         {
-          "blockstate" : {
-            "Name": "minecraft:water"
-          },
+          "blockstate": "minecraft:water",
           "weight": 25
         },
         {
-          "blockstate" : {
-            "Name": "minecraft:seagrass"
-          },
+          "blockstate": "minecraft:seagrass",
           "weight": 45
         },
         {
-          "blockstate" : {
-            "Name": "dungeonnowloading:mossy_cobblestone_pebbles",
-            "Properties": {
+          "blockstate": {
+            "id": "dungeonnowloading:mossy_cobblestone_pebbles",
+            "properties": {
               "pile": "1",
               "waterlogged": "true"
             }
@@ -311,9 +275,9 @@
           "weight": 8
         },
         {
-          "blockstate" : {
-            "Name": "dungeonnowloading:mossy_cobblestone_pebbles",
-            "Properties": {
+          "blockstate": {
+            "id": "dungeonnowloading:mossy_cobblestone_pebbles",
+            "properties": {
               "pile": "2",
               "waterlogged": "true"
             }
@@ -321,9 +285,9 @@
           "weight": 6
         },
         {
-          "blockstate" : {
-            "Name": "dungeonnowloading:mossy_cobblestone_pebbles",
-            "Properties": {
+          "blockstate": {
+            "id": "dungeonnowloading:mossy_cobblestone_pebbles",
+            "properties": {
               "pile": "3",
               "waterlogged": "true"
             }
@@ -331,9 +295,9 @@
           "weight": 4
         },
         {
-          "blockstate" : {
-            "Name": "dungeonnowloading:mossy_cobblestone_pebbles",
-            "Properties": {
+          "blockstate": {
+            "id": "dungeonnowloading:mossy_cobblestone_pebbles",
+            "properties": {
               "pile": "4",
               "waterlogged": "true"
             }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dungeonnowloading:polished_stone"
+        "recipes": "dungeonnowloading:polished_stone"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -178,7 +178,11 @@ public class PlayerStatueBlockEntity extends BlockEntity {
 
         // owner
         if (NbtCompat.has(tag, "Owner")) {
-            owner = tag.read("Owner", net.minecraft.util.ExtraCodecs.STORED_GAME_PROFILE.codec()).orElse(null);
+            // Structure templates still carry the pre-1.21.9 {Id:[I;...], Name:"..."} profile layout.
+            owner = tag.child("Owner").flatMap(legacy -> legacy.read("Id", net.minecraft.core.UUIDUtil.CODEC)
+                            .map(id -> new GameProfile(id, legacy.getStringOr("Name", ""))))
+                    .or(() -> tag.read("Owner", net.minecraft.util.ExtraCodecs.STORED_GAME_PROFILE.codec()))
+                    .orElse(null);
         } else {
             owner = null;
         }

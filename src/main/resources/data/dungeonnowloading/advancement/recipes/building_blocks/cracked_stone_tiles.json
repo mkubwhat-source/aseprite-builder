@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dungeonnowloading:cracked_stone_tiles"
+        "recipes": "dungeonnowloading:cracked_stone_tiles"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

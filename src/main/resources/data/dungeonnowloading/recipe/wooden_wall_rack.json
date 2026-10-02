@@ -5,12 +5,8 @@
     "X X"
   ],
   "key": {
-    "#": {
-      "tag": "minecraft:wooden_slabs"
-    },
-    "X": {
-      "item": "minecraft:stick"
-    }
+    "#": "#minecraft:wooden_slabs",
+    "X": "minecraft:stick"
   },
   "result": {
     "id": "dungeonnowloading:wooden_wall_rack",

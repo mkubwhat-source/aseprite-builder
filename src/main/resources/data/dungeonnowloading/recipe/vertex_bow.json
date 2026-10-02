@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "a": {
-      "item": "dungeonnowloading:catalyzed_redstone"
-    },
-    "c": {
-      "item": "dungeonnowloading:redstone_chip"
-    },
-    "r": {
-      "item": "minecraft:redstone"
-    },
-    "s": {
-      "item": "minecraft:string"
-    },
-    "t": {
-      "item": "minecraft:stick"
-    }
+    "a": "dungeonnowloading:catalyzed_redstone",
+    "c": "dungeonnowloading:redstone_chip",
+    "r": "minecraft:redstone",
+    "s": "minecraft:string",
+    "t": "minecraft:stick"
   },
   "pattern": [
     "cts",

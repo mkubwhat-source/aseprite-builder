@@ -12,11 +12,11 @@ public final class AnimatedBlockDestroyProgress {
 
     public static int getProgress(BlockPos pos) {
         Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft.levelRenderer == null) {
+        if (minecraft.level == null) {
             return -1;
         }
 
-        Int2ObjectMap<BlockDestructionProgress> destroyingBlocks = ((LevelRendererAccessor) minecraft.levelRenderer).dungeonnowloading$getDestroyingBlocks();
+        Int2ObjectMap<BlockDestructionProgress> destroyingBlocks = ((LevelRendererAccessor) minecraft.level).dungeonnowloading$getDestroyingBlocks();
         int progress = -1;
         for (BlockDestructionProgress blockProgress : destroyingBlocks.values()) {
             if (blockProgress.getPos().equals(pos)) {

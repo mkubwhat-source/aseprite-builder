@@ -3,9 +3,7 @@
   "category": "blocks",
   "cookingtime": 200,
   "experience": 0.1,
-  "ingredient": {
-    "item": "dungeonnowloading:stone_tiles"
-  },
+  "ingredient": "dungeonnowloading:stone_tiles",
   "result": {
     "count": 1,
     "id": "dungeonnowloading:cracked_stone_tiles"

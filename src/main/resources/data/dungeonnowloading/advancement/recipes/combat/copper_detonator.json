@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dungeonnowloading:copper_detonator"
+        "recipes": "dungeonnowloading:copper_detonator"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

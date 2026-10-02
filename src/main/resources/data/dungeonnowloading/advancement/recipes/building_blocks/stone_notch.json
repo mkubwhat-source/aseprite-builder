@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dungeonnowloading:stone_notch"
+        "recipes": "dungeonnowloading:stone_notch"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

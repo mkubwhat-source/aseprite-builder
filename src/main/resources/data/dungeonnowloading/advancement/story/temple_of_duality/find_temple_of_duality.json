@@ -19,17 +19,15 @@
     "find_temple_of_duality": {
       "trigger": "minecraft:location",
       "conditions": {
-        "player": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "location": {
-                "structures": "dungeonnowloading:temple_of_duality"
-              }
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "location": {
+              "structures": "dungeonnowloading:temple_of_duality"
             }
           }
-        ]
+        }
       }
     }
   },

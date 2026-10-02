@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "b": {
-      "item": "minecraft:iron_block"
-    },
-    "i": {
-      "item": "minecraft:iron_ingot"
-    },
-    "m": {
-      "item": "dungeonnowloading:mendstone"
-    },
-    "o": {
-      "item": "minecraft:obsidian"
-    }
+    "b": "minecraft:iron_block",
+    "i": "minecraft:iron_ingot",
+    "m": "dungeonnowloading:mendstone",
+    "o": "minecraft:obsidian"
   },
   "pattern": [
     "mom",

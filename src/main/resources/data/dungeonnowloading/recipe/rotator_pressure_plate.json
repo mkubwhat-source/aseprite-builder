@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "c": {
-      "item": "dungeonnowloading:redstone_chip"
-    },
-    "p": {
-      "item": "minecraft:stone_pressure_plate"
-    },
-    "r": {
-      "item": "minecraft:redstone"
-    }
+    "c": "dungeonnowloading:redstone_chip",
+    "p": "minecraft:stone_pressure_plate",
+    "r": "minecraft:redstone"
   },
   "pattern": [
     "   ",

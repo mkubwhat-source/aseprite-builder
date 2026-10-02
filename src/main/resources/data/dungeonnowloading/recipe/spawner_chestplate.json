@@ -6,9 +6,7 @@
     "###"
   ],
   "key": {
-    "#": {
-      "item": "dungeonnowloading:spawner_frame"
-    }
+    "#": "dungeonnowloading:spawner_frame"
   },
   "result": {
     "id": "dungeonnowloading:spawner_chestplate"

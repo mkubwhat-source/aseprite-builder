@@ -7,62 +7,54 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:suspicious_stew",
-          "functions": [
-            {
-              "function": "minecraft:set_stew_effect",
-              "effects": [
-                {
-                  "type": "minecraft:poison",
-                  "duration": 60
-                }
-              ]
-            }
-          ]
+          "modifier": {
+            "type": "minecraft:set_stew_effect",
+            "effects": [
+              {
+                "type": "minecraft:poison",
+                "duration": 60
+              }
+            ]
+          }
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:suspicious_stew",
-          "functions": [
-            {
-              "function": "minecraft:set_stew_effect",
-              "effects": [
-                {
-                  "type": "minecraft:darkness",
-                  "duration": 60
-                }
-              ]
-            }
-          ]
+          "modifier": {
+            "type": "minecraft:set_stew_effect",
+            "effects": [
+              {
+                "type": "minecraft:darkness",
+                "duration": 60
+              }
+            ]
+          }
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:suspicious_stew",
-          "functions": [
-            {
-              "function": "minecraft:set_stew_effect",
-              "effects": [
-                {
-                  "type": "minecraft:wither",
-                  "duration": 60
-                }
-              ]
-            }
-          ]
+          "modifier": {
+            "type": "minecraft:set_stew_effect",
+            "effects": [
+              {
+                "type": "minecraft:wither",
+                "duration": 60
+              }
+            ]
+          }
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:suspicious_stew",
-          "functions": [
-            {
-              "function": "minecraft:set_stew_effect",
-              "effects": [
-                {
-                  "type": "minecraft:levitation",
-                  "duration": 60
-                }
-              ]
-            }
-          ]
+          "modifier": {
+            "type": "minecraft:set_stew_effect",
+            "effects": [
+              {
+                "type": "minecraft:levitation",
+                "duration": 60
+              }
+            ]
+          }
         }
       ]
     }

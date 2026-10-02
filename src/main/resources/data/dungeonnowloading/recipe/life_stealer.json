@@ -6,15 +6,9 @@
     "X  "
   ],
   "key": {
-    "#": {
-      "item": "dungeonnowloading:spawner_blade"
-    },
-    "X": {
-      "item": "minecraft:stick"
-    },
-    "Y": {
-      "item": "dungeonnowloading:soul_silk"
-    }
+    "#": "dungeonnowloading:spawner_blade",
+    "X": "minecraft:stick",
+    "Y": "dungeonnowloading:soul_silk"
   },
   "result": {
     "id": "dungeonnowloading:life_stealer"

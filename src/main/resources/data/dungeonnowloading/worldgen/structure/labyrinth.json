@@ -9,74 +9,70 @@
         {
           "type": "minecraft:spider",
           "weight": 80,
-          "minCount": 4,
-          "maxCount": 4
+          "count": 4
         },
         {
           "type": "minecraft:zombie",
           "weight": 75,
-          "minCount": 4,
-          "maxCount": 4
+          "count": 4
         },
         {
           "type": "minecraft:zombie_villager",
           "weight": 5,
-          "minCount": 1,
-          "maxCount": 1
+          "count": 1
         },
         {
           "type": "minecraft:skeleton",
           "weight": 80,
-          "minCount": 4,
-          "maxCount": 4
+          "count": 4
         },
         {
           "type": "minecraft:creeper",
           "weight": 80,
-          "minCount": 4,
-          "maxCount": 4
+          "count": 4
         },
         {
           "type": "minecraft:slime",
           "weight": 80,
-          "minCount": 4,
-          "maxCount": 4
+          "count": 4
         },
         {
           "type": "dungeonnowloading:hollow",
           "weight": 20,
-          "minCount": 1,
-          "maxCount": 4
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 1,
+            "max_inclusive": 4
+          }
         },
         {
           "type": "dungeonnowloading:garhold",
           "weight": 10,
-          "minCount": 1,
-          "maxCount": 1
+          "count": 1
         },
         {
           "type": "minecraft:enderman",
           "weight": 10,
-          "minCount": 1,
-          "maxCount": 4
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 1,
+            "max_inclusive": 4
+          }
         },
         {
           "type": "dungeonnowloading:spawner_carrier",
           "weight": 10,
-          "minCount": 1,
-          "maxCount": 1
+          "count": 1
         },
         {
           "type": "minecraft:witch",
           "weight": 5,
-          "minCount": 1,
-          "maxCount": 1
+          "count": 1
         },
         {
           "type": "minecraft:drowned",
           "weight": 80,
-          "minCount": 4,
-          "maxCount": 4
+          "count": 4
         }
       ]
     },
@@ -86,8 +82,11 @@
         {
           "type": "minecraft:glow_squid",
           "weight": 10,
-          "minCount": 4,
-          "maxCount": 6
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 4,
+            "max_inclusive": 6
+          }
         }
       ]
     },
@@ -97,8 +96,7 @@
         {
           "type": "minecraft:bat",
           "weight": 10,
-          "minCount": 8,
-          "maxCount": 8
+          "count": 8
         }
       ]
     }

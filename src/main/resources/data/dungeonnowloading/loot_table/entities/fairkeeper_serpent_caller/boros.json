@@ -25,18 +25,20 @@
         {
           "type": "minecraft:item",
           "name": "dungeonnowloading:redstone_suppressor",
-          "functions": [
+          "modifier": [
             {
-              "function": "minecraft:enchanted_count_increase",
+              "type": "minecraft:enchanted_count_increase",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 0,
                 "max": 2
               },
               "enchantment": "minecraft:looting"
             },
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 4,
                 "max": 6
               }

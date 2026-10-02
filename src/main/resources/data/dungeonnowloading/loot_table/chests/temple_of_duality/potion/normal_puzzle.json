@@ -3,6 +3,7 @@
   "pools": [
     {
       "rolls": {
+        "type": "minecraft:uniform",
         "min": 2,
         "max": 3
       },
@@ -11,34 +12,28 @@
           "type": "minecraft:item",
           "name": "minecraft:potion",
           "weight": 4,
-          "functions": [
-            {
-              "function": "minecraft:set_potion",
-              "id": "minecraft:strong_healing"
-            }
-          ]
+          "modifier": {
+            "type": "minecraft:set_potion",
+            "id": "minecraft:strong_healing"
+          }
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:splash_potion",
           "weight": 4,
-          "functions": [
-            {
-              "function": "minecraft:set_potion",
-              "id": "minecraft:strong_healing"
-            }
-          ]
+          "modifier": {
+            "type": "minecraft:set_potion",
+            "id": "minecraft:strong_healing"
+          }
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:lingering_potion",
           "weight": 2,
-          "functions": [
-            {
-              "function": "minecraft:set_potion",
-              "id": "minecraft:healing"
-            }
-          ]
+          "modifier": {
+            "type": "minecraft:set_potion",
+            "id": "minecraft:healing"
+          }
         }
       ]
     },
@@ -48,32 +43,26 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:potion",
-          "functions": [
-            {
-              "function": "minecraft:set_potion",
-              "id": "minecraft:long_night_vision"
-            }
-          ]
+          "modifier": {
+            "type": "minecraft:set_potion",
+            "id": "minecraft:long_night_vision"
+          }
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:splash_potion",
-          "functions": [
-            {
-              "function": "minecraft:set_potion",
-              "id": "minecraft:long_night_vision"
-            }
-          ]
+          "modifier": {
+            "type": "minecraft:set_potion",
+            "id": "minecraft:long_night_vision"
+          }
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:lingering_potion",
-          "functions": [
-            {
-              "function": "minecraft:set_potion",
-              "id": "minecraft:night_vision"
-            }
-          ]
+          "modifier": {
+            "type": "minecraft:set_potion",
+            "id": "minecraft:night_vision"
+          }
         }
       ]
     }

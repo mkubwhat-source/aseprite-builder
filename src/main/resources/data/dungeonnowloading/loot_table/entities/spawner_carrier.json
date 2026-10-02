@@ -7,17 +7,19 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:mossy_stone_bricks",
-          "functions": [
+          "modifier": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 2,
                 "max": 4
               }
             },
             {
-              "function": "minecraft:enchanted_count_increase",
+              "type": "minecraft:enchanted_count_increase",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 0,
                 "max": 1
               },

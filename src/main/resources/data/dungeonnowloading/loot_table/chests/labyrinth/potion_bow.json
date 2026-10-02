@@ -7,12 +7,10 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:bow",
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": 1
-            }
-          ]
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": 1
+          }
         }
       ]
     },
@@ -22,14 +20,15 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:tipped_arrow",
-          "functions": [
+          "modifier": [
             {
-              "function": "minecraft:set_potion",
+              "type": "minecraft:set_potion",
               "id": "minecraft:strong_healing"
             },
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 16,
                 "max": 32
               }

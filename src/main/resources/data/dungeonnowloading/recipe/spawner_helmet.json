@@ -6,12 +6,8 @@
     "   "
   ],
   "key": {
-    "#": {
-      "item": "dungeonnowloading:spawner_frame"
-    },
-    "X": {
-      "item": "dungeonnowloading:soul_silk"
-    }
+    "#": "dungeonnowloading:spawner_frame",
+    "X": "dungeonnowloading:soul_silk"
   },
   "result": {
     "id": "dungeonnowloading:spawner_helmet"

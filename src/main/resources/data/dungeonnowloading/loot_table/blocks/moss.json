@@ -6,109 +6,95 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "conditions": [
+          "name": "dungeonnowloading:moss",
+          "modifier": [
             {
-              "condition": "minecraft:match_tool",
-              "predicate": {
-                "items": "minecraft:shears"
+              "type": "minecraft:set_count",
+              "add": true,
+              "count": 1.0,
+              "condition": {
+                "type": "minecraft:match_block",
+                "blocks": "dungeonnowloading:moss",
+                "state": {
+                  "down": "true"
+                }
               }
+            },
+            {
+              "type": "minecraft:set_count",
+              "add": true,
+              "count": 1.0,
+              "condition": {
+                "type": "minecraft:match_block",
+                "blocks": "dungeonnowloading:moss",
+                "state": {
+                  "up": "true"
+                }
+              }
+            },
+            {
+              "type": "minecraft:set_count",
+              "add": true,
+              "count": 1.0,
+              "condition": {
+                "type": "minecraft:match_block",
+                "blocks": "dungeonnowloading:moss",
+                "state": {
+                  "north": "true"
+                }
+              }
+            },
+            {
+              "type": "minecraft:set_count",
+              "add": true,
+              "count": 1.0,
+              "condition": {
+                "type": "minecraft:match_block",
+                "blocks": "dungeonnowloading:moss",
+                "state": {
+                  "south": "true"
+                }
+              }
+            },
+            {
+              "type": "minecraft:set_count",
+              "add": true,
+              "count": 1.0,
+              "condition": {
+                "type": "minecraft:match_block",
+                "blocks": "dungeonnowloading:moss",
+                "state": {
+                  "west": "true"
+                }
+              }
+            },
+            {
+              "type": "minecraft:set_count",
+              "add": true,
+              "count": 1.0,
+              "condition": {
+                "type": "minecraft:match_block",
+                "blocks": "dungeonnowloading:moss",
+                "state": {
+                  "east": "true"
+                }
+              }
+            },
+            {
+              "type": "minecraft:set_count",
+              "add": true,
+              "count": -1.0
+            },
+            {
+              "type": "minecraft:explosion_decay"
             }
           ],
-          "functions": [
-            {
-              "add": true,
-              "conditions": [
-                {
-                  "block": "dungeonnowloading:moss",
-                  "condition": "minecraft:block_state_property",
-                  "properties": {
-                    "down": "true"
-                  }
-                }
-              ],
-              "count": 1.0,
-              "function": "minecraft:set_count"
-            },
-            {
-              "add": true,
-              "conditions": [
-                {
-                  "block": "dungeonnowloading:moss",
-                  "condition": "minecraft:block_state_property",
-                  "properties": {
-                    "up": "true"
-                  }
-                }
-              ],
-              "count": 1.0,
-              "function": "minecraft:set_count"
-            },
-            {
-              "add": true,
-              "conditions": [
-                {
-                  "block": "dungeonnowloading:moss",
-                  "condition": "minecraft:block_state_property",
-                  "properties": {
-                    "north": "true"
-                  }
-                }
-              ],
-              "count": 1.0,
-              "function": "minecraft:set_count"
-            },
-            {
-              "add": true,
-              "conditions": [
-                {
-                  "block": "dungeonnowloading:moss",
-                  "condition": "minecraft:block_state_property",
-                  "properties": {
-                    "south": "true"
-                  }
-                }
-              ],
-              "count": 1.0,
-              "function": "minecraft:set_count"
-            },
-            {
-              "add": true,
-              "conditions": [
-                {
-                  "block": "dungeonnowloading:moss",
-                  "condition": "minecraft:block_state_property",
-                  "properties": {
-                    "west": "true"
-                  }
-                }
-              ],
-              "count": 1.0,
-              "function": "minecraft:set_count"
-            },
-            {
-              "add": true,
-              "conditions": [
-                {
-                  "block": "dungeonnowloading:moss",
-                  "condition": "minecraft:block_state_property",
-                  "properties": {
-                    "east": "true"
-                  }
-                }
-              ],
-              "count": 1.0,
-              "function": "minecraft:set_count"
-            },
-            {
-              "add": true,
-              "count": -1.0,
-              "function": "minecraft:set_count"
-            },
-            {
-              "function": "minecraft:explosion_decay"
+          "condition": {
+            "type": "minecraft:match_tool",
+            "predicate": {
+              "items": "minecraft:shears"
             }
-          ],
-          "name": "dungeonnowloading:moss"
+          }
         }
       ],
       "rolls": 1.0

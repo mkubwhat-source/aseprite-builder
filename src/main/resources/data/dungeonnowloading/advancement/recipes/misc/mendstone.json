@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dungeonnowloading:mendstone"
+        "recipes": "dungeonnowloading:mendstone"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

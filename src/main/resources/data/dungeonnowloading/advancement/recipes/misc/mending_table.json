@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dungeonnowloading:mending_table"
+        "recipes": "dungeonnowloading:mending_table"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

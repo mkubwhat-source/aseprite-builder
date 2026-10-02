@@ -5,9 +5,7 @@
     "##"
   ],
   "key": {
-    "#": {
-      "item": "dungeonnowloading:spawner_fragment"
-    }
+    "#": "dungeonnowloading:spawner_fragment"
   },
   "result": {
     "id": "dungeonnowloading:spawner_frame"

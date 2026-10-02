@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dungeonnowloading:signaling_stone_emblem"
+        "recipes": "dungeonnowloading:signaling_stone_emblem"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

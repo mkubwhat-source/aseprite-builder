@@ -1,8 +1,6 @@
 {
   "type": "minecraft:stonecutting",
-  "ingredient": {
-    "item": "dungeonnowloading:stone_tiles"
-  },
+  "ingredient": "dungeonnowloading:stone_tiles",
   "result": {
     "count": 1,
     "id": "dungeonnowloading:stone_tile_stairs"

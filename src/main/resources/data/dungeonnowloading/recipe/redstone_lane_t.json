@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "r": {
-      "item": "minecraft:redstone"
-    },
-    "s": {
-      "item": "minecraft:stone_bricks"
-    }
+    "r": "minecraft:redstone",
+    "s": "minecraft:stone_bricks"
   },
   "pattern": [
     "sss",

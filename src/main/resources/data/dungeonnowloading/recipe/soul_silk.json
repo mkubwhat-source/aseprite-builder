@@ -6,12 +6,8 @@
     "#X#"
   ],
   "key": {
-    "#": {
-      "item": "dungeonnowloading:soul_cloth"
-    },
-    "X": {
-      "item": "minecraft:string"
-    }
+    "#": "dungeonnowloading:soul_cloth",
+    "X": "minecraft:string"
   },
   "result": {
     "id": "dungeonnowloading:soul_silk"

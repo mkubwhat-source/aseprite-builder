@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dungeonnowloading:coiling_stone_pillar_slab"
+        "recipes": "dungeonnowloading:coiling_stone_pillar_slab"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

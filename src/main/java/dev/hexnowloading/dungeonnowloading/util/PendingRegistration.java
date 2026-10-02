@@ -26,6 +26,10 @@ public final class PendingRegistration {
         }
     }
 
+    public static @Nullable ResourceKey<?> current() {
+        return PENDING.get();
+    }
+
     @SuppressWarnings("unchecked")
     public static @Nullable ResourceKey<Block> block() {
         ResourceKey<?> key = PENDING.get();

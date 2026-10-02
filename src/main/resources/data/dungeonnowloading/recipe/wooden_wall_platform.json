@@ -4,9 +4,7 @@
     "###"
   ],
   "key": {
-    "#": {
-      "tag": "minecraft:wooden_slabs"
-    }
+    "#": "#minecraft:wooden_slabs"
   },
   "result": {
     "id": "dungeonnowloading:wooden_wall_platform",

@@ -6,26 +6,24 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "functions": [
+          "name": "dungeonnowloading:stone_tile_slab",
+          "modifier": [
             {
+              "type": "minecraft:set_count",
               "add": false,
-              "conditions": [
-                {
-                  "block": "dungeonnowloading:stone_tile_slab",
-                  "condition": "minecraft:block_state_property",
-                  "properties": {
-                    "type": "double"
-                  }
-                }
-              ],
               "count": 2.0,
-              "function": "minecraft:set_count"
+              "condition": {
+                "type": "minecraft:match_block",
+                "blocks": "dungeonnowloading:stone_tile_slab",
+                "state": {
+                  "type": "double"
+                }
+              }
             },
             {
-              "function": "minecraft:explosion_decay"
+              "type": "minecraft:explosion_decay"
             }
-          ],
-          "name": "dungeonnowloading:stone_tile_slab"
+          ]
         }
       ],
       "rolls": 1.0

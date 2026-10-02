@@ -9,31 +9,29 @@
           "name": "dungeonnowloading:soul_cloth"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:any_of",
-          "terms": [
-            {
-              "condition": "minecraft:damage_source_properties",
-              "predicate": {
-                "tags": [
-                  {
-                    "id": "dungeonnowloading:hollow_potion_kill",
-                    "expected": true
-                  }
-                ]
-              }
-            },
-            {
-              "condition": "minecraft:entity_properties",
-              "entity": "this",
-              "predicate": {
-                "nbt": "{PotionTagged:1b}"
-              }
+      "condition": {
+        "type": "minecraft:any_of",
+        "terms": [
+          {
+            "type": "minecraft:damage_source_properties",
+            "predicate": {
+              "tags": [
+                {
+                  "id": "#dungeonnowloading:hollow_potion_kill",
+                  "expected": true
+                }
+              ]
             }
-          ]
-        }
-      ]
+          },
+          {
+            "type": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "nbt": "{PotionTagged:1b}"
+            }
+          }
+        ]
+      }
     }
   ]
 }

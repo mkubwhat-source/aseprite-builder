@@ -33,13 +33,11 @@ public class MossMultifaceBlock extends MultifaceBlock implements BonemealableBl
 
     public MossMultifaceBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.defaultBlockState().setValue(WATERLOGGED, false));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateBuilder) {
-        super.createBlockStateDefinition(stateBuilder);
-        stateBuilder.add(WATERLOGGED);
+        super.createBlockStateDefinition(stateBuilder); // vanilla MultifaceBlock already adds WATERLOGGED
     }
 
     @Override

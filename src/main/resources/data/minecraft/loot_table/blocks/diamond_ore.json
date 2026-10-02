@@ -10,23 +10,19 @@
             {
               "type": "minecraft:item",
               "name": "dungeonnowloading:durite",
-              "conditions": [
-                {
-                  "condition": "minecraft:match_tool",
-                  "predicate": {
-                    "items": [
-                      "dungeonnowloading:mendstone_pickaxe"
-                    ]
-                  }
+              "modifier": {
+                "type": "minecraft:apply_bonus",
+                "enchantment": "minecraft:fortune",
+                "formula": "ore_drops"
+              },
+              "condition": {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "items": [
+                    "dungeonnowloading:mendstone_pickaxe"
+                  ]
                 }
-              ],
-              "functions": [
-                {
-                  "function": "minecraft:apply_bonus",
-                  "enchantment": "minecraft:fortune",
-                  "formula": "ore_drops"
-                }
-              ]
+              }
             },
             {
               "type": "minecraft:loot_table",

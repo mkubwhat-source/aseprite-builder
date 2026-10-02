@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "g": {
-      "item": "minecraft:light_weighted_pressure_plate"
-    },
-    "i": {
-      "item": "minecraft:heavy_weighted_pressure_plate"
-    },
-    "p": {
-      "item": "minecraft:repeater"
-    },
-    "r": {
-      "item": "minecraft:redstone_block"
-    },
-    "s": {
-      "item": "dungeonnowloading:redstone_chip"
-    }
+    "g": "minecraft:light_weighted_pressure_plate",
+    "i": "minecraft:heavy_weighted_pressure_plate",
+    "p": "minecraft:repeater",
+    "r": "minecraft:redstone_block",
+    "s": "dungeonnowloading:redstone_chip"
   },
   "pattern": [
     "rpi",

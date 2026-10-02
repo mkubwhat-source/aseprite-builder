@@ -87,3 +87,6 @@ java {
 jar {
     from('LICENSE') { rename { "${it}_${project.mod_id}" } }
 }
+
+// Let `./gradlew runServer` read console commands from stdin (handy for scripted smoke tests).
+tasks.matching { it.name == 'runServer' }.configureEach { standardInput = System.in }

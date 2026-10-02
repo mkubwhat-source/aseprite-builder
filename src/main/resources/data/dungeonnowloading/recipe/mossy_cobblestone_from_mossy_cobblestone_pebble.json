@@ -6,9 +6,7 @@
     "###"
   ],
   "key": {
-    "#": {
-      "item": "dungeonnowloading:mossy_cobblestone_pebble"
-    }
+    "#": "dungeonnowloading:mossy_cobblestone_pebble"
   },
   "result": {
     "id": "minecraft:mossy_cobblestone"

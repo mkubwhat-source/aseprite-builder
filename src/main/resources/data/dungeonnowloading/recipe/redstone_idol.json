@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "a": {
-      "item": "dungeonnowloading:redstone_circuit"
-    },
-    "b": {
-      "item": "dungeonnowloading:redstone_core"
-    },
-    "r": {
-      "item": "minecraft:redstone_block"
-    }
+    "a": "dungeonnowloading:redstone_circuit",
+    "b": "dungeonnowloading:redstone_core",
+    "r": "minecraft:redstone_block"
   },
   "pattern": [
     "rar",

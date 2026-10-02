@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "b": {
-      "item": "minecraft:blaze_powder"
-    },
-    "c": {
-      "item": "dungeonnowloading:redstone_core"
-    },
-    "r": {
-      "item": "minecraft:redstone_block"
-    }
+    "b": "minecraft:blaze_powder",
+    "c": "dungeonnowloading:redstone_core",
+    "r": "minecraft:redstone_block"
   },
   "pattern": [
     "rbr",

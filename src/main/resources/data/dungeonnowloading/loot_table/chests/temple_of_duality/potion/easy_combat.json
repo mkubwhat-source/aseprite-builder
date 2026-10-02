@@ -3,6 +3,7 @@
   "pools": [
     {
       "rolls": {
+        "type": "minecraft:uniform",
         "min": 1,
         "max": 3
       },
@@ -11,45 +12,37 @@
           "type": "minecraft:item",
           "name": "minecraft:potion",
           "weight": 4,
-          "functions": [
-            {
-              "function": "minecraft:set_potion",
-              "id": "minecraft:healing"
-            }
-          ]
+          "modifier": {
+            "type": "minecraft:set_potion",
+            "id": "minecraft:healing"
+          }
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:splash_potion",
           "weight": 4,
-          "functions": [
-            {
-              "function": "minecraft:set_potion",
-              "id": "minecraft:healing"
-            }
-          ]
+          "modifier": {
+            "type": "minecraft:set_potion",
+            "id": "minecraft:healing"
+          }
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:potion",
           "weight": 1,
-          "functions": [
-            {
-              "function": "minecraft:set_potion",
-              "id": "minecraft:poison"
-            }
-          ]
+          "modifier": {
+            "type": "minecraft:set_potion",
+            "id": "minecraft:poison"
+          }
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:splash_potion",
           "weight": 1,
-          "functions": [
-            {
-              "function": "minecraft:set_potion",
-              "id": "minecraft:poison"
-            }
-          ]
+          "modifier": {
+            "type": "minecraft:set_potion",
+            "id": "minecraft:poison"
+          }
         }
       ]
     }

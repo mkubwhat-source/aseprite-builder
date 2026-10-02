@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "c": {
-      "item": "minecraft:chiseled_stone_bricks"
-    },
-    "r": {
-      "item": "minecraft:dried_kelp"
-    }
+    "c": "minecraft:chiseled_stone_bricks",
+    "r": "minecraft:dried_kelp"
   },
   "pattern": [
     "ccc",

@@ -6,12 +6,8 @@
     " X "
   ],
   "key": {
-    "#": {
-      "item": "dungeonnowloading:spawner_blade"
-    },
-    "X": {
-      "item": "minecraft:stick"
-    }
+    "#": "dungeonnowloading:spawner_blade",
+    "X": "minecraft:stick"
   },
   "result": {
     "id": "dungeonnowloading:spawner_sword"

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "minecraft:coiling_stone_pillar_stairs_from_coiling_stone_pillar_stonecutting"
+        "recipes": "minecraft:coiling_stone_pillar_stairs_from_coiling_stone_pillar_stonecutting"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

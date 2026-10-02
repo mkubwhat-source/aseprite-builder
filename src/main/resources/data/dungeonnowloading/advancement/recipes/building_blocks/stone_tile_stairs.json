@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dungeonnowloading:stone_tile_stairs"
+        "recipes": "dungeonnowloading:stone_tile_stairs"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

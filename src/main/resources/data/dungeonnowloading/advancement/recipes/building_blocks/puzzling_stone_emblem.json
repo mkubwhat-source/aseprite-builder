@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dungeonnowloading:puzzling_stone_emblem"
+        "recipes": "dungeonnowloading:puzzling_stone_emblem"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

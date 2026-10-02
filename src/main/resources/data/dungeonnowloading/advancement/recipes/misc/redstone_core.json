@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dungeonnowloading:redstone_core"
+        "recipes": "dungeonnowloading:redstone_core"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

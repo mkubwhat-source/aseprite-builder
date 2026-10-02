@@ -17,20 +17,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Player.class)
 public abstract class PlayerMixin {
-    @Inject(method = "Lnet/minecraft/world/entity/player/Player;drop(Lnet/minecraft/world/item/ItemStack;ZZ)Lnet/minecraft/world/entity/item/ItemEntity;", at = @At("HEAD"))
-    private void beforeItemDrop(ItemStack itemStack, boolean bl, boolean bl2, CallbackInfoReturnable<ItemEntity> cir) {
-
-        Player player = (Player) (Object) this;
-        Level level = player.level();
-
-        if (!level.isClientSide() && itemStack.getItem() instanceof DNLAnimatedItem<?> animatedItem) {
-            long gameTime = player.level().getGameTime();
-            if (ItemAnimationState.isAnimating(itemStack, ScorcherItem.ScorcherAnimationState.SCORCHER_ACTIVATED.getName(), gameTime) || ItemAnimationState.isAnimating(itemStack, ScorcherItem.ScorcherAnimationState.SCORCHER_SHOOT.getName(), gameTime)) {
-                animatedItem.playDroppedAnimation(player, itemStack);
-            }
-        }
-    }
-
     // Block the auto-dismount-on-sneak while riding the Garhold, so players can't accidentally
     // dismount it mid-combat/motion. Player.wantsToStopRiding() still exists in 1.21 (it's on
     // Player, not Entity) — gate it on the vehicle type.

@@ -18,7 +18,7 @@ public class MaxHealthAttributeMixin {
 
     @Inject(method = "Lnet/minecraft/world/entity/ai/attributes/RangedAttribute;<init>(Ljava/lang/String;DDD)V", at = @At(value = "TAIL"))
     private void dungeonnowloading_RangedAttribute(String string, double d, double min, double max, CallbackInfo ci) {
-        if (string.equals("attribute.name.generic.max_health")) {
+        if (string.equals("attribute.name.max_health")) {
             this.maxValue = 1000000.0D;
         }
     }

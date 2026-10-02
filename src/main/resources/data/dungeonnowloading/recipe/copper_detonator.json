@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "c": {
-      "item": "minecraft:copper_ingot"
-    },
-    "i": {
-      "item": "dungeonnowloading:redstone_circuit"
-    },
-    "r": {
-      "item": "minecraft:lightning_rod"
-    },
-    "s": {
-      "item": "minecraft:stone_button"
-    }
+    "c": "minecraft:copper_ingot",
+    "i": "dungeonnowloading:redstone_circuit",
+    "r": "minecraft:lightning_rod",
+    "s": "minecraft:stone_button"
   },
   "pattern": [
     " r ",

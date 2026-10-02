@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dungeonnowloading:redstone_idol"
+        "recipes": "dungeonnowloading:redstone_idol"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

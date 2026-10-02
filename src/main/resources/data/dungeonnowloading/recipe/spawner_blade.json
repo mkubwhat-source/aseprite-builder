@@ -6,12 +6,8 @@
     "X  "
   ],
   "key": {
-    "#": {
-      "item": "dungeonnowloading:spawner_frame"
-    },
-    "X": {
-      "item": "minecraft:amethyst_shard"
-    }
+    "#": "dungeonnowloading:spawner_frame",
+    "X": "minecraft:amethyst_shard"
   },
   "result": {
     "id": "dungeonnowloading:spawner_blade"

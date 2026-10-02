@@ -16,7 +16,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "dungeonnowloading:skull_of_chaos"
+        "recipes": "dungeonnowloading:skull_of_chaos"
       }
     }
   },

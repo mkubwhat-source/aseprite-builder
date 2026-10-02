@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dungeonnowloading:dungeon_banner_spawner_recolor_green"
+        "recipes": "dungeonnowloading:dungeon_banner_spawner_recolor_green"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

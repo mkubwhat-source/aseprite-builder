@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dungeonnowloading:redstone_lane_l"
+        "recipes": "dungeonnowloading:redstone_lane_l"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

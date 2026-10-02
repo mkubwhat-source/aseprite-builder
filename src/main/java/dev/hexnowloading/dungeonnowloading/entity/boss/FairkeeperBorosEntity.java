@@ -555,7 +555,7 @@ public class FairkeeperBorosEntity extends Monster implements Boss, Enemy, Slumb
     }
 
     private boolean hurtAndTrackAttackers(DamageSource source, float amount) {
-        boolean result = super.hurtOrSimulate(source, amount);
+        boolean result = super.hurtServer((net.minecraft.server.level.ServerLevel) this.level(), source, amount);
         Entity attacker = source.getEntity();
 
         if (attacker instanceof LivingEntity livingEntity) {

@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "d": {
-      "item": "dungeonnowloading:durite"
-    },
-    "l": {
-      "item": "minecraft:lapis_lazuli"
-    }
+    "d": "dungeonnowloading:durite",
+    "l": "minecraft:lapis_lazuli"
   },
   "pattern": [
     "dl",

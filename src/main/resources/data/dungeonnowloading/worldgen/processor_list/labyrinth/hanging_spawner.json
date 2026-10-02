@@ -12,8 +12,8 @@
             "block": "minecraft:jigsaw"
           },
           "output_state": {
-            "Name": "minecraft:chain",
-            "Properties": {
+            "id": "minecraft:iron_chain",
+            "properties": {
               "axis": "y"
             }
           }

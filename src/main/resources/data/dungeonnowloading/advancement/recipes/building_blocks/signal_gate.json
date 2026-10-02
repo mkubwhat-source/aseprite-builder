@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dungeonnowloading:signal_gate"
+        "recipes": "dungeonnowloading:signal_gate"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
