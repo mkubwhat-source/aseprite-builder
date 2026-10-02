@@ -42,7 +42,16 @@ public abstract class HierarchicalModel<T extends Entity> extends EntityModel<T>
     }
 
     private KeyframeAnimation baked(AnimationDefinition definition) {
-        return this.bakedAnimations.computeIfAbsent(definition, def -> def.bake(this.root()));
+        // 1.21.1 skipped channels whose bone is missing from the model; 26.x throws while baking, so drop them first.
+        return this.bakedAnimations.computeIfAbsent(definition, def -> {
+            java.util.Map<String, java.util.List<net.minecraft.client.animation.AnimationChannel>> bones = new java.util.LinkedHashMap<>();
+            def.boneAnimations().forEach((bone, channels) -> {
+                if (this.getAnyDescendantWithName(bone).isPresent()) {
+                    bones.put(bone, channels);
+                }
+            });
+            return new AnimationDefinition(def.lengthInSeconds(), def.looping(), bones).bake(this.root());
+        });
     }
 
     protected void animate(AnimationState animationState, AnimationDefinition definition, float ageInTicks) {
