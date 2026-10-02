@@ -32,6 +32,10 @@ public final class LegacyBlockEntityRenderers {
         });
     }
 
+    public static boolean has(BlockEntity blockEntity) {
+        return INSTANCES.containsKey(blockEntity.getType());
+    }
+
     /** Replacement for 1.21.1 {@code BlockEntityRenderDispatcher#renderItem}: draws a block entity as an item. */
     @SuppressWarnings("unchecked")
     public static <T extends BlockEntity> void renderItem(T blockEntity, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {

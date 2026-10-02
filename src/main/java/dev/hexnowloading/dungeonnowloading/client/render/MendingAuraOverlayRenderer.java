@@ -1,6 +1,17 @@
 package dev.hexnowloading.dungeonnowloading.client.render;
 
 
+import dev.hexnowloading.dungeonnowloading.client.legacy.LegacyBlockEntityRenderers;
+import dev.hexnowloading.dungeonnowloading.client.model.MendingAuraFabricBakedModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import org.joml.Vector3f;
+import java.util.ArrayList;
+import java.util.List;
 import dev.hexnowloading.dungeonnowloading.client.legacy.RecordingBufferSource;
 import dev.hexnowloading.dungeonnowloading.registry.DNLBlocks;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
@@ -75,10 +86,126 @@ public class MendingAuraOverlayRenderer {
 
                 poseStack.pushPose();
                 poseStack.translate(pos.getX() - cameraPos.x, pos.getY() - cameraPos.y, pos.getZ() - cameraPos.z);
-                renderShapeOverlay(state, level, pos, poseStack, new AlphaVertexConsumer(translucentConsumer, overlay.alpha()), auraSprite);
+                VertexConsumer consumer = new AlphaVertexConsumer(translucentConsumer, overlay.alpha());
+                boolean drawn = state.getRenderShape() == RenderShape.MODEL
+                        && renderModelOverlay(state, pos, poseStack, consumer, auraSprite);
+                BlockEntity blockEntity = level.getBlockEntity(pos);
+                if (blockEntity != null && LegacyBlockEntityRenderers.has(blockEntity)) {
+                    // the mod's own block entity renderers: redraw their geometry with the aura texture
+                    LegacyBlockEntityRenderers.renderItem(blockEntity, poseStack, type -> new AuraRetextureConsumer(consumer, auraSprite, new Vector3f((float) (pos.getX() - cameraPos.x), (float) (pos.getY() - cameraPos.y), (float) (pos.getZ() - cameraPos.z))), LightCoordsUtil.FULL_BRIGHT, 0);
+                    drawn = true;
+                }
+                if (!drawn) {
+                    renderShapeOverlay(state, level, pos, poseStack, consumer, auraSprite);
+                }
                 poseStack.popPose();
             }
         });
+    }
+
+    /** Re-draws the block's own model with the aura texture (masked to the opaque texture pixels), slightly inflated. */
+    private static boolean renderModelOverlay(BlockState state, BlockPos pos, PoseStack poseStack, VertexConsumer consumer, TextureAtlasSprite auraSprite) {
+        BlockStateModel model = Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(state);
+        List<BlockStateModelPart> parts = new ArrayList<>();
+        model.collectParts(RandomSource.create(state.getSeed(pos)), parts);
+        PoseStack.Pose pose = poseStack.last();
+        boolean any = false;
+        for (BlockStateModelPart part : parts) {
+            for (Direction cullFace : MendingAuraFabricBakedModel.CULL_FACES) {
+                for (BakedQuad quad : part.getQuads(cullFace)) {
+                    any = true;
+                    Direction face = quad.direction();
+                    float ox = face.getStepX() * MODEL_OVERLAY_OFFSET;
+                    float oy = face.getStepY() * MODEL_OVERLAY_OFFSET;
+                    float oz = face.getStepZ() * MODEL_OVERLAY_OFFSET;
+                    for (Vector3f[] corners : MendingAuraFabricBakedModel.maskedQuads(quad)) {
+                        for (Vector3f p : corners) {
+                            consumer.addVertex(pose, p.x + ox, p.y + oy, p.z + oz)
+                                    .setColor(255, 255, 255, 255)
+                                    .setUv(MendingAuraFabricBakedModel.auraU(auraSprite, face, p.x, p.y, p.z), MendingAuraFabricBakedModel.auraV(auraSprite, face, p.x, p.y, p.z))
+                                    .setOverlay(0)
+                                    .setLight(LightCoordsUtil.FULL_BRIGHT)
+                                    .setNormal(pose, face.getStepX(), face.getStepY(), face.getStepZ());
+                        }
+                    }
+                }
+            }
+        }
+        return any;
+    }
+
+    /**
+     * Takes geometry from a legacy block entity renderer and replaces its texture with the aura, projected from the
+     * vertex position (relative to the block, which the pose stack already translated to) and its normal.
+     */
+    private static final class AuraRetextureConsumer implements VertexConsumer {
+        private final VertexConsumer delegate;
+        private final TextureAtlasSprite auraSprite;
+        private final Vector3f blockOffset;
+        private float x;
+        private float y;
+        private float z;
+
+        private AuraRetextureConsumer(VertexConsumer delegate, TextureAtlasSprite auraSprite, Vector3f blockOffset) {
+            this.delegate = delegate;
+            this.auraSprite = auraSprite;
+            this.blockOffset = blockOffset;
+        }
+
+        @Override
+        public VertexConsumer addVertex(float x, float y, float z) {
+            // positions arrive camera-relative; project the texture in block space
+            this.x = x - this.blockOffset.x;
+            this.y = y - this.blockOffset.y;
+            this.z = z - this.blockOffset.z;
+            this.delegate.addVertex(x, y, z).setColor(-1).setOverlay(0).setLight(LightCoordsUtil.FULL_BRIGHT);
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setColor(int r, int g, int b, int a) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setColor(int color) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setUv(float u, float v) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setUv1(int u, int v) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setUv2(int u, int v) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setUv3(float u, float v) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setLineWidth(float width) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setNormal(float nx, float ny, float nz) {
+            // the normal arrives after the position: pick the projection plane from the dominant normal axis
+            Direction face = Direction.getApproximateNearest(nx, ny, nz);
+            this.delegate.setUv(MendingAuraFabricBakedModel.auraU(this.auraSprite, face, this.x, this.y, this.z),
+                    MendingAuraFabricBakedModel.auraV(this.auraSprite, face, this.x, this.y, this.z));
+            this.delegate.setNormal(nx, ny, nz);
+            return this;
+        }
     }
 
     private static void renderShapeOverlay(BlockState state, Level level, BlockPos pos, PoseStack poseStack, VertexConsumer consumer, TextureAtlasSprite auraSprite) {
@@ -176,32 +303,38 @@ public class MendingAuraOverlayRenderer {
 
         @Override
         public VertexConsumer addVertex(float x, float y, float z) {
-            return this.delegate.addVertex(x, y, z);
+            this.delegate.addVertex(x, y, z);
+            return this;
         }
 
         @Override
         public VertexConsumer setColor(int red, int green, int blue, int alpha) {
-            return this.delegate.setColor(red, green, blue, Math.round(alpha * this.alpha));
+            this.delegate.setColor(red, green, blue, Math.round(alpha * this.alpha));
+            return this;
         }
 
         @Override
         public VertexConsumer setUv(float u, float v) {
-            return this.delegate.setUv(u, v);
+            this.delegate.setUv(u, v);
+            return this;
         }
 
         @Override
         public VertexConsumer setUv1(int u, int v) {
-            return this.delegate.setUv1(u, v);
+            this.delegate.setUv1(u, v);
+            return this;
         }
 
         @Override
         public VertexConsumer setUv2(int u, int v) {
-            return this.delegate.setUv2(u, v);
+            this.delegate.setUv2(u, v);
+            return this;
         }
 
         @Override
         public VertexConsumer setNormal(float x, float y, float z) {
-            return this.delegate.setNormal(x, y, z);
+            this.delegate.setNormal(x, y, z);
+            return this;
         }
     }
 }

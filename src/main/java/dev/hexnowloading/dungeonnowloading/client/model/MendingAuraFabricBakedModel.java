@@ -68,7 +68,7 @@ public class MendingAuraFabricBakedModel extends WrapperBlockStateModel {
         }
     }
 
-    private static final Direction[] CULL_FACES = {null, Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
+    public static final Direction[] CULL_FACES = {null, Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
     private static final int MAX_MASKED_PIXELS_PER_QUAD = 4096;
     /** Opaque-pixel rectangles per source quad; chunk meshes are built off-thread, hence the synchronized map. */
     private static final Map<BakedQuad, List<Vector3f[]>> MASK_CACHE = Collections.synchronizedMap(new WeakHashMap<>());
@@ -76,15 +76,8 @@ public class MendingAuraFabricBakedModel extends WrapperBlockStateModel {
     private static void emitAuraQuad(QuadEmitter emitter, Vector3f[] corners, Direction face, @Nullable Direction cullFace, TextureAtlasSprite auraSprite) {
         for (int vertex = 0; vertex < 4; vertex++) {
             Vector3f p = corners[vertex];
-            float u;
-            float v;
-            switch (face) {
-                case UP, DOWN -> { u = p.x; v = p.z; }
-                case NORTH, SOUTH -> { u = p.x; v = 1.0F - p.y; }
-                default -> { u = p.z; v = 1.0F - p.y; }
-            }
             emitter.pos(vertex, p.x, p.y, p.z);
-            emitter.uv(vertex, auraSprite.getU(wrap(u)), auraSprite.getV(wrap(v)));
+            emitter.uv(vertex, auraU(auraSprite, face, p.x, p.y, p.z), auraV(auraSprite, face, p.x, p.y, p.z));
             emitter.color(vertex, -1);
         }
         emitter.nominalFace(face);
@@ -98,7 +91,7 @@ public class MendingAuraFabricBakedModel extends WrapperBlockStateModel {
      * The aura only covers the pixels of the mimicked texture that are visible: a quad whose texture has transparent
      * pixels (leaves, glass panes, flowers, ...) is split into rectangles of opaque pixels.
      */
-    private static List<Vector3f[]> maskedQuads(BakedQuad quad) {
+    public static List<Vector3f[]> maskedQuads(BakedQuad quad) {
         List<Vector3f[]> cached = MASK_CACHE.get(quad);
         if (cached != null) {
             return cached;
@@ -215,6 +208,15 @@ public class MendingAuraFabricBakedModel extends WrapperBlockStateModel {
             }
         }
         return positions[best];
+    }
+
+    /** Aura texture coordinates projected from the block-space position, so the texture tiles across faces. */
+    public static float auraU(TextureAtlasSprite auraSprite, Direction face, float x, float y, float z) {
+        return auraSprite.getU(wrap(face.getAxis() == Direction.Axis.X ? z : x));
+    }
+
+    public static float auraV(TextureAtlasSprite auraSprite, Direction face, float x, float y, float z) {
+        return auraSprite.getV(wrap(face.getAxis() == Direction.Axis.Y ? z : 1.0F - y));
     }
 
     private static float wrap(float value) {
