@@ -41,7 +41,7 @@ public abstract class EntityRenderer<T extends Entity> extends net.minecraft.cli
     public void submit(LegacyEntityRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
         if (state.entity != null) {
             T entity = (T) state.entity;
-            RecordingBufferSource.draw(collector, camera, buffers -> this.render(entity, state.entityYaw, state.partialTick, poseStack, buffers, state.packedLight));
+            RecordingBufferSource.draw(collector, camera, state.outlineColor, buffers -> this.render(entity, state.entityYaw, state.partialTick, poseStack, buffers, state.packedLight));
         }
         super.submit(state, poseStack, collector, camera);
     }

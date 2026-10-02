@@ -26,6 +26,8 @@ public final class RecordingBufferSource implements MultiBufferSource {
     private final Map<RenderType, Recorder> buffers = new LinkedHashMap<>();
     private final @Nullable SubmitNodeCollector collector;
     private final @Nullable CameraRenderState camera;
+    /** Glowing-effect outline colour of the entity being drawn (0 = no outline). */
+    private int outlineColor;
 
     public RecordingBufferSource() {
         this(null, null);
@@ -79,6 +81,11 @@ public final class RecordingBufferSource implements MultiBufferSource {
         this.buffers.forEach((type, recorder) -> {
             if (!recorder.ops.isEmpty()) {
                 collector.submitCustomGeometry(identity, type, (pose, consumer) -> recorder.replay(consumer));
+                // Glowing effect: replay the same geometry into the outline pass, coloured with the outline colour.
+                if (this.outlineColor != 0 && !type.isOutline() && type.outline().isPresent()) {
+                    int color = this.outlineColor;
+                    collector.submitCustomGeometry(identity, type.outline().get(), (pose, consumer) -> recorder.replay(new OutlineConsumer(consumer, color)));
+                }
             }
         });
         this.buffers.clear();
@@ -90,7 +97,12 @@ public final class RecordingBufferSource implements MultiBufferSource {
     }
 
     public static void draw(SubmitNodeCollector collector, @Nullable CameraRenderState camera, Consumer<MultiBufferSource> drawing) {
+        draw(collector, camera, 0, drawing);
+    }
+
+    public static void draw(SubmitNodeCollector collector, @Nullable CameraRenderState camera, int outlineColor, Consumer<MultiBufferSource> drawing) {
         RecordingBufferSource source = new RecordingBufferSource(collector, camera);
+        source.outlineColor = outlineColor;
         drawing.accept(source);
         source.submit(collector);
     }
@@ -155,6 +167,56 @@ public final class RecordingBufferSource implements MultiBufferSource {
         @Override
         public VertexConsumer setLineWidth(float width) {
             this.ops.add(c -> c.setLineWidth(width));
+            return this;
+        }
+    }
+
+    /** Forwards geometry to an outline buffer, forcing every vertex to the outline colour. */
+    private record OutlineConsumer(VertexConsumer delegate, int color) implements VertexConsumer {
+        @Override
+        public VertexConsumer addVertex(float x, float y, float z) {
+            this.delegate.addVertex(x, y, z).setColor(this.color);
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setColor(int r, int g, int b, int a) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setColor(int color) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setUv(float u, float v) {
+            this.delegate.setUv(u, v);
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setUv1(int u, int v) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setUv2(int u, int v) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setUv3(float u, float v) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setNormal(float x, float y, float z) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setLineWidth(float width) {
             return this;
         }
     }
