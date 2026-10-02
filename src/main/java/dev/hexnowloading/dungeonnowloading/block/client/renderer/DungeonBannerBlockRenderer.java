@@ -10,7 +10,7 @@ import dev.hexnowloading.dungeonnowloading.block.client.model.DungeonBannerBlock
 import dev.hexnowloading.dungeonnowloading.block.entity.DungeonBannerBlockEntity;
 import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import dev.hexnowloading.dungeonnowloading.client.legacy.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;

@@ -11,7 +11,7 @@ import dev.hexnowloading.dungeonnowloading.item.client.animation.ScorcherAnimati
 import dev.hexnowloading.dungeonnowloading.item.client.model.ScorcherModel;
 import dev.hexnowloading.dungeonnowloading.network.ClientUtil;
 import dev.hexnowloading.dungeonnowloading.registry.DNLItems;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import dev.hexnowloading.dungeonnowloading.client.legacy.BlockEntityWithoutLevelRenderer;
 import net.minecraft.util.LightCoordsUtil;
 import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;

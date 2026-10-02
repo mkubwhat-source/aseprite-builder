@@ -51,6 +51,7 @@
     "client.MusicManagerMixin",
     "client.LivingEntityRendererMixin",
     "client.ModelManagerAccessor",
+    "client.SpecialModelWrapperMixin",
     "MixinMinecraft",
     "MaxHealthAttributeMixin",
     "items.ItemInHandRendererMixin",

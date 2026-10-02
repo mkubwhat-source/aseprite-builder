@@ -6,7 +6,7 @@ import dev.hexnowloading.dungeonnowloading.block.entity.DisabledFairkeeperChestB
 import dev.hexnowloading.dungeonnowloading.registry.DNLBlocks;
 import dev.hexnowloading.dungeonnowloading.registry.DNLItems;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import dev.hexnowloading.dungeonnowloading.client.legacy.BlockEntityWithoutLevelRenderer;
 import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -27,7 +27,7 @@ public class WiseFairkeeperChestItemRenderer extends BlockEntityWithoutLevelRend
         }
 
         poseStack.pushPose();
-        Minecraft.getInstance().getBlockEntityRenderDispatcher().renderItem(blockEntity, poseStack, multiBufferSource, light, overlay);
+        dev.hexnowloading.dungeonnowloading.client.legacy.LegacyBlockEntityRenderers.renderItem(blockEntity, poseStack, multiBufferSource, light, overlay);
         poseStack.popPose();
     }
 

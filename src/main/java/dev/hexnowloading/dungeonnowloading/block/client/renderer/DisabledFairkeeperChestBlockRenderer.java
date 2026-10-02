@@ -11,7 +11,7 @@ import dev.hexnowloading.dungeonnowloading.block.entity.FairkeeperChestBlockEnti
 import dev.hexnowloading.dungeonnowloading.registry.DNLBlocks;
 import dev.hexnowloading.dungeonnowloading.registry.DNLProperties;
 import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import dev.hexnowloading.dungeonnowloading.client.legacy.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;

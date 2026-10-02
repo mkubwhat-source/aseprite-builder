@@ -11,7 +11,7 @@ import dev.hexnowloading.dungeonnowloading.block.DungeonBannerBlock;
 import dev.hexnowloading.dungeonnowloading.block.client.model.DungeonBannerBlockModel;
 import dev.hexnowloading.dungeonnowloading.item.blockitem.DungeonBannerBlockItem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import dev.hexnowloading.dungeonnowloading.client.legacy.BlockEntityWithoutLevelRenderer;
 import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;

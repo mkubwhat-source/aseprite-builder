@@ -9,7 +9,7 @@ import dev.hexnowloading.dungeonnowloading.block.entity.PlayerStatueBlockEntity;
 import dev.hexnowloading.dungeonnowloading.registry.DNLBlocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import dev.hexnowloading.dungeonnowloading.client.legacy.BlockEntityWithoutLevelRenderer;
 import dev.hexnowloading.dungeonnowloading.client.legacy.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.core.BlockPos;
@@ -66,7 +66,7 @@ public class PlayerStatueItemRenderer extends BlockEntityWithoutLevelRenderer {
         //pose.translate(-0.5f, 0f, -0.5f);
 
         // ⛔ No additional rotate/scale/translate here — let the JSON 'display' handle all contexts.
-        Minecraft.getInstance().getBlockEntityRenderDispatcher().renderItem(be, pose, buf, light, overlay);
+        dev.hexnowloading.dungeonnowloading.client.legacy.LegacyBlockEntityRenderers.renderItem(be, pose, buf, light, overlay);
 
         pose.popPose();
     }
