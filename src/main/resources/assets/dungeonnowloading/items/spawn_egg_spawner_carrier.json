@@ -1,6 +1,16 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dungeonnowloading:item/spawn_egg_spawner_carrier"
+    "model": "dungeonnowloading:item/spawn_egg_spawner_carrier",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": 6974824
+      },
+      {
+        "type": "minecraft:constant",
+        "value": 6343155
+      }
+    ]
   }
 }

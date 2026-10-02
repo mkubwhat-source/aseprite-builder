@@ -1,6 +1,7 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "dungeonnowloading:item/spawn_egg_whimper"
+    "layer0": "dungeonnowloading:item/spawn_egg",
+    "layer1": "dungeonnowloading:item/spawn_egg_overlay"
   }
 }

@@ -1,6 +1,16 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dungeonnowloading:item/spawn_egg_chaos_spawner"
+    "model": "dungeonnowloading:item/spawn_egg_chaos_spawner",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": 1584185
+      },
+      {
+        "type": "minecraft:constant",
+        "value": 10141142
+      }
+    ]
   }
 }

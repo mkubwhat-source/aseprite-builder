@@ -1,6 +1,16 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dungeonnowloading:item/spawn_egg_hollow"
+    "model": "dungeonnowloading:item/spawn_egg_hollow",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": 5457242
+      },
+      {
+        "type": "minecraft:constant",
+        "value": 16111072
+      }
+    ]
   }
 }
