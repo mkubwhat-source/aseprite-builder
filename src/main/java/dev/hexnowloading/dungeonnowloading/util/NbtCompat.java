@@ -101,6 +101,6 @@ public final class NbtCompat {
     }
 
     public static Optional<EntityType<?>> entityTypeOf(CompoundTag tag) {
-        return tag.getString("id").flatMap(EntityType::byString);
+        return tag.getString("id").map(net.minecraft.resources.Identifier::tryParse).flatMap(net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE::getOptional);
     }
 }

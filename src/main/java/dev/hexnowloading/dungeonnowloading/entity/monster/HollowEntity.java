@@ -128,7 +128,7 @@ public class HollowEntity extends Monster {
     public void move(MoverType moverType, Vec3 vec3) {
         super.move(moverType, vec3);
         if (!this.noPhysics) {
-            this.checkInsideBlocks();
+            this.applyEffectsFromBlocks();
         }
     }
 
@@ -142,7 +142,7 @@ public class HollowEntity extends Monster {
                 if (head.isDamageableItem()) {
                     head.setDamageValue(head.getDamageValue() + this.random.nextInt(2));
                     if (head.getDamageValue() >= head.getMaxDamage()) {
-                        this.onEquippedItemBroken(head.getItem(), EquipmentSlot.HEAD);
+                        this.onEquippedItemBroken(head, EquipmentSlot.HEAD);
                         this.setItemSlot(EquipmentSlot.HEAD, ItemStack.EMPTY);
                     }
                 }
@@ -250,7 +250,7 @@ public class HollowEntity extends Monster {
                     .create(LootContextParamSets.ENTITY);
 
             for (ItemStack stack : table.getRandomItems(params)) {
-                this.spawnAtLocation(stack);
+                this.spawnAtLocation((ServerLevel) this.level(), stack);
             }
         }
     }
@@ -308,7 +308,7 @@ public class HollowEntity extends Monster {
     }
 
     @Override
-    public boolean causeFallDamage(float $$0, float $$1, DamageSource $$2) {
+    public boolean causeFallDamage(double $$0, float $$1, DamageSource $$2) {
         return false;
     }
 

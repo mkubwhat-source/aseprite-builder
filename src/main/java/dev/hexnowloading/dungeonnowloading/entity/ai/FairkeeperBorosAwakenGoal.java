@@ -35,8 +35,8 @@ public class FairkeeperBorosAwakenGoal extends Goal {
         int horizontalOffset = caller.getHorizontalOffset();
         BlockPos callerPos = caller.blockPosition();
         Direction direction = caller.getDirection();
-        this.initialTarget = (new BlockPos(callerPos.relative(direction.getCounterClockWise(), horizontalOffset).below(verticalOffset))).getCenter().add(0.0f, -0.5f, 0.0f);
-        this.finalTarget = (new BlockPos(callerPos.relative(direction.getClockWise(), horizontalOffset).below(verticalOffset))).getCenter().add(0.0f, -0.5f, 0.0f);
+        this.initialTarget = net.minecraft.world.phys.Vec3.atCenterOf(callerPos.relative(direction.getCounterClockWise(), horizontalOffset).below(verticalOffset)).add(0.0f, -0.5f, 0.0f);
+        this.finalTarget = net.minecraft.world.phys.Vec3.atCenterOf(callerPos.relative(direction.getClockWise(), horizontalOffset).below(verticalOffset)).add(0.0f, -0.5f, 0.0f);
         this.fairkeeper.setAwakenEndPos(this.initialTarget);
         this.fairkeeper.playMouthOpen();
         this.fairkeeper.noPhysics = true;

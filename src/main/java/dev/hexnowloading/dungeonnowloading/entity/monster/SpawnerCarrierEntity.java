@@ -4,6 +4,8 @@ package dev.hexnowloading.dungeonnowloading.entity.monster;
 
 
 
+
+import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
@@ -49,7 +51,6 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -59,7 +60,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -258,7 +258,7 @@ public class SpawnerCarrierEntity extends Monster {
 
         if (spawned instanceof Mob mob) {
             BlockPos pos = BlockPos.containing(x, y, z);
-            mob.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), EntitySpawnReason.MOB_SUMMONED, null);
+            mob.finalizeSpawn(level, ((net.minecraft.world.level.ServerLevelAccessor) level).getCurrentDifficultyAt(pos), EntitySpawnReason.MOB_SUMMONED, null);
             mob.setTarget(this.getTarget());
 
         }
@@ -326,7 +326,7 @@ public class SpawnerCarrierEntity extends Monster {
         // Store the egg's EntityTag (variants, custom name, etc.)
         CompoundTag newStored = new CompoundTag();
         if (StackNbt.hasTag(stack) && StackNbt.getTag(stack) != null && StackNbt.getTag(stack).contains("EntityTag")) {
-            newStored = StackNbt.getTag(stack).getCompound("EntityTag").copy();
+            newStored = StackNbt.getTag(stack).getCompoundOrEmpty("EntityTag").copy();
         }
         this.storedEntityNbt = newStored;
 
@@ -469,7 +469,7 @@ public class SpawnerCarrierEntity extends Monster {
         SpawnGroupData data = super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
 
         // Only choose randomly when it "naturally" appears in the world
-        if (spawnType == EntitySpawnReason.NATURAL || spawnType == EntitySpawnReason.CHUNK_GENERATION || spawnType == EntitySpawnReason.SPAWN_EGG) {
+        if (spawnType == EntitySpawnReason.NATURAL || spawnType == EntitySpawnReason.CHUNK_GENERATION || spawnType == EntitySpawnReason.SPAWN_ITEM_USE) {
             if (this.entityData.get(STORED_ENTITY_ID).isEmpty()) {
                 String id = DEFAULT_POOL[this.random.nextInt(DEFAULT_POOL.length)];
                 this.entityData.set(STORED_ENTITY_ID, id);
@@ -502,7 +502,7 @@ public class SpawnerCarrierEntity extends Monster {
         if (!(attacker instanceof Player player)) return true;
 
         ItemStack held = player.getMainHandItem();
-        if (!(held.getItem() instanceof PickaxeItem)) return true;
+        if (!(held.is(net.minecraft.tags.ItemTags.PICKAXES))) return true;
 
         // Accumulate the actual damage dealt by this hit
         float before = this.getPickaxeAccumDamage();
@@ -521,7 +521,7 @@ public class SpawnerCarrierEntity extends Monster {
             for (int i = 0; i < toDrop; i++) {
                 int count = fortuneLikeCount(this.getRandom(), fortune);
 
-                this.spawnAtLocation(new ItemStack(DNLItems.SPAWNER_FRAGMENT.get(), count), height);
+                this.spawnAtLocation((ServerLevel) this.level(), new ItemStack(DNLItems.SPAWNER_FRAGMENT.get(), count), height);
 
                 spawnSpawnerChipParticles((ServerLevel) this.level(), 10);
             }
@@ -567,7 +567,7 @@ public class SpawnerCarrierEntity extends Monster {
             w = 0.0F;
         }
 
-        this.walkAnimation.update(w, 1.0F);
+        this.walkAnimation.update(w, 1.0F, 1.0F);
     }
 
     @Override
@@ -582,15 +582,15 @@ public class SpawnerCarrierEntity extends Monster {
 
         // Base payout: either 1 frame (value 4) or fragments (1..3)
         if (base == 4) {
-            this.spawnAtLocation(new ItemStack(DNLItems.SPAWNER_FRAME.get(), 1), height);
+            this.spawnAtLocation((ServerLevel) this.level(), new ItemStack(DNLItems.SPAWNER_FRAME.get(), 1), height);
         } else {
-            this.spawnAtLocation(new ItemStack(DNLItems.SPAWNER_FRAGMENT.get(), base), height);
+            this.spawnAtLocation((ServerLevel) this.level(), new ItemStack(DNLItems.SPAWNER_FRAGMENT.get(), base), height);
         }
 
         // Looting bonus: fragments on top (also works "on top of the frame")
         int extra = lootingExtraCount(this.getRandom(), looting);
         if (extra > 0) {
-            this.spawnAtLocation(new ItemStack(DNLItems.SPAWNER_FRAGMENT.get(), extra), height);
+            this.spawnAtLocation((ServerLevel) this.level(), new ItemStack(DNLItems.SPAWNER_FRAGMENT.get(), extra), height);
         }
     }
 
@@ -664,13 +664,13 @@ public class SpawnerCarrierEntity extends Monster {
         for (Player player : level.getEntitiesOfClass(Player.class, box,
                 p -> p.isAlive() && !p.isSpectator() && !p.getAbilities().invulnerable)) {
 
-            boolean blockedByShield = player.isBlocking() && player.isDamageSourceBlocked(src);
+            boolean blockedByShield = player.isBlocking() && true;
 
             player.hurtOrSimulate(src, dmg);
 
             if (blockedByShield) {
                 player.stopUsingItem();
-                player.getCooldowns().addCooldown(Items.SHIELD, 100);
+                player.getCooldowns().addCooldown(new net.minecraft.world.item.ItemStack(Items.SHIELD), 100);
 
                 level.playSound(null, player.getX(), player.getY(), player.getZ(),
                         SoundEvents.SHIELD_BREAK, SoundSource.PLAYERS, 0.8F, 1.0F);
@@ -708,7 +708,7 @@ public class SpawnerCarrierEntity extends Monster {
                 v.z + dz * GROUND_SMASH_KB_H
         );
 
-        entity.hurtMarked = true;
+        entity.needsSync = true;
         entity.needsSync = true;
         entity.setOnGround(false);
     }

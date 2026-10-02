@@ -51,7 +51,7 @@ public class VertexOrbProjectileEntity extends ModelledProjectileEntity {
     private static final EntityDataAccessor<Integer> HURT_TIME = SynchedEntityData.defineId(VertexOrbProjectileEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> HURT_TIME_DIRECT = SynchedEntityData.defineId(VertexOrbProjectileEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> DAMAGE = SynchedEntityData.defineId(VertexOrbProjectileEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Vector3f> VELOCITY = SynchedEntityData.defineId(VertexOrbProjectileEntity.class, EntityDataSerializers.VECTOR3);
+    private static final EntityDataAccessor<org.joml.Vector3fc> VELOCITY = SynchedEntityData.defineId(VertexOrbProjectileEntity.class, EntityDataSerializers.VECTOR3);
     private static final EntityDataAccessor<Integer> RADIUS = SynchedEntityData.defineId(VertexOrbProjectileEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> DYING_TICK = SynchedEntityData.defineId(VertexOrbProjectileEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> GROUND_COLLISION = SynchedEntityData.defineId(VertexOrbProjectileEntity.class, EntityDataSerializers.BOOLEAN);
@@ -118,7 +118,7 @@ public class VertexOrbProjectileEntity extends ModelledProjectileEntity {
     @Override
     protected void addAdditionalSaveData(ValueOutput compoundTag) {
         super.addAdditionalSaveData(compoundTag);
-        NbtCompat.put(compoundTag, "power", this.newDoubleList(this.xPower, this.yPower, this.zPower));
+        compoundTag.store("power", com.mojang.serialization.Codec.DOUBLE.listOf(), java.util.List.of(this.xPower, this.yPower, this.zPower));
         compoundTag.putInt("life", this.life);
         compoundTag.putInt("radius", this.getRadius());
         compoundTag.putBoolean("hasLanded", this.hasLanded);
@@ -165,7 +165,7 @@ public class VertexOrbProjectileEntity extends ModelledProjectileEntity {
             this.setHurtTime(this.getHurtTime() - 1);
         }
 
-        this.checkInsideBlocks();
+        this.applyEffectsFromBlocks();
 
         this.move(MoverType.SELF, this.getDeltaMovement());
 
@@ -435,18 +435,17 @@ public class VertexOrbProjectileEntity extends ModelledProjectileEntity {
     public void push(double $$0, double $$1, double $$2) {
     }
 
-    @Override
-    public boolean isInvulnerableTo(ServerLevel serverLevel, DamageSource damageSource) {
+        public boolean isInvulnerableTo(ServerLevel serverLevel, DamageSource damageSource) {
         if (damageSource.is(DamageTypes.EXPLOSION)) {
             return true;
         }
-        return super.isInvulnerableTo(serverLevel, damageSource);
+        return this.isInvulnerableToBase(damageSource);
     }
 
     @Override
     public boolean hurtServer(ServerLevel hurtLevel, DamageSource damageSource, float f) {
         boolean bl;
-        if (this.isInvulnerableTo(damageSource)) {
+        if (this.isInvulnerableTo((ServerLevel) this.level(), damageSource)) {
             return false;
         }
         if (this.getDyingTick() > 0) {
@@ -549,7 +548,7 @@ public class VertexOrbProjectileEntity extends ModelledProjectileEntity {
     }
 
     public Vector3f getVelocity() {
-        return this.entityData.get(VELOCITY);
+        return new org.joml.Vector3f(this.entityData.get(VELOCITY));
     }
 
     public void setRadius (int radius) {

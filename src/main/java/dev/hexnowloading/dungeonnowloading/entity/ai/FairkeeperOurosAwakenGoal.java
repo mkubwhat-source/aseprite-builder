@@ -36,8 +36,8 @@ public class FairkeeperOurosAwakenGoal extends Goal {
         int horizontalOffset = caller.getHorizontalOffset();
         BlockPos callerPos = caller.blockPosition();
         Direction direction = caller.getDirection();
-        this.initialTarget = (new BlockPos(callerPos.relative(direction.getClockWise(), horizontalOffset).above(verticalOffset))).getCenter().add(0.0f, 0.5f, 0.0f);
-        this.finalTarget = (new BlockPos(callerPos.relative(direction.getCounterClockWise(), horizontalOffset).above(verticalOffset))).getCenter().add(0.0f, 0.5f, 0.0f);
+        this.initialTarget = net.minecraft.world.phys.Vec3.atCenterOf(callerPos.relative(direction.getClockWise(), horizontalOffset).above(verticalOffset)).add(0.0f, 0.5f, 0.0f);
+        this.finalTarget = net.minecraft.world.phys.Vec3.atCenterOf(callerPos.relative(direction.getCounterClockWise(), horizontalOffset).above(verticalOffset)).add(0.0f, 0.5f, 0.0f);
         this.ouros.setAwakenEndPos(this.initialTarget);
         this.ouros.playMouthOpen();
         this.ouros.noPhysics = true;

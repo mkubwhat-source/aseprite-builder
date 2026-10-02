@@ -17,7 +17,6 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.PowerableMob;
 
 //public class ChaosSpawnerLayer<T extends ChaosSpawnerEntity, M extends ChaosSpawnerModel<T>> extends RenderLayer<T, M> {
 public class CopperCreepPowerLayer<T extends CopperCreepEntity, M extends HierarchicalModel<T>> extends RenderLayer<T, M> {

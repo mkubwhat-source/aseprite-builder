@@ -3,6 +3,10 @@ package dev.hexnowloading.dungeonnowloading.entity.passive;
 
 
 
+
+
+import dev.hexnowloading.dungeonnowloading.entity.util.DNLDataSerializers;
+import dev.hexnowloading.dungeonnowloading.util.DNLCompat;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
@@ -48,7 +52,7 @@ import java.util.UUID;
 public class WhimperEntity extends PathfinderMob implements OwnableEntity {
 
     private static final EntityDataAccessor<Integer> DESPAWN_TICK = SynchedEntityData.defineId(WhimperEntity.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Optional<UUID>> OWNER_UUID = SynchedEntityData.defineId(WhimperEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<UUID>> OWNER_UUID = SynchedEntityData.defineId(WhimperEntity.class, DNLDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<Boolean> CHARGING = SynchedEntityData.defineId(WhimperEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> GIGANTIC = SynchedEntityData.defineId(WhimperEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> OVERWORKED_LEVEL = SynchedEntityData.defineId(WhimperEntity.class, EntityDataSerializers.INT);
@@ -71,7 +75,7 @@ public class WhimperEntity extends PathfinderMob implements OwnableEntity {
         this.moveControl = new WhimperMoveControl(this);
         this.lookControl = new LookControl(this);
         this.noPhysics = true;
-        this.setPathfindingMalus(PathType.DANGER_FIRE, -1.0F);
+        this.setPathfindingMalus(PathType.FIRE_IN_NEIGHBOR, -1.0F);
         this.setPathfindingMalus(PathType.WATER, -1.0F);
         this.setPathfindingMalus(PathType.FENCE, -1.0F);
     }
@@ -94,40 +98,34 @@ public class WhimperEntity extends PathfinderMob implements OwnableEntity {
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Mob.class, 8.0F));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(
-                this, Mob.class, 5, false, false,
-                mob -> PvpConfig.TOGGLE_PVP_MODE.get()
+                this, Mob.class, 5, false, false, (mob, targetLevel) -> PvpConfig.TOGGLE_PVP_MODE.get()
                         && mob instanceof OwnableEntity
-                        && !isAlliedTo(mob)
-        ));
+                        && !isAlliedTo(mob)));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(
-                this, Player.class, 5, true, false,
-                player -> PvpConfig.TOGGLE_PVP_MODE.get()
-                        && !isOwner((Player) player)
-        ));
+                this, Player.class, 5, true, false, (player, targetLevel) -> PvpConfig.TOGGLE_PVP_MODE.get()
+                        && !isOwner((Player) player)));
         this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(
-                this, Mob.class, 5, false, false,
-                mob -> mob instanceof Enemy && !isAlliedTo(mob)
-        ));
+                this, Mob.class, 5, false, false, (mob, targetLevel) -> mob instanceof Enemy && !isAlliedTo(mob)));
     }
 
     private boolean isOwner(Player player) {
-        UUID owner = this.getOwnerUUID();
+        UUID owner = DNLCompat.ownerUUID(this);
         return owner != null && owner.equals(player.getUUID());
     }
 
     @Override
-    public boolean isAlliedTo(Entity other) {
-        UUID myOwner = this.getOwnerUUID();
+    protected boolean considersEntityAsAlly(Entity other) {
+        UUID myOwner = DNLCompat.ownerUUID(this);
         if (myOwner == null) return false; // or true to be ultra-conservative during first ticks
 
         if (other instanceof Player p) {
             return myOwner.equals(p.getUUID());
         }
         if (other instanceof OwnableEntity ownable) {
-            UUID theirOwner = ownable.getOwnerUUID();
+            UUID theirOwner = DNLCompat.ownerUUID(ownable);
             return theirOwner != null && myOwner.equals(theirOwner);
         }
-        return super.isAlliedTo(other);
+        return super.considersEntityAsAlly(other);
     }
 
     @Override
@@ -147,8 +145,8 @@ public class WhimperEntity extends PathfinderMob implements OwnableEntity {
     public void addAdditionalSaveData(ValueOutput compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         compoundTag.putInt("DespawnTicks", this.entityData.get(DESPAWN_TICK));
-        if (this.getOwnerUUID() != null) {
-            NbtCompat.putUUID(compoundTag, "Owner", this.getOwnerUUID());
+        if (DNLCompat.ownerUUID(this) != null) {
+            NbtCompat.putUUID(compoundTag, "Owner", DNLCompat.ownerUUID(this));
         }
         compoundTag.putBoolean("Gigantic", this.isGigantic());
         compoundTag.putInt("OverworkedLevel", this.getOverworkedLevel());
@@ -164,7 +162,7 @@ public class WhimperEntity extends PathfinderMob implements OwnableEntity {
             uuid = NbtCompat.getUUID(compoundTag, "Owner");
         } else {
             String string = compoundTag.getStringOr("Owner", "");
-            uuid = OldUsersConverter.convertMobOwnerIfNecessary(this.getServer(), string);
+            uuid = OldUsersConverter.convertMobOwnerIfNecessary(this.level().getServer(), string);
         }
         if (uuid != null) {
             this.setOwnerUUID(uuid);
@@ -367,7 +365,7 @@ public class WhimperEntity extends PathfinderMob implements OwnableEntity {
 
     @Override
     public void remove(RemovalReason reason) {
-        UUID owner = this.getOwnerUUID();
+        UUID owner = DNLCompat.ownerUUID(this);
         int overworkedLevel = this.getOverworkedLevel();
         super.remove(reason);
 
@@ -459,4 +457,9 @@ public class WhimperEntity extends PathfinderMob implements OwnableEntity {
         }
     }
 
+    @Override
+    public @Nullable net.minecraft.world.entity.EntityReference<net.minecraft.world.entity.LivingEntity> getOwnerReference() {
+        UUID ownerUuid = this.getOwnerUUID();
+        return ownerUuid == null ? null : net.minecraft.world.entity.EntityReference.of(ownerUuid);
+    }
 }

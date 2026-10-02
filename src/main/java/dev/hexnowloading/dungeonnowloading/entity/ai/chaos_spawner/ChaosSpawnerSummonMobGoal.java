@@ -162,7 +162,7 @@ public class ChaosSpawnerSummonMobGoal extends Goal {
         if (mob == null) return;
 
         mob.snapTo(summonPos, 0.0F, 0.0F);
-        mob.finalizeSpawn(serverLevel, level.getCurrentDifficultyAt(summonPos), EntitySpawnReason.MOB_SUMMONED, null);
+        mob.finalizeSpawn(serverLevel, ((net.minecraft.world.level.ServerLevelAccessor) level).getCurrentDifficultyAt(summonPos), EntitySpawnReason.MOB_SUMMONED, null);
 
         entry.post().accept(mob);
         level.addFreshEntity(mob);
@@ -179,15 +179,15 @@ public class ChaosSpawnerSummonMobGoal extends Goal {
         spider.snapTo(summonPos, 0.0F, 0.0F);
         skeleton.snapTo(summonPos, 0.0F, 0.0F);
 
-        spider.finalizeSpawn(serverLevel, level.getCurrentDifficultyAt(summonPos), EntitySpawnReason.MOB_SUMMONED, null);
-        skeleton.finalizeSpawn(serverLevel, level.getCurrentDifficultyAt(summonPos), EntitySpawnReason.MOB_SUMMONED, null);
+        spider.finalizeSpawn(serverLevel, ((net.minecraft.world.level.ServerLevelAccessor) level).getCurrentDifficultyAt(summonPos), EntitySpawnReason.MOB_SUMMONED, null);
+        skeleton.finalizeSpawn(serverLevel, ((net.minecraft.world.level.ServerLevelAccessor) level).getCurrentDifficultyAt(summonPos), EntitySpawnReason.MOB_SUMMONED, null);
 
         // no drop chance on rider (and optionally spider)
         noDropChance(skeleton);
 
         level.addFreshEntity(spider);
         level.addFreshEntity(skeleton);
-        skeleton.startRiding(spider, true);
+        skeleton.startRiding(spider, true, true);
         boss.trackSummon(spider);
         boss.trackSummon(skeleton);
     }

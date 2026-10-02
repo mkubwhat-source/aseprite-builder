@@ -34,7 +34,7 @@ import net.minecraft.world.entity.ai.control.BodyRotationControl;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.entity.projectile.ThrownPotion;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.AbstractThrownPotion;
 import net.minecraft.world.entity.projectile.arrow.ThrownTrident;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -162,8 +162,7 @@ public class RepulsorEntity extends Mob {
         return false;
     }
 
-    @Override
-    protected boolean updateInWaterStateAndDoFluidPushing() {
+        protected boolean updateInWaterStateAndDoFluidPushing() {
         return false;
     }
 
@@ -206,14 +205,10 @@ public class RepulsorEntity extends Mob {
         return new EntityBodyRotationControl(this);
     }
 
-    @Override
-    public boolean alwaysAccepts() {
-        return super.alwaysAccepts();
-    }
-
+    
     @Override
     public boolean hurtServer(ServerLevel hurtLevel, DamageSource damageSource, float f) {
-        if (this.isInvulnerableTo(damageSource)) {
+        if (this.isInvulnerableTo((ServerLevel) this.level(), damageSource)) {
             return false;
         } else {
             if (!this.isRemoved() && !this.level().isClientSide()) {
@@ -250,7 +245,7 @@ public class RepulsorEntity extends Mob {
                 RepulsorItem.setGolden(itemStack);
             }
 
-            this.spawnAtLocation(itemStack);
+            this.spawnAtLocation((ServerLevel) this.level(), itemStack);
         }
     }
 
@@ -299,17 +294,17 @@ public class RepulsorEntity extends Mob {
                         } else {
                             continue;
                         }
-                    } else if (entity instanceof ThrownPotion thrownPotion) {
+                    } else if (entity instanceof AbstractThrownPotion thrownPotion) {
                         ItemStack itemStack = thrownPotion.getItem();
                         PotionContents potionContents = itemStack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
                         Holder<Potion> potion = potionContents.potion().orElse(null);
                         List<MobEffectInstance> list = new java.util.ArrayList<>();
-                        potionContents.forEachEffect(list::add);
+                        potionContents.forEachEffect(list::add, 1.0F);
                         boolean isWater = potionContents.is(Potions.WATER) && list.isEmpty();
                         if (isWater) {
                             // Splash water: extinguish fire / harm water-sensitive entities in range.
                             AABB area = thrownPotion.getBoundingBox().inflate(4.0D, 2.0D, 4.0D);
-                            for (LivingEntity living : this.level().getEntitiesOfClass(LivingEntity.class, area, ThrownPotion.WATER_SENSITIVE_OR_ON_FIRE)) {
+                            for (LivingEntity living : this.level().getEntitiesOfClass(LivingEntity.class, area, AbstractThrownPotion.WATER_SENSITIVE_OR_ON_FIRE)) {
                                 if (living.isSensitiveToWater()) {
                                     living.hurtOrSimulate(this.damageSources().indirectMagic(this, null), 1.0F);
                                 }
@@ -334,8 +329,8 @@ public class RepulsorEntity extends Mob {
                                         double factor = living == entity ? 1.0D : 1.0D - Math.sqrt(distSqr) / 4.0D;
                                         for (MobEffectInstance effect : list) {
                                             Holder<net.minecraft.world.effect.MobEffect> mobEffect = effect.getEffect();
-                                            if (mobEffect.value().isInstantenous()) {
-                                                mobEffect.value().applyInstantenousEffect(this, this, living, effect.getAmplifier(), factor);
+                                            if (mobEffect.value().isInstantaneous()) {
+                                                mobEffect.value().applyInstantaneousEffect((ServerLevel) this.level(), this, this, living, effect.getAmplifier(), factor);
                                             } else {
                                                 int duration = effect.mapDuration(d -> (int) (factor * d + 0.5D));
                                                 MobEffectInstance scaled = new MobEffectInstance(mobEffect, duration, effect.getAmplifier(), effect.isAmbient(), effect.isVisible());
@@ -467,7 +462,7 @@ public class RepulsorEntity extends Mob {
                 (Entity) null, detectionBox, entity -> (
                                 entity instanceof Projectile
                                 || entity.getType().builtInRegistryHolder().is(DNLTags.PROJECTILES)
-                                || entity instanceof ThrownPotion)
+                                || entity instanceof AbstractThrownPotion)
                                 && !entity.getType().builtInRegistryHolder().is(DNLTags.REPULSOR_OMITTED_PROJECTILES)
         );
     }
@@ -515,7 +510,7 @@ public class RepulsorEntity extends Mob {
         original.setDamageValue(original.getMaxDamage());
 
         ItemStack scrap = ScrapItem.ofOriginal(original);
-        this.spawnAtLocation(scrap);
+        this.spawnAtLocation((ServerLevel) this.level(), scrap);
     }
 
 }

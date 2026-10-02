@@ -27,7 +27,7 @@ public class SpawnMobUtil {
             EntityScale.scaleMobAttributes(mob);
             mob.setPersistenceRequired();
             BlockPos blockPos = BlockPos.containing(x, y, z);
-            mob.finalizeSpawn((ServerLevelAccessor) level, level.getCurrentDifficultyAt(blockPos), EntitySpawnReason.SPAWNER, null);
+            mob.finalizeSpawn((ServerLevelAccessor) level, ((net.minecraft.world.level.ServerLevelAccessor) level).getCurrentDifficultyAt(blockPos), EntitySpawnReason.SPAWNER, null);
         }
         return mob;
     }
@@ -38,7 +38,7 @@ public class SpawnMobUtil {
             EntityScale.scaleMobAttributes(mob);
             mob.setPersistenceRequired();
             BlockPos blockPos = BlockPos.containing(x, y, z);
-            mob.finalizeSpawn((ServerLevelAccessor) level, level.getCurrentDifficultyAt(blockPos), EntitySpawnReason.SPAWNER, null);
+            mob.finalizeSpawn((ServerLevelAccessor) level, ((net.minecraft.world.level.ServerLevelAccessor) level).getCurrentDifficultyAt(blockPos), EntitySpawnReason.SPAWNER, null);
         }
         return mob;
     }
@@ -48,7 +48,7 @@ public class SpawnMobUtil {
             EntityScale.scaleMobAttributes(mob);
             mob.setPersistenceRequired();
             BlockPos blockPos = BlockPos.containing(x, y, z);
-            mob.finalizeSpawn((ServerLevelAccessor) level, level.getCurrentDifficultyAt(blockPos), EntitySpawnReason.SPAWNER, null);
+            mob.finalizeSpawn((ServerLevelAccessor) level, ((net.minecraft.world.level.ServerLevelAccessor) level).getCurrentDifficultyAt(blockPos), EntitySpawnReason.SPAWNER, null);
         }
         return mob;
     }

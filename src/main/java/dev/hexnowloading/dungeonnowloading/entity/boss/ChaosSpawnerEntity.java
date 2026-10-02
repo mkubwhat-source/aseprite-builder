@@ -6,6 +6,8 @@ package dev.hexnowloading.dungeonnowloading.entity.boss;
 
 
 
+
+import dev.hexnowloading.dungeonnowloading.entity.util.DNLDataSerializers;
 import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -111,7 +113,7 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
     private static final EntityDataAccessor<Integer> BARRIER_WEST_TICK = SynchedEntityData.defineId(ChaosSpawnerEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> BARRIER_UP_TICK = SynchedEntityData.defineId(ChaosSpawnerEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> BARRIER_DOWN_TICK = SynchedEntityData.defineId(ChaosSpawnerEntity.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Optional<UUID>> PLAYER_UUID = SynchedEntityData.defineId(ChaosSpawnerEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<UUID>> PLAYER_UUID = SynchedEntityData.defineId(ChaosSpawnerEntity.class, DNLDataSerializers.OPTIONAL_UUID);
 
     private static final byte TRIGGER_SLEEP_ANIMATION_BYTE = 70;
     private static final byte TRIGGER_WAKE_UP_ANIMATION_BYTE = 71;
@@ -157,7 +159,7 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
     public ChaosSpawnerEntity(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
         this.setPersistenceRequired();
-        this.bossEvent = (ServerBossEvent)(new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true);
+        this.bossEvent = (ServerBossEvent)(new ServerBossEvent(java.util.UUID.randomUUID(), this.getDisplayName(), BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true);
         this.xpReward = 500;
         this.playerUUIDs = Sets.newHashSet();
         this.currentPlayerUUID = UUID.randomUUID();
@@ -267,7 +269,7 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
         if (NbtCompat.has(compoundTag, "PlayerUUIDs")) {
             ListTag listTag = NbtCompat.getList(compoundTag, "PlayerUUIDs");
             for (int a = 0; a < listTag.size(); ++a) {
-                this.playerUUIDs.add(listTag.getCompoundOrEmpty(a).getUUID("Id"));
+                this.playerUUIDs.add(NbtCompat.getUUID(listTag.getCompoundOrEmpty(a), "Id"));
             }
         }
         SeepingSoulEntity.RecallData data = SeepingSoulEntity.readRecallNBT(compoundTag);
@@ -686,12 +688,12 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
             }
             Entity entity = killedDamageSource.getEntity();
             LivingEntity livingEntity = this.getKillCredit();
-            if (this.deathScore >= 0 && livingEntity != null) {
-                livingEntity.awardKillScore(this, this.deathScore, this.killedDamageSource);
+            if (livingEntity != null) {
+                livingEntity.awardKillScore(this, this.killedDamageSource);
             }
             if (level instanceof ServerLevel) {
                 ServerLevel serverLevel = (ServerLevel)level;
-                if (entity == null || entity.killedEntity(serverLevel, this)) {
+                if (entity == null || entity.killedEntity(serverLevel, this, this.getLastDamageSource() != null ? this.getLastDamageSource() : this.damageSources().generic())) {
                     this.dropAllDeathLoot(serverLevel, killedDamageSource);
                     this.createWitherRose(livingEntity);
                 }
@@ -743,7 +745,7 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
         Level level = this.level();
         if (level instanceof ServerLevel) {
             ServerLevel serverLevel = (ServerLevel)level;
-            if (entity == null || entity.killedEntity(serverLevel, this)) {
+            if (entity == null || entity.killedEntity(serverLevel, this, this.getLastDamageSource() != null ? this.getLastDamageSource() : this.damageSources().generic())) {
                 this.gameEvent(GameEvent.ENTITY_DIE);
             }
             this.level().broadcastEntityEvent(this, (byte)3);
@@ -855,18 +857,20 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
     }
 
     @Override
-    protected void dropFromLootTable(DamageSource $$0, boolean $$1) {
+    protected void dropFromLootTable(ServerLevel serverLevel, DamageSource $$0, boolean $$1) {
         if (!BossConfig.TOGGLE_MULTIPLAYER_LOOT.get()) {
-            super.dropFromLootTable($$0, $$1);
+            super.dropFromLootTable(serverLevel, $$0, $$1);
         }
     }
 
     public void spawnLootTableItems(DamageSource damageSource, boolean b) {
-        net.minecraft.resources.ResourceKey<net.minecraft.world.level.storage.loot.LootTable> resourceLocation = this.getLootTable();
+        net.minecraft.resources.ResourceKey<net.minecraft.world.level.storage.loot.LootTable> resourceLocation = this.getLootTable().orElse(null);
+        if (resourceLocation == null) return;
         LootTable lootTable = this.level().getServer().reloadableRegistries().getLootTable(resourceLocation);
         LootParams.Builder lootparams$builder = (new LootParams.Builder((ServerLevel) this.level())).withParameter(LootContextParams.THIS_ENTITY, this).withParameter(LootContextParams.ORIGIN, this.position()).withParameter(LootContextParams.DAMAGE_SOURCE, damageSource).withOptionalParameter(LootContextParams.ATTACKING_ENTITY, damageSource.getEntity()).withOptionalParameter(LootContextParams.DIRECT_ATTACKING_ENTITY, damageSource.getDirectEntity());
-        if (b && this.lastHurtByPlayer != null) {
-            lootparams$builder = lootparams$builder.withParameter(LootContextParams.LAST_DAMAGE_PLAYER, this.lastHurtByPlayer).withLuck(this.lastHurtByPlayer.getLuck());
+        Player lastHurtByPlayer = this.getLastHurtByPlayer();
+        if (b && lastHurtByPlayer != null) {
+            lootparams$builder = lootparams$builder.withParameter(LootContextParams.LAST_DAMAGE_PLAYER, lastHurtByPlayer).withLuck(lastHurtByPlayer.getLuck());
         }
         LootParams lootParams = lootparams$builder.create(LootContextParamSets.ENTITY);
         lootTable.getRandomItems(lootParams, this.getLootTableSeed(), this::spawnSpecialItemAtLocation);
@@ -988,8 +992,7 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
         return super.getDefaultDimensions(pose).withEyeHeight(1.0F);
     }
 
-    @Override
-    protected boolean updateInWaterStateAndDoFluidPushing() {
+        protected boolean updateInWaterStateAndDoFluidPushing() {
         return false;
     }
 

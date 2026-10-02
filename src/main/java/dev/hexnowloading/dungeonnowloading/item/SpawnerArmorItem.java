@@ -3,6 +3,8 @@ package dev.hexnowloading.dungeonnowloading.item;
 
 
 
+
+import dev.hexnowloading.dungeonnowloading.util.DNLCompat;
 import net.minecraft.world.entity.EntitySpawnReason;
 import java.util.function.Consumer;
 import net.minecraft.world.item.component.TooltipDisplay;
@@ -208,7 +210,7 @@ public class SpawnerArmorItem extends Item {
     }
 
     private boolean playerOwnsWhimper(Level level, Player player, WhimperEntity whimper) {
-        UUID ownerUuid = whimper.getOwnerUUID();
+        UUID ownerUuid = DNLCompat.ownerUUID(whimper);
         if (ownerUuid == null) {
             return false;
         }

@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.entity.ai.chaos_spawner;
 
+
+import dev.hexnowloading.dungeonnowloading.util.DNLCompat;
 import dev.hexnowloading.dungeonnowloading.entity.boss.ChaosSpawnerEntity;
 import dev.hexnowloading.dungeonnowloading.entity.projectile.ChaosSpawnerProjectileEntity;
 import dev.hexnowloading.dungeonnowloading.registry.DNLSounds;
@@ -74,7 +76,7 @@ public class ChaosSpawnerPushGoal extends Goal {
         double knockbackStrength = 12.0D;
         int damageAmount;
         if (player.isBlocking()) {
-            player.disableShield();
+            DNLCompat.disableShield(player);
             damageAmount = (int) (chaosSpawnerEntity.getAttackDamage() * 0.45F);
         } else {
             damageAmount = (int) (chaosSpawnerEntity.getAttackDamage() * 0.9F);

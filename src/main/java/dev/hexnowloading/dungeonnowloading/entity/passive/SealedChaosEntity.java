@@ -4,6 +4,10 @@ package dev.hexnowloading.dungeonnowloading.entity.passive;
 
 
 
+
+
+import dev.hexnowloading.dungeonnowloading.entity.util.DNLDataSerializers;
+import dev.hexnowloading.dungeonnowloading.util.DNLCompat;
 import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
@@ -50,7 +54,7 @@ import java.util.UUID;
 public class SealedChaosEntity extends PathfinderMob implements OwnableEntity {
 
     private static final EntityDataAccessor<Integer> DESPAWN_TICK = SynchedEntityData.defineId(SealedChaosEntity.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Optional<UUID>> OWNER_UUID = SynchedEntityData.defineId(SealedChaosEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<UUID>> OWNER_UUID = SynchedEntityData.defineId(SealedChaosEntity.class, DNLDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<Boolean> BASIC = SynchedEntityData.defineId(SealedChaosEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> ARC_SHOT_LEVEL = SynchedEntityData.defineId(SealedChaosEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> PULSE_SHOT_LEVEL = SynchedEntityData.defineId(SealedChaosEntity.class, EntityDataSerializers.INT);
@@ -83,13 +87,13 @@ public class SealedChaosEntity extends PathfinderMob implements OwnableEntity {
         this.goalSelector.addGoal(1, new SealedChaosAttackGoal(this, 20));
         this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 6.0F));
         this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Mob.class, 5, false, false, (c) -> {
-            return !c.getUUID().equals(this.getOwnerUUID()) && PvpConfig.TOGGLE_PVP_MODE.get() && c instanceof OwnableEntity && !isAlliedTo(c);
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Mob.class, 5, false, false, (c, targetLevel) -> {
+            return !c.getUUID().equals(DNLCompat.ownerUUID(this)) && PvpConfig.TOGGLE_PVP_MODE.get() && c instanceof OwnableEntity && !isAlliedTo(c);
         }));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 5, true, false, (c) -> {
-            return !c.getUUID().equals(this.getOwnerUUID()) && PvpConfig.TOGGLE_PVP_MODE.get();
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 5, true, false, (c, targetLevel) -> {
+            return !c.getUUID().equals(DNLCompat.ownerUUID(this)) && PvpConfig.TOGGLE_PVP_MODE.get();
         }));
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Mob.class, 5, false, false, (c) -> {
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Mob.class, 5, false, false, (c, targetLevel) -> {
             return c instanceof Enemy;
         }));
     }
@@ -110,8 +114,8 @@ public class SealedChaosEntity extends PathfinderMob implements OwnableEntity {
     public void addAdditionalSaveData(ValueOutput compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         compoundTag.putInt("DespawnTicks", this.entityData.get(DESPAWN_TICK));
-        if (this.getOwnerUUID() != null) {
-            NbtCompat.putUUID(compoundTag, "Owner", this.getOwnerUUID());
+        if (DNLCompat.ownerUUID(this) != null) {
+            NbtCompat.putUUID(compoundTag, "Owner", DNLCompat.ownerUUID(this));
         }
         compoundTag.putBoolean("Basic", this.isBasicVariant());
         compoundTag.putInt("ArcShotLevel", this.getArcShotLevel());
@@ -129,7 +133,7 @@ public class SealedChaosEntity extends PathfinderMob implements OwnableEntity {
             uuid = NbtCompat.getUUID(compoundTag, "Owner");
         } else {
             String string = compoundTag.getStringOr("Owner", "");
-            uuid = OldUsersConverter.convertMobOwnerIfNecessary(this.getServer(), string);
+            uuid = OldUsersConverter.convertMobOwnerIfNecessary(this.level().getServer(), string);
         }
         if (uuid != null) {
             this.setOwnerUUID(uuid);
@@ -168,9 +172,9 @@ public class SealedChaosEntity extends PathfinderMob implements OwnableEntity {
     protected InteractionResult mobInteract(Player player, InteractionHand interactionHand) {
         ItemStack itemStack = player.getItemInHand(interactionHand);
         if (itemStack.is(DNLItems.SCEPTER_OF_SEALED_CHAOS.get())) {
-            if (player.getUUID().equals(this.getOwnerUUID())) {
-                if (player.getCooldowns().isOnCooldown(DNLItems.SCEPTER_OF_SEALED_CHAOS.get())) {
-                    player.getCooldowns().addCooldown(DNLItems.SCEPTER_OF_SEALED_CHAOS.get(), 20);
+            if (player.getUUID().equals(DNLCompat.ownerUUID(this))) {
+                if (player.getCooldowns().isOnCooldown(new net.minecraft.world.item.ItemStack(DNLItems.SCEPTER_OF_SEALED_CHAOS.get()))) {
+                    player.getCooldowns().addCooldown(new net.minecraft.world.item.ItemStack(DNLItems.SCEPTER_OF_SEALED_CHAOS.get()), 20);
                     this.discardWithParticle();
                 }
                 return InteractionResult.SUCCESS;
@@ -198,18 +202,18 @@ public class SealedChaosEntity extends PathfinderMob implements OwnableEntity {
     }
 
     @Override
-    public boolean isAlliedTo(Entity other) {
-        UUID myOwner = this.getOwnerUUID();
+    protected boolean considersEntityAsAlly(Entity other) {
+        UUID myOwner = DNLCompat.ownerUUID(this);
         if (myOwner == null) return false; // or true to be ultra-conservative during first ticks
 
         if (other instanceof Player p) {
             return myOwner.equals(p.getUUID());
         }
         if (other instanceof OwnableEntity ownable) {
-            UUID theirOwner = ownable.getOwnerUUID();
+            UUID theirOwner = DNLCompat.ownerUUID(ownable);
             return theirOwner != null && myOwner.equals(theirOwner);
         }
-        return super.isAlliedTo(other);
+        return super.considersEntityAsAlly(other);
     }
 
     @Override
@@ -365,7 +369,7 @@ public class SealedChaosEntity extends PathfinderMob implements OwnableEntity {
 
     @Override
     public void remove(RemovalReason reason) {
-        UUID owner = this.getOwnerUUID();
+        UUID owner = DNLCompat.ownerUUID(this);
         int overworkedLevel = this.getOverworkedLevel();
         super.remove(reason);
 
@@ -380,5 +384,11 @@ public class SealedChaosEntity extends PathfinderMob implements OwnableEntity {
 
     public void setBasicVariant(boolean basic) {
         this.entityData.set(BASIC, basic);
+    }
+
+    @Override
+    public @Nullable net.minecraft.world.entity.EntityReference<net.minecraft.world.entity.LivingEntity> getOwnerReference() {
+        UUID ownerUuid = this.getOwnerUUID();
+        return ownerUuid == null ? null : net.minecraft.world.entity.EntityReference.of(ownerUuid);
     }
 }

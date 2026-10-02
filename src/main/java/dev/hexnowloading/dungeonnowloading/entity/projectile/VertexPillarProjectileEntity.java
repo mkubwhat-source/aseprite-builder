@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.entity.projectile;
 
+
+import dev.hexnowloading.dungeonnowloading.util.DNLCompat;
 import net.minecraft.network.syncher.SynchedEntityData;
 import dev.hexnowloading.dungeonnowloading.block.VertexPillarBlock;
 import dev.hexnowloading.dungeonnowloading.entity.boss.FairkeeperSerpentEntity;
@@ -141,7 +143,7 @@ public class VertexPillarProjectileEntity extends ModelledProjectileEntity {
             actualDamage = (float) owner.getAttributeValue(Attributes.ATTACK_DAMAGE) * damagePercentage;
         }
         if (mob instanceof Player player && player.isBlocking()) {
-            player.disableShield();
+            DNLCompat.disableShield(player);
             actualDamage *= 1.0F - SHILED_DAMAGE_REDUCTION;
         }
         double x = mob.getX() - this.getX();

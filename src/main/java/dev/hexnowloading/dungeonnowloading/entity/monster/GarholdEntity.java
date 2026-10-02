@@ -3,6 +3,8 @@ package dev.hexnowloading.dungeonnowloading.entity.monster;
 
 
 
+
+import dev.hexnowloading.dungeonnowloading.util.DNLCompat;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
@@ -50,10 +52,8 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -172,7 +172,7 @@ public class GarholdEntity extends Monster {
                         10,
                         true,
                         false,
-                        this::isValidGarholdTarget
+                        (target, targetLevel) -> this.isValidGarholdTarget(target)
                 )
         );
         super.registerGoals();
@@ -217,7 +217,7 @@ public class GarholdEntity extends Monster {
         FlyingPathNavigation nav = new FlyingPathNavigation(this, level);
         nav.setCanOpenDoors(false);
         nav.setCanFloat(true);
-        nav.setCanPassDoors(true);
+        nav.setCanOpenDoors(false);
         return nav;
     }
 
@@ -229,7 +229,7 @@ public class GarholdEntity extends Monster {
     @Override
     public void travel(Vec3 travelVec) {
         // Only simulate movement on the authoritative side.
-        if (!this.isControlledByLocalInstance()) {
+        if (!this.isLocalInstanceAuthoritative()) {
             this.calculateEntityAnimation(false);
             return;
         }
@@ -473,7 +473,7 @@ public class GarholdEntity extends Monster {
         this.applyCaptureAttributes();
         this.clearNearbyTargets(target);
 
-        boolean mounted = target.startRiding(this, true);
+        boolean mounted = target.startRiding(this, true, true);
 
         if (!mounted) {
             this.clearCaptureAttributes();
@@ -500,7 +500,7 @@ public class GarholdEntity extends Monster {
 
         player.teleportTo(target.getX(), target.getY(), target.getZ());
         player.stopRiding();
-        player.startRiding(target, true);
+        player.startRiding(target, true, true);
 
         spawnTeleportSpawnerFx(level, target);
         target.playSound(DNLSounds.GARHOLD_TELEPORT.get());
@@ -633,8 +633,8 @@ public class GarholdEntity extends Monster {
         if (!this.level().isClientSide()) {
             if (player.getAbilities().instabuild) {
 
-                boolean usePickaxe = stack.getItem() instanceof PickaxeItem;
-                boolean useHoe = stack.getItem() instanceof HoeItem;
+                boolean usePickaxe = stack.is(net.minecraft.tags.ItemTags.PICKAXES);
+                boolean useHoe = stack.is(net.minecraft.tags.ItemTags.HOES);
 
                 if (usePickaxe || useHoe) {
                     ServerLevel level = (ServerLevel) this.level();
@@ -787,14 +787,14 @@ public class GarholdEntity extends Monster {
             return allowed;
         })) {
 
-            boolean blockedByShield = (e instanceof Player p) && p.isBlocking() && p.isDamageSourceBlocked(src);
+            boolean blockedByShield = (e instanceof Player p) && p.isBlocking() && true;
 
             e.hurtOrSimulate(src, dmg);
 
             if (blockedByShield) {
                 Player p = (Player) e;
                 p.stopUsingItem();
-                p.getCooldowns().addCooldown(Items.SHIELD, 100);
+                p.getCooldowns().addCooldown(new net.minecraft.world.item.ItemStack(Items.SHIELD), 100);
 
                 level.playSound(null, p.getX(), p.getY(), p.getZ(),
                         SoundEvents.SHIELD_BREAK, SoundSource.PLAYERS, 0.8F, 1.0F);
@@ -819,7 +819,7 @@ public class GarholdEntity extends Monster {
                 v.z + dz * GROUND_SMASH_KB_H
         );
 
-        entity.hurtMarked = true;
+        entity.needsSync = true;
         entity.needsSync = true;
         entity.setOnGround(false);
     }
@@ -829,13 +829,13 @@ public class GarholdEntity extends Monster {
 
         // Vanilla pets
         if (e instanceof net.minecraft.world.entity.TamableAnimal ta) {
-            UUID owner = ta.getOwnerUUID();
+            UUID owner = DNLCompat.ownerUUID(ta);
             return owner != null; // owned by *some* player
         }
 
         // Generic owner interface used by some entities (and many mods)
         if (e instanceof net.minecraft.world.entity.OwnableEntity ownable) {
-            UUID owner = ownable.getOwnerUUID();
+            UUID owner = DNLCompat.ownerUUID(ownable);
             return owner != null;
         }
 
@@ -844,7 +844,7 @@ public class GarholdEntity extends Monster {
 
     private boolean isValidGarholdTarget(LivingEntity target) {
 
-        if (target.getType().is(EntityTypeTags.UNDEAD)) return false;
+        if (target.getType().builtInRegistryHolder().is(EntityTypeTags.UNDEAD)) return false;
 
         return isValidCaptureTarget(target);
     }
@@ -1003,7 +1003,7 @@ public class GarholdEntity extends Monster {
     }
 
     public boolean isChainBlock(BlockPos pos) {
-        return this.level().getBlockState(pos).is(Blocks.CHAIN);
+        return this.level().getBlockState(pos).is(Blocks.IRON_CHAIN);
     }
 
     public GarholdState getGarholdState() {

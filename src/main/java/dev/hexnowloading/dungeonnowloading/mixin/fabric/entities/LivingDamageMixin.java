@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.mixin.fabric.entities;
 
+
+import net.minecraft.server.level.ServerLevel;
 import dev.hexnowloading.dungeonnowloading.entity.DNLEntityEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -43,7 +45,7 @@ public class LivingDamageMixin {
         return totalDamage;
     }
 
-    @ModifyVariable(method = "Lnet/minecraft/world/entity/LivingEntity;actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isInvulnerableTo(Lnet/minecraft/world/damagesource/DamageSource;)Z", shift = At.Shift.AFTER), ordinal = 0, require = 0)
+    @ModifyVariable(method = "Lnet/minecraft/world/entity/LivingEntity;actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;this.isInvulnerableTo((ServerLevel) this.level(), Lnet/minecraft/world/damagesource/DamageSource;)Z", shift = At.Shift.AFTER), ordinal = 0, require = 0)
     private float dungeonnowloading_onLivingHurt(float f, DamageSource damageSource) {
         LivingEntity target = (LivingEntity) (Object) this;
         Entity attackerEntity = damageSource.getEntity();

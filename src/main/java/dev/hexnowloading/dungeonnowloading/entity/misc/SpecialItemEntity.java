@@ -3,6 +3,8 @@ package dev.hexnowloading.dungeonnowloading.entity.misc;
 
 
 
+
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
@@ -43,9 +45,10 @@ public class SpecialItemEntity extends ItemEntity implements TraceableEntity {
         return true;
     }
 
+    // 26.x: ItemEntity#hurtServer is final; being invulnerable keeps the item from being destroyed.
     @Override
-    public boolean hurt(DamageSource $$0, float $$1) {
-        return false;
+    public boolean isInvulnerable() {
+        return true;
     }
 
     @Override

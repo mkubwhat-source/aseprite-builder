@@ -38,9 +38,8 @@ public class FabricRegistryHelper implements RegistryHelper {
 
     @Override
     public void registerEntityDataSerializer(String name, EntityDataSerializer<?> serializer) {
-        // 1.21: Fabric (unlike NeoForge) has no separate modded-serializer registry gate — vanilla
-        // EntityDataSerializers.registerSerializer is callable directly (no "already frozen" guard).
-        EntityDataSerializers.registerSerializer(serializer);
+        // Fabric assigns modded serializers stable ids so client and server agree on them.
+        net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityDataRegistry.register(DungeonNowLoading.id(name), serializer);
     }
 
     @Override

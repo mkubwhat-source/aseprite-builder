@@ -206,7 +206,7 @@ public class FairkeeperChestBlockEntity extends RandomizableContainerBlockEntity
 
     private void removeLootTable() {
         if (this.lootTable != null) {
-            this.lootTable = java.util.Optional.of(null);
+            this.lootTable = null;
         }
     }
 
@@ -228,7 +228,7 @@ public class FairkeeperChestBlockEntity extends RandomizableContainerBlockEntity
 
     protected boolean tryLoadLootTable(CompoundTag nbt) {
         if (nbt.contains("LootTable", 8)) {
-            this.lootTable = java.util.Optional.of(Identifier.parse(nbt.getStringOr("LootTable", "")));
+            this.lootTable = Identifier.parse(nbt.getStringOr("LootTable", ""));
             this.lootTableSeed = nbt.getLongOr("LootTableSeed", 0L);
             return true;
         } else {

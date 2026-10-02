@@ -39,7 +39,7 @@ public class FlameProjectileEntity extends ThrowableItemProjectile {
     }
 
     public FlameProjectileEntity(LivingEntity owner, Level level) {
-        super(DNLEntityTypes.FLAME_PROJECTILE.get(), owner, level);
+        super(DNLEntityTypes.FLAME_PROJECTILE.get(), owner, level, net.minecraft.world.item.ItemStack.EMPTY);
         this.setDamage(0);
         this.setSoul(false);
     }

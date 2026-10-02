@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.util;
 
+
+import dev.hexnowloading.dungeonnowloading.util.DNLCompat;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import net.minecraft.resources.Identifier;
 import dev.hexnowloading.dungeonnowloading.entity.passive.CopperCreepEntity;
@@ -41,7 +43,7 @@ public final class OverworkedPenaltyUtil {
         for (WhimperEntity w : level.getEntitiesOfClass(
                 WhimperEntity.class,
                 owner.getBoundingBox().inflate(128.0D),
-                e -> e.isAlive() && owner.getUUID().equals(e.getOwnerUUID()) && e.getOverworkedLevel() > 0
+                e -> e.isAlive() && owner.getUUID().equals(DNLCompat.ownerUUID(e)) && e.getOverworkedLevel() > 0
         )) {
             maxLevel = Math.max(maxLevel, w.getOverworkedLevel());
             if (maxLevel >= 5) break;
@@ -51,7 +53,7 @@ public final class OverworkedPenaltyUtil {
             for (SealedChaosEntity s : level.getEntitiesOfClass(
                     SealedChaosEntity.class,
                     owner.getBoundingBox().inflate(128.0D),
-                    e -> e.isAlive() && owner.getUUID().equals(e.getOwnerUUID()) && e.getOverworkedLevel() > 0
+                    e -> e.isAlive() && owner.getUUID().equals(DNLCompat.ownerUUID(e)) && e.getOverworkedLevel() > 0
             )) {
                 maxLevel = Math.max(maxLevel, s.getOverworkedLevel());
                 if (maxLevel >= 5) break;

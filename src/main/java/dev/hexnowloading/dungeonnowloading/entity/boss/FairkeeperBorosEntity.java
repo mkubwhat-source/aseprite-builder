@@ -3,6 +3,8 @@ package dev.hexnowloading.dungeonnowloading.entity.boss;
 
 
 
+
+import dev.hexnowloading.dungeonnowloading.entity.util.DNLDataSerializers;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
@@ -49,7 +51,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
-import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -64,7 +65,7 @@ public class FairkeeperBorosEntity extends Monster implements Boss, Enemy, Slumb
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final EntityDataAccessor<FairkeeperBorosState> STATE = SynchedEntityData.defineId(FairkeeperBorosEntity.class, EntityStates.FAIRKEEPER_BOROS_STATE);
     private static final EntityDataAccessor<FairkeeperBorosAnimationState> ANIMATION_STATE = SynchedEntityData.defineId(FairkeeperBorosEntity.class, EntityStates.FAIRKEEPER_BOROS_ANIMATION_STATE);
-    private static final EntityDataAccessor<Optional<UUID>> CHILD_UUID = SynchedEntityData.defineId(FairkeeperBorosEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<UUID>> CHILD_UUID = SynchedEntityData.defineId(FairkeeperBorosEntity.class, DNLDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<Boolean> HAS_ARMOR = SynchedEntityData.defineId(FairkeeperBorosEntity.class, EntityDataSerializers.BOOLEAN);
 
     public final AnimationState idleAnimationState = new AnimationState();
@@ -112,7 +113,7 @@ public class FairkeeperBorosEntity extends Monster implements Boss, Enemy, Slumb
         this.setArmor(true);
         this.setArmorHealth(75.0F);
         this.xpReward = 0;
-        this.bossEvent = (ServerBossEvent)(new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true);
+        this.bossEvent = (ServerBossEvent)(new ServerBossEvent(java.util.UUID.randomUUID(), this.getDisplayName(), BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true);
     }
 
     public FairkeeperBorosEntity(Level level, FairkeeperSerpentCallerEntity fairkeeperSerpentCaller) {
@@ -528,7 +529,7 @@ public class FairkeeperBorosEntity extends Monster implements Boss, Enemy, Slumb
             return hurtAndTrackAttackers(damageSource, amount);
         }
 
-        if (damageSource.is(DNLTags.FAIRKEEPER_BOROS_ARMOR_HURTABLE) || (damageSource.getDirectEntity() instanceof LivingEntity livingEntity && livingEntity.getMainHandItem().getItem() instanceof PickaxeItem)) {
+        if (damageSource.is(DNLTags.FAIRKEEPER_BOROS_ARMOR_HURTABLE) || (damageSource.getDirectEntity() instanceof LivingEntity livingEntity && livingEntity.getMainHandItem().is(net.minecraft.tags.ItemTags.PICKAXES))) {
             boolean penetratesArmor = this.getArmorHealth() - amount <= 0;
             float nonKillableDamage = penetratesArmor ? 0 : amount;
             if (penetratesArmor) {
@@ -715,8 +716,7 @@ public class FairkeeperBorosEntity extends Monster implements Boss, Enemy, Slumb
         return false;
     }
 
-    @Override
-    protected boolean updateInWaterStateAndDoFluidPushing() {
+        protected boolean updateInWaterStateAndDoFluidPushing() {
         return false;
     }
 
@@ -730,7 +730,7 @@ public class FairkeeperBorosEntity extends Monster implements Boss, Enemy, Slumb
     }
 
     @Override
-    protected int calculateFallDamage(float $$0, float $$1) {
+    protected int calculateFallDamage(double $$0, float $$1) {
         return 0;
     }
 

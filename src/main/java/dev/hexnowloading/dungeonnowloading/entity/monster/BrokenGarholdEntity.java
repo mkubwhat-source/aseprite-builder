@@ -122,7 +122,7 @@ public class BrokenGarholdEntity extends Monster {
     }
 
     private boolean isChainBlock(BlockPos pos) {
-        return this.level().getBlockState(pos).is(Blocks.CHAIN);
+        return this.level().getBlockState(pos).is(Blocks.IRON_CHAIN);
     }
 
     private boolean hasChainAboveSelf() {
@@ -161,7 +161,7 @@ public class BrokenGarholdEntity extends Monster {
         // optional: kill horizontal motion so it drops straight down
         Vec3 v = this.getDeltaMovement();
         this.setDeltaMovement(0.0, v.y, 0.0);
-        this.hurtMarked = true;
+        this.needsSync = true;
     }
 
     private void breakOnGround(ServerLevel level) {
@@ -215,7 +215,7 @@ public class BrokenGarholdEntity extends Monster {
 
         if (rider instanceof Player p) {
             p.setDeltaMovement(Vec3.ZERO);
-            p.hurtMarked = true;
+            p.needsSync = true;
         }
     }
 

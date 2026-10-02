@@ -3,6 +3,8 @@ package dev.hexnowloading.dungeonnowloading.entity.boss;
 
 
 
+
+import dev.hexnowloading.dungeonnowloading.entity.util.DNLDataSerializers;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
@@ -55,10 +57,10 @@ public class FairkeeperOurosPartEntity extends Monster implements Boss, Enemy, S
 
     private static final EntityDataAccessor<FairkeeperOurosPartState> STATE = SynchedEntityData.defineId(FairkeeperOurosPartEntity.class, EntityStates.FAIRKEEPER_OUROS_PART_STATE);
     private static final EntityDataAccessor<FairkeeperOurosPartAnimationState> ANIMATION_STATE = SynchedEntityData.defineId(FairkeeperOurosPartEntity.class, EntityStates.FAIRKEEPER_OUROS_PART_ANIMATION_STATE);
-    private static final EntityDataAccessor<Optional<UUID>> PARENT_UUID = SynchedEntityData.defineId(FairkeeperOurosPartEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<UUID>> PARENT_UUID = SynchedEntityData.defineId(FairkeeperOurosPartEntity.class, DNLDataSerializers.OPTIONAL_UUID);
 
-    private static final EntityDataAccessor<Optional<UUID>> HEAD_UUID = SynchedEntityData.defineId(FairkeeperOurosPartEntity.class, EntityDataSerializers.OPTIONAL_UUID);
-    private static final EntityDataAccessor<Optional<UUID>> CHILD_UUID = SynchedEntityData.defineId(FairkeeperOurosPartEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<UUID>> HEAD_UUID = SynchedEntityData.defineId(FairkeeperOurosPartEntity.class, DNLDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<UUID>> CHILD_UUID = SynchedEntityData.defineId(FairkeeperOurosPartEntity.class, DNLDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<Float> CANNON_YAW = SynchedEntityData.defineId(FairkeeperOurosPartEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> CANNON_PITCH = SynchedEntityData.defineId(FairkeeperOurosPartEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> BODY_INDEX = SynchedEntityData.defineId(FairkeeperOurosPartEntity.class, EntityDataSerializers.INT);
@@ -323,7 +325,7 @@ public class FairkeeperOurosPartEntity extends Monster implements Boss, Enemy, S
             return super.hurtServer(hurtLevel, damageSource, 0);
         }
 
-        if (damageSource.is(DamageTypes.EXPLOSION) || (damageSource.getDirectEntity() instanceof LivingEntity livingEntity && livingEntity.canDisableShield())) {
+        if (damageSource.is(DamageTypes.EXPLOSION) || (damageSource.getDirectEntity() instanceof LivingEntity livingEntity && livingEntity.getMainHandItem().is(net.minecraft.tags.ItemTags.AXES))) {
             this.setArmor(false);
         }
 
@@ -552,8 +554,7 @@ public class FairkeeperOurosPartEntity extends Monster implements Boss, Enemy, S
         return false;
     }
 
-    @Override
-    protected boolean updateInWaterStateAndDoFluidPushing() {
+        protected boolean updateInWaterStateAndDoFluidPushing() {
         return false;
     }
 
@@ -562,7 +563,7 @@ public class FairkeeperOurosPartEntity extends Monster implements Boss, Enemy, S
     }
 
     @Override
-    protected int calculateFallDamage(float $$0, float $$1) {
+    protected int calculateFallDamage(double $$0, float $$1) {
         return 0;
     }
 

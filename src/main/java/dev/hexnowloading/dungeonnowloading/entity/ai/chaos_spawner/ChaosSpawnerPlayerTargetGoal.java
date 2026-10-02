@@ -29,7 +29,9 @@ public class ChaosSpawnerPlayerTargetGoal extends Goal {
         } else {
             if (chaosSpawnerEntity.getPhase() != 0) {
                 nextScanTick = reducedTickDelay(60);
-                List<Player> list = chaosSpawnerEntity.level().getNearbyPlayers(attackTargeting, chaosSpawnerEntity, chaosSpawnerEntity.getBoundingBox().inflate(range));
+                List<Player> list = chaosSpawnerEntity.level() instanceof net.minecraft.server.level.ServerLevel serverLevel
+                        ? chaosSpawnerEntity.level().getEntitiesOfClass(Player.class, chaosSpawnerEntity.getBoundingBox().inflate(range), player -> attackTargeting.test(serverLevel, chaosSpawnerEntity, player))
+                        : java.util.List.of();
                 list = list.stream().filter(player -> !player.getAbilities().instabuild).collect(Collectors.toList());
                 if (!list.isEmpty()) {
                     chaosSpawnerEntity.setTarget(list.get(chaosSpawnerEntity.getRandom().nextInt(list.size())));
@@ -47,7 +49,7 @@ public class ChaosSpawnerPlayerTargetGoal extends Goal {
         if (livingEntity == null) {
             return false;
         }
-        if (!chaosSpawnerEntity.canAttack(livingEntity, TargetingConditions.DEFAULT)) {
+        if (!(chaosSpawnerEntity.level() instanceof net.minecraft.server.level.ServerLevel targetLevel && TargetingConditions.DEFAULT.test(targetLevel, chaosSpawnerEntity, livingEntity))) {
             return false;
         }
         if (livingEntity instanceof Player) {

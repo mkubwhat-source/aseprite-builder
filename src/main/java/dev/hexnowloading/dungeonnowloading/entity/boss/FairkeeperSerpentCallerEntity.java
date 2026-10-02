@@ -4,6 +4,8 @@ package dev.hexnowloading.dungeonnowloading.entity.boss;
 
 
 
+
+import dev.hexnowloading.dungeonnowloading.entity.util.DNLDataSerializers;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
@@ -77,8 +79,8 @@ public class FairkeeperSerpentCallerEntity extends Entity {
 
     private static final EntityDataAccessor<FairkeeperSerpentCallerAnimationState> ANIMATION_STATE = SynchedEntityData.defineId(FairkeeperSerpentCallerEntity.class, EntityStates.FAIRKEEPER_SERPENT_CALLER_ANIMATION_STATE);
     private static final EntityDataAccessor<Boolean> ACTIVATED = SynchedEntityData.defineId(FairkeeperSerpentCallerEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Optional<UUID>> BOROS_UUID = SynchedEntityData.defineId(FairkeeperSerpentCallerEntity.class, EntityDataSerializers.OPTIONAL_UUID);
-    private static final EntityDataAccessor<Optional<UUID>> OUROS_UUID = SynchedEntityData.defineId(FairkeeperSerpentCallerEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<UUID>> BOROS_UUID = SynchedEntityData.defineId(FairkeeperSerpentCallerEntity.class, DNLDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<UUID>> OUROS_UUID = SynchedEntityData.defineId(FairkeeperSerpentCallerEntity.class, DNLDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<Integer> HORIZONTAL_OFFSET = SynchedEntityData.defineId(FairkeeperSerpentCallerEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> VERTICAL_OFFSET = SynchedEntityData.defineId(FairkeeperSerpentCallerEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> PHASE = SynchedEntityData.defineId(FairkeeperSerpentCallerEntity.class, EntityDataSerializers.INT);
@@ -831,7 +833,7 @@ public class FairkeeperSerpentCallerEntity extends Entity {
         if (multiplayer) {
             lootTable.getRandomItems(lootParams, itemStack -> spawnSpecialItemEntity(itemStack, 0.0F, uuid));
         } else {
-            lootTable.getRandomItems(lootParams, this::spawnAtLocation);
+            lootTable.getRandomItems(lootParams, stack -> this.spawnAtLocation((ServerLevel) this.level(), stack));
         }
     }
 
@@ -1091,21 +1093,21 @@ public class FairkeeperSerpentCallerEntity extends Entity {
     }
 
     @Override
-    public InteractionResult interact(Player player, InteractionHand hand) {
+    public InteractionResult interact(Player player, InteractionHand hand, net.minecraft.world.phys.Vec3 location) {
         if (this.getPhase() < 1) {
             player.sendOverlayMessage(Component.translatable("entity.dungeonnowloading.fairkeeper_serpent_caller.right_click"));
             return InteractionResult.SUCCESS;
         }
-        return super.interact(player, hand);
+        return super.interact(player, hand, location);
     }
 
     @Override
     public boolean hurtServer(ServerLevel hurtLevel, DamageSource damageSource, float v) {
         if (!this.level().isClientSide() && !this.isRemoved() && damageSource.isCreativePlayer()) {
-            this.kill();
+            this.kill(hurtLevel);
             return true;
         }
-        return super.hurtServer(hurtLevel, damageSource, v);
+        return false;
     }
 
     private void playBossMusic() {

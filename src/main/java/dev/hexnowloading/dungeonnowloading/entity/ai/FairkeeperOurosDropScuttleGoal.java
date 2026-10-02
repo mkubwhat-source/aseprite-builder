@@ -1,6 +1,8 @@
 package dev.hexnowloading.dungeonnowloading.entity.ai;
 
 
+
+import dev.hexnowloading.dungeonnowloading.util.DNLCompat;
 import net.minecraft.world.entity.EntitySpawnReason;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.entity.boss.FairkeeperOurosEntity;
@@ -116,12 +118,12 @@ public class FairkeeperOurosDropScuttleGoal extends StoppableGoal {
 
         BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos(this.currentPart.getX(), this.currentPart.getY(), currentPart.getZ());
 
-        while (mutableBlockPos.getY() > level.getMinY() && !level.getBlockState(mutableBlockPos).blocksMotion()) {
+        while (mutableBlockPos.getY() > level.getMinY() && !DNLCompat.blocksMotion(level.getBlockState(mutableBlockPos))) {
             mutableBlockPos.move(Direction.DOWN);
         }
 
         BlockState blockState = level.getBlockState(mutableBlockPos);
-        if (blockState.blocksMotion()) {
+        if (DNLCompat.blocksMotion(blockState)) {
             ((ServerLevel) level).sendParticles(new ScalableAxisParticleType.ScalableAxisParticleData(DNLParticleTypes.REDSTONE_HAZARD_INDICATOR_PARTICLE.get(), 0, 90, 1.25F), mutableBlockPos.getX() + 0.5F, mutableBlockPos.getY() + 1.05F, mutableBlockPos.getZ() + 0.5F, 1, 0, 0, 0, 0);
         }
     }

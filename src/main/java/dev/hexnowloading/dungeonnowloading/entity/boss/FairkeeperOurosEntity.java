@@ -3,6 +3,8 @@ package dev.hexnowloading.dungeonnowloading.entity.boss;
 
 
 
+
+import dev.hexnowloading.dungeonnowloading.entity.util.DNLDataSerializers;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
@@ -67,8 +69,8 @@ public class FairkeeperOurosEntity extends Monster implements Boss, Enemy, Slumb
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final EntityDataAccessor<FairkeeperOurosState> STATE = SynchedEntityData.defineId(FairkeeperOurosEntity.class, EntityStates.FAIRKEEPER_OUROS_STATE);
     private static final EntityDataAccessor<FairkeeperOurosAnimationState> OUROS_ANIMATION_STATE = SynchedEntityData.defineId(FairkeeperOurosEntity.class, EntityStates.FAIRKEEPER_OUROS_ANIMATION_STATE);
-    private static final EntityDataAccessor<Optional<UUID>> CHILD_UUID = SynchedEntityData.defineId(FairkeeperOurosEntity.class, EntityDataSerializers.OPTIONAL_UUID);
-    //private static final EntityDataAccessor<Optional<UUID>> CALLER_UUID = SynchedEntityData.defineId(FairkeeperOurosEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<UUID>> CHILD_UUID = SynchedEntityData.defineId(FairkeeperOurosEntity.class, DNLDataSerializers.OPTIONAL_UUID);
+    //private static final EntityDataAccessor<Optional<UUID>> CALLER_UUID = SynchedEntityData.defineId(FairkeeperOurosEntity.class, DNLDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<Boolean> IS_ON_CEILING = SynchedEntityData.defineId(FairkeeperOurosEntity.class, EntityDataSerializers.BOOLEAN);
 
     public final AnimationState idleAnimationState = new AnimationState();
@@ -111,7 +113,7 @@ public class FairkeeperOurosEntity extends Monster implements Boss, Enemy, Slumb
         { net.minecraft.world.entity.ai.attributes.AttributeInstance __step = this.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.STEP_HEIGHT); if (__step != null) __step.setBaseValue(0.0f); }
         this.setPersistenceRequired();
         this.xpReward = 0;
-        this.bossEvent = (ServerBossEvent)(new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true);
+        this.bossEvent = (ServerBossEvent)(new ServerBossEvent(java.util.UUID.randomUUID(), this.getDisplayName(), BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true);
     }
 
     public FairkeeperOurosEntity(Level level, FairkeeperSerpentCallerEntity fairkeeperSerpentCaller) {
@@ -349,7 +351,7 @@ public class FairkeeperOurosEntity extends Monster implements Boss, Enemy, Slumb
 
     @Override
     public void travel(Vec3 movementInput) {
-        if (this.isControlledByLocalInstance()) {
+        if (this.isLocalInstanceAuthoritative()) {
             double upwardGravity = -0.08; // Negative value for upward gravity
             boolean isRising = this.getDeltaMovement().y >= 0.0; // Checks if the entity is rising
 
@@ -358,7 +360,7 @@ public class FairkeeperOurosEntity extends Monster implements Boss, Enemy, Slumb
             }
 
             if (this.isFallFlying()) {
-                this.checkSlowFallDistance();
+                
                 Vec3 currentVelocity = this.getDeltaMovement();
                 Vec3 lookDirection = this.getLookAngle();
                 float pitchRadians = this.getXRot() * (float) (Math.PI / 180.0);
@@ -824,8 +826,7 @@ public class FairkeeperOurosEntity extends Monster implements Boss, Enemy, Slumb
         return false;
     }
 
-    @Override
-    protected boolean updateInWaterStateAndDoFluidPushing() {
+        protected boolean updateInWaterStateAndDoFluidPushing() {
         return false;
     }
 
@@ -834,7 +835,7 @@ public class FairkeeperOurosEntity extends Monster implements Boss, Enemy, Slumb
     }
 
     @Override
-    protected int calculateFallDamage(float $$0, float $$1) {
+    protected int calculateFallDamage(double $$0, float $$1) {
         return 0;
     }
 

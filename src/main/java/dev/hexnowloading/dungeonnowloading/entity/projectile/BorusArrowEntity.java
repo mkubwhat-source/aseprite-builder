@@ -2,6 +2,8 @@ package dev.hexnowloading.dungeonnowloading.entity.projectile;
 
 
 
+
+import dev.hexnowloading.dungeonnowloading.util.DNLCompat;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityTypes;
 import dev.hexnowloading.dungeonnowloading.entity.util.ProjectileUtils;
@@ -143,7 +145,7 @@ public class BorusArrowEntity extends AbstractArrow {
                 }
 
                 if (livingEntity instanceof Player player && player.isBlocking()) {
-                    player.disableShield();
+                    DNLCompat.disableShield(player);
                 }
 
                 if (this.level() instanceof net.minecraft.server.level.ServerLevel serverLevel && owner instanceof LivingEntity) {

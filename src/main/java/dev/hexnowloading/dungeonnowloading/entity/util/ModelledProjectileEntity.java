@@ -158,7 +158,7 @@ public abstract class ModelledProjectileEntity extends Entity implements Traceab
     }
 
     @Override
-    protected void readAdditionalSaveData(ValueInput compoundTag) {
+    protected void addAdditionalSaveData(ValueOutput compoundTag) {
         if (this.ownerUUID != null) {
             NbtCompat.putUUID(compoundTag, "Owner", this.ownerUUID);
         }
@@ -171,7 +171,7 @@ public abstract class ModelledProjectileEntity extends Entity implements Traceab
     }
 
     @Override
-    protected void addAdditionalSaveData(ValueOutput compoundTag) {
+    protected void readAdditionalSaveData(ValueInput compoundTag) {
         if (NbtCompat.hasUUID(compoundTag, "Owner")) {
             this.ownerUUID = NbtCompat.getUUID(compoundTag, "Owner");
             this.cachedOwner = null;
@@ -179,5 +179,10 @@ public abstract class ModelledProjectileEntity extends Entity implements Traceab
 
         this.leftOwner = compoundTag.getBooleanOr("LeftOwner", false);
         this.hasBeenShot = compoundTag.getBooleanOr("HasBeenShot", false);
+    }
+
+    @Override
+    public boolean hurtServer(net.minecraft.server.level.ServerLevel level, net.minecraft.world.damagesource.DamageSource source, float amount) {
+        return false;
     }
 }

@@ -3,6 +3,8 @@ package dev.hexnowloading.dungeonnowloading.entity.projectile;
 
 
 
+
+import dev.hexnowloading.dungeonnowloading.util.DNLCompat;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
@@ -48,7 +50,7 @@ public class ChaosSpawnerProjectileEntity extends Entity {
     public double zPower;
     private final float INERTIA = 1F; // Keep it at 1 to maintain smooth motion at all speed.
     private final ParticleOptions SPAWN_PARTICLE = ParticleTypes.POOF;
-    private final ParticleOptions TRAIL_PARTICLE = ParticleTypes.DRAGON_BREATH;
+    private final ParticleOptions TRAIL_PARTICLE = net.minecraft.core.particles.PowerParticleOption.create(ParticleTypes.DRAGON_BREATH, 1.0F);
 
     private boolean giganticOwner;
 
@@ -108,7 +110,7 @@ public class ChaosSpawnerProjectileEntity extends Entity {
                     this.onHit(hitResult);
                 }
 
-                this.checkInsideBlocks();
+                this.applyEffectsFromBlocks();
                 Vec3 deltaMovement = this.getDeltaMovement();
                 double d0 = this.getX() + deltaMovement.x;
                 double d1 = this.getY() + deltaMovement.y;
@@ -169,7 +171,7 @@ public class ChaosSpawnerProjectileEntity extends Entity {
                     }
                     boolean entityHurted = target.hurtOrSimulate(this.damageSources().mobProjectile(this, (LivingEntity) owner), (float) damageAmount);
                     if (target instanceof Player player && player.isBlocking()) {
-                        player.disableShield();
+                        DNLCompat.disableShield(player);
                     }
                     if (entityHurted && target.isAlive()) {
                         applyPostAttackEffects(owner, target);
@@ -306,9 +308,9 @@ public class ChaosSpawnerProjectileEntity extends Entity {
     @Override
     public void recreateFromPacket(ClientboundAddEntityPacket clientboundAddEntityPacket) {
         super.recreateFromPacket(clientboundAddEntityPacket);
-        double d0 = clientboundAddEntityPacket.getXa();
-        double d1 = clientboundAddEntityPacket.getYa();
-        double d2 = clientboundAddEntityPacket.getZa();
+        double d0 = clientboundAddEntityPacket.getMovement().x;
+        double d1 = clientboundAddEntityPacket.getMovement().y;
+        double d2 = clientboundAddEntityPacket.getMovement().z;
         double d3 = Math.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
         if (d3 != 0.0D) {
             this.xPower = d0 / d3 * 0.1D;
@@ -323,35 +325,34 @@ public class ChaosSpawnerProjectileEntity extends Entity {
     }
 
     @Override
-    protected void readAdditionalSaveData(ValueInput compoundTag) {
+    protected void addAdditionalSaveData(ValueOutput output) {
         if (this.ownerUUID != null) {
-            NbtCompat.putUUID(compoundTag, "Owner", this.ownerUUID);
+            NbtCompat.putUUID(output, "Owner", this.ownerUUID);
         }
-
         if (this.leftOwner) {
-            compoundTag.putBoolean("LeftOwner", true);
+            output.putBoolean("LeftOwner", true);
         }
-
-        compoundTag.putBoolean("HasBeenShot", this.hasBeenShot);
-        if (NbtCompat.has(compoundTag, "power")) {
-            ListTag listtag = NbtCompat.getList(compoundTag, "power");
-            if (listtag.size() == 3) {
-                this.xPower = listtag.getDoubleOr(0, 0.0D);
-                this.yPower = listtag.getDoubleOr(1, 0.0D);
-                this.zPower = listtag.getDoubleOr(2, 0.0D);
-            }
-        }
+        output.putBoolean("HasBeenShot", this.hasBeenShot);
+        output.store("power", com.mojang.serialization.Codec.DOUBLE.listOf(), java.util.List.of(this.xPower, this.yPower, this.zPower));
     }
 
     @Override
-    protected void addAdditionalSaveData(ValueOutput compoundTag) {
-        if (NbtCompat.hasUUID(compoundTag, "Owner")) {
-            this.ownerUUID = NbtCompat.getUUID(compoundTag, "Owner");
+    protected void readAdditionalSaveData(ValueInput input) {
+        if (NbtCompat.hasUUID(input, "Owner")) {
+            this.ownerUUID = NbtCompat.getUUID(input, "Owner");
             this.cachedOwner = null;
         }
+        this.leftOwner = input.getBooleanOr("LeftOwner", false);
+        this.hasBeenShot = input.getBooleanOr("HasBeenShot", false);
+        input.read("power", com.mojang.serialization.Codec.DOUBLE.listOf()).filter(list -> list.size() == 3).ifPresent(list -> {
+            this.xPower = list.get(0);
+            this.yPower = list.get(1);
+            this.zPower = list.get(2);
+        });
+    }
 
-        this.leftOwner = compoundTag.getBooleanOr("LeftOwner", false);
-        this.hasBeenShot = compoundTag.getBooleanOr("HasBeenShot", false);
-        NbtCompat.put(compoundTag, "power", this.newDoubleList(new double[]{this.xPower, this.yPower, this.zPower}));
+    @Override
+    public boolean hurtServer(net.minecraft.server.level.ServerLevel level, net.minecraft.world.damagesource.DamageSource source, float amount) {
+        return false;
     }
 }

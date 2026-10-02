@@ -27,9 +27,9 @@ public class FairkeeperSerpentMoveControl extends MoveControl {
             float targetYaw = (float) Math.toDegrees(Math.atan2(dz, dx)) - 90.0F;
 
             // Gradually rotate the entity towards the target
-            this.mob.setYRot(rotateTowards(this.mob.getYRot(), targetYaw, this.rotationSpeed));
+            this.mob.setYRot(dnlRotateTowards(this.mob.getYRot(), targetYaw, this.rotationSpeed));
             this.mob.yBodyRot = this.mob.getYRot();
-            this.mob.yHeadRot = rotateTowards(this.mob.getYHeadRot(), targetYaw, this.rotationSpeed);
+            this.mob.yHeadRot = dnlRotateTowards(this.mob.getYHeadRot(), targetYaw, this.rotationSpeed);
 
             // Move the entity forward in the current facing direction
             if (distance > 0.1) {
@@ -47,7 +47,7 @@ public class FairkeeperSerpentMoveControl extends MoveControl {
         }
     }
 
-    private float rotateTowards(float current, float target, float maxDelta) {
+    private float dnlRotateTowards(float current, float target, float maxDelta) {
         float delta = Mth.wrapDegrees(target - current);
         return current + Mth.clamp(delta, -maxDelta, maxDelta);
     }

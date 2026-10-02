@@ -14,8 +14,6 @@ public interface ClientHelper {
             MenuScreenFactory<M, U> factory
     );
 
-    void registerItemModel(Identifier modelLocation);
-
     @FunctionalInterface
     interface MenuScreenFactory<M extends AbstractContainerMenu, U extends Screen & MenuAccess<M>> {
         U create(M menu, Inventory inventory, Component title);

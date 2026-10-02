@@ -1,6 +1,8 @@
 package dev.hexnowloading.dungeonnowloading.entity.ai;
 
 
+
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -26,7 +28,7 @@ public class AllRangeMeleeAttackGoal extends MeleeAttackGoal {
     protected void checkAndPerformAttack(LivingEntity target) {
         if (this.isTimeToAttack() && this.mob.getSensing().hasLineOfSight(target) && isWithinWidenedRange(target)) {
             this.resetAttackCooldown();
-            this.mob.swing(InteractionHand.MAIN_HAND);
+            this.mob.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT, false);
             this.mob.doHurtTarget((ServerLevel) mob.level(), target);
         }
     }

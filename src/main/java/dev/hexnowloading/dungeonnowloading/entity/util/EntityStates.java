@@ -120,6 +120,7 @@ public class EntityStates {
         if (CHAOS_SPAWNER_STATE == null) {
             throw new IllegalStateException("CHAOS_SPAWNER_STATE serializer was not published by ChaosSpawnerEntity");
         }
+        Services.REGISTRY.registerEntityDataSerializer("optional_uuid", DNLDataSerializers.OPTIONAL_UUID);
         Services.REGISTRY.registerEntityDataSerializer("chaos_spawner_state", CHAOS_SPAWNER_STATE);
         Services.REGISTRY.registerEntityDataSerializer("spawner_carrier_animation_state", SPAWNER_CARRIER_ANIMATION_STATE);
         Services.REGISTRY.registerEntityDataSerializer("fairkeeper_serpent_caller_animation_state", FAIRKEEPER_SERPENT_CALLER_ANIMATION_STATE);

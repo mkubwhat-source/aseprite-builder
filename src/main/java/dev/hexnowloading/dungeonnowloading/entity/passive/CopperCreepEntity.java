@@ -5,6 +5,12 @@ package dev.hexnowloading.dungeonnowloading.entity.passive;
 
 
 
+
+
+
+import java.util.UUID;
+import dev.hexnowloading.dungeonnowloading.entity.util.DNLDataSerializers;
+import dev.hexnowloading.dungeonnowloading.util.DNLCompat;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -53,14 +59,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class CopperCreepEntity extends PathfinderMob implements OwnableEntity, PowerableMob {
+public class CopperCreepEntity extends PathfinderMob implements OwnableEntity {
 
     private static final EntityDataAccessor<Boolean> GIGANTIC = SynchedEntityData.defineId(CopperCreepEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> OVERWORKED = SynchedEntityData.defineId(CopperCreepEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> OVERWORKED_LEVEL = SynchedEntityData.defineId(CopperCreepEntity.class, EntityDataSerializers.INT);
 
     @Nullable
-    @Override
     public UUID getOwnerUUID() {
         return getSummonerUUID().orElse(null);
     }
@@ -110,7 +115,7 @@ public class CopperCreepEntity extends PathfinderMob implements OwnableEntity, P
     private static final float POWERED_EXPLOSION_RADIUS = 5.0f;
 
     private final AttributeModifier SPEED_MODIFIER = new AttributeModifier(DungeonNowLoading.id("copper_creep_slowdown_speed"), -1.0, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
-    private static final EntityDataAccessor<Optional<UUID>> SUMMONER_UUID = SynchedEntityData.defineId(CopperCreepEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<UUID>> SUMMONER_UUID = SynchedEntityData.defineId(CopperCreepEntity.class, DNLDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<Boolean> DATA_IS_POWERED = SynchedEntityData.defineId(CopperCreepEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_IS_IGNITED = SynchedEntityData.defineId(CopperCreepEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_IS_ALREADY_SUMMONED = SynchedEntityData.defineId(CopperCreepEntity.class, EntityDataSerializers.BOOLEAN);
@@ -178,13 +183,13 @@ public class CopperCreepEntity extends PathfinderMob implements OwnableEntity, P
         this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Monster.class, 8.0F));
         this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Mob.class, 5, false, false, (c) -> {
-            return !c.getUUID().equals(this.getOwnerUUID()) && PvpConfig.TOGGLE_PVP_MODE.get() && c instanceof OwnableEntity && !isAlliedTo(c);
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Mob.class, 5, false, false, (c, targetLevel) -> {
+            return !c.getUUID().equals(DNLCompat.ownerUUID(this)) && PvpConfig.TOGGLE_PVP_MODE.get() && c instanceof OwnableEntity && !isAlliedTo(c);
         }));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 5, true, false, (c) -> {
-            return !c.getUUID().equals(this.getOwnerUUID()) && PvpConfig.TOGGLE_PVP_MODE.get();
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 5, true, false, (c, targetLevel) -> {
+            return !c.getUUID().equals(DNLCompat.ownerUUID(this)) && PvpConfig.TOGGLE_PVP_MODE.get();
         }));
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Mob.class, 5, false, false, (c) -> {
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Mob.class, 5, false, false, (c, targetLevel) -> {
             return c instanceof Enemy;
         }));
     }
@@ -352,7 +357,7 @@ public class CopperCreepEntity extends PathfinderMob implements OwnableEntity, P
     }
 
     private boolean canSit() {
-        return !this.isInWaterOrBubble() && this.onGround();
+        return !this.isInWater() && this.onGround();
     }
 
     // Example method to get the summoner as a Player (returns null if no summoner)
@@ -445,7 +450,7 @@ public class CopperCreepEntity extends PathfinderMob implements OwnableEntity, P
     }
 
     @Override
-    public void customServerAiStep() {
+    public void customServerAiStep(ServerLevel serverLevel) {
 
         if (this.aiTick == 0 && !this.isAlreadySummoned()) {
             this.setState(State.SUMMONING);
@@ -498,7 +503,7 @@ public class CopperCreepEntity extends PathfinderMob implements OwnableEntity, P
         }
 
         this.aiTick++;
-        super.customServerAiStep();
+        super.customServerAiStep(serverLevel);
     }
 
     public boolean isAlreadySummoned() {
@@ -605,18 +610,18 @@ public class CopperCreepEntity extends PathfinderMob implements OwnableEntity, P
     }
 
     @Override
-    public boolean isAlliedTo(Entity other) {
-        UUID myOwner = this.getOwnerUUID();
+    protected boolean considersEntityAsAlly(Entity other) {
+        UUID myOwner = DNLCompat.ownerUUID(this);
         if (myOwner == null) return false; // or true to be ultra-conservative during first ticks
 
         if (other instanceof Player p) {
             return myOwner.equals(p.getUUID());
         }
         if (other instanceof OwnableEntity ownable) {
-            UUID theirOwner = ownable.getOwnerUUID();
+            UUID theirOwner = DNLCompat.ownerUUID(ownable);
             return theirOwner != null && myOwner.equals(theirOwner);
         }
-        return super.isAlliedTo(other);
+        return super.considersEntityAsAlly(other);
     }
 
     private boolean isPlayerOnDifferentTeam(Player player) {
@@ -995,12 +1000,18 @@ public class CopperCreepEntity extends PathfinderMob implements OwnableEntity, P
 
     @Override
     public void remove(RemovalReason reason) {
-        UUID owner = this.getOwnerUUID();
+        UUID owner = DNLCompat.ownerUUID(this);
         boolean overworked = this.isOverworked();
         super.remove(reason);
 
         if (!this.level().isClientSide() && owner != null && overworked) {
             OverworkedPenaltyUtil.refreshOwnerPenaltyIfPossible(this.level(), owner);
         }
+    }
+
+    @Override
+    public @Nullable net.minecraft.world.entity.EntityReference<net.minecraft.world.entity.LivingEntity> getOwnerReference() {
+        UUID ownerUuid = this.getOwnerUUID();
+        return ownerUuid == null ? null : net.minecraft.world.entity.EntityReference.of(ownerUuid);
     }
 }

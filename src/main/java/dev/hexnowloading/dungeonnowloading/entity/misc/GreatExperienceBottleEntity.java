@@ -30,11 +30,11 @@ public class GreatExperienceBottleEntity extends ThrowableItemProjectile {
     }
 
     public GreatExperienceBottleEntity(Level level, LivingEntity thrower) {
-        super(DNLEntityTypes.GREAT_EXPERIENCE_BOTTLE.get(), thrower, level);
+        super(DNLEntityTypes.GREAT_EXPERIENCE_BOTTLE.get(), thrower, level, new net.minecraft.world.item.ItemStack(DNLItems.GREAT_EXPERIENCE_BOTTLE.get()));
     }
 
     public GreatExperienceBottleEntity(Level level, double x, double y, double z) {
-        super(DNLEntityTypes.GREAT_EXPERIENCE_BOTTLE.get(), x, y, z, level);
+        super(DNLEntityTypes.GREAT_EXPERIENCE_BOTTLE.get(), x, y, z, level, new net.minecraft.world.item.ItemStack(DNLItems.GREAT_EXPERIENCE_BOTTLE.get()));
     }
 
     @Override
@@ -69,7 +69,7 @@ public class GreatExperienceBottleEntity extends ThrowableItemProjectile {
     protected void onHit(HitResult hitResult) {
         super.onHit(hitResult);
         if (this.level() instanceof ServerLevel) {
-            this.level().levelEvent(2002, this.blockPosition(), PotionContents.getColor(Potions.LUCK));
+            this.level().levelEvent(2002, this.blockPosition(), new PotionContents(Potions.LUCK).getColor());
             ExperienceOrb.award((ServerLevel)this.level(), this.position(), this.getExperienceAmount());
             this.discard();
         }

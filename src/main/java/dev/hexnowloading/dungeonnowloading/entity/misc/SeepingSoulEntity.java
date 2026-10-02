@@ -306,7 +306,7 @@ public class SeepingSoulEntity extends Entity {
 
     // --- Right-click interaction + summoning item use ---
     @Override
-    public InteractionResult interact(Player player, InteractionHand hand) {
+    public InteractionResult interact(Player player, InteractionHand hand, net.minecraft.world.phys.Vec3 location) {
         ItemStack stack = player.getItemInHand(hand);
 
         if (!this.level().isClientSide()) {
@@ -395,7 +395,7 @@ public class SeepingSoulEntity extends Entity {
         if (NbtCompat.has(tag, "PlayerDefeatedUUIDs")) {
             ListTag list = NbtCompat.getList(tag, "PlayerDefeatedUUIDs");
             for (int i = 0; i < list.size(); i++) {
-                this.playerDefeatedUUIDs.add(list.getCompoundOrEmpty(i).getUUID("Id"));
+                this.playerDefeatedUUIDs.add(NbtCompat.getUUID(list.getCompoundOrEmpty(i), "Id"));
             }
         }
     }
@@ -442,7 +442,7 @@ public class SeepingSoulEntity extends Entity {
         if (tag.contains("PlayerDefeatedUUIDs")) {
             ListTag list = tag.getListOrEmpty("PlayerDefeatedUUIDs");
             for (int i = 0; i < list.size(); i++) {
-                set.add(list.getCompoundOrEmpty(i).getUUID("Id"));
+                set.add(NbtCompat.getUUID(list.getCompoundOrEmpty(i), "Id"));
             }
         }
 
@@ -450,6 +450,20 @@ public class SeepingSoulEntity extends Entity {
         int modifiedDefeatedCount = tag.getIntOr("ModifiedDefeatedCount", 0);
 
         return new RecallData(set, defeatedCount, modifiedDefeatedCount);
+    }
+
+    public static void writeRecallNBT(ValueOutput output, Set<UUID> playerDefeatedUUIDs, int defeatedCount, int modifiedDefeatedCount) {
+        CompoundTag tag = new CompoundTag();
+        writeRecallNBT(tag, playerDefeatedUUIDs, defeatedCount, modifiedDefeatedCount);
+        tag.forEach((key, value) -> NbtCompat.put(output, key, value));
+    }
+
+    public static RecallData readRecallNBT(ValueInput input) {
+        CompoundTag tag = new CompoundTag();
+        tag.put("PlayerDefeatedUUIDs", NbtCompat.getList(input, "PlayerDefeatedUUIDs"));
+        tag.putInt("DefeatedCount", input.getIntOr("DefeatedCount", 0));
+        tag.putInt("ModifiedDefeatedCount", input.getIntOr("ModifiedDefeatedCount", 0));
+        return readRecallNBT(tag);
     }
 
     public record RecallData(Set<UUID> playerDefeatedUUIDs, int defeatedCount, int modifiedDefeatedCount) {}
