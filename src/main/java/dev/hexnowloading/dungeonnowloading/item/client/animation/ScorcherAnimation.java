@@ -1,4 +1,6 @@
-package dev.hexnowloading.dungeonnowloading.item.client.animation;// Save this class in your mod and generate all required imports
+package dev.hexnowloading.dungeonnowloading.item.client.animation;
+// Save this class in your mod and generate all required imports
+import dev.hexnowloading.dungeonnowloading.client.legacy.HierarchicalModel;
 
 import net.minecraft.client.animation.AnimationChannel;
 import net.minecraft.client.animation.AnimationDefinition;

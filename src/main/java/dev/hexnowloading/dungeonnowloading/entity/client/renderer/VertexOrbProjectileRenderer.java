@@ -27,13 +27,13 @@ public class VertexOrbProjectileRenderer<T extends VertexOrbProjectileEntity> ex
     }
 
     @Override
-    public boolean shouldRender(VertexOrbProjectileEntity entity, Frustum frustum, double x, double y, double z) {
+    public boolean shouldRender(VertexOrbProjectileEntity entity, Frustum frustum, double x, double y, double z, float partialTicks) {
         if (!entity.shouldRender(x, y, z)) {
             return false;
-        } else if (entity.noCulling) {
+        } else if (!this.affectedByCulling(entity)) {
             return true;
         } else {
-            AABB aabb = entity.getBoundingBoxForCulling().inflate(2.5);
+            AABB aabb = this.getBoundingBoxForCulling(entity, partialTicks).inflate(2.5);
             if (aabb.hasNaN() || aabb.getSize() == 0.0) {
                 aabb = new AABB(entity.getX() - 2.0, entity.getY() - 2.0, entity.getZ() - 2.0, entity.getX() + 2.0, entity.getY() + 2.0, entity.getZ() + 2.0);
             }

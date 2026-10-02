@@ -26,7 +26,7 @@ public class FairkeeperOurosRenderer<T extends FairkeeperOurosEntity> extends Mo
     }
 
     @Override
-    protected boolean shouldShowName(T $$0) {
+    protected boolean shouldShowName(T $$0, double distanceToCameraSq) {
         return false;
     }
 

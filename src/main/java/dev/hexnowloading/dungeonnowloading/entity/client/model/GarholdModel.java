@@ -92,7 +92,7 @@ public class GarholdModel<T extends GarholdEntity> extends HierarchicalModel<T> 
         if (w <= 0.0001f) return;
 
         long time = (long) (ageInTicks * 50.0F * speed);
-        KeyframeAnimations.animate(this, def, time, w, ANIM_VEC_CACHE);
+        this.applyAnimation(def, time, w);
     }
 
     private static float partialTickFromAge(float ageInTicks) {

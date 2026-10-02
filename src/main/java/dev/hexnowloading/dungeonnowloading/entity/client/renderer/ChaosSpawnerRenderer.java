@@ -21,7 +21,7 @@ public class ChaosSpawnerRenderer<T extends ChaosSpawnerEntity> extends MobRende
     }
 
     @Override
-    protected boolean shouldShowName(T $$0) {
+    protected boolean shouldShowName(T $$0, double distanceToCameraSq) {
         return false;
     }
 

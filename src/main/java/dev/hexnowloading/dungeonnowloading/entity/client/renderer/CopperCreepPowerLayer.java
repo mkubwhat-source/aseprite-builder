@@ -43,7 +43,7 @@ public class CopperCreepPowerLayer<T extends CopperCreepEntity, M extends Hierar
 //    }
 
     public void render(PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, CopperCreepEntity copperCreepEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (((PowerableMob)copperCreepEntity).isPowered()) {
+        if (copperCreepEntity.isPowered()) {
             float tickCount = (float)copperCreepEntity.tickCount + partialTicks;
 
             poseStack.pushPose();

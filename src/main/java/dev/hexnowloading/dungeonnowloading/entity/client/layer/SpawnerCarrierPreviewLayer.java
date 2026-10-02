@@ -105,7 +105,7 @@ public class SpawnerCarrierPreviewLayer<T extends SpawnerCarrierEntity, M extend
         // ------------------------------------------------------------
         // 7) Render
         // ------------------------------------------------------------
-        this.dispatcher.render(display, 0.0, 0.0, 0.0, 0.0F, partialTick, poseStack, buffer, packedLight);
+        dev.hexnowloading.dungeonnowloading.client.legacy.RecordingBufferSource.renderEntity(buffer, display, partialTick, poseStack, packedLight);
 
         poseStack.popPose();
     }

@@ -50,7 +50,7 @@ public class SpawnerCarrierSpawnerCrackLayer<T extends SpawnerCarrierEntity, M e
         model.getBodyPart().translateAndRotate(poseStack);
 
         // Render only the spawner part using crumbling render type
-        VertexConsumer vc = buffer.getBuffer(net.minecraft.client.renderer.RenderTypes.crumbling(DESTROY_STAGES[stage]));
+        VertexConsumer vc = buffer.getBuffer(net.minecraft.client.renderer.rendertype.RenderTypes.crumbling(DESTROY_STAGES[stage]));
 
 // 128x128 model UVs vs 16x16 crack => tile 8x so pixels aren't huge
         VertexConsumer tiled = new TiledUvVertexConsumer(vc, 8.0f, 8.0f);
@@ -67,6 +67,22 @@ public class SpawnerCarrierSpawnerCrackLayer<T extends SpawnerCarrierEntity, M e
     }
 
     public class TiledUvVertexConsumer implements VertexConsumer {
+
+        @Override
+        public VertexConsumer setLineWidth(float width) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setUv3(float u, float v) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setColor(int color) {
+            this.delegate.setColor(color);
+            return this;
+        }
         private final VertexConsumer delegate;
         private final float uMul, vMul;
 

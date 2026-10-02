@@ -213,6 +213,16 @@ public class MendingAuraOverlayRenderer {
     }
 
     private static class AlphaVertexConsumer implements VertexConsumer {
+
+        @Override
+        public VertexConsumer setLineWidth(float width) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setUv3(float u, float v) {
+            return this;
+        }
         private final VertexConsumer delegate;
         private final float alpha;
 

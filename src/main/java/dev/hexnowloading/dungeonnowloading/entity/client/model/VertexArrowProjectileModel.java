@@ -1,4 +1,6 @@
-package dev.hexnowloading.dungeonnowloading.entity.client.model;// Made with Blockbench 4.11.2
+package dev.hexnowloading.dungeonnowloading.entity.client.model;
+// Made with Blockbench 4.11.2
+import dev.hexnowloading.dungeonnowloading.client.legacy.HierarchicalModel;
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
 

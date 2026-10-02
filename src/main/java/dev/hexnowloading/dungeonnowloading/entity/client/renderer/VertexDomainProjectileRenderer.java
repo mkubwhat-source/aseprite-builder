@@ -30,7 +30,7 @@ public class VertexDomainProjectileRenderer<T extends VertexDomainProjectileEnti
     }
 
     @Override
-    public boolean shouldRender(VertexDomainProjectileEntity entity, Frustum frustum, double x, double y, double z) {
+    public boolean shouldRender(VertexDomainProjectileEntity entity, Frustum frustum, double x, double y, double z, float partialTicks) {
             return true;
     }
 

@@ -57,6 +57,11 @@ public abstract class HierarchicalModel<T extends Entity> extends EntityModel<T>
         this.baked(definition).applyWalk(limbSwing, limbSwingAmount, maxAnimationSpeed, animationScaleFactor);
     }
 
+    /** Replacement for {@code KeyframeAnimations.animate(model, definition, millis, scale, cache)}. */
+    protected void applyAnimation(AnimationDefinition definition, long millisSinceStart, float scale) {
+        this.baked(definition).apply(millisSinceStart, scale);
+    }
+
     protected void applyStatic(AnimationDefinition definition) {
         this.baked(definition).applyStatic();
     }

@@ -3,6 +3,16 @@ package dev.hexnowloading.dungeonnowloading.block.client.renderer;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 public class CenteredRepeatingUvVertexConsumer implements VertexConsumer {
+
+        @Override
+        public VertexConsumer setLineWidth(float width) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setUv3(float u, float v) {
+            return this;
+        }
     private static final float UV_CENTER = 0.5F;
 
     private final VertexConsumer delegate;
