@@ -147,7 +147,7 @@ public class PlayerStatueBlockEntity extends BlockEntity {
 
     @Override
     protected void saveAdditional(ValueOutput tag) {
-        super.saveAdditional(tag, registries);
+        super.saveAdditional(tag);
 
         // owner
         if (owner != null) {
@@ -177,7 +177,7 @@ public class PlayerStatueBlockEntity extends BlockEntity {
 
     @Override
     protected void loadAdditional(ValueInput tag) {
-        super.loadAdditional(tag, registries);
+        super.loadAdditional(tag);
 
         // owner
         if (NbtCompat.has(tag, "Owner")) {
@@ -251,9 +251,9 @@ public class PlayerStatueBlockEntity extends BlockEntity {
     @Nullable
     public String ensureServerSideOwnerName() {
         if (owner == null) return null;
-        if (owner.getName() != null && !owner.getName().isEmpty()) return owner.getName();
+        if (owner.name() != null && !owner.name().isEmpty()) return owner.name();
         if (!(level instanceof net.minecraft.server.level.ServerLevel sl)) return null;
-        java.util.UUID id = owner.getId();
+        java.util.UUID id = owner.id();
         if (id == null) return null;
 
         var cache = sl.getServer().getProfileCache();
@@ -262,7 +262,7 @@ public class PlayerStatueBlockEntity extends BlockEntity {
             if (opt.isPresent()) {
                 this.owner = opt.get();    // update BE with the named profile
                 setChanged();
-                return this.owner.getName();
+                return this.owner.name();
             }
         }
         return null;

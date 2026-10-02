@@ -100,9 +100,9 @@ public class BookPileBlock extends PileBlock implements EntityBlock {
 
         // Read from the item's block-entity data component (1.21 replaced the
         // legacy "BlockEntityTag" item NBT with DataComponents.BLOCK_ENTITY_DATA).
-        net.minecraft.world.item.component.CustomData customData =
+        net.minecraft.world.item.component.TypedEntityData<?> customData =
                 stack.get(net.minecraft.core.component.DataComponents.BLOCK_ENTITY_DATA);
-        CompoundTag bet = customData != null ? customData.copyTag() : null;
+        CompoundTag bet = customData != null ? customData.copyTagWithoutId() : null;
         if (bet != null && bet.contains("LootTable")) {
             Identifier id = Identifier.parse(bet.getStringOr("LootTable", ""));
             long seed = bet.contains("LootTableSeed") ? bet.getLongOr("LootTableSeed", 0L) : level.getRandom().nextLong();

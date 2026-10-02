@@ -1,5 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.item;
 
+
+
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.config.GeneralConfig;
 import dev.hexnowloading.dungeonnowloading.entity.boss.ChaosSpawnerEntity;
@@ -82,10 +86,10 @@ public class SkullOfChaosItem extends Item implements BossSummoningItem {
 
 
     @Override
-    public void appendHoverText(ItemStack itemStack, Item.TooltipContext level, List<Component> components, TooltipFlag tooltipFlag) {
-        super.appendHoverText(itemStack, level, components, tooltipFlag);
+    public void appendHoverText(ItemStack itemStack, Item.TooltipContext level, TooltipDisplay tooltipDisplay, Consumer<Component> components, TooltipFlag tooltipFlag) {
+        super.appendHoverText(itemStack, level, tooltipDisplay, components, tooltipFlag);
         if (GeneralConfig.TOGGLE_HELPFUL_ITEM_TOOLTIP.get()) {
-            components.add(Component.translatable("item.dungeonnowloading.skull_of_chaos.tooltip").withStyle(ChatFormatting.GRAY));
+            components.accept(Component.translatable("item.dungeonnowloading.skull_of_chaos.tooltip").withStyle(ChatFormatting.GRAY));
         }
     }
 

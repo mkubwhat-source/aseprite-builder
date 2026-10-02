@@ -161,13 +161,13 @@ public class DungeonDirectorBlockEntity extends BlockEntity implements ZoneRecei
             SpawnPool pool = SpawnPools.get(poolId);
             if (pool == null) continue;
 
-            Identifier nodeId = pool.pickNodeId(server.random);
+            Identifier nodeId = pool.pickNodeId(server.getRandom());
             if (nodeId == null) continue;
 
             SpawnNode nodeDef = SpawnNodes.get(nodeId);
             if (nodeDef == null) continue;
 
-            SpawnEntry picked = nodeDef.pickEntry(server.random);
+            SpawnEntry picked = nodeDef.pickEntry(server.getRandom());
 
             CompoundTag patch = picked.combinedPatchCopy();
 
@@ -203,8 +203,8 @@ public class DungeonDirectorBlockEntity extends BlockEntity implements ZoneRecei
         // Create entity (+ passengers if your patch includes Passengers)
         if (patch != null) nbt.merge(patch);
 
-        Entity loaded = EntityType.loadEntityRecursive(nbt, server, e -> {
-            e.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, e.getYRot(), e.getXRot());
+        Entity loaded = NbtCompat.loadEntityRecursive(nbt, server, EntitySpawnReason.SPAWNER, e -> {
+            e.snapTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, e.getYRot(), e.getXRot());
             return e;
         });
 
@@ -218,7 +218,7 @@ public class DungeonDirectorBlockEntity extends BlockEntity implements ZoneRecei
 
         // 2) Then FORCE our custom NBT LAST (restores enchanted bow, armor, etc.)
         if (patch != null && !patch.isEmpty()) {
-            CompoundTag full = mob.saveWithoutId(new CompoundTag());
+            CompoundTag full = NbtCompat.saveEntity(mob);
             NbtMerge.mergeCompound(full, patch);
             mob.load(full);
         }
@@ -410,7 +410,7 @@ public class DungeonDirectorBlockEntity extends BlockEntity implements ZoneRecei
     // =========================
     @Override
     protected void saveAdditional(ValueOutput tag) {
-        super.saveAdditional(tag, registries);
+        super.saveAdditional(tag);
 
         tag.putFloat("TriggerRangeMultiplier", triggerRangeMultiplier);
         NbtCompat.put(tag, "CornerA", writePos(cornerAOffset));
@@ -445,7 +445,7 @@ public class DungeonDirectorBlockEntity extends BlockEntity implements ZoneRecei
 
     @Override
     protected void loadAdditional(ValueInput tag) {
-        super.loadAdditional(tag, registries);
+        super.loadAdditional(tag);
 
         this.triggerRangeMultiplier = NbtCompat.has(tag, "TriggerRangeMultiplier")
                 ? tag.getFloatOr("TriggerRangeMultiplier", 0.0F)

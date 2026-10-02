@@ -104,7 +104,9 @@ public class SignalGateBlock extends DirectionalBlock {
     @Override
     public BlockState updateShape(BlockState blockState, LevelReader levelAccessor, ScheduledTickAccess scheduledTickAccess, BlockPos blockPos, Direction direction, BlockPos blockPos2, BlockState blockState2, RandomSource randomSource) {
         if (blockState.getValue(FACING) == direction) {
-            this.startSignal(levelAccessor, blockPos);
+            if (levelAccessor instanceof LevelAccessor accessor) {
+                this.startSignal(accessor, blockPos);
+            }
         }
         return super.updateShape(blockState, levelAccessor, scheduledTickAccess, blockPos, direction, blockPos2, blockState2, randomSource);
     }
@@ -118,7 +120,9 @@ public class SignalGateBlock extends DirectionalBlock {
     /*@Override
     public BlockState updateShape(BlockState blockState, LevelReader levelAccessor, ScheduledTickAccess scheduledTickAccess, BlockPos blockPos, Direction direction, BlockPos blockPos2, BlockState blockState2, RandomSource randomSource) {
         if (blockState.getValue(FACING) == direction && !blockState.getValue(POWERED).booleanValue() && this.getSignalInFront(levelAccessor, blockPos, blockState) == blockState.getValue(POWER)) {
-            this.startSignal(levelAccessor, blockPos);
+            if (levelAccessor instanceof LevelAccessor accessor) {
+                this.startSignal(accessor, blockPos);
+            }
         }
         return super.updateShape(blockState, levelAccessor, scheduledTickAccess, blockPos, direction, blockPos2, blockState2, randomSource);
     }*/

@@ -3,6 +3,8 @@ package dev.hexnowloading.dungeonnowloading.entity.boss;
 
 
 
+
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
@@ -753,10 +755,10 @@ public class FairkeeperSerpentCallerEntity extends Entity {
         // Spawn at boss *starting position*
         BlockPos start = this.blockPosition();
 
-        SeepingSoulEntity soul = DNLEntityTypes.SEEPING_SOUL.get().create(this.level());
+        SeepingSoulEntity soul = DNLEntityTypes.SEEPING_SOUL.get().create(this.level(), EntitySpawnReason.MOB_SUMMONED);
         if (soul == null) return;
 
-        soul.moveTo(start.getX() + 0.5, start.getY(), start.getZ() + 0.5, this.getYRot(), 0);
+        soul.snapTo(start.getX() + 0.5, start.getY(), start.getZ() + 0.5, this.getYRot(), 0);
 
         // bossId should match the recall registry id you use for Chaos Spawner
         soul.setBossId(Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "fairkeeper_serpent_caller"));
@@ -1013,7 +1015,7 @@ public class FairkeeperSerpentCallerEntity extends Entity {
 
         FairkeeperBorosEntity boros = new FairkeeperBorosEntity(this.level(), this);
         if (boros != null) {
-            boros.moveTo(centeredCounterClockWiseTargetPosition.x, centeredCounterClockWiseTargetPosition.y - boros.getBoundingBox().getYsize() / 2 + BEHIND_BLOCK_SPAWN_OFFSET, centeredCounterClockWiseTargetPosition.z);
+            boros.snapTo(centeredCounterClockWiseTargetPosition.x, centeredCounterClockWiseTargetPosition.y - boros.getBoundingBox().getYsize() / 2 + BEHIND_BLOCK_SPAWN_OFFSET, centeredCounterClockWiseTargetPosition.z);
             boros.setState(FairkeeperBorosEntity.FairkeeperBorosState.AWAKENING);
             boros.setYRot(clockWiseDirection.toYRot());
             boros.yBodyRot = boros.getYRot();
@@ -1036,7 +1038,7 @@ public class FairkeeperSerpentCallerEntity extends Entity {
 
         FairkeeperOurosEntity ouros = new FairkeeperOurosEntity(this.level(), this);
         if (ouros != null) {
-            ouros.moveTo(centeredClockWiseTargetPosition.x, centeredClockWiseTargetPosition.y - ouros.getBoundingBox().getYsize() / 2 - BEHIND_BLOCK_SPAWN_OFFSET, centeredClockWiseTargetPosition.z);
+            ouros.snapTo(centeredClockWiseTargetPosition.x, centeredClockWiseTargetPosition.y - ouros.getBoundingBox().getYsize() / 2 - BEHIND_BLOCK_SPAWN_OFFSET, centeredClockWiseTargetPosition.z);
             ouros.setState(FairkeeperOurosEntity.FairkeeperOurosState.AWAKENING);
             ouros.setYRot(counterClockWiseDirection.toYRot());
             ouros.yBodyRot = ouros.getYRot();
@@ -1217,11 +1219,11 @@ public class FairkeeperSerpentCallerEntity extends Entity {
     }
 
     public static void spawnRecalled(ServerLevel level, SeepingSoulEntity soul, int defeatedCount) {
-        FairkeeperSerpentCallerEntity boss = DNLEntityTypes.FAIRKEEPER_SERPENT_CALLER.get().create(level);
+        FairkeeperSerpentCallerEntity boss = DNLEntityTypes.FAIRKEEPER_SERPENT_CALLER.get().create(level, EntitySpawnReason.MOB_SUMMONED);
         if (boss == null) return;
         BlockPos pos = soul.blockPosition();
         boss.initRecalled(soul, defeatedCount);
-        boss.moveTo(pos.getX() + 0.5f, pos.getY(), pos.getZ() + 0.5f, soul.getYRot(), 0);
+        boss.snapTo(pos.getX() + 0.5f, pos.getY(), pos.getZ() + 0.5f, soul.getYRot(), 0);
         level.addFreshEntity(boss);
         spawnRecallFxTight(level, boss.position());
     }

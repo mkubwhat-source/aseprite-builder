@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.registry;
 
+
+import dev.hexnowloading.dungeonnowloading.item.blockitem.ToolTipBlockItem;
 import dev.hexnowloading.dungeonnowloading.block.DungeonBannerBlock;
 import dev.hexnowloading.dungeonnowloading.item.*;
 import dev.hexnowloading.dungeonnowloading.item.blockitem.*;
@@ -102,7 +104,7 @@ public class DNLItems {
 
     public static final Supplier<Item> SPIKES = register("spikes", () -> new BlockItem(DNLBlocks.SPIKES.get(), new Item.Properties()));
 
-    public static final Supplier<Item> CHAOS_SPAWNER_EDGE = register("chaos_spawner_edge", () -> new BlockItem(DNLBlocks.CHAOS_SPAWNER_EDGE.get(), new Item.Properties()));
+    public static final Supplier<Item> CHAOS_SPAWNER_EDGE = register("chaos_spawner_edge", () -> new ToolTipBlockItem(DNLBlocks.CHAOS_SPAWNER_EDGE.get(), new Item.Properties(), "block.dungeonnowloading.chaos_spawner_edge.tooltip"));
     public static final Supplier<Item> CHAOS_SPAWNER_DIAMOND_EDGE = register("chaos_spawner_diamond_edge", () -> new BlockItem(DNLBlocks.CHAOS_SPAWNER_DIAMOND_EDGE.get(), new Item.Properties()));
     public static final Supplier<Item> CHAOS_SPAWNER_DIAMOND_VERTEX = register("chaos_spawner_diamond_vertex", () -> new BlockItem(DNLBlocks.CHAOS_SPAWNER_DIAMOND_VERTEX.get(), new Item.Properties()));
     public static final Supplier<Item> CHAOS_SPAWNER_BROKEN_EDGE = register("chaos_spawner_broken_edge", () -> new BlockItem(DNLBlocks.CHAOS_SPAWNER_BROKEN_EDGE.get(), new Item.Properties()));

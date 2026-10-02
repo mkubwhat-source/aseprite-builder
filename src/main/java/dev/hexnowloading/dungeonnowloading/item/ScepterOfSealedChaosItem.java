@@ -1,5 +1,11 @@
 package dev.hexnowloading.dungeonnowloading.item;
 
+
+
+
+import net.minecraft.world.entity.EntitySpawnReason;
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 import dev.hexnowloading.dungeonnowloading.util.StackNbt;
 import dev.hexnowloading.dungeonnowloading.config.GeneralConfig;
 import dev.hexnowloading.dungeonnowloading.entity.passive.SealedChaosEntity;
@@ -92,9 +98,9 @@ public class ScepterOfSealedChaosItem extends Item {
             level.playSound(player, playerPos, DNLSounds.SEALED_CHAOS_PLACE.get(), SoundSource.PLAYERS, 0.5F, 0.8F);
             //level.playSound(player, playerPos, SoundEvents.EVOKER_CAST_SPELL, SoundSource.PLAYERS);
 
-            SealedChaosEntity sealedChaosEntity = DNLEntityTypes.SEALED_CHAOS.get().create(level);
+            SealedChaosEntity sealedChaosEntity = DNLEntityTypes.SEALED_CHAOS.get().create(level, EntitySpawnReason.MOB_SUMMONED);
             if (sealedChaosEntity != null) {
-                sealedChaosEntity.moveTo(blockPos1, 0.0F, 0.0F);
+                sealedChaosEntity.snapTo(blockPos1, 0.0F, 0.0F);
                 sealedChaosEntity.setOwnerUUID(player.getUUID());
 
                 int arcLevel = EnchantmentHelper.getItemEnchantmentLevel(DNLEnchantments.holder(player.level(), DNLEnchantments.ARC_SHOT), itemStack);
@@ -125,7 +131,7 @@ public class ScepterOfSealedChaosItem extends Item {
                 }
 
 
-                    boolean basic = StackNbt.getOrCreateTag(itemStack).getBoolean(MODE_BASIC);
+                    boolean basic = StackNbt.getOrCreateTag(itemStack).getBooleanOr(MODE_BASIC, false);
                     sealedChaosEntity.setBasicVariant(basic);
 
                     level.addFreshEntity(sealedChaosEntity);
@@ -157,17 +163,17 @@ public class ScepterOfSealedChaosItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, Item.TooltipContext level, List<Component> components, TooltipFlag tooltipFlag) {
-        super.appendHoverText(itemStack, level, components, tooltipFlag);
+    public void appendHoverText(ItemStack itemStack, Item.TooltipContext level, TooltipDisplay tooltipDisplay, Consumer<Component> components, TooltipFlag tooltipFlag) {
+        super.appendHoverText(itemStack, level, tooltipDisplay, components, tooltipFlag);
         if (GeneralConfig.TOGGLE_HELPFUL_ITEM_TOOLTIP.get()) {
-            components.add(Component.translatable("item.dungeonnowloading.scepter_of_sealed_chaos.ability_name").withStyle(ChatFormatting.GRAY));
-            components.add(Component.translatable("item.dungeonnowloading.scepter_of_sealed_chaos.ability_description").withStyle(ChatFormatting.DARK_GRAY));
-            components.add(CommonComponents.EMPTY);
-            components.add(Component.translatable("item.dungeonnowloading.scepter_of_sealed_chaos.tooltip.right_click_block").withStyle(ChatFormatting.GRAY));
-            components.add(Component.translatable("item.dungeonnowloading.scepter_of_sealed_chaos.tooltip.right_click_block.description").withStyle(ChatFormatting.DARK_GREEN));
-            components.add(CommonComponents.EMPTY);
-            components.add(Component.translatable("item.dungeonnowloading.scepter_of_sealed_chaos.tooltip.right_click_sealed_chaos").withStyle(ChatFormatting.GRAY));
-            components.add(Component.translatable("item.dungeonnowloading.scepter_of_sealed_chaos.tooltip.right_click_sealed_chaos.description").withStyle(ChatFormatting.DARK_GREEN));
+            components.accept(Component.translatable("item.dungeonnowloading.scepter_of_sealed_chaos.ability_name").withStyle(ChatFormatting.GRAY));
+            components.accept(Component.translatable("item.dungeonnowloading.scepter_of_sealed_chaos.ability_description").withStyle(ChatFormatting.DARK_GRAY));
+            components.accept(CommonComponents.EMPTY);
+            components.accept(Component.translatable("item.dungeonnowloading.scepter_of_sealed_chaos.tooltip.right_click_block").withStyle(ChatFormatting.GRAY));
+            components.accept(Component.translatable("item.dungeonnowloading.scepter_of_sealed_chaos.tooltip.right_click_block.description").withStyle(ChatFormatting.DARK_GREEN));
+            components.accept(CommonComponents.EMPTY);
+            components.accept(Component.translatable("item.dungeonnowloading.scepter_of_sealed_chaos.tooltip.right_click_sealed_chaos").withStyle(ChatFormatting.GRAY));
+            components.accept(Component.translatable("item.dungeonnowloading.scepter_of_sealed_chaos.tooltip.right_click_sealed_chaos.description").withStyle(ChatFormatting.DARK_GREEN));
         }
     }
 }

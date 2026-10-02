@@ -45,13 +45,13 @@ public class MendingTableBlockEntity extends BlockEntity implements MenuProvider
     // Persistence
     @Override
     protected void saveAdditional(ValueOutput tag) {
-        super.saveAdditional(tag, registries);
+        super.saveAdditional(tag);
         ContainerHelper.saveAllItems(tag, items);
     }
 
     @Override
     protected void loadAdditional(ValueInput tag) {
-        super.loadAdditional(tag, registries);
+        super.loadAdditional(tag);
         items = NonNullList.withSize(INVENTORY_SIZE, ItemStack.EMPTY);
         ContainerHelper.loadAllItems(tag, items);
     }
@@ -122,7 +122,7 @@ public class MendingTableBlockEntity extends BlockEntity implements MenuProvider
     private boolean isToolRepairIngredient(ItemStack tool, ItemStack ingredientStack) {
         if (tool.isEmpty() || ingredientStack.isEmpty()) return false;
         if (!tool.isDamageableItem()) return false;
-        return tool.getItem().isValidRepairItem(tool, ingredientStack);
+        return tool.isValidRepairItem(ingredientStack);
     }
 
     private int percentPerItem(ItemStack tool, ItemStack stack) {

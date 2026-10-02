@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.item;
 
+
+import net.minecraft.world.item.component.TooltipDisplay;
 import dev.hexnowloading.dungeonnowloading.util.StackNbt;
 import net.minecraft.world.item.Item;
 import dev.hexnowloading.dungeonnowloading.config.GeneralConfig;
@@ -82,7 +84,7 @@ public class RepulsorItem extends Item {
             if (rep == null) return InteractionResult.FAIL;
 
             // Force exact placement + orientation
-            rep.moveTo(rep.getX(), rep.getY(), rep.getZ(), 0.0F, 0.0F);
+            rep.snapTo(rep.getX(), rep.getY(), rep.getZ(), 0.0F, 0.0F);
             rep.setYRot(0.0F);
             rep.setYHeadRot(0.0F);
 
@@ -119,7 +121,7 @@ public class RepulsorItem extends Item {
     }
 
     public static String getCosmeticMode(ItemStack stack) {
-        String v = StackNbt.getOrCreateTag(stack).getString(TAG_COSMETIC_MODE);
+        String v = StackNbt.getOrCreateTag(stack).getStringOr(TAG_COSMETIC_MODE, "");
         return v.isEmpty() ? MODE_DEFAULT : v;
     }
 
@@ -128,17 +130,17 @@ public class RepulsorItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext level, List<Component> components, TooltipFlag flag) {
-        super.appendHoverText(stack, level, components, flag);
+    public void appendHoverText(ItemStack stack, Item.TooltipContext level, TooltipDisplay tooltipDisplay, Consumer<Component> components, TooltipFlag flag) {
+        super.appendHoverText(stack, level, tooltipDisplay, components, flag);
         if (GeneralConfig.TOGGLE_HELPFUL_ITEM_TOOLTIP.get()) {
-            components.add(Component.translatable("item.dungeonnowloading.repulsor.tooltip.ability_name").withStyle(ChatFormatting.GRAY));
-            components.add(Component.translatable("item.dungeonnowloading.repulsor.tooltip.ability_description").withStyle(ChatFormatting.DARK_GRAY));
-            components.add(CommonComponents.EMPTY);
-            components.add(Component.translatable("item.dungeonnowloading.repulsor.tooltip.right_click").withStyle(ChatFormatting.GRAY));
-            components.add(Component.translatable("item.dungeonnowloading.repulsor.tooltip.right_click.description").withStyle(ChatFormatting.DARK_GREEN));
-            components.add(CommonComponents.EMPTY);
-            components.add(Component.translatable("item.dungeonnowloading.repulsor.tooltip.right_click_with_redstone_dust").withStyle(ChatFormatting.GRAY));
-            components.add(Component.translatable("item.dungeonnowloading.repulsor.tooltip.right_click_with_redstone_dust.description").withStyle(ChatFormatting.DARK_GREEN));
+            components.accept(Component.translatable("item.dungeonnowloading.repulsor.tooltip.ability_name").withStyle(ChatFormatting.GRAY));
+            components.accept(Component.translatable("item.dungeonnowloading.repulsor.tooltip.ability_description").withStyle(ChatFormatting.DARK_GRAY));
+            components.accept(CommonComponents.EMPTY);
+            components.accept(Component.translatable("item.dungeonnowloading.repulsor.tooltip.right_click").withStyle(ChatFormatting.GRAY));
+            components.accept(Component.translatable("item.dungeonnowloading.repulsor.tooltip.right_click.description").withStyle(ChatFormatting.DARK_GREEN));
+            components.accept(CommonComponents.EMPTY);
+            components.accept(Component.translatable("item.dungeonnowloading.repulsor.tooltip.right_click_with_redstone_dust").withStyle(ChatFormatting.GRAY));
+            components.accept(Component.translatable("item.dungeonnowloading.repulsor.tooltip.right_click_with_redstone_dust.description").withStyle(ChatFormatting.DARK_GREEN));
         }
     }
 

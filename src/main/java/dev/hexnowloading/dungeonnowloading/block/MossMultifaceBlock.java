@@ -1,6 +1,8 @@
 package dev.hexnowloading.dungeonnowloading.block;
 
 
+
+import net.minecraft.world.level.block.BonemealSource;
 import net.minecraft.world.level.ScheduledTickAccess;
 
 import dev.hexnowloading.dungeonnowloading.registry.DNLItems;
@@ -55,19 +57,19 @@ public class MossMultifaceBlock extends MultifaceBlock implements BonemealableBl
     }
 
     @Override
-    public boolean isValidBonemealTarget(LevelReader levelReader, BlockPos blockPos, BlockState blockState) {
+    public boolean isValidBonemealTarget(LevelReader levelReader, BlockPos blockPos, BlockState blockState, BonemealSource source) {
         return Direction.stream().anyMatch((p_153316_) -> {
             return this.spreader.canSpreadInAnyDirection(blockState, levelReader, blockPos, p_153316_.getOpposite());
         });
     }
 
     @Override
-    public boolean isBonemealSuccess(Level level, RandomSource randomSource, BlockPos blockPos, BlockState blockState) {
+    public boolean isBonemealSuccess(Level level, RandomSource randomSource, BlockPos blockPos, BlockState blockState, BonemealSource source) {
         return true;
     }
 
     @Override
-    public void performBonemeal(ServerLevel serverLevel, RandomSource randomSource, BlockPos blockPos, BlockState blockState) {
+    public void performBonemeal(ServerLevel serverLevel, RandomSource randomSource, BlockPos blockPos, BlockState blockState, BonemealSource source) {
         this.spreader.spreadFromRandomFaceTowardRandomDirection(blockState, serverLevel, blockPos, randomSource);
     }
 
@@ -81,7 +83,6 @@ public class MossMultifaceBlock extends MultifaceBlock implements BonemealableBl
         return blockState.getFluidState().isEmpty();
     }
 
-    @Override
     public MultifaceSpreader getSpreader() {
         return this.spreader;
     }

@@ -17,13 +17,13 @@ public class SkeletonCaveSpiderJokeyFeature extends Feature<NoneFeatureConfigura
     public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
         CaveSpider caveSpider = EntityType.CAVE_SPIDER.create(context.level().getLevel());
         caveSpider.setPersistenceRequired();
-        caveSpider.moveTo((double)context.origin().getX() + 0.5D, context.origin().getY(), (double)context.origin().getZ() + 0.5D, 0.0F, 0.0F);
+        caveSpider.snapTo((double)context.origin().getX() + 0.5D, context.origin().getY(), (double)context.origin().getZ() + 0.5D, 0.0F, 0.0F);
         caveSpider.finalizeSpawn(context.level(), context.level().getCurrentDifficultyAt(context.origin()), EntitySpawnReason.STRUCTURE, null);
         EntityScale.scaleMobAttributes(caveSpider);
 
         Skeleton skeleton = EntityType.SKELETON.create(context.level().getLevel());
         skeleton.setPersistenceRequired();
-        skeleton.moveTo((double)context.origin().getX() + 0.5D, context.origin().getY() + 1, (double)context.origin().getZ() + 0.5D, 0.0F, 0.0F);
+        skeleton.snapTo((double)context.origin().getX() + 0.5D, context.origin().getY() + 1, (double)context.origin().getZ() + 0.5D, 0.0F, 0.0F);
         skeleton.finalizeSpawn(context.level(), context.level().getCurrentDifficultyAt(context.origin()), EntitySpawnReason.STRUCTURE, null);
         EntityScale.scaleMobAttributes(skeleton);
 

@@ -705,10 +705,10 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
         // Spawn at boss *starting position*
         BlockPos start = this.getSpawnPointPos();
 
-        SeepingSoulEntity soul = DNLEntityTypes.SEEPING_SOUL.get().create(level);
+        SeepingSoulEntity soul = DNLEntityTypes.SEEPING_SOUL.get().create(level, EntitySpawnReason.MOB_SUMMONED);
         if (soul == null) return;
 
-        soul.moveTo(start.getX() + 0.5, start.getY() + RECALL_POSITION_OFFSET_Y, start.getZ() + 0.5, 0, 0);
+        soul.snapTo(start.getX() + 0.5, start.getY() + RECALL_POSITION_OFFSET_Y, start.getZ() + 0.5, 0, 0);
 
         // bossId should match the recall registry id you use for Chaos Spawner
         soul.setBossId(Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "chaos_spawner"));
@@ -1136,11 +1136,11 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
     }
 
     public static void spawnRecalledStatic(ServerLevel level, SeepingSoulEntity soul, int defeatedCount) {
-        ChaosSpawnerEntity boss = DNLEntityTypes.CHAOS_SPAWNER.get().create(level);
+        ChaosSpawnerEntity boss = DNLEntityTypes.CHAOS_SPAWNER.get().create(level, EntitySpawnReason.MOB_SUMMONED);
         if (boss == null) return;
         BlockPos pos = soul.blockPosition();
         boss.initRecalled(soul, defeatedCount);
-        boss.moveTo(pos.getX() + 0.5f, pos.getY() - RECALL_POSITION_OFFSET_Y, pos.getZ() + 0.5f, soul.getYRot(), 0);
+        boss.snapTo(pos.getX() + 0.5f, pos.getY() - RECALL_POSITION_OFFSET_Y, pos.getZ() + 0.5f, soul.getYRot(), 0);
         level.addFreshEntity(boss);
         spawnRecallFxTight(level, boss.position());
     }

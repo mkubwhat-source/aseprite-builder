@@ -91,7 +91,7 @@ public class FairkeeperChestBlockEntity extends RandomizableContainerBlockEntity
     // Saves the nbt when player leaves the world.
     @Override
     protected void saveAdditional(ValueOutput nbt) {
-        super.saveAdditional(nbt, registries);
+        super.saveAdditional(nbt);
         if (!this.trySaveLootTable(nbt)) {
             ContainerHelper.saveAllItems(nbt, this.items);
         } else {
@@ -134,7 +134,7 @@ public class FairkeeperChestBlockEntity extends RandomizableContainerBlockEntity
     // Loads the nbt when player joins the world.
     @Override
     protected void loadAdditional(ValueInput nbt) {
-        super.loadAdditional(nbt, registries);
+        super.loadAdditional(nbt);
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         if (!this.tryLoadLootTable(nbt)) {
             ContainerHelper.loadAllItems(nbt, this.items);
@@ -150,22 +150,22 @@ public class FairkeeperChestBlockEntity extends RandomizableContainerBlockEntity
                 this.blockEntityLocationList = new ArrayList<>();
             }
             for (int a = 0; a < listTag.size(); ++a) {
-                this.blockEntityLocationList.add(new BlockPos(listTag.getInt(0), listTag.getInt(1), listTag.getInt(2)));
+                this.blockEntityLocationList.add(new BlockPos(listTag.getIntOr(0, 0), listTag.getIntOr(1, 0), listTag.getIntOr(2, 0)));
             }
         }
         if (NbtCompat.has(nbt, "LastSpawner")) {
-            this.lastSpawner = new BlockPos(NbtCompat.getList(nbt, "LastSpawner").getInt(0), NbtCompat.getList(nbt, "LastSpawner").getInt(1), NbtCompat.getList(nbt, "LastSpawner").getInt(2));
+            this.lastSpawner = new BlockPos(NbtCompat.getList(nbt, "LastSpawner").getIntOr(0, 0), NbtCompat.getList(nbt, "LastSpawner").getIntOr(1, 0), NbtCompat.getList(nbt, "LastSpawner").getIntOr(2, 0));
         }
         this.facing = nbt.getIntOr("Facing", 0);
         this.startUpTick = nbt.getIntOr("StartUpTick", 0);
         this.playerCount = nbt.getIntOr("PlayerCount", 0);
         this.disabled = nbt.getBooleanOr("Disabled", false);
-        this.oldBlockPos = new BlockPos(NbtCompat.getList(nbt, "OldBlockPos").getInt(0), NbtCompat.getList(nbt, "OldBlockPos").getInt(1), NbtCompat.getList(nbt, "OldBlockPos").getInt(2));
+        this.oldBlockPos = new BlockPos(NbtCompat.getList(nbt, "OldBlockPos").getIntOr(0, 0), NbtCompat.getList(nbt, "OldBlockPos").getIntOr(1, 0), NbtCompat.getList(nbt, "OldBlockPos").getIntOr(2, 0));
         if (NbtCompat.has(nbt, "MaxRegion")) {
-            this.maxRegion = new BlockPos(NbtCompat.getList(nbt, "MaxRegion").getInt(0), NbtCompat.getList(nbt, "MaxRegion").getInt(1), NbtCompat.getList(nbt, "MaxRegion").getInt(2));
+            this.maxRegion = new BlockPos(NbtCompat.getList(nbt, "MaxRegion").getIntOr(0, 0), NbtCompat.getList(nbt, "MaxRegion").getIntOr(1, 0), NbtCompat.getList(nbt, "MaxRegion").getIntOr(2, 0));
         }
         if (NbtCompat.has(nbt, "MinRegion")) {
-            this.minRegion = new BlockPos(NbtCompat.getList(nbt, "MinRegion").getInt(0), NbtCompat.getList(nbt, "MinRegion").getInt(1), NbtCompat.getList(nbt, "MinRegion").getInt(2));
+            this.minRegion = new BlockPos(NbtCompat.getList(nbt, "MinRegion").getIntOr(0, 0), NbtCompat.getList(nbt, "MinRegion").getIntOr(1, 0), NbtCompat.getList(nbt, "MinRegion").getIntOr(2, 0));
         }
     }
 
@@ -421,7 +421,7 @@ public class FairkeeperChestBlockEntity extends RandomizableContainerBlockEntity
         CompoundTag compoundTag = blockEntity.setCombatLootTable(blockEntity);
         FairkeeperChestBlock.setFairkeeperAlert(level, fairkeeperChestPos, Boolean.TRUE);
         BlockEntity newBlockEntity = level.getBlockEntity(fairkeeperChestPos);
-        newBlockEntity.loadWithComponents(compoundTag, level.registryAccess());
+        NbtCompat.loadBlockEntity(newBlockEntity, compoundTag, level.registryAccess());
         AABB aabb = new AABB(blockEntity.actualRegion1X, blockEntity.actualRegion1Y, blockEntity.actualRegion1Z, blockEntity.actualRegion2X, blockEntity.actualRegion2Y, blockEntity.actualRegion2Z);
         List<Player> nearbyPlayers = level.getEntitiesOfClass(Player.class, aabb);
         blockEntity.playerCount = nearbyPlayers.size();

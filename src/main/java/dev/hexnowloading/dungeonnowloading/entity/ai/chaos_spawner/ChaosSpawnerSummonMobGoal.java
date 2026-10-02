@@ -156,10 +156,10 @@ public class ChaosSpawnerSummonMobGoal extends Goal {
             return;
         }
 
-        Mob mob = entry.type().create(level);
+        Mob mob = entry.type().create(level, EntitySpawnReason.MOB_SUMMONED);
         if (mob == null) return;
 
-        mob.moveTo(summonPos, 0.0F, 0.0F);
+        mob.snapTo(summonPos, 0.0F, 0.0F);
         mob.finalizeSpawn(serverLevel, level.getCurrentDifficultyAt(summonPos), EntitySpawnReason.MOB_SUMMONED, null);
 
         entry.post().accept(mob);
@@ -174,8 +174,8 @@ public class ChaosSpawnerSummonMobGoal extends Goal {
         Skeleton skeleton = EntityType.SKELETON.create(level);
         if (spider == null || skeleton == null) return;
 
-        spider.moveTo(summonPos, 0.0F, 0.0F);
-        skeleton.moveTo(summonPos, 0.0F, 0.0F);
+        spider.snapTo(summonPos, 0.0F, 0.0F);
+        skeleton.snapTo(summonPos, 0.0F, 0.0F);
 
         spider.finalizeSpawn(serverLevel, level.getCurrentDifficultyAt(summonPos), EntitySpawnReason.MOB_SUMMONED, null);
         skeleton.finalizeSpawn(serverLevel, level.getCurrentDifficultyAt(summonPos), EntitySpawnReason.MOB_SUMMONED, null);

@@ -547,7 +547,7 @@ public class DuriteQuellerBlockEntity extends BlockEntity implements ZoneReceive
     // === Save/load ===
     @Override
     protected void saveAdditional(ValueOutput tag) {
-        super.saveAdditional(tag, registries);
+        super.saveAdditional(tag);
         tag.putInt("cornerAx", cornerA.getX());
         tag.putInt("cornerAy", cornerA.getY());
         tag.putInt("cornerAz", cornerA.getZ());
@@ -576,7 +576,7 @@ public class DuriteQuellerBlockEntity extends BlockEntity implements ZoneReceive
 
     @Override
     protected void loadAdditional(ValueInput tag) {
-        super.loadAdditional(tag, registries);
+        super.loadAdditional(tag);
         cornerA = new BlockPos(tag.getIntOr("cornerAx", 0), tag.getIntOr("cornerAy", 0), tag.getIntOr("cornerAz", 0));
         cornerB = new BlockPos(tag.getIntOr("cornerBx", 0), tag.getIntOr("cornerBy", 0), tag.getIntOr("cornerBz", 0));
         nbtFacing = Direction.byName(tag.getStringOr("nbtFacing", ""));

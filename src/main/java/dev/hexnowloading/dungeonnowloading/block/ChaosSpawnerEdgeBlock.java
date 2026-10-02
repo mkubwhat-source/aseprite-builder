@@ -1,6 +1,12 @@
 package dev.hexnowloading.dungeonnowloading.block;
 
 
+
+
+
+import net.minecraft.world.item.Item;
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.server.level.ServerLevel;
 import dev.hexnowloading.dungeonnowloading.block.property.AllSides;
 import dev.hexnowloading.dungeonnowloading.registry.DNLBlocks;
@@ -139,11 +145,6 @@ public class ChaosSpawnerEdgeBlock extends Block implements SimpleWaterloggedBlo
                 .setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER);
     }
 
-    @Override
-    public void appendHoverText(ItemStack itemStack, net.minecraft.world.item.Item.TooltipContext blockGetter, List<Component> componentList, TooltipFlag tooltipFlag) {
-        super.appendHoverText(itemStack, blockGetter, componentList, tooltipFlag);
-        componentList.add(Component.translatable("block.dungeonnowloading.chaos_spawner_edge.tooltip").withStyle(ChatFormatting.GRAY));
-    }
 
     @Override
     protected void affectNeighborsAfterRemoval(BlockState blockState, ServerLevel level, BlockPos blockPos, boolean b) {

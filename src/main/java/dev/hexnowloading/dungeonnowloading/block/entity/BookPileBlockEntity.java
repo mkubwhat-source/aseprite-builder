@@ -39,7 +39,7 @@ public class BookPileBlockEntity extends BlockEntity {
 
     @Override
     protected void saveAdditional(ValueOutput tag) {
-        super.saveAdditional(tag, registries);
+        super.saveAdditional(tag);
 
         if (lootTable != null) {
             tag.putString("LootTable", lootTable.toString());
@@ -49,7 +49,7 @@ public class BookPileBlockEntity extends BlockEntity {
 
     @Override
     protected void loadAdditional(ValueInput tag) {
-        super.loadAdditional(tag, registries);
+        super.loadAdditional(tag);
 
         if (NbtCompat.has(tag, "LootTable")) {
             this.lootTable = Identifier.parse(tag.getStringOr("LootTable", ""));

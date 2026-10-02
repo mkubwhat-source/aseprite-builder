@@ -1,5 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.item;
 
+
+
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -15,9 +19,9 @@ public class BrokenRecordItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, TooltipContext tooltipContext, List<Component> components, TooltipFlag tooltipFlag) {
-        components.add(this.getDisplayName().withStyle(ChatFormatting.GRAY));
-        components.add(Component.translatable(this.getDescriptionId() + ".desc2").withStyle(ChatFormatting.DARK_GRAY));
+    public void appendHoverText(ItemStack itemStack, Item.TooltipContext tooltipContext, TooltipDisplay tooltipDisplay, Consumer<Component> components, TooltipFlag tooltipFlag) {
+        components.accept(this.getDisplayName().withStyle(ChatFormatting.GRAY));
+        components.accept(Component.translatable(this.getDescriptionId() + ".desc2").withStyle(ChatFormatting.DARK_GRAY));
     }
 
     public MutableComponent getDisplayName() {

@@ -66,7 +66,7 @@ public class MendingAuraBlockEntity extends BlockEntity {
 
     @Override
     protected void saveAdditional(ValueOutput compoundTag) {
-        super.saveAdditional(compoundTag, registries);
+        super.saveAdditional(compoundTag);
 
         if (storedBlockState != null) {
             NbtCompat.put(compoundTag, "StoredBlockState", BlockState.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, storedBlockState).result().orElseThrow());
@@ -81,7 +81,7 @@ public class MendingAuraBlockEntity extends BlockEntity {
 
     @Override
     protected void loadAdditional(ValueInput compoundTag) {
-        super.loadAdditional(compoundTag, registries);
+        super.loadAdditional(compoundTag);
 
         if (NbtCompat.has(compoundTag, "StoredBlockState")) {
             storedBlockState = BlockState.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, NbtCompat.getCompound(compoundTag, "StoredBlockState")).result().orElse(null);
@@ -121,7 +121,7 @@ public class MendingAuraBlockEntity extends BlockEntity {
 
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity != null && this.storedBlockNbt != null) {
-                blockEntity.loadWithComponents(this.storedBlockNbt, level.registryAccess());
+                NbtCompat.loadBlockEntity(blockEntity, this.storedBlockNbt, level.registryAccess());
         }
     }
 }

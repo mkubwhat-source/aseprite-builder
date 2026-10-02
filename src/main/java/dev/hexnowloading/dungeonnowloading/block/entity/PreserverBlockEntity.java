@@ -47,7 +47,7 @@ public class PreserverBlockEntity extends BlockEntity implements GameEventListen
 
     @Override
     protected void saveAdditional(ValueOutput compoundTag) {
-        super.saveAdditional(compoundTag, registries);
+        super.saveAdditional(compoundTag);
 
         PreserverBlockDestructionSystem.User.CODEC.encodeStart(NbtOps.INSTANCE, this.user)
                 .resultOrPartial(LOGGER::error)

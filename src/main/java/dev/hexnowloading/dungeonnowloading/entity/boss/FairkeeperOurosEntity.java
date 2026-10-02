@@ -192,7 +192,7 @@ public class FairkeeperOurosEntity extends Monster implements Boss, Enemy, Slumb
             this.setCallerId(NbtCompat.getUUID(compoundTag, "CallerUUID"));
         }
         if (NbtCompat.has(compoundTag, "AwakenEndPos")) {
-            this.awakenEndPos = new Vec3(NbtCompat.getList(compoundTag, "AwakenEndPos").getDouble(0), NbtCompat.getList(compoundTag, "AwakenEndPos").getDouble(1), NbtCompat.getList(compoundTag, "AwakenEndPos").getDouble(2));
+            this.awakenEndPos = new Vec3(NbtCompat.getList(compoundTag, "AwakenEndPos").getDoubleOr(0, 0.0D), NbtCompat.getList(compoundTag, "AwakenEndPos").getDoubleOr(1, 0.0D), NbtCompat.getList(compoundTag, "AwakenEndPos").getDoubleOr(2, 0.0D));
         }
         this.setCanDestroyBlocks(compoundTag.getBooleanOr("CanDestroyBlocks", false));
         this.setState(compoundTag.getBooleanOr("Awakened", false) ? FairkeeperOurosState.IDLE : FairkeeperOurosState.AWAKENING);

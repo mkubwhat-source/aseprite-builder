@@ -1,5 +1,11 @@
 package dev.hexnowloading.dungeonnowloading.item;
 
+
+
+
+import net.minecraft.world.entity.EntitySpawnReason;
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 import dev.hexnowloading.dungeonnowloading.util.StackNbt;
 import net.minecraft.world.item.Item;
 import dev.hexnowloading.dungeonnowloading.config.GeneralConfig;
@@ -222,12 +228,12 @@ public class SpawnerArmorItem extends ArmorItem {
         double y = origin.getY() + random.nextInt(3) - 1;
         double z = origin.getZ() + (random.nextDouble() - random.nextDouble()) * SPAWN_RANGE + 0.5D;
 
-        WhimperEntity whimper = DNLEntityTypes.WHIMPER.get().create(level);
+        WhimperEntity whimper = DNLEntityTypes.WHIMPER.get().create(level, EntitySpawnReason.MOB_SUMMONED);
         if (whimper == null) {
             return false;
         }
 
-        whimper.moveTo(x, y, z, 0.0F, 0.0F);
+        whimper.snapTo(x, y, z, 0.0F, 0.0F);
         whimper.setOwnerUUID(owner.getUUID());
         whimper.setSkin(resolveWhimperSkin(level, helmetStack));
 
@@ -308,12 +314,12 @@ public class SpawnerArmorItem extends ArmorItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext level, List<Component> components, TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, level, components, tooltipFlag);
+    public void appendHoverText(ItemStack stack, Item.TooltipContext level, TooltipDisplay tooltipDisplay, Consumer<Component> components, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, level, tooltipDisplay, components, tooltipFlag);
 
         if (GeneralConfig.TOGGLE_HELPFUL_ITEM_TOOLTIP.get()) {
-            components.add(Component.translatable("item.dungeonnowloading.spawner_armor.tooltip.ability_name").withStyle(ChatFormatting.GRAY));
-            components.add(Component.translatable("item.dungeonnowloading.spawner_armor.tooltip.ability_description").withStyle(ChatFormatting.DARK_GRAY));
+            components.accept(Component.translatable("item.dungeonnowloading.spawner_armor.tooltip.ability_name").withStyle(ChatFormatting.GRAY));
+            components.accept(Component.translatable("item.dungeonnowloading.spawner_armor.tooltip.ability_description").withStyle(ChatFormatting.DARK_GRAY));
         }
     }
 
@@ -333,7 +339,7 @@ public class SpawnerArmorItem extends ArmorItem {
     }
 
     public static String getWhimperCosmeticMode(ItemStack stack) {
-        String value = StackNbt.getOrCreateTag(stack).getString(TAG_WHIMPER_COSMETIC_MODE);
+        String value = StackNbt.getOrCreateTag(stack).getStringOr(TAG_WHIMPER_COSMETIC_MODE, "");
         return value.isEmpty() ? MODE_DEFAULT : value;
     }
 
@@ -359,7 +365,7 @@ public class SpawnerArmorItem extends ArmorItem {
         if (!StackNbt.hasTag(stack) || !StackNbt.getTag(stack).contains(TAG_SUMMON_TICK)) {
             return DEFAULT_SUMMON_TICK;
         }
-        return StackNbt.getTag(stack).getInt(TAG_SUMMON_TICK);
+        return StackNbt.getTag(stack).getIntOr(TAG_SUMMON_TICK, 0);
     }
 
     private static void setSummonTick(ItemStack stack, int value) {

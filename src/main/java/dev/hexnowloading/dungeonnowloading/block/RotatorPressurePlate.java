@@ -133,7 +133,7 @@ public class RotatorPressurePlate extends PressurePlateBlock {
                 rotateBlock((ServerLevel) level, blockPos);
             }
         }
-        super.entityInside(blockState, level, blockPos, entity);
+        super.entityInside(blockState, level, blockPos, entity, effectApplier, isPrecise);
     }
 
     private void rotateBlock(ServerLevel serverLevel, BlockPos blockPos) {

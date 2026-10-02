@@ -2,6 +2,8 @@ package dev.hexnowloading.dungeonnowloading.block;
 
 
 
+
+import net.minecraft.util.ARGB;
 import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.LevelReader;
 import dev.hexnowloading.dungeonnowloading.block.entity.MendstoneChalkMarkBlockEntity;
@@ -138,8 +140,8 @@ public class MendstoneChalkMarkBlock extends PreserverBlock implements SimpleWat
 
             if (previousOutlineStage != outlineStage) {
                 DustColorTransitionOptions dust2 = new DustColorTransitionOptions(
-                        new Vector3f(0.45f, 0.80f, 1.0f),   // from
-                        new Vector3f(0.90f, 0.95f, 1.0f),   // to
+                        ARGB.colorFromFloat(1.0f, 0.45f, 0.80f, 1.0f),   // from
+                        ARGB.colorFromFloat(1.0f, 0.90f, 0.95f, 1.0f),   // to
                         1.0f                                 // scale
                 );
                 level.sendParticles(dust2, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 5, 0.0, 0.5, 0.5, 0.0);

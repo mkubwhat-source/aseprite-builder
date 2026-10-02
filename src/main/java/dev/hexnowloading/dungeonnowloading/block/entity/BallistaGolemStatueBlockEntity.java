@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.block.entity;
 
+
+import net.minecraft.world.entity.EntitySpawnReason;
 import dev.hexnowloading.dungeonnowloading.block.BallistaGolemStatueBlock;
 import dev.hexnowloading.dungeonnowloading.entity.monster.BallistaGolemEntity;
 import dev.hexnowloading.dungeonnowloading.registry.DNLBlockEntityTypes;
@@ -23,7 +25,7 @@ public class BallistaGolemStatueBlockEntity extends BlockEntity {
 
         double x = pos.getX() + 0.5D, y = pos.getY(), z = pos.getZ() + 0.5D;
 
-        BallistaGolemEntity golem = DNLEntityTypes.BALLISTA_GOLEM.get().create(world);
+        BallistaGolemEntity golem = DNLEntityTypes.BALLISTA_GOLEM.get().create(world, EntitySpawnReason.MOB_SUMMONED);
         golem.setPos(x, y, z); // Center the entity on the block
         golem.setYRot(facing.toYRot()); // Set the entity's rotation based on the facing direction
         golem.setYHeadRot(facing.toYRot());

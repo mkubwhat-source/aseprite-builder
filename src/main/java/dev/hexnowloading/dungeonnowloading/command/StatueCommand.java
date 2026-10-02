@@ -84,8 +84,8 @@ public final class StatueCommand {
 
     private static void giveForProfile(CommandSourceStack src, ServerPlayer receiver, String campaign, GameProfile owner) {
         // Find patron entry in THIS campaign by UUID to compute notch tier
-        PatronRegistry.Patron patron = (owner != null && owner.getId() != null)
-                ? PatronRegistry.findByUuid(campaign, owner.getId())
+        PatronRegistry.Patron patron = (owner != null && owner.id() != null)
+                ? PatronRegistry.findByUuid(campaign, owner.id())
                 : null;
 
         PlayerStatueBlockEntity.NotchTier tier = (patron != null)
@@ -97,7 +97,7 @@ public final class StatueCommand {
         boolean added = receiver.getInventory().add(stack);
         if (!added) receiver.drop(stack, false);
 
-        String label = (owner != null && owner.getName() != null && !owner.getName().isBlank()) ? owner.getName() : "that player";
+        String label = (owner != null && owner.name() != null && !owner.name().isBlank()) ? owner.name() : "that player";
         src.sendSuccess(() -> Component.literal("Gave a " + campaign + " statue of " + label + "."), false);
     }
 
@@ -121,7 +121,7 @@ public final class StatueCommand {
         boolean added = receiver.getInventory().add(stack);
         if (!added) receiver.drop(stack, false);
 
-        String label = (gp.getName() != null && !gp.getName().isBlank()) ? gp.getName() : name;
+        String label = (gp.name() != null && !gp.name().isBlank()) ? gp.name() : name;
         src.sendSuccess(() -> Component.literal("Gave a " + campaign + " statue of " + label + "."), false);
     }
 
@@ -143,9 +143,9 @@ public final class StatueCommand {
                     .result()
                     .ifPresent(ownerTag -> tag.put("Owner", ownerTag));
 
-            if (owner.getName() != null && !owner.getName().isBlank()) {
-                tag.putString("SkullOwner", owner.getName()); // for item display name
-            } else if (owner.getId() != null) {
+            if (owner.name() != null && !owner.name().isBlank()) {
+                tag.putString("SkullOwner", owner.name()); // for item display name
+            } else if (owner.id() != null) {
                 net.minecraft.world.item.component.ResolvableProfile.CODEC
                         .encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, new net.minecraft.world.item.component.ResolvableProfile(owner))
                         .result()

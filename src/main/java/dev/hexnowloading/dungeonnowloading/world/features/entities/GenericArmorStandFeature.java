@@ -24,7 +24,7 @@ public class GenericArmorStandFeature extends Feature<ArmorStandConfig> {
     @Override
     public boolean place(FeaturePlaceContext<ArmorStandConfig> context) {
         ArmorStand armorStand = EntityType.ARMOR_STAND.create(context.level().getLevel());
-        armorStand.moveTo(context.origin().below(), 0.0F, 0.0F);
+        armorStand.snapTo(context.origin().below(), 0.0F, 0.0F);
         context.config().heldItem.ifPresent(item -> armorStand.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(item)));
         context.config().helmet.ifPresent(item -> armorStand.setItemSlot(EquipmentSlot.HEAD, new ItemStack(item)));
         context.config().chestplate.ifPresent(item -> armorStand.setItemSlot(EquipmentSlot.CHEST, new ItemStack(item)));

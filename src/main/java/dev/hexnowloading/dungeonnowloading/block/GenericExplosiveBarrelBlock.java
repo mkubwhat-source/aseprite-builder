@@ -218,7 +218,7 @@ public abstract class GenericExplosiveBarrelBlock extends FallingBlock implement
         if (!level.isClientSide()) {
             BlockPos bpos = hit.getBlockPos();
             LivingEntity owner = projectile.getOwner() instanceof LivingEntity l ? l : null;
-            if (projectile.isOnFire() && projectile.mayInteract(level, bpos)) {
+            if (projectile.isOnFire() && level instanceof ServerLevel serverLevel && projectile.mayInteract(serverLevel, bpos)) {
                 this.detonateNow(level, bpos, owner, TriggerCause.PROJECTILE_FLAMING_ARROW, projectile);
             } else {
                 this.onImmediateTrigger(level, bpos, owner, TriggerCause.PROJECTILE_NORMAL_ARROW);
@@ -256,5 +256,10 @@ public abstract class GenericExplosiveBarrelBlock extends FallingBlock implement
     @Override
     public boolean dropFromExplosion(Explosion explosion) {
         return false;
+    }
+
+    @Override
+    public int getDustColor(BlockState blockState, BlockGetter level, BlockPos pos) {
+        return 0xFF6B4A2B;
     }
 }

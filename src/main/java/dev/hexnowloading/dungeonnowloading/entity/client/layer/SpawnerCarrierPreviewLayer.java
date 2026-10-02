@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.entity.client.layer;
 
+
+import net.minecraft.world.entity.EntitySpawnReason;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import dev.hexnowloading.dungeonnowloading.entity.client.model.SpawnerCarrierModel;
@@ -127,7 +129,7 @@ public class SpawnerCarrierPreviewLayer<T extends SpawnerCarrierEntity, M extend
             EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(rl);
             if (type == null) return null;
 
-            Entity e = type.create(carrier.level());
+            Entity e = type.create(carrier.level(), EntitySpawnReason.MOB_SUMMONED);
             if (e == null) return null;
 
             e.setSilent(true);

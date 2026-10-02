@@ -1,5 +1,11 @@
 package dev.hexnowloading.dungeonnowloading.item;
 
+
+
+
+import net.minecraft.world.entity.EntitySpawnReason;
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 import dev.hexnowloading.dungeonnowloading.util.StackNbt;
 import net.minecraft.world.item.Item;
 import dev.hexnowloading.dungeonnowloading.config.GeneralConfig;
@@ -151,14 +157,14 @@ public class CopperDetonatorItem extends Item {
     }
 
     private void launchCreep(Level level, Player player, ItemStack detonatorStack) {
-        CopperCreepEntity creep = DNLEntityTypes.COPPER_CREEP.get().create(level);
+        CopperCreepEntity creep = DNLEntityTypes.COPPER_CREEP.get().create(level, EntitySpawnReason.MOB_SUMMONED);
         if (creep == null) return;
 
         double offset = 1.0;
         double launchX = player.getX() - Math.sin(Math.toRadians(player.getYRot())) * offset;
         double launchY = player.getY() + player.getEyeHeight() * 0.6;
         double launchZ = player.getZ() + Math.cos(Math.toRadians(player.getYRot())) * offset;
-        creep.moveTo(launchX, launchY, launchZ, player.getYRot(), player.getXRot());
+        creep.snapTo(launchX, launchY, launchZ, player.getYRot(), player.getXRot());
 
         // Gigantism: if the detonator has the enchant, double the Copper Creep's size
         int gigantismLevel = EnchantmentHelper.getItemEnchantmentLevel(DNLEnchantments.holder(player.level(), DNLEnchantments.GIGANTISM), detonatorStack);
@@ -229,29 +235,29 @@ public class CopperDetonatorItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, Item.TooltipContext level, List<Component> components, TooltipFlag tooltipFlag) {
-        super.appendHoverText(itemStack, level, components, tooltipFlag);
+    public void appendHoverText(ItemStack itemStack, Item.TooltipContext level, TooltipDisplay tooltipDisplay, Consumer<Component> components, TooltipFlag tooltipFlag) {
+        super.appendHoverText(itemStack, level, tooltipDisplay, components, tooltipFlag);
         if (GeneralConfig.TOGGLE_HELPFUL_ITEM_TOOLTIP.get()) {
-            components.add(Component.translatable("item.dungeonnowloading.copper_detonator.tooltip.ability_name").withStyle(ChatFormatting.GRAY));
-            components.add(Component.translatable("item.dungeonnowloading.copper_detonator.tooltip.ability_description").withStyle(ChatFormatting.DARK_GRAY));
-            components.add(CommonComponents.EMPTY);
-            components.add(Component.translatable("item.dungeonnowloading.copper_detonator.tooltip.right_click").withStyle(ChatFormatting.GRAY));
-            components.add(Component.translatable("item.dungeonnowloading.copper_detonator.tooltip.right_click.description").withStyle(ChatFormatting.DARK_GREEN));
-            components.add(CommonComponents.EMPTY);
-            components.add(Component.translatable("item.dungeonnowloading.copper_detonator.tooltip.hold_right_mouse_button").withStyle(ChatFormatting.GRAY));
-            components.add(Component.translatable("item.dungeonnowloading.copper_detonator.tooltip.hold_right_mouse_button.description").withStyle(ChatFormatting.DARK_GREEN));
+            components.accept(Component.translatable("item.dungeonnowloading.copper_detonator.tooltip.ability_name").withStyle(ChatFormatting.GRAY));
+            components.accept(Component.translatable("item.dungeonnowloading.copper_detonator.tooltip.ability_description").withStyle(ChatFormatting.DARK_GRAY));
+            components.accept(CommonComponents.EMPTY);
+            components.accept(Component.translatable("item.dungeonnowloading.copper_detonator.tooltip.right_click").withStyle(ChatFormatting.GRAY));
+            components.accept(Component.translatable("item.dungeonnowloading.copper_detonator.tooltip.right_click.description").withStyle(ChatFormatting.DARK_GREEN));
+            components.accept(CommonComponents.EMPTY);
+            components.accept(Component.translatable("item.dungeonnowloading.copper_detonator.tooltip.hold_right_mouse_button").withStyle(ChatFormatting.GRAY));
+            components.accept(Component.translatable("item.dungeonnowloading.copper_detonator.tooltip.hold_right_mouse_button.description").withStyle(ChatFormatting.DARK_GREEN));
         }
     }
 
     private boolean canSpawnCreepHere(Level level, Player player, ItemStack detonatorStack) {
-        CopperCreepEntity creep = DNLEntityTypes.COPPER_CREEP.get().create(level);
+        CopperCreepEntity creep = DNLEntityTypes.COPPER_CREEP.get().create(level, EntitySpawnReason.MOB_SUMMONED);
         if (creep == null) return false;
 
         double offset = 1.0;
         double launchX = player.getX() - Math.sin(Math.toRadians(player.getYRot())) * offset;
         double launchY = player.getY() + player.getEyeHeight() * 0.6;
         double launchZ = player.getZ() + Math.cos(Math.toRadians(player.getYRot())) * offset;
-        creep.moveTo(launchX, launchY, launchZ, player.getYRot(), player.getXRot());
+        creep.snapTo(launchX, launchY, launchZ, player.getYRot(), player.getXRot());
 
         int gigantismLevel = EnchantmentHelper.getItemEnchantmentLevel(DNLEnchantments.holder(player.level(), DNLEnchantments.GIGANTISM), detonatorStack);
         if (gigantismLevel > 0) {

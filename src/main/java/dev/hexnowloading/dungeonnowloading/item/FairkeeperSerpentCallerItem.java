@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.item;
 
+
+import net.minecraft.world.entity.EntitySpawnReason;
 import dev.hexnowloading.dungeonnowloading.entity.boss.FairkeeperSerpentCallerEntity;
 import dev.hexnowloading.dungeonnowloading.registry.DNLEntityTypes;
 import net.minecraft.core.BlockPos;
@@ -31,9 +33,9 @@ public class FairkeeperSerpentCallerItem extends Item {
             BlockState blockState = level.getBlockState(blockPos);
             Direction facingDirection = context.getHorizontalDirection().getOpposite();
             BlockPos summoningBlockPos = blockState.getCollisionShape(level, blockPos).isEmpty() ? blockPos : blockPos.relative(direction);
-            FairkeeperSerpentCallerEntity entity = DNLEntityTypes.FAIRKEEPER_SERPENT_CALLER.get().create(level);
+            FairkeeperSerpentCallerEntity entity = DNLEntityTypes.FAIRKEEPER_SERPENT_CALLER.get().create(level, EntitySpawnReason.MOB_SUMMONED);
             if (entity != null) {
-                entity.moveTo(summoningBlockPos, facingDirection.toYRot(), 0.0F);
+                entity.snapTo(summoningBlockPos, facingDirection.toYRot(), 0.0F);
                 level.addFreshEntity(entity);
             }
         }

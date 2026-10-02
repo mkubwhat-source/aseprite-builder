@@ -2,6 +2,8 @@ package dev.hexnowloading.dungeonnowloading.entity.monster;
 
 
 
+
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.tags.EntityTypeTags;
@@ -636,10 +638,10 @@ public class GarholdEntity extends Monster {
 
                 if (usePickaxe || useHoe) {
                     ServerLevel level = (ServerLevel) this.level();
-                    BrokenGarholdEntity broken = DNLEntityTypes.BROKEN_GARHOLD.get().create(level);
+                    BrokenGarholdEntity broken = DNLEntityTypes.BROKEN_GARHOLD.get().create(level, EntitySpawnReason.MOB_SUMMONED);
 
                     if (broken != null) {
-                        broken.moveTo(
+                        broken.snapTo(
                                 this.getX(),
                                 this.getY(),
                                 this.getZ(),

@@ -651,7 +651,7 @@ public class CopperCreepEntity extends PathfinderMob implements OwnableEntity, P
         if (this.level().isThundering() && hasClearSkyAbove()) {
             LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(this.level());
             if (lightningBolt != null) {
-                lightningBolt.moveTo(this.getX(), this.getY(), this.getZ());
+                lightningBolt.snapTo(this.getX(), this.getY(), this.getZ());
                 this.level().addFreshEntity(lightningBolt);
 
                 this.entityData.set(DATA_IS_POWERED, true);

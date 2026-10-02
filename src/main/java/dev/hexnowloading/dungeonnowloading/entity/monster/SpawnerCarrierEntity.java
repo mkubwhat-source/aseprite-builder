@@ -249,8 +249,8 @@ public class SpawnerCarrierEntity extends Monster {
         CompoundTag tag = (this.storedEntityNbt == null ? new CompoundTag() : this.storedEntityNbt.copy());
         tag.putString("id", this.getStoredEntityId());
 
-        Entity spawned = EntityType.loadEntityRecursive(tag, level, (entity) -> {
-            entity.moveTo(x, y, z, entity.getYRot(), entity.getXRot());
+        Entity spawned = NbtCompat.loadEntityRecursive(tag, level, EntitySpawnReason.SPAWNER, (entity) -> {
+            entity.snapTo(x, y, z, entity.getYRot(), entity.getXRot());
             return entity;
         });
 
@@ -325,7 +325,7 @@ public class SpawnerCarrierEntity extends Monster {
 
         // Store the egg's EntityTag (variants, custom name, etc.)
         CompoundTag newStored = new CompoundTag();
-        if (StackNbt.hasTag(stack) && StackNbt.getTag(stack) != null && StackNbt.getTag(stack).contains("EntityTag", CompoundTag.TAG_COMPOUND)) {
+        if (StackNbt.hasTag(stack) && StackNbt.getTag(stack) != null && StackNbt.getTag(stack).contains("EntityTag")) {
             newStored = StackNbt.getTag(stack).getCompound("EntityTag").copy();
         }
         this.storedEntityNbt = newStored;
@@ -451,10 +451,10 @@ public class SpawnerCarrierEntity extends Monster {
 
         if (type == null) return false;
 
-        Entity temp = type.create(level);
+        Entity temp = type.create(level, EntitySpawnReason.MOB_SUMMONED);
         if (temp == null) return false;
 
-        temp.moveTo(x, y, z, 0, 0);
+        temp.snapTo(x, y, z, 0, 0);
         return level.noCollision(temp);
     }
 

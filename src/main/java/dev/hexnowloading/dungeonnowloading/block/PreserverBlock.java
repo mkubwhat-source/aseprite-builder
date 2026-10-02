@@ -93,7 +93,7 @@ public class PreserverBlock extends BaseEntityBlock {
             BlockEntity blockEntityNew = level.getBlockEntity(blockPos);
 
             if (blockEntityNew instanceof PreserverBlockEntity preserverBlockEntity) {
-                preserverBlockEntity.loadWithComponents(transferData, level.registryAccess());
+                preserverBlockEntity.loadWithComponents(net.minecraft.world.level.storage.TagValueInput.create(net.minecraft.util.ProblemReporter.DISCARDING, level.registryAccess(), transferData));
             }
 
             level.scheduleTick(blockPos, this, 20);

@@ -112,7 +112,7 @@ public class DisabledFairkeeperChestBlock extends BaseEntityBlock implements Sim
         if (menuProvider != null) {
             player.openMenu(menuProvider);
             player.awardStat(this.getOpenChestStat());
-            PiglinAi.angerNearbyPiglins(player, true);
+            if (level instanceof net.minecraft.server.level.ServerLevel serverLevel) PiglinAi.angerNearbyPiglins(serverLevel, player, true);
         }
         return InteractionResult.CONSUME;
     }

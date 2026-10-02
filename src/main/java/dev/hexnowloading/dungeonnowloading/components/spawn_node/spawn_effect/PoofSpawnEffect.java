@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.components.spawn_node.spawn_effect;
 
+
+import net.minecraft.world.entity.EntitySpawnReason;
 import dev.hexnowloading.dungeonnowloading.block.entity.DungeonDirectorBlockEntity;
 import dev.hexnowloading.dungeonnowloading.components.spawn_node.SpawnNode;
 import dev.hexnowloading.dungeonnowloading.components.spawn_node.SpawnRequest;
@@ -62,7 +64,7 @@ public class PoofSpawnEffect implements SpawnTask {
         float bbH = 1.8f;
 
         try {
-            Entity probe = def.entityType.create(level);
+            Entity probe = def.entityType.create(level, EntitySpawnReason.MOB_SUMMONED);
             if (probe != null) {
                 probe.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
                 bbW = Math.max(0.1f, probe.getBbWidth());

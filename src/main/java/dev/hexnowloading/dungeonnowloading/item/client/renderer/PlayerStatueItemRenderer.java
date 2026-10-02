@@ -41,7 +41,7 @@ public class PlayerStatueItemRenderer extends BlockEntityWithoutLevelRenderer {
         // Keep a deterministic statue yaw for items (or read NBT if you like).
         // Using 8 (180°) or 14 (225°) are common; pick one and stick to it.
         int rot16 = 8;
-        if (tag != null && tag.contains("Rotation", 3)) {
+        if (tag != null && tag.contains("Rotation")) {
             rot16 = Mth.clamp(tag.getIntOr("Rotation", 0), 0, 15);
         }
         state = state.setValue(PlayerStatueBlock.ROTATION, rot16);
@@ -51,10 +51,10 @@ public class PlayerStatueItemRenderer extends BlockEntityWithoutLevelRenderer {
 
         GameProfile gp = null;
         if (tag != null) {
-            if (tag.contains("Owner", 10)) gp = ProfileNbt.read(tag.getCompoundOrEmpty("Owner"));
-            else if (tag.contains("SkullOwner", 8)) gp = new GameProfile(null, tag.getStringOr("SkullOwner", ""));
-            if (tag.contains("DNL_Pose", 3))  be.setPoseVariant(tag.getIntOr("DNL_Pose", 0));
-            if (tag.contains("DNL_Notch", 8)) be.setNotchTier(
+            if (tag.contains("Owner")) gp = ProfileNbt.read(tag.getCompoundOrEmpty("Owner"));
+            else if (tag.contains("SkullOwner")) gp = new GameProfile(null, tag.getStringOr("SkullOwner", ""));
+            if (tag.contains("DNL_Pose"))  be.setPoseVariant(tag.getIntOr("DNL_Pose", 0));
+            if (tag.contains("DNL_Notch")) be.setNotchTier(
                     dev.hexnowloading.dungeonnowloading.block.entity.PlayerStatueBlockEntity.NotchTier.fromString(tag.getStringOr("DNL_Notch", "")));
         }
         be.setOwner(gp);

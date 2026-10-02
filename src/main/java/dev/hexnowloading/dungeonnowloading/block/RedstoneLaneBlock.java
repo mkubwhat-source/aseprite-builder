@@ -123,12 +123,18 @@ public class RedstoneLaneBlock extends DirectionalBlock {
     public void neighborChanged(BlockState blockState, Level level, BlockPos blockPos, Block block, @Nullable Orientation orientation, boolean b) {
 
         if (blockState.getValue(REDSTONE_LANE_MODE) == RedstoneLaneMode.UNPOWERED) {
+            // 26.x no longer passes the changed neighbour position; check every neighbour.
+            for (Direction neighbourDirection : Direction.values()) {
+            BlockPos neighbourBlock = blockPos.relative(neighbourDirection);
             if (level.getBlockState(neighbourBlock).is(Blocks.REDSTONE_BLOCK)) {
                 neighbourChangedRedstoneBlock(blockState, level, blockPos, block, neighbourBlock);
+                break;
             } else if (level.getBlockState(neighbourBlock).is(DNLBlocks.REDSTONE_IDOL.get())) {
                 neighbourChangedRedstoneIdolBlock(blockState, level, blockPos, block, neighbourBlock);
+                break;
             } else if (level.getBlockState(neighbourBlock).is(DNLBlocks.OVERCHARGED_REDSTONE_BLOCK.get())) {
                 neighbourChangedOverpoweredBlock(blockState, level, blockPos, block, neighbourBlock);
+                break;
             } else if (
                     (
                             level.getBlockState(neighbourBlock).is(DNLBlocks.REDSTONE_LANE_I.get())
@@ -141,6 +147,8 @@ public class RedstoneLaneBlock extends DirectionalBlock {
                     )
             ) {
                 neighbourChangedLane(blockState, level, blockPos, block, neighbourBlock);
+                break;
+            }
             }
         } else {
             updatePowerStrength(blockState, level, blockPos);

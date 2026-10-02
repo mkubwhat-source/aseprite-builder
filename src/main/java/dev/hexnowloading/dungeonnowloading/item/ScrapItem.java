@@ -1,5 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.item;
 
+
+
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 import dev.hexnowloading.dungeonnowloading.util.StackNbt;
 import dev.hexnowloading.dungeonnowloading.util.ItemNbt;
 import dev.hexnowloading.dungeonnowloading.registry.DNLItems;
@@ -33,12 +37,12 @@ public class ScrapItem extends Item {
 
     public static boolean hasOriginal(ItemStack stack) {
         CompoundTag tag = StackNbt.getTag(stack);
-        return tag != null && tag.contains(ORIGINAL_TAG, 10); // 10 = Compound
+        return tag != null && tag.contains(ORIGINAL_TAG); // 10 = Compound
     }
 
     public static ItemStack getOriginal(ItemStack stack) {
         CompoundTag tag = StackNbt.getTag(stack);
-        if (tag != null && tag.contains(ORIGINAL_TAG, 10)) {
+        if (tag != null && tag.contains(ORIGINAL_TAG)) {
             return ItemNbt.load(tag.getCompoundOrEmpty(ORIGINAL_TAG));
         }
         return ItemStack.EMPTY;
@@ -55,16 +59,16 @@ public class ScrapItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext level, List<Component> tooltip, TooltipFlag flag) {
-        super.appendHoverText(stack, level, tooltip, flag);
+    public void appendHoverText(ItemStack stack, Item.TooltipContext level, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flag) {
+        super.appendHoverText(stack, level, tooltipDisplay, tooltip, flag);
         if (!hasOriginal(stack)) return;
         ItemStack original = getOriginal(stack);
         if (original.isEmpty()) return;
         Component nativeMat = findNativeRepairMaterialName(original);
-        tooltip.add(Component.translatable("item.dungeonnowloading.item_scraps.tooltip.reconstruct.detail1").withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.translatable("item.dungeonnowloading.item_scraps.tooltip.reconstruct.detail2").withStyle(ChatFormatting.DARK_GRAY));
-        tooltip.add(Component.translatable("item.dungeonnowloading.item_scraps.tooltip.reconstruct.detail3").withStyle(ChatFormatting.DARK_GRAY));
-        tooltip.add(Component.translatable("item.dungeonnowloading.item_scraps.tooltip.reconstruct.detail4", nativeMat.copy().withStyle(ChatFormatting.DARK_GRAY)).withStyle(ChatFormatting.DARK_GRAY));
+        tooltip.accept(Component.translatable("item.dungeonnowloading.item_scraps.tooltip.reconstruct.detail1").withStyle(ChatFormatting.GRAY));
+        tooltip.accept(Component.translatable("item.dungeonnowloading.item_scraps.tooltip.reconstruct.detail2").withStyle(ChatFormatting.DARK_GRAY));
+        tooltip.accept(Component.translatable("item.dungeonnowloading.item_scraps.tooltip.reconstruct.detail3").withStyle(ChatFormatting.DARK_GRAY));
+        tooltip.accept(Component.translatable("item.dungeonnowloading.item_scraps.tooltip.reconstruct.detail4", nativeMat.copy().withStyle(ChatFormatting.DARK_GRAY)).withStyle(ChatFormatting.DARK_GRAY));
     }
 
     private static Component findNativeRepairMaterialName(ItemStack original) {

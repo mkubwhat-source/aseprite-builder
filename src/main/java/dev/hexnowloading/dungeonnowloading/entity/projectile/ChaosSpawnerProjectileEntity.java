@@ -58,7 +58,7 @@ public class ChaosSpawnerProjectileEntity extends Entity {
 
     public ChaosSpawnerProjectileEntity(double x, double y, double z, double xP, double yP, double zP, Level level) {
         this(DNLEntityTypes.CHAOS_SPAWNER_PROJECTILE.get(), level);
-        this.moveTo(x, y, z, this.getYRot(), this.getXRot());
+        this.snapTo(x, y, z, this.getYRot(), this.getXRot());
         this.reapplyPosition();
         double d0 = Math.sqrt(xP * xP + yP * yP + zP * zP);
         if (d0 != 0.0D) {
@@ -285,7 +285,7 @@ public class ChaosSpawnerProjectileEntity extends Entity {
             this.setYRot( (float) (Mth.atan2(x, z) * (double) (180F / (float) Math.PI)));
             this.xRotO = this.getXRot();
             this.yRotO = this.getYRot();
-            this.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
+            this.snapTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
         }
     }
 
@@ -333,9 +333,9 @@ public class ChaosSpawnerProjectileEntity extends Entity {
         if (NbtCompat.has(compoundTag, "power")) {
             ListTag listtag = NbtCompat.getList(compoundTag, "power");
             if (listtag.size() == 3) {
-                this.xPower = listtag.getDouble(0);
-                this.yPower = listtag.getDouble(1);
-                this.zPower = listtag.getDouble(2);
+                this.xPower = listtag.getDoubleOr(0, 0.0D);
+                this.yPower = listtag.getDoubleOr(1, 0.0D);
+                this.zPower = listtag.getDoubleOr(2, 0.0D);
             }
         }
     }

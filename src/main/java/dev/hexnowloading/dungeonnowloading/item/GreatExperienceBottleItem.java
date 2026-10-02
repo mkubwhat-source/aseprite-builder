@@ -1,5 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.item;
 
+
+
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 import dev.hexnowloading.dungeonnowloading.util.StackNbt;
 import dev.hexnowloading.dungeonnowloading.entity.misc.GreatExperienceBottleEntity;
 import net.minecraft.ChatFormatting;
@@ -60,8 +64,8 @@ public class GreatExperienceBottleItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, Item.TooltipContext level, List<Component> components, TooltipFlag tooltipFlag) {
-        super.appendHoverText(itemStack, level, components, tooltipFlag);
-        components.add(Component.translatable("item.dungeonnowloading.great_experience_bottle.tooltip", this.experienceLevelAmount).withStyle(ChatFormatting.GRAY));
+    public void appendHoverText(ItemStack itemStack, Item.TooltipContext level, TooltipDisplay tooltipDisplay, Consumer<Component> components, TooltipFlag tooltipFlag) {
+        super.appendHoverText(itemStack, level, tooltipDisplay, components, tooltipFlag);
+        components.accept(Component.translatable("item.dungeonnowloading.great_experience_bottle.tooltip", this.experienceLevelAmount).withStyle(ChatFormatting.GRAY));
     }
 }

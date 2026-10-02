@@ -98,7 +98,7 @@ public class MendingAuraBlock extends BaseEntityBlock implements SimpleWaterlogg
 
         for (Direction direction : Direction.values()) {
             BlockPos neighborPos = pos.relative(direction);
-            storedState = storedState.updateShape(direction, level.getBlockState(neighborPos), level, pos, neighborPos);
+            storedState = storedState.updateShape(level, level, pos, direction, neighborPos, level.getBlockState(neighborPos), level.getRandom());
         }
 
         return storedState;
@@ -244,8 +244,8 @@ public class MendingAuraBlock extends BaseEntityBlock implements SimpleWaterlogg
 
     @Override
     public VoxelShape getOcclusionShape(BlockState state) {
-        BlockState storedState = this.getStoredBlockState(blockGetter, pos);
-        return storedState != null && storedState.canOcclude() ? storedState.getOcclusionShape(blockGetter, pos) : Shapes.empty();
+        // 26.x: occlusion shapes are state-only and cannot look up the mimicked state; never occlude.
+        return Shapes.empty();
     }
 
     @Nullable

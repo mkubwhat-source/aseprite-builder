@@ -43,10 +43,10 @@ public final class StatueSkinCache {
     }
 
     private static String cacheKey(GameProfile p) {
-        if (p.getName() != null && !p.getName().isEmpty()) {
-            return "name:" + p.getName().toLowerCase(Locale.ROOT);
+        if (p.name() != null && !p.name().isEmpty()) {
+            return "name:" + p.name().toLowerCase(Locale.ROOT);
         }
-        return "uuid:" + (p.getId() != null ? p.getId().toString() : "unknown");
+        return "uuid:" + (p.id() != null ? p.id().toString() : "unknown");
     }
 
     public static StatueSkin get(GameProfile profile) {
@@ -132,9 +132,9 @@ public final class StatueSkinCache {
         } catch (Exception ignored) {}
 
         // Determine UUID (for sessionserver and fallback)
-        String uuidNoDash = (profile.getId() != null)
-                ? profile.getId().toString().replace("-", "")
-                : (profile.getName() != null ? lookupUuidByName(profile.getName()) : null);
+        String uuidNoDash = (profile.id() != null)
+                ? profile.id().toString().replace("-", "")
+                : (profile.name() != null ? lookupUuidByName(profile.name()) : null);
         if (uuidNoDash == null) return null;
 
         // B) Mojang sessionserver (metadata.model)
@@ -186,11 +186,11 @@ public final class StatueSkinCache {
 
         // Determine UUID (no dashes) — either from profile or by name → uuid
         String uuidNoDash = null;
-        if (profile.getId() != null) {
-            uuidNoDash = profile.getId().toString().replace("-", "");
-        } else if (profile.getName() != null && !profile.getName().isEmpty()) {
-            uuidNoDash = lookupUuidByName(profile.getName());
-            if (LOG) System.out.println("[DNL][Statue] Mojang name→uuid: " + profile.getName() + " -> " + uuidNoDash);
+        if (profile.id() != null) {
+            uuidNoDash = profile.id().toString().replace("-", "");
+        } else if (profile.name() != null && !profile.name().isEmpty()) {
+            uuidNoDash = lookupUuidByName(profile.name());
+            if (LOG) System.out.println("[DNL][Statue] Mojang name→uuid: " + profile.name() + " -> " + uuidNoDash);
         }
 
         if (uuidNoDash == null) return null;
@@ -356,12 +356,12 @@ public final class StatueSkinCache {
 
     private static String nameKey(GameProfile p) {
         if (p == null) return null;
-        return (p.getName() != null && !p.getName().isEmpty())
-                ? "name:" + p.getName().toLowerCase(Locale.ROOT) : null;
+        return (p.name() != null && !p.name().isEmpty())
+                ? "name:" + p.name().toLowerCase(Locale.ROOT) : null;
     }
     private static String uuidKey(GameProfile p) {
         if (p == null) return null;
-        return (p.getId() != null) ? "uuid:" + p.getId() : null;
+        return (p.id() != null) ? "uuid:" + p.id() : null;
     }
     private static String primaryKey(GameProfile p) {
         if (p == null) return "null";

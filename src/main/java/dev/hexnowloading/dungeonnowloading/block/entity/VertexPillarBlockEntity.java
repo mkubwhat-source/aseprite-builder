@@ -56,7 +56,7 @@ public class VertexPillarBlockEntity extends BlockEntity {
 
     @Override
     protected void saveAdditional(ValueOutput compoundTag) {
-        super.saveAdditional(compoundTag, registries);
+        super.saveAdditional(compoundTag);
         ListTag posList = new ListTag();
 
         for (BlockPos pos : linkedPositions) {
@@ -73,7 +73,7 @@ public class VertexPillarBlockEntity extends BlockEntity {
 
     @Override
     protected void loadAdditional(ValueInput compoundTag) {
-        super.loadAdditional(compoundTag, registries);
+        super.loadAdditional(compoundTag);
         this.linkedPositions.clear();
 
         ListTag posList = NbtCompat.getList(compoundTag, "LinkedPositions");

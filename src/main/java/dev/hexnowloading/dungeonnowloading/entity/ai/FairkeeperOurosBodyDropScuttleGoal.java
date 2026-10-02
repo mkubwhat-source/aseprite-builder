@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.entity.ai;
 
+
+import net.minecraft.world.entity.EntitySpawnReason;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.entity.boss.FairkeeperOurosEntity;
 import dev.hexnowloading.dungeonnowloading.entity.boss.FairkeeperOurosPartEntity;
@@ -64,7 +66,7 @@ public class FairkeeperOurosBodyDropScuttleGoal extends StoppableGoal{
     private void droppingLogic() {
         Level level = this.part.level();
 
-        ScuttleEntity scuttle = DNLEntityTypes.SCUTTLE.get().create(level);
+        ScuttleEntity scuttle = DNLEntityTypes.SCUTTLE.get().create(level, EntitySpawnReason.MOB_SUMMONED);
         scuttle = (ScuttleEntity) SpawnMobUtil.spawnEntityWithRot(scuttle, this.part.getX(), this.part.getY() - 2.0F, this.part.getZ(), this.part.getYRot(), 0.0F, level);
         scuttle.setYBodyRot(this.part.getYRot());
         scuttle.setYHeadRot(this.part.getYRot());

@@ -44,7 +44,7 @@ public class DisabledFairkeeperChestBlockEntity extends RandomizableContainerBlo
 
     @Override
     protected void saveAdditional(ValueOutput compoundTag) {
-        super.saveAdditional(compoundTag, registries);
+        super.saveAdditional(compoundTag);
         if (!this.trySaveLootTable(compoundTag)) {
             ContainerHelper.saveAllItems(compoundTag, this.items);
         }
@@ -52,7 +52,7 @@ public class DisabledFairkeeperChestBlockEntity extends RandomizableContainerBlo
 
     @Override
     protected void loadAdditional(ValueInput compoundTag) {
-        super.loadAdditional(compoundTag, registries);
+        super.loadAdditional(compoundTag);
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         if (!this.tryLoadLootTable(compoundTag)) {
             ContainerHelper.loadAllItems(compoundTag, this.items);

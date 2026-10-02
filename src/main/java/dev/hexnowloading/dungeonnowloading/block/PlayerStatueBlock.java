@@ -150,18 +150,18 @@ public class PlayerStatueBlock extends BaseEntityBlock implements EntityBlock, S
         CompoundTag tag = StackNbt.getTag(stack);
 
         if (tag != null) {
-            if (tag.contains("Owner", 10)) gp = ProfileNbt.read(tag.getCompoundOrEmpty("Owner"));
-            else if (tag.contains("SkullOwner", 10)) gp = ProfileNbt.read(tag.getCompoundOrEmpty("SkullOwner"));
-            else if (tag.contains("SkullOwner", 8))  gp = new GameProfile(null, tag.getStringOr("SkullOwner", ""));
+            if (tag.contains("Owner")) gp = ProfileNbt.read(tag.getCompoundOrEmpty("Owner"));
+            else if (tag.contains("SkullOwner")) gp = ProfileNbt.read(tag.getCompoundOrEmpty("SkullOwner"));
+            else if (tag.contains("SkullOwner"))  gp = new GameProfile(null, tag.getStringOr("SkullOwner", ""));
         }
 
         // Owner / SkullOwner
         /*if (tag != null) {
-            if (tag.contains("Owner", 10)) {
+            if (tag.contains("Owner")) {
                 gp = ProfileNbt.read(tag.getCompoundOrEmpty("Owner"));
-            } else if (tag.contains("SkullOwner", 10)) {
+            } else if (tag.contains("SkullOwner")) {
                 gp = ProfileNbt.read(tag.getCompoundOrEmpty("SkullOwner"));
-            } else if (tag.contains("SkullOwner", 8)) {
+            } else if (tag.contains("SkullOwner")) {
                 gp = new GameProfile(null, tag.getStringOr("SkullOwner", ""));
             }
         }*/
@@ -170,10 +170,10 @@ public class PlayerStatueBlock extends BaseEntityBlock implements EntityBlock, S
 
         // Restore offering if present in the item NBT
         if (tag != null) {
-            if (tag.contains("DNL_Notch", 8)) {
+            if (tag.contains("DNL_Notch")) {
                 var tier = PlayerStatueBlockEntity.NotchTier.fromString(tag.getStringOr("DNL_Notch", ""));
                 if (tier != PlayerStatueBlockEntity.NotchTier.NONE) statue.setNotchTier(tier);
-            } else if (tag.contains("Offering", 10)) { // legacy item NBT
+            } else if (tag.contains("Offering")) { // legacy item NBT
                 ItemStack off = ItemNbt.load(tag.getCompoundOrEmpty("Offering"));
                 var tier = PlayerStatueBlockEntity.tierFromItem(off);
                 if (tier != PlayerStatueBlockEntity.NotchTier.NONE) statue.setNotchTier(tier);
@@ -206,15 +206,15 @@ public class PlayerStatueBlock extends BaseEntityBlock implements EntityBlock, S
 
                     String ownerName = "Someone";
                     var gp = statue.getOwner();
-                    if (gp != null && gp.getName() != null && !gp.getName().isEmpty()) {
-                        ownerName = gp.getName();
+                    if (gp != null && gp.name() != null && !gp.name().isEmpty()) {
+                        ownerName = gp.name();
                     } else {
                         // Try to hydrate from server cache (fast if known; no render-thread issues)
                         String resolved = statue.ensureServerSideOwnerName();
                         if (resolved != null && !resolved.isEmpty()) {
                             ownerName = resolved;
                         } else if (gp != null) {
-                            ownerName = PlayerStatueBlockEntity.shortUuid(gp.getId());
+                            ownerName = PlayerStatueBlockEntity.shortUuid(gp.id());
                         }
                     }
                     Component msg = Component.translatable(
@@ -283,8 +283,8 @@ public class PlayerStatueBlock extends BaseEntityBlock implements EntityBlock, S
         }
 
         // --- DYE / GLOW / UNGLOW like signs (only if not waxed and editable) ---
-        if (held.getItem() instanceof DyeItem dye) {
-            statue.setAllText(Arrays.asList(statue.getLines()), dye.getDyeColor(), statue.isGlowingText());
+        if (held.getItem() instanceof DyeItem && held.get(net.minecraft.core.component.DataComponents.DYE) != null) {
+            statue.setAllText(Arrays.asList(statue.getLines()), held.get(net.minecraft.core.component.DataComponents.DYE), statue.isGlowingText());
             level.playSound(null, pos, SoundEvents.DYE_USE, SoundSource.BLOCKS, 0.8f, 1.0f);
             if (!player.isCreative()) held.shrink(1);
             return net.minecraft.world.InteractionResult.SUCCESS;
@@ -312,7 +312,7 @@ public class PlayerStatueBlock extends BaseEntityBlock implements EntityBlock, S
         }
         if (held.is(Items.IRON_AXE) || held.is(Items.DIAMOND_AXE) || held.is(Items.NETHERITE_AXE) || held.is(Items.GOLDEN_AXE) || held.is(Items.STONE_AXE) || held.is(Items.WOODEN_AXE)) {
             if (statue.setWaxed(false)) {
-                level.playSound(null, pos, SoundEvents.AXE_WAX_OFF, SoundSource.BLOCKS, 1.0f, 1.0f);
+                level.playSound(null, pos, SoundEvents.AXE_WAX_OFF.value(), SoundSource.BLOCKS, 1.0f, 1.0f);
                 return net.minecraft.world.InteractionResult.SUCCESS;
             }
         }
@@ -358,14 +358,14 @@ public class PlayerStatueBlock extends BaseEntityBlock implements EntityBlock, S
     // ---- pick-block: preserve owner & pose on the item ----
 
     @Override
-    public ItemStack getCloneItemStack(net.minecraft.world.level.LevelReader world, BlockPos pos, BlockState state) {
-        ItemStack stack = super.getCloneItemStack(world, pos, state);
+    public ItemStack getCloneItemStack(net.minecraft.world.level.LevelReader world, BlockPos pos, BlockState state, boolean includeData) {
+        ItemStack stack = super.getCloneItemStack(world, pos, state, includeData);
         BlockEntity be = world.getBlockEntity(pos);
         if (be instanceof PlayerStatueBlockEntity statue) {
             // Prefer simple string SkullOwner in the item (your renderer resolves profile later)
             GameProfile gp = statue.getOwner();
-            if (gp != null && gp.getName() != null && !gp.getName().isEmpty()) {
-                StackNbt.update(stack, t -> t.putString("SkullOwner", gp.getName()));
+            if (gp != null && gp.name() != null && !gp.name().isEmpty()) {
+                StackNbt.update(stack, t -> t.putString("SkullOwner", gp.name()));
             } else if (gp != null) {
                 // fallback to compound if name unknown
                 StackNbt.update(stack, t -> t.put("SkullOwner", ProfileNbt.write(gp)));

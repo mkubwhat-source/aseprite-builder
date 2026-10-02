@@ -22,14 +22,14 @@ public class MendstoneChalkMarkBlockEntity extends PreserverBlockEntity{
 
     @Override
     protected void saveAdditional(ValueOutput compoundTag) {
-        super.saveAdditional(compoundTag, registries);
+        super.saveAdditional(compoundTag);
 
         compoundTag.putInt("Damage", this.damage);
     }
 
     @Override
     protected void loadAdditional(ValueInput compoundTag) {
-        super.loadAdditional(compoundTag, registries);
+        super.loadAdditional(compoundTag);
 
         this.damage = compoundTag.getIntOr("Damage", 0);
     }

@@ -1,5 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.item;
 
+
+
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -20,8 +24,8 @@ public class ToolTipItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext world, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(Component.translatable(this.toolTipKey).withStyle(ChatFormatting.GRAY));
-        super.appendHoverText(stack, world, tooltip, flag);
+    public void appendHoverText(ItemStack stack, Item.TooltipContext world, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flag) {
+        tooltip.accept(Component.translatable(this.toolTipKey).withStyle(ChatFormatting.GRAY));
+        super.appendHoverText(stack, world, tooltipDisplay, tooltip, flag);
     }
 }

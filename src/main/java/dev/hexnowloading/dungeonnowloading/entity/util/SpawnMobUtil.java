@@ -16,14 +16,14 @@ import net.minecraft.world.level.ServerLevelAccessor;
 
 public class SpawnMobUtil {
     public static Mob createAndSpawnEntity(EntityType<?> entityType, double x, double y, double z, Level level) {
-        Mob mob = (Mob) entityType.create(level);
+        Mob mob = (Mob) entityType.create(level, EntitySpawnReason.MOB_SUMMONED);
         spawnEntity(mob, x, y, z, level);
         return mob;
     }
 
     public static Mob spawnEntity(Mob mob, double x, double y, double z, Level level) {
         if (mob != null) {
-            mob.moveTo(x, y, z, level.getRandom().nextFloat() * 360.0f, 0.0F);
+            mob.snapTo(x, y, z, level.getRandom().nextFloat() * 360.0f, 0.0F);
             EntityScale.scaleMobAttributes(mob);
             mob.setPersistenceRequired();
             BlockPos blockPos = BlockPos.containing(x, y, z);
@@ -34,7 +34,7 @@ public class SpawnMobUtil {
 
     public static Mob spawnEntityWithRot(Mob mob, double x, double y, double z, float yRot, float xRot, Level level) {
         if (mob != null) {
-            mob.moveTo(x, y, z, yRot, xRot);
+            mob.snapTo(x, y, z, yRot, xRot);
             EntityScale.scaleMobAttributes(mob);
             mob.setPersistenceRequired();
             BlockPos blockPos = BlockPos.containing(x, y, z);

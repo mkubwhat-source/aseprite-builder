@@ -25,7 +25,7 @@ public class ArmorStandWithRandomEquipmentsFeature extends Feature<NoneFeatureCo
     @Override
     public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
         ArmorStand armorStand = EntityType.ARMOR_STAND.create(context.level().getLevel());
-        armorStand.moveTo(context.origin().below(), 0.0F, 0.0F);
+        armorStand.snapTo(context.origin().below(), 0.0F, 0.0F);
 
         float armorTypeChance = context.random().nextFloat();
 

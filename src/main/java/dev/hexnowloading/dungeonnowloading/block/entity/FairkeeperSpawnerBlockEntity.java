@@ -4,6 +4,8 @@ package dev.hexnowloading.dungeonnowloading.block.entity;
 
 
 
+
+import net.minecraft.util.random.Weighted;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
@@ -63,7 +65,7 @@ public class FairkeeperSpawnerBlockEntity extends BlockEntity {
     private static final int SPAWN_RANGE = 4;
     private static final int SPAWN_POS_TRIES = 10;
     private static final Logger LOGGER = LogUtils.getLogger();
-    private SimpleWeightedRandomList<SpawnData> spawnPotentials = SimpleWeightedRandomList.empty();
+    private WeightedList<SpawnData> spawnPotentials = WeightedList.of();
     private SpawnData nextSpawnData;
     private Entity displayEntity;
     private int remainingStoredMobs;
@@ -97,7 +99,7 @@ public class FairkeeperSpawnerBlockEntity extends BlockEntity {
         }
 
         NbtCompat.put(compoundTag, "SpawnPotentials", (Tag)SpawnData.LIST_CODEC.encodeStart(NbtOps.INSTANCE, this.spawnPotentials).result().orElseThrow());
-        super.saveAdditional(compoundTag, registries);
+        super.saveAdditional(compoundTag);
     }
 
     @Override
@@ -116,15 +118,15 @@ public class FairkeeperSpawnerBlockEntity extends BlockEntity {
         boolean b1 = NbtCompat.has(compoundTag, "SpawnPotentials");
         if (b1) {
             ListTag $$6 = NbtCompat.getList(compoundTag, "SpawnPotentials");
-            this.spawnPotentials = (SimpleWeightedRandomList)SpawnData.LIST_CODEC.parse(NbtOps.INSTANCE, $$6).resultOrPartial(($$0x) -> {
+            this.spawnPotentials = (WeightedList)SpawnData.LIST_CODEC.parse(NbtOps.INSTANCE, $$6).resultOrPartial(($$0x) -> {
                 LOGGER.warn("Invalid SpawnPotentials list: {}", $$0x);
-            }).orElseGet(SimpleWeightedRandomList::empty);
+            }).orElseGet(WeightedList::of);
         } else {
-            this.spawnPotentials = SimpleWeightedRandomList.single(this.nextSpawnData != null ? this.nextSpawnData : new SpawnData());
+            this.spawnPotentials = WeightedList.of(this.nextSpawnData != null ? this.nextSpawnData : new SpawnData());
         }
 
         this.displayEntity = null;
-        super.loadAdditional(compoundTag, registries);
+        super.loadAdditional(compoundTag);
     }
 
     protected void setNextSpawnData(Level level, BlockPos blockPos, SpawnData spawnData) {
@@ -139,11 +141,11 @@ public class FairkeeperSpawnerBlockEntity extends BlockEntity {
     public Entity getOrCreateDisplayEntity(Level level, RandomSource randomSource, BlockPos blockPos) {
         if (this.displayEntity == null) {
             CompoundTag $$3 = this.getOrCreateNextSpawnData(level, randomSource, blockPos).getEntityToSpawn();
-            if (!$$3.contains("id", 8)) {
+            if (!$$3.contains("id")) {
                 return null;
             }
 
-            this.displayEntity = EntityType.loadEntityRecursive($$3, level, Function.identity());
+            this.displayEntity = NbtCompat.loadEntityRecursive($$3, level, EntitySpawnReason.SPAWNER, Function.identity());
             if ($$3.size() == 1 && this.displayEntity instanceof Mob) {
             }
         }
@@ -155,7 +157,7 @@ public class FairkeeperSpawnerBlockEntity extends BlockEntity {
         if (this.nextSpawnData != null) {
             return this.nextSpawnData;
         } else {
-            this.setNextSpawnData(level, blockPos, this.spawnPotentials.getRandom(randomSource).map(WeightedEntry.Wrapper::data).orElseGet(SpawnData::new));
+            this.setNextSpawnData(level, blockPos, this.spawnPotentials.getRandom(randomSource).map(Weighted::value).orElseGet(SpawnData::new));
             return this.nextSpawnData;
         }
     }
@@ -250,12 +252,12 @@ public class FairkeeperSpawnerBlockEntity extends BlockEntity {
             double y = (double)(this.getBlockPos().getY() + level.getRandom().nextInt(3) - 1);
             double z = (double)this.getBlockPos().getZ() + (level.getRandom().nextDouble() - level.getRandom().nextDouble()) * (double)this.SPAWN_RANGE + 0.5;
             BlockPos blockPos = BlockPos.containing(x, y, z);
-            Entity mob = EntityType.loadEntityRecursive(compoundTag, level, (a) -> {
-                a.moveTo(x, y, z, a.getYRot(), a.getXRot());
+            Entity mob = NbtCompat.loadEntityRecursive(compoundTag, level, EntitySpawnReason.SPAWNER, (a) -> {
+                a.snapTo(x, y, z, a.getYRot(), a.getXRot());
                 return a;
             });
             if (mob == null) break;
-            mob.moveTo(x, y, z, level.getRandom().nextFloat() * 360.0f, 0.0f);
+            mob.snapTo(x, y, z, level.getRandom().nextFloat() * 360.0f, 0.0f);
             if (mob instanceof Mob mob1 && level.noCollision(mob1, entityType.get().getSpawnAABB(mob1.getX(), mob1.getY(), mob1.getZ())) && mob1.checkSpawnObstruction(level)) {
                 EntityScale.scaleMobAttributes(mob1);
                 mob1.setPersistenceRequired();

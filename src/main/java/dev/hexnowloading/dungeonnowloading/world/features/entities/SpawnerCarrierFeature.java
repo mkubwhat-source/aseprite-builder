@@ -20,7 +20,7 @@ public class SpawnerCarrierFeature extends Feature<EntityTypeConfig> {
         SpawnerCarrierEntity spawnerCarrier = DNLEntityTypes.SPAWNER_CARRIER.get().create(context.level().getLevel());
 
         spawnerCarrier.setPersistenceRequired();
-        spawnerCarrier.moveTo((double)context.origin().getX() + 0.5D, context.origin().getY(), (double)context.origin().getZ() + 0.5D, 0.0F, 0.0F);
+        spawnerCarrier.snapTo((double)context.origin().getX() + 0.5D, context.origin().getY(), (double)context.origin().getZ() + 0.5D, 0.0F, 0.0F);
         spawnerCarrier.finalizeSpawn(context.level(), context.level().getCurrentDifficultyAt(context.origin()), EntitySpawnReason.STRUCTURE, null);
         EntityScale.scaleMobAttributes(spawnerCarrier);
         EntityType<?> entityType = context.config().entityType;

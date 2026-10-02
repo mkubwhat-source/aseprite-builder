@@ -105,9 +105,9 @@ public class VertexDomainProjectileEntity extends ModelledProjectileEntity {
         if (NbtCompat.has(compoundTag, "power")) {
             ListTag listTag = NbtCompat.getList(compoundTag, "power");
             if (listTag.size() == 3) {
-                this.xPower = listTag.getDouble(0);
-                this.yPower = listTag.getDouble(1);
-                this.zPower = listTag.getDouble(2);
+                this.xPower = listTag.getDoubleOr(0, 0.0D);
+                this.yPower = listTag.getDoubleOr(1, 0.0D);
+                this.zPower = listTag.getDoubleOr(2, 0.0D);
             }
         }
         if (NbtCompat.has(compoundTag, "life")) {
@@ -530,7 +530,7 @@ public class VertexDomainProjectileEntity extends ModelledProjectileEntity {
     }
 
     public void shootTowardsTarget(double x, double y, double z, LivingEntity target, float speed, float inaccuracy) {
-        this.moveTo(x, y, z, this.getYRot(), this.getXRot());
+        this.snapTo(x, y, z, this.getYRot(), this.getXRot());
         this.reapplyPosition();
         Vec3 direction = new Vec3(target.getX() - this.getX(), target.getY() - this.getY(), target.getZ() - this.getZ()).normalize();
         double randX = (Mth.nextDouble(this.random, -1.0, 1.0)) * inaccuracy;
@@ -543,7 +543,7 @@ public class VertexDomainProjectileEntity extends ModelledProjectileEntity {
     }
 
     public void shoot(double x, double y, double z, double targetX, double targetY, double targetZ, float speed, float inaccuracy) {
-        this.moveTo(x, y, z, this.getYRot(), this.getXRot());
+        this.snapTo(x, y, z, this.getYRot(), this.getXRot());
         this.reapplyPosition();
         Vec3 direction = new Vec3(targetX - this.getX(), targetY - this.getY(), targetZ - this.getZ()).normalize();
         double randX = (Mth.nextDouble(this.random, -1.0, 1.0)) * inaccuracy;

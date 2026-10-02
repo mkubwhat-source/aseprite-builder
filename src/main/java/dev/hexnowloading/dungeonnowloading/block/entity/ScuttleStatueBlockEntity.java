@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.block.entity;
 
+
+import net.minecraft.world.entity.EntitySpawnReason;
 import dev.hexnowloading.dungeonnowloading.entity.monster.ScuttleEntity;
 import dev.hexnowloading.dungeonnowloading.entity.util.SpawnMobUtil;
 import dev.hexnowloading.dungeonnowloading.registry.DNLBlockEntityTypes;
@@ -29,7 +31,7 @@ public class ScuttleStatueBlockEntity extends BlockEntity {
         level.removeBlock(blockPos, false);
         level.removeBlock(blockPos.above(), false);
         float mobYRot;
-        ScuttleEntity mob = DNLEntityTypes.SCUTTLE.get().create(level);
+        ScuttleEntity mob = DNLEntityTypes.SCUTTLE.get().create(level, EntitySpawnReason.MOB_SUMMONED);
         mobYRot = switch (direction) {
             case EAST -> 270.0F;
             case SOUTH -> 0.0F;

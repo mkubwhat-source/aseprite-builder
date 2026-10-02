@@ -24,13 +24,13 @@ public class SpawnNodeBlockEntity extends BlockEntity {
 
     @Override
     protected void saveAdditional(ValueOutput tag) {
-        super.saveAdditional(tag, registries);
+        super.saveAdditional(tag);
         tag.putString("SpawnPool", spawnPool);
     }
 
     @Override
     protected void loadAdditional(ValueInput tag) {
-        super.loadAdditional(tag, registries);
+        super.loadAdditional(tag);
         this.spawnPool = tag.getStringOr("SpawnPool", "");
     }
 }
