@@ -7,18 +7,18 @@ import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.entity.boss.ChaosSpawnerEntity;
 import dev.hexnowloading.dungeonnowloading.entity.client.renderer.ChaosSpawnerRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.AnimationState;
 
 public class ChaosSpawnerLayer<T extends ChaosSpawnerEntity, M extends ChaosSpawnerModel<T>> extends RenderLayer<T, M> {
 
-    private static final ResourceLocation TEXTURE_EYES = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/chaos_spawner/chaos_spawner_eyes.png");
-    private static final ResourceLocation TEXTURE_CHAINED = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/chaos_spawner/chaos_spawner_chained.png");
-    private static final ResourceLocation TEXTURE_SHOCKWAVE = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/chaos_spawner/chaos_spawner_shockwave.png");
-    private static final ResourceLocation TEXTURE_CHAOS_HEXAHEDRON = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/chaos_spawner/chaos_spawner_chaos_hexahedron.png");
+    private static final Identifier TEXTURE_EYES = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/chaos_spawner/chaos_spawner_eyes.png");
+    private static final Identifier TEXTURE_CHAINED = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/chaos_spawner/chaos_spawner_chained.png");
+    private static final Identifier TEXTURE_SHOCKWAVE = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/chaos_spawner/chaos_spawner_shockwave.png");
+    private static final Identifier TEXTURE_CHAOS_HEXAHEDRON = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/chaos_spawner/chaos_spawner_chaos_hexahedron.png");
 
     public ChaosSpawnerLayer(ChaosSpawnerRenderer renderer) {
         super(renderer);
@@ -30,10 +30,10 @@ public class ChaosSpawnerLayer<T extends ChaosSpawnerEntity, M extends ChaosSpaw
             this.getParentModel().renderToBuffer(matrixStackIn, shockwaveVertexConsumer, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0), 0xFFFFFFFF);
         } else if (entitylivingbaseIn.rangeAttackAnimationState.isStarted() || entitylivingbaseIn.rangeBurstAttackAnimationState.isStarted()) {
             VertexConsumer chaosHexahedronVertexConsumer = bufferIn.getBuffer(RenderType.entityTranslucentEmissive(TEXTURE_CHAOS_HEXAHEDRON, true));
-            this.getParentModel().renderToBuffer(matrixStackIn, chaosHexahedronVertexConsumer, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0), net.minecraft.util.FastColor.ARGB32.colorFromFloat(0.8F, 1.0F, 1.0F, 1.0F));
+            this.getParentModel().renderToBuffer(matrixStackIn, chaosHexahedronVertexConsumer, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0), net.minecraft.util.ARGB.colorFromFloat(0.8F, 1.0F, 1.0F, 1.0F));
         } else if (entitylivingbaseIn.getState() == ChaosSpawnerEntity.State.SLEEPING || entitylivingbaseIn.getAwakeningTick() > 100) {
             VertexConsumer chainVertexConsumer = bufferIn.getBuffer(RenderType.entityTranslucentEmissive(TEXTURE_CHAINED, true));
-            this.getParentModel().renderToBuffer(matrixStackIn, chainVertexConsumer, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0), net.minecraft.util.FastColor.ARGB32.colorFromFloat(0.8F, 1.0F, 1.0F, 1.0F));
+            this.getParentModel().renderToBuffer(matrixStackIn, chainVertexConsumer, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0), net.minecraft.util.ARGB.colorFromFloat(0.8F, 1.0F, 1.0F, 1.0F));
         } else {
             VertexConsumer eyesVertexConsumer = bufferIn.getBuffer(RenderType.entityTranslucentEmissive(TEXTURE_EYES, true));
             this.getParentModel().renderToBuffer(matrixStackIn, eyesVertexConsumer, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0), 0xFFFFFFFF);

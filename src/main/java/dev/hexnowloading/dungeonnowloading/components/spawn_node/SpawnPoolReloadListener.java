@@ -3,7 +3,7 @@ package dev.hexnowloading.dungeonnowloading.components.spawn_node;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -25,11 +25,11 @@ public class SpawnPoolReloadListener extends SimpleJsonResourceReloadListener {
     }
 
     @Override
-    protected void apply(Map<ResourceLocation, JsonElement> jsonMap, ResourceManager resourceManager, ProfilerFiller profiler) {
-        Map<ResourceLocation, SpawnPool> pools = new HashMap<>();
+    protected void apply(Map<Identifier, JsonElement> jsonMap, ResourceManager resourceManager, ProfilerFiller profiler) {
+        Map<Identifier, SpawnPool> pools = new HashMap<>();
 
         for (var entry : jsonMap.entrySet()) {
-            ResourceLocation id = entry.getKey();
+            Identifier id = entry.getKey();
 
             try {
                 JsonObject obj = entry.getValue().getAsJsonObject();
@@ -47,7 +47,7 @@ public class SpawnPoolReloadListener extends SimpleJsonResourceReloadListener {
 
                     int weight = eObj.has("weight") ? eObj.get("weight").getAsInt() : 1;
 
-                    ResourceLocation nodeId = null;
+                    Identifier nodeId = null;
 
                     if (eObj.has("node") && !eObj.get("node").isJsonNull()) {
                         String raw = eObj.get("node").getAsString();
@@ -55,7 +55,7 @@ public class SpawnPoolReloadListener extends SimpleJsonResourceReloadListener {
                         // explicit "empty" support
                         if (!raw.equalsIgnoreCase("empty") && !raw.isBlank()) {
                             try {
-                                nodeId = ResourceLocation.parse(raw);
+                                nodeId = Identifier.parse(raw);
                             } catch (Exception ex) {
                                 // invalid RL -> treat as empty roll (or continue; up to you)
                                 nodeId = null;

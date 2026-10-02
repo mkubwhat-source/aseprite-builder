@@ -5,17 +5,17 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.entity.client.animation.VertexDomainProjectileAnimation;
 import dev.hexnowloading.dungeonnowloading.entity.projectile.VertexDomainProjectileEntity;
-import net.minecraft.client.model.HierarchicalModel;
+import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 public class VertexDomainProjectileModel<T extends VertexDomainProjectileEntity> extends HierarchicalModel<T> {
 
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "vertex_domain_projectile"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "vertex_domain_projectile"), "main");
     private final ModelPart fairkeeper_domain_projectile;
     private final ModelPart orb;
     private final ModelPart wave;
@@ -107,8 +107,8 @@ public class VertexDomainProjectileModel<T extends VertexDomainProjectileEntity>
         // 1.21 ModelPart.render takes a packed ARGB int instead of r/g/b/a floats.
         float waveA = entity.getDyingTick() > 0 || (entity.getLife() > 0 && entity.getLife() < 20) ? alpha : waveAlpha;
         float whooshA = entity.getDyingTick() > 0 || (entity.getImpactAnimationTimeOut() > 0 && entity.getImpactAnimationTimeOut() < VertexDomainProjectileEntity.IMPACT_ANIMATION_DURATION) ? waveAlpha : alpha;
-        orb.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.FastColor.ARGB32.colorFromFloat(alpha, red, green, blue));
-        wave.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.FastColor.ARGB32.colorFromFloat(waveA, red, green, blue));
-        whoosh.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.FastColor.ARGB32.colorFromFloat(whooshA, red, green, blue));
+        orb.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        wave.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(waveA, red, green, blue));
+        whoosh.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(whooshA, red, green, blue));
     }
 }

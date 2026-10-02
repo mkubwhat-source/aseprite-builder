@@ -12,7 +12,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -67,7 +67,7 @@ public abstract class GenericExplosiveBarrelBlock extends FallingBlock implement
 
     @Override
     public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos signalPos, boolean moved) {
-        if (!level.isClientSide && level.hasNeighborSignal(pos)) {
+        if (!level.isClientSide() && level.hasNeighborSignal(pos)) {
             this.onImmediateTrigger(level, pos, null, TriggerCause.GENTLY_LIT_ON_FIRE);
         }
     }
@@ -96,7 +96,7 @@ public abstract class GenericExplosiveBarrelBlock extends FallingBlock implement
     }
 
     protected void prime(Level level, BlockPos pos, LivingEntity owner, int fuseTicks) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         BlockState current = level.getBlockState(pos);
         if (!(current.getBlock() instanceof GenericExplosiveBarrelBlock)) {
             current = this.defaultBlockState();
@@ -181,7 +181,7 @@ public abstract class GenericExplosiveBarrelBlock extends FallingBlock implement
     }
 
     protected void detonateNow(Level level, BlockPos pos, LivingEntity owner, TriggerCause cause, Projectile projectile) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         BlockState state = level.getBlockState(pos);
         if (!(state.getBlock() instanceof GenericExplosiveBarrelBlock barrel)) {
             return;
@@ -200,7 +200,7 @@ public abstract class GenericExplosiveBarrelBlock extends FallingBlock implement
 
     @Override
     public void onBrokenAfterFall(Level level, BlockPos pos, FallingBlockEntity fallingBlockEntity) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             BlockState fallingState = fallingBlockEntity.getBlockState();
             if (fallingState.getBlock() instanceof GenericExplosiveBarrelBlock barrel) {
                 barrel.removeNearbyArrows(level, pos);
@@ -211,7 +211,7 @@ public abstract class GenericExplosiveBarrelBlock extends FallingBlock implement
 
     @Override
     public void onProjectileHit(Level level, BlockState state, BlockHitResult hit, Projectile projectile) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             BlockPos bpos = hit.getBlockPos();
             LivingEntity owner = projectile.getOwner() instanceof LivingEntity l ? l : null;
             if (projectile.isOnFire() && projectile.mayInteract(level, bpos)) {
@@ -234,13 +234,13 @@ public abstract class GenericExplosiveBarrelBlock extends FallingBlock implement
                     held.shrink(1);
                 }
             }
-            return net.minecraft.world.ItemInteractionResult.sidedSuccess(level.isClientSide);
+            return net.minecraft.world.ItemInteractionResult.sidedSuccess(level.isClientSide());
         }
     }
 
     @Override
     public void onLand(Level level, BlockPos pos, BlockState state1, BlockState state2, FallingBlockEntity fallingBlockEntity) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             BlockState fallingState = fallingBlockEntity.getBlockState();
             if (fallingState.getBlock() instanceof GenericExplosiveBarrelBlock barrel) {
                 barrel.removeNearbyArrows(level, pos);

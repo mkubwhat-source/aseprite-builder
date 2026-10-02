@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 
@@ -19,7 +19,7 @@ public class FabricClientHelper implements ClientHelper {
     }
 
     @Override
-    public void registerItemModel(ResourceLocation modelLocation) {
+    public void registerItemModel(Identifier modelLocation) {
         ModelLoadingPlugin.register(context -> context.addModels(modelLocation));
     }
 }

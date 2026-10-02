@@ -14,12 +14,12 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.monster.Skeleton;
-import net.minecraft.world.entity.monster.Spider;
-import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.monster.skeleton.Skeleton;
+import net.minecraft.world.entity.monster.spider.Spider;
+import net.minecraft.world.entity.monster.zombie.Zombie;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -160,7 +160,7 @@ public class ChaosSpawnerSummonMobGoal extends Goal {
         if (mob == null) return;
 
         mob.moveTo(summonPos, 0.0F, 0.0F);
-        mob.finalizeSpawn(serverLevel, level.getCurrentDifficultyAt(summonPos), MobSpawnType.MOB_SUMMONED, null);
+        mob.finalizeSpawn(serverLevel, level.getCurrentDifficultyAt(summonPos), EntitySpawnReason.MOB_SUMMONED, null);
 
         entry.post().accept(mob);
         level.addFreshEntity(mob);
@@ -177,8 +177,8 @@ public class ChaosSpawnerSummonMobGoal extends Goal {
         spider.moveTo(summonPos, 0.0F, 0.0F);
         skeleton.moveTo(summonPos, 0.0F, 0.0F);
 
-        spider.finalizeSpawn(serverLevel, level.getCurrentDifficultyAt(summonPos), MobSpawnType.MOB_SUMMONED, null);
-        skeleton.finalizeSpawn(serverLevel, level.getCurrentDifficultyAt(summonPos), MobSpawnType.MOB_SUMMONED, null);
+        spider.finalizeSpawn(serverLevel, level.getCurrentDifficultyAt(summonPos), EntitySpawnReason.MOB_SUMMONED, null);
+        skeleton.finalizeSpawn(serverLevel, level.getCurrentDifficultyAt(summonPos), EntitySpawnReason.MOB_SUMMONED, null);
 
         // no drop chance on rider (and optionally spider)
         noDropChance(skeleton);

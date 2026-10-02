@@ -12,7 +12,7 @@ public class LargeFlameParticle extends TextureSheetParticle {
 
     protected LargeFlameParticle(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, float scale, SpriteSet spriteSet) {
         super(level, x, y, z, xSpeed, ySpeed, zSpeed);
-        this.quadSize *= 2.9F + level.random.nextFloat() * 0.5F;
+        this.quadSize *= 2.9F + level.getRandom().nextFloat() * 0.5F;
         this.hasPhysics = true;
         this.xd = xSpeed;
         this.yd = ySpeed;
@@ -21,7 +21,7 @@ public class LargeFlameParticle extends TextureSheetParticle {
         this.gCol = 1.0F;
         this.spriteSet = spriteSet;
         this.friction = 0.95F;
-        this.lifetime = 5 + level.random.nextInt(10);
+        this.lifetime = 5 + level.getRandom().nextInt(10);
         this.scale = scale;
     }
 

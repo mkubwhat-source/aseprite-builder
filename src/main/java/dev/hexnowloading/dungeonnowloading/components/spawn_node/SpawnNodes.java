@@ -1,6 +1,6 @@
 package dev.hexnowloading.dungeonnowloading.components.spawn_node;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,19 +8,19 @@ import java.util.Map;
 
 public final class SpawnNodes {
 
-    private static Map<ResourceLocation, SpawnNode> NODES = Collections.emptyMap();
+    private static Map<Identifier, SpawnNode> NODES = Collections.emptyMap();
 
     private SpawnNodes() {}
 
-    public static SpawnNode get(ResourceLocation id) {
+    public static SpawnNode get(Identifier id) {
         return NODES.get(id);
     }
 
-    public static Map<ResourceLocation, SpawnNode> all() {
+    public static Map<Identifier, SpawnNode> all() {
         return NODES;
     }
 
-    public static void replaceAll(Map<ResourceLocation, SpawnNode> nodes) {
+    public static void replaceAll(Map<Identifier, SpawnNode> nodes) {
         NODES = Collections.unmodifiableMap(new HashMap<>(nodes));
     }
 }

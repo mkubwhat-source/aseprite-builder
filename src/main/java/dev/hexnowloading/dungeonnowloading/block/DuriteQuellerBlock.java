@@ -64,7 +64,7 @@ public class DuriteQuellerBlock extends BaseEntityBlock {
     @Override
     public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block,
                                 BlockPos fromPos, boolean isMoving) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         boolean powered = level.hasNeighborSignal(pos);
 
@@ -76,7 +76,7 @@ public class DuriteQuellerBlock extends BaseEntityBlock {
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return level.isClientSide ? null : createTickerHelper(type, DNLBlockEntityTypes.DURITE_QUELLER.get(), DuriteQuellerBlockEntity::serverTick);
+        return level.isClientSide() ? null : createTickerHelper(type, DNLBlockEntityTypes.DURITE_QUELLER.get(), DuriteQuellerBlockEntity::serverTick);
     }
 
     @Override

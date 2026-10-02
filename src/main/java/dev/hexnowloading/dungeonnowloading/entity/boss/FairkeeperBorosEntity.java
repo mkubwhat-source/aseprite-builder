@@ -1,5 +1,11 @@
 package dev.hexnowloading.dungeonnowloading.entity.boss;
 
+
+
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
 import net.minecraft.core.Holder;
 import com.mojang.logging.LogUtils;
 import dev.hexnowloading.dungeonnowloading.entity.ai.*;
@@ -42,7 +48,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -160,13 +166,13 @@ public class FairkeeperBorosEntity extends Monster implements Boss, Enemy, Slumb
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compoundTag) {
+    public void addAdditionalSaveData(ValueOutput compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         if (this.getChildId() != null) {
-            compoundTag.putUUID("ChildUUID", this.getChildId());
+            NbtCompat.putUUID(compoundTag, "ChildUUID", this.getChildId());
         }
         if (this.getCallerId() != null) {
-            compoundTag.putUUID("CallerUUID", this.getCallerId());
+            NbtCompat.putUUID(compoundTag, "CallerUUID", this.getCallerId());
         }
         compoundTag.putBoolean("CanDestroyBlocks", this.canDestroyBlocks);
         compoundTag.putBoolean("Awakened", !this.isState(FairkeeperBorosState.AWAKENING));
@@ -174,18 +180,18 @@ public class FairkeeperBorosEntity extends Monster implements Boss, Enemy, Slumb
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
+    public void readAdditionalSaveData(ValueInput compoundTag) {
         super.readAdditionalSaveData(compoundTag);
         if (this.hasCustomName()) this.bossEvent.setName(this.getDisplayName());
-        if (compoundTag.hasUUID("ChildUUID")) {
-            this.setChildId(compoundTag.getUUID("ChildUUID"));
+        if (NbtCompat.hasUUID(compoundTag, "ChildUUID")) {
+            this.setChildId(NbtCompat.getUUID(compoundTag, "ChildUUID"));
         }
-        if (compoundTag.hasUUID("CallerUUID")) {
-            this.setCallerId(compoundTag.getUUID("CallerUUID"));
+        if (NbtCompat.hasUUID(compoundTag, "CallerUUID")) {
+            this.setCallerId(NbtCompat.getUUID(compoundTag, "CallerUUID"));
         }
-        this.setCanDestroyBlocks(compoundTag.getBoolean("CanDestroyBlocks"));
-        this.setState(compoundTag.getBoolean("Awakened") ? FairkeeperBorosState.IDLE : FairkeeperBorosState.AWAKENING);
-        this.setArmor(compoundTag.getBoolean("Armor"));
+        this.setCanDestroyBlocks(compoundTag.getBooleanOr("CanDestroyBlocks", false));
+        this.setState(compoundTag.getBooleanOr("Awakened", false) ? FairkeeperBorosState.IDLE : FairkeeperBorosState.AWAKENING);
+        this.setArmor(compoundTag.getBooleanOr("Armor", false));
     }
 
     @Override
@@ -219,7 +225,7 @@ public class FairkeeperBorosEntity extends Monster implements Boss, Enemy, Slumb
     }
 
     private void animationControl() {
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             return;
         }
 
@@ -267,7 +273,7 @@ public class FairkeeperBorosEntity extends Monster implements Boss, Enemy, Slumb
     }
 
     private void segmentControl() {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             Entity child = getChild();
             if (positionHistory.isEmpty()) {
                 Vec3 currentPos = this.position();
@@ -562,7 +568,7 @@ public class FairkeeperBorosEntity extends Monster implements Boss, Enemy, Slumb
     protected void tickDeath() {
         ++this.deathTime;
 
-        if (this.level().isClientSide) return;
+        if (this.level().isClientSide()) return;
 
         if (this.deathTime == 1) {
             this.partIndex = 0;
@@ -581,7 +587,7 @@ public class FairkeeperBorosEntity extends Monster implements Boss, Enemy, Slumb
             if (partIndex <= 13) {
                 FairkeeperBorosPartEntity part = this.getPart(13 - this.partIndex);
                 if (part != null) {
-                    this.level().playSound(null, part.blockPosition(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS, 4.0f, (1.0f + (this.level().random.nextFloat() - this.level().random.nextFloat()) * 0.2f) * 0.7f);
+                    this.level().playSound(null, part.blockPosition(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS, 4.0f, (1.0f + (this.level().getRandom().nextFloat() - this.level().getRandom().nextFloat()) * 0.2f) * 0.7f);
                     ((ServerLevel) (this.level())).sendParticles(ParticleTypes.EXPLOSION, part.getX(), part.getY(), part.getZ(), 1, 0.0D, 0.0D, 0.0D, 1.0D);
                     part.remove(RemovalReason.KILLED);
                 }
@@ -590,7 +596,7 @@ public class FairkeeperBorosEntity extends Monster implements Boss, Enemy, Slumb
                 if (caller != null) {
                     caller.defeatedBoros();
                 }
-                this.level().playSound(null, this.blockPosition(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS, 4.0f, (1.0f + (this.level().random.nextFloat() - this.level().random.nextFloat()) * 0.2f) * 0.7f);
+                this.level().playSound(null, this.blockPosition(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS, 4.0f, (1.0f + (this.level().getRandom().nextFloat() - this.level().getRandom().nextFloat()) * 0.2f) * 0.7f);
                 ((ServerLevel) (this.level())).sendParticles(ParticleTypes.EXPLOSION, this.getX(), this.getY(), this.getZ(), 1, 0.0D, 0.0D, 0.0D, 1.0D);
                 this.level().broadcastEntityEvent(this, (byte)60);
                 this.remove(Entity.RemovalReason.KILLED);
@@ -817,7 +823,7 @@ public class FairkeeperBorosEntity extends Monster implements Boss, Enemy, Slumb
 
     public Entity getChild() {
         UUID id = getChildId();
-        if (id != null && !this.level().isClientSide) {
+        if (id != null && !this.level().isClientSide()) {
             return ((ServerLevel) this.level()).getEntity(id);
         }
         return null;

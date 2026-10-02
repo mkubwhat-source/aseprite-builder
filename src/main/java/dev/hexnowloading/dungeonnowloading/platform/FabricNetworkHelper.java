@@ -48,12 +48,12 @@ public class FabricNetworkHelper implements NetworkHelper {
 
         // Register the codec on both directions (a payload that only travels one way just has an
         // unused codec in the other; Fabric requires the codec registered for any direction it's sent).
-        PayloadTypeRegistry.playC2S().register(type, codec);
-        PayloadTypeRegistry.playS2C().register(type, codec);
+        PayloadTypeRegistry.serverboundPlay().register(type, codec);
+        PayloadTypeRegistry.clientboundPlay().register(type, codec);
 
         // Server receives serverbound (C2S) payloads.
         ServerPlayNetworking.registerGlobalReceiver(type, (payload, context) ->
-                context.player().server.execute(() -> payload.packet().handle(context.player())));
+                context.player().level().getServer().execute(() -> payload.packet().handle(context.player())));
 
         // Client receives clientbound (S2C) payloads — only on the client env (dedicated-server safe).
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {

@@ -5,12 +5,12 @@ import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.entity.client.model.copper_creep.CopperCreepButlerModel;
 import dev.hexnowloading.dungeonnowloading.entity.client.model.copper_creep.CopperCreepModel;
 import dev.hexnowloading.dungeonnowloading.entity.passive.CopperCreepEntity;
-import net.minecraft.client.model.HierarchicalModel;
+import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 //import net.minecraft.client.renderer.entity.layers.CopperCreepPowerLayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 public class CopperCreepRenderer extends MobRenderer<CopperCreepEntity, HierarchicalModel<CopperCreepEntity>> {
@@ -18,8 +18,8 @@ public class CopperCreepRenderer extends MobRenderer<CopperCreepEntity, Hierarch
     //private final CopperCreepModel<CopperCreepEntity> defaultModel;
     private final CopperCreepButlerModel<CopperCreepEntity> butlerModel;
 
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/copper_creep/copper_creep.png");
-    private static final ResourceLocation TEXTURE_BUTLER = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/copper_creep/copper_creep_butler.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/copper_creep/copper_creep.png");
+    private static final Identifier TEXTURE_BUTLER = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/copper_creep/copper_creep_butler.png");
 
     public CopperCreepRenderer(EntityRendererProvider.Context context) {
         super(context, new CopperCreepModel<>(context.bakeLayer(CopperCreepModel.LAYER_LOCATION)), 0.5F);
@@ -60,7 +60,7 @@ public class CopperCreepRenderer extends MobRenderer<CopperCreepEntity, Hierarch
     }
 
     @Override
-    public ResourceLocation getTextureLocation(CopperCreepEntity entity) {
+    public Identifier getTextureLocation(CopperCreepEntity entity) {
         return entity.getSkin() == CopperCreepEntity.Skin.BUTLER ? TEXTURE_BUTLER : TEXTURE;
     }
 }

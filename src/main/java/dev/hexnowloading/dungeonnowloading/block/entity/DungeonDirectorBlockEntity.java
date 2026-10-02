@@ -1,5 +1,11 @@
 package dev.hexnowloading.dungeonnowloading.block.entity;
 
+
+
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
 import dev.hexnowloading.dungeonnowloading.block.DungeonDirectorBlock;
 import dev.hexnowloading.dungeonnowloading.block.ZoneReceiverBlockEntity;
 import dev.hexnowloading.dungeonnowloading.components.spawn_node.*;
@@ -12,12 +18,12 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -145,9 +151,9 @@ public class DungeonDirectorBlockEntity extends BlockEntity implements ZoneRecei
         for (StoredSpawnNode entry : storedNodes) {
             BlockPos basePos = worldPosition.offset(rotateOffset(entry.relPos));
 
-            ResourceLocation poolId;
+            Identifier poolId;
             try {
-                poolId = ResourceLocation.parse(entry.poolId);
+                poolId = Identifier.parse(entry.poolId);
             } catch (Exception e) {
                 continue;
             }
@@ -155,7 +161,7 @@ public class DungeonDirectorBlockEntity extends BlockEntity implements ZoneRecei
             SpawnPool pool = SpawnPools.get(poolId);
             if (pool == null) continue;
 
-            ResourceLocation nodeId = pool.pickNodeId(server.random);
+            Identifier nodeId = pool.pickNodeId(server.random);
             if (nodeId == null) continue;
 
             SpawnNode nodeDef = SpawnNodes.get(nodeId);
@@ -208,7 +214,7 @@ public class DungeonDirectorBlockEntity extends BlockEntity implements ZoneRecei
         }
 
         // 1) Vanilla setup FIRST (may overwrite gear)
-        mob.finalizeSpawn(server, server.getCurrentDifficultyAt(pos), MobSpawnType.STRUCTURE, null);
+        mob.finalizeSpawn(server, server.getCurrentDifficultyAt(pos), EntitySpawnReason.STRUCTURE, null);
 
         // 2) Then FORCE our custom NBT LAST (restores enchanted bow, armor, etc.)
         if (patch != null && !patch.isEmpty()) {
@@ -245,7 +251,7 @@ public class DungeonDirectorBlockEntity extends BlockEntity implements ZoneRecei
     private boolean rollChance(ServerLevel level, double chance) {
         if (chance >= 1.0) return true;
         if (chance <= 0.0) return false;
-        return level.random.nextDouble() < chance;
+        return level.getRandom().nextDouble() < chance;
     }
 
     private void pruneDeadSpawnedMobs(ServerLevel server) {
@@ -403,12 +409,12 @@ public class DungeonDirectorBlockEntity extends BlockEntity implements ZoneRecei
     // NBT Save/Load
     // =========================
     @Override
-    protected void saveAdditional(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+    protected void saveAdditional(ValueOutput tag) {
         super.saveAdditional(tag, registries);
 
         tag.putFloat("TriggerRangeMultiplier", triggerRangeMultiplier);
-        tag.put("CornerA", writePos(cornerAOffset));
-        tag.put("CornerB", writePos(cornerBOffset));
+        NbtCompat.put(tag, "CornerA", writePos(cornerAOffset));
+        NbtCompat.put(tag, "CornerB", writePos(cornerBOffset));
         tag.putInt("AuthoredFacing", authoredFacing.get3DDataValue());
 
         tag.putBoolean("RegionSet", regionSet);
@@ -423,7 +429,7 @@ public class DungeonDirectorBlockEntity extends BlockEntity implements ZoneRecei
             t.putString("PoolId", e.poolId);
             stored.add(t);
         }
-        tag.put("StoredNodes", stored);
+        NbtCompat.put(tag, "StoredNodes", stored);
 
         tag.putBoolean("Triggered", triggered);
         tag.putBoolean("Cleared", cleared);
@@ -431,48 +437,48 @@ public class DungeonDirectorBlockEntity extends BlockEntity implements ZoneRecei
         ListTag uuids = new ListTag();
         for (UUID id : spawnedMobs) {
             CompoundTag t = new CompoundTag();
-            t.putUUID("Id", id);
+            NbtCompat.putUUID(t, "Id", id);
             uuids.add(t);
         }
-        tag.put("SpawnedMobs", uuids);
+        NbtCompat.put(tag, "SpawnedMobs", uuids);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+    protected void loadAdditional(ValueInput tag) {
         super.loadAdditional(tag, registries);
 
-        this.triggerRangeMultiplier = tag.contains("TriggerRangeMultiplier")
-                ? tag.getFloat("TriggerRangeMultiplier")
+        this.triggerRangeMultiplier = NbtCompat.has(tag, "TriggerRangeMultiplier")
+                ? tag.getFloatOr("TriggerRangeMultiplier", 0.0F)
                 : 10.0F;
-        this.cornerAOffset = tag.contains("CornerA") ? readPos(tag.getCompound("CornerA")) : BlockPos.ZERO;
-        this.cornerBOffset = tag.contains("CornerB") ? readPos(tag.getCompound("CornerB")) : BlockPos.ZERO;
-        this.authoredFacing = tag.contains("AuthoredFacing")
-                ? Direction.from3DDataValue(tag.getInt("AuthoredFacing"))
+        this.cornerAOffset = NbtCompat.has(tag, "CornerA") ? readPos(NbtCompat.getCompound(tag, "CornerA")) : BlockPos.ZERO;
+        this.cornerBOffset = NbtCompat.has(tag, "CornerB") ? readPos(NbtCompat.getCompound(tag, "CornerB")) : BlockPos.ZERO;
+        this.authoredFacing = NbtCompat.has(tag, "AuthoredFacing")
+                ? Direction.from3DDataValue(tag.getIntOr("AuthoredFacing", 0))
                 : Direction.NORTH;
 
-        this.regionSet = tag.getBoolean("RegionSet");
-        this.baked = tag.getBoolean("Baked");
+        this.regionSet = tag.getBooleanOr("RegionSet", false);
+        this.baked = tag.getBooleanOr("Baked", false);
 
         this.storedNodes.clear();
-        if (tag.contains("StoredNodes")) {
-            ListTag list = tag.getList("StoredNodes", Tag.TAG_COMPOUND);
+        if (NbtCompat.has(tag, "StoredNodes")) {
+            ListTag list = NbtCompat.getList(tag, "StoredNodes");
             for (int i = 0; i < list.size(); i++) {
-                CompoundTag t = list.getCompound(i);
-                BlockPos rel = new BlockPos(t.getInt("dx"), t.getInt("dy"), t.getInt("dz"));
-                String poolId = t.getString("PoolId");
+                CompoundTag t = list.getCompoundOrEmpty(i);
+                BlockPos rel = new BlockPos(t.getIntOr("dx", 0), t.getIntOr("dy", 0), t.getIntOr("dz", 0));
+                String poolId = t.getStringOr("PoolId", "");
                 storedNodes.add(new StoredSpawnNode(rel, poolId));
             }
         }
 
-        this.triggered = tag.getBoolean("Triggered");
-        this.cleared = tag.getBoolean("Cleared");
+        this.triggered = tag.getBooleanOr("Triggered", false);
+        this.cleared = tag.getBooleanOr("Cleared", false);
 
         this.spawnedMobs.clear();
-        if (tag.contains("SpawnedMobs")) {
-            ListTag list = tag.getList("SpawnedMobs", Tag.TAG_COMPOUND);
+        if (NbtCompat.has(tag, "SpawnedMobs")) {
+            ListTag list = NbtCompat.getList(tag, "SpawnedMobs");
             for (int i = 0; i < list.size(); i++) {
-                CompoundTag t = list.getCompound(i);
-                if (t.hasUUID("Id")) spawnedMobs.add(t.getUUID("Id"));
+                CompoundTag t = list.getCompoundOrEmpty(i);
+                if (NbtCompat.hasUUID(t, "Id")) spawnedMobs.add(NbtCompat.getUUID(t, "Id"));
             }
         }
     }
@@ -486,7 +492,7 @@ public class DungeonDirectorBlockEntity extends BlockEntity implements ZoneRecei
     }
 
     private static BlockPos readPos(CompoundTag tag) {
-        return new BlockPos(tag.getInt("X"), tag.getInt("Y"), tag.getInt("Z"));
+        return new BlockPos(tag.getIntOr("X", 0), tag.getIntOr("Y", 0), tag.getIntOr("Z", 0));
     }
 
     public static class StoredSpawnNode {

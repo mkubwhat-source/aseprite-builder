@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.entity.util;
 
+
+import net.minecraft.world.entity.EntitySpawnReason;
 import dev.hexnowloading.dungeonnowloading.util.ArmorTrimMaterial;
 import dev.hexnowloading.dungeonnowloading.util.ArmorTrimPattern;
 import net.minecraft.core.BlockPos;
@@ -21,11 +23,11 @@ public class SpawnMobUtil {
 
     public static Mob spawnEntity(Mob mob, double x, double y, double z, Level level) {
         if (mob != null) {
-            mob.moveTo(x, y, z, level.random.nextFloat() * 360.0f, 0.0F);
+            mob.moveTo(x, y, z, level.getRandom().nextFloat() * 360.0f, 0.0F);
             EntityScale.scaleMobAttributes(mob);
             mob.setPersistenceRequired();
             BlockPos blockPos = BlockPos.containing(x, y, z);
-            mob.finalizeSpawn((ServerLevelAccessor) level, level.getCurrentDifficultyAt(blockPos), MobSpawnType.SPAWNER, null);
+            mob.finalizeSpawn((ServerLevelAccessor) level, level.getCurrentDifficultyAt(blockPos), EntitySpawnReason.SPAWNER, null);
         }
         return mob;
     }
@@ -36,7 +38,7 @@ public class SpawnMobUtil {
             EntityScale.scaleMobAttributes(mob);
             mob.setPersistenceRequired();
             BlockPos blockPos = BlockPos.containing(x, y, z);
-            mob.finalizeSpawn((ServerLevelAccessor) level, level.getCurrentDifficultyAt(blockPos), MobSpawnType.SPAWNER, null);
+            mob.finalizeSpawn((ServerLevelAccessor) level, level.getCurrentDifficultyAt(blockPos), EntitySpawnReason.SPAWNER, null);
         }
         return mob;
     }
@@ -46,7 +48,7 @@ public class SpawnMobUtil {
             EntityScale.scaleMobAttributes(mob);
             mob.setPersistenceRequired();
             BlockPos blockPos = BlockPos.containing(x, y, z);
-            mob.finalizeSpawn((ServerLevelAccessor) level, level.getCurrentDifficultyAt(blockPos), MobSpawnType.SPAWNER, null);
+            mob.finalizeSpawn((ServerLevelAccessor) level, level.getCurrentDifficultyAt(blockPos), EntitySpawnReason.SPAWNER, null);
         }
         return mob;
     }

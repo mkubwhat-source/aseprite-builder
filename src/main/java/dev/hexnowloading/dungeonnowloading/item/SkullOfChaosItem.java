@@ -7,11 +7,11 @@ import dev.hexnowloading.dungeonnowloading.entity.misc.SeepingSoulEntity;
 import dev.hexnowloading.dungeonnowloading.registry.DNLSounds;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -33,14 +33,14 @@ public class SkullOfChaosItem extends Item implements BossSummoningItem {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return InteractionResultHolder.pass(stack);
         }
 
         AABB aabb = new AABB(player.blockPosition()).inflate(16);
 
         // 1) Try recall first: find nearby souls that belong to Chaos Spawner
-        ResourceLocation chaosSpawnerId = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "chaos_spawner");
+        Identifier chaosSpawnerId = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "chaos_spawner");
 
         List<SeepingSoulEntity> souls = level.getEntitiesOfClass(SeepingSoulEntity.class, aabb);
         for (SeepingSoulEntity soul : souls) {

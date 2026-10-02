@@ -1,5 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.block.entity;
 
+
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import dev.hexnowloading.dungeonnowloading.registry.DNLBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -19,14 +23,14 @@ public class SpawnNodeBlockEntity extends BlockEntity {
     public void setSpawnPool(String id) { this.spawnPool = id; setChanged(); }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+    protected void saveAdditional(ValueOutput tag) {
         super.saveAdditional(tag, registries);
         tag.putString("SpawnPool", spawnPool);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+    protected void loadAdditional(ValueInput tag) {
         super.loadAdditional(tag, registries);
-        this.spawnPool = tag.getString("SpawnPool");
+        this.spawnPool = tag.getStringOr("SpawnPool", "");
     }
 }

@@ -8,11 +8,11 @@ import dev.hexnowloading.dungeonnowloading.entity.misc.SeepingSoulEntity;
 import dev.hexnowloading.dungeonnowloading.registry.DNLSounds;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
@@ -32,14 +32,14 @@ public class RedstoneIdolItem extends BlockItem implements BossSummoningItem {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return InteractionResultHolder.pass(stack);
         }
 
         AABB aabb = (new AABB(player.blockPosition())).inflate(32);
 
         // 1) Try recall first: find nearby souls that belong to Chaos Spawner
-        ResourceLocation fairkeepersId = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "fairkeeper_serpent_caller");
+        Identifier fairkeepersId = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "fairkeeper_serpent_caller");
 
         List<SeepingSoulEntity> souls = level.getEntitiesOfClass(SeepingSoulEntity.class, aabb);
         for (SeepingSoulEntity soul : souls) {
@@ -61,7 +61,7 @@ public class RedstoneIdolItem extends BlockItem implements BossSummoningItem {
             player.getCooldowns().addCooldown(this, 7);
             player.awardStat(Stats.ITEM_USED.get(this));
             for (FairkeeperSerpentCallerEntity serpentCallerEntity : targets) {
-                if (!level.isClientSide) {
+                if (!level.isClientSide()) {
                     serpentCallerEntity.startBossFight(stack);
                 }
             }

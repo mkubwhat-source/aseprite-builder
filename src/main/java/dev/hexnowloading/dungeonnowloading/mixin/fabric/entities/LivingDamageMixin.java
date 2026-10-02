@@ -12,7 +12,7 @@ public class LivingDamageMixin {
     // Note: this mixin also affects Player (Player extends LivingEntity).
     // We intentionally do NOT hook Player#actuallyHurt separately to avoid double-invoking DNLEntityEvents.
 
-    /*@Inject(method = "Lnet/minecraft/world/entity/LivingEntity;actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;awardStat(Lnet/minecraft/resources/ResourceLocation;I)V", shift = At.Shift.BY, by = 2))
+    /*@Inject(method = "Lnet/minecraft/world/entity/LivingEntity;actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;awardStat(Lnet/minecraft/resources/Identifier;I)V", shift = At.Shift.BY, by = 2))
     private void dungeonnowloading_actuallyHurt(DamageSource damageSource, float f, CallbackInfo ci) {
         LivingEntity livingEntity = (LivingEntity) (Object) this;
         Entity attackingEntity = damageSource.getEntity();
@@ -21,7 +21,7 @@ public class LivingDamageMixin {
         }
     }*/
 
-    /*@ModifyVariable(method = "Lnet/minecraft/world/entity/LivingEntity;actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;awardStat(Lnet/minecraft/resources/ResourceLocation;I)V", shift = At.Shift.BY, by = 2), ordinal = 1)
+    /*@ModifyVariable(method = "Lnet/minecraft/world/entity/LivingEntity;actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;awardStat(Lnet/minecraft/resources/Identifier;I)V", shift = At.Shift.BY, by = 2), ordinal = 1)
     private float dungeonnowloading_actuallyHurt(float f, DamageSource damageSource) {
         LivingEntity target = (LivingEntity) (Object) this;
         Entity attackerEntity = damageSource.getEntity();

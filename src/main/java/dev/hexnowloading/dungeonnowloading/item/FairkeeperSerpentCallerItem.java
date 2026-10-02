@@ -7,7 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -26,7 +26,7 @@ public class FairkeeperSerpentCallerItem extends Item {
         Level level = context.getLevel();
         Player player = context.getPlayer();
         ItemStack itemStack = context.getItemInHand();
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             BlockPos blockPos = context.getClickedPos();
             Direction direction = context.getClickedFace();
             BlockState blockState = level.getBlockState(blockPos);

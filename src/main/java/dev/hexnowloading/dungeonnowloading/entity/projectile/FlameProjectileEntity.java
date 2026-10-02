@@ -15,11 +15,11 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Arrow;
-import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
+import net.minecraft.world.entity.projectile.arrow.Arrow;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.phys.BlockHitResult;
@@ -87,7 +87,7 @@ public class FlameProjectileEntity extends ThrowableItemProjectile {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             return;
         }
         Entity target = entityHitResult.getEntity();
@@ -121,7 +121,7 @@ public class FlameProjectileEntity extends ThrowableItemProjectile {
     @Override
     protected void onHitBlock(BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             return;
         }
 
@@ -130,7 +130,7 @@ public class FlameProjectileEntity extends ThrowableItemProjectile {
         }
 
         Entity owner = this.getOwner();
-        if (!(owner instanceof LivingEntity) || this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
+        if (!(owner instanceof LivingEntity) || this.level().getGameRules().getBooleanOr(GameRules.RULE_MOBGRIEFING, false)) {
             BlockPos blockPos = blockHitResult.getBlockPos().relative(blockHitResult.getDirection());
             if (this.level().isEmptyBlock(blockPos)) {
                 this.level().setBlockAndUpdate(blockPos, BaseFireBlock.getState(this.level(), blockPos));
@@ -141,7 +141,7 @@ public class FlameProjectileEntity extends ThrowableItemProjectile {
     @Override
     protected void onHit(HitResult hitResult) {
         super.onHit(hitResult);
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.discard();
         }
     }

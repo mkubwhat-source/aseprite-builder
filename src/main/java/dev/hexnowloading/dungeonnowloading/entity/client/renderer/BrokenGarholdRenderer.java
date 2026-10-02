@@ -7,10 +7,10 @@ import dev.hexnowloading.dungeonnowloading.entity.monster.BrokenGarholdEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class BrokenGarholdRenderer<T extends BrokenGarholdEntity> extends MobRenderer<T, BrokenGarholdModel<T>> {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/garhold/broken_garhold.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/garhold/broken_garhold.png");
 
     public BrokenGarholdRenderer(EntityRendererProvider.Context renderManager) {
         super(renderManager, new BrokenGarholdModel<>(renderManager.bakeLayer(BrokenGarholdModel.LAYER_LOCATION)), 1.0F);
@@ -23,5 +23,5 @@ public class BrokenGarholdRenderer<T extends BrokenGarholdEntity> extends MobRen
     }
 
     @Override
-    public ResourceLocation getTextureLocation(BrokenGarholdEntity entity) { return TEXTURE; }
+    public Identifier getTextureLocation(BrokenGarholdEntity entity) { return TEXTURE; }
 }

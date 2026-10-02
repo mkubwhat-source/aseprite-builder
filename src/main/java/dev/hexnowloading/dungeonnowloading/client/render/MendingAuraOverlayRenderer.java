@@ -6,17 +6,17 @@ import dev.hexnowloading.dungeonnowloading.block.MendingAuraBlock;
 import dev.hexnowloading.dungeonnowloading.block.client.renderer.MendingAuraBlockEntityRenderer;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -36,7 +36,7 @@ public class MendingAuraOverlayRenderer {
     private static final int OVERLAY_TICKS = 40;
     private static final float MODEL_OVERLAY_OFFSET = 0.002F;
     private static final float SHAPE_OVERLAY_EPSILON = 0.001F;
-    private static final ResourceLocation MENDING_AURA_SPRITE = ResourceLocation.fromNamespaceAndPath("dungeonnowloading", "block/mending_aura_0");
+    private static final Identifier MENDING_AURA_SPRITE = Identifier.fromNamespaceAndPath("dungeonnowloading", "block/mending_aura_0");
     private static final Map<TextureAtlasSprite, Map<BakedQuad, List<BakedQuad>>> OVERLAY_REMAPPED_QUAD_CACHE = new IdentityHashMap<>();
 
     private MendingAuraOverlayRenderer() {
@@ -106,7 +106,7 @@ public class MendingAuraOverlayRenderer {
                         1.0F,
                         1.0F,
                         1.0F,
-                        LightTexture.FULL_BRIGHT,
+                        LightCoordsUtil.FULL_BRIGHT,
                         0
                 );
                 if (blockEntity != null) {
@@ -208,7 +208,7 @@ public class MendingAuraOverlayRenderer {
                 .setColor(255, 255, 255, 255)
                 .setUv(u, v)
                 .setOverlay(0)
-                .setLight(LightTexture.FULL_BRIGHT)
+                .setLight(LightCoordsUtil.FULL_BRIGHT)
                 .setNormal(pose, direction.getStepX(), direction.getStepY(), direction.getStepZ());
     }
 

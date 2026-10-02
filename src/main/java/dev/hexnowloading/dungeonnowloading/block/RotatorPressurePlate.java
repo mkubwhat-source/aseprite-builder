@@ -11,7 +11,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Arrow;
+import net.minecraft.world.entity.projectile.arrow.Arrow;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -51,7 +51,7 @@ public class RotatorPressurePlate extends PressurePlateBlock {
         if (blockState.getValue(POWERED)) {
             return InteractionResult.CONSUME;
         } else {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 this.rotateBlock((ServerLevel) level, blockPos);
             }
             BlockState poweredState = this.setSignalForState(blockState, 15);
@@ -61,7 +61,7 @@ public class RotatorPressurePlate extends PressurePlateBlock {
             level.scheduleTick(new BlockPos(blockPos), this, this.getPressedTime());
             level.playSound(null, blockPos, this.type.pressurePlateClickOn(), SoundSource.BLOCKS);
             level.gameEvent(player, GameEvent.BLOCK_ACTIVATE, blockPos);
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
     }
 
@@ -124,7 +124,7 @@ public class RotatorPressurePlate extends PressurePlateBlock {
 
     @Override
     public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             boolean signalStrengthState = this.getSignalForState(blockState) > 0;
             boolean signalStrength = this.getSignalStrength(level, blockPos) > 0;
             if (signalStrength && !signalStrengthState) {

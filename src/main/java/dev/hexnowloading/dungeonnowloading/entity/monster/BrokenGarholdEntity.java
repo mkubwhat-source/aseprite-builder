@@ -1,5 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.entity.monster;
 
+
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import dev.hexnowloading.dungeonnowloading.entity.client.animation_duration.BrokenGarholdAnimationDuration;
 import dev.hexnowloading.dungeonnowloading.entity.util.AnimationChainer;
 import dev.hexnowloading.dungeonnowloading.entity.util.EntityStates;
@@ -68,24 +72,24 @@ public class BrokenGarholdEntity extends Monster {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compoundTag) {
+    public void addAdditionalSaveData(ValueOutput compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         compoundTag.putBoolean("Chained", this.entityData.get(STATE) == BrokenGarholdState.HANGING || this.entityData.get(STATE) == BrokenGarholdState.OPEN);
         compoundTag.putBoolean("ReleaseInsteadOfDrop", this.releaseInsteadOfDrop);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
+    public void readAdditionalSaveData(ValueInput compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-        this.entityData.set(STATE, compoundTag.getBoolean("Chained") ? BrokenGarholdState.HANGING : BrokenGarholdState.FALLING);
-        this.releaseInsteadOfDrop = compoundTag.getBoolean("ReleaseInsteadOfDrop");
+        this.entityData.set(STATE, compoundTag.getBooleanOr("Chained", false) ? BrokenGarholdState.HANGING : BrokenGarholdState.FALLING);
+        this.releaseInsteadOfDrop = compoundTag.getBooleanOr("ReleaseInsteadOfDrop", false);
     }
 
     @Override
     public void tick() {
         super.tick();
 
-        if (level().isClientSide) return;
+        if (level().isClientSide()) return;
 
         if (!broken && !dropping && this.entityData.get(STATE) == BrokenGarholdState.HANGING && hasNonPlayerPassenger()) {
             if (nonPlayerRideStartTick < 0) {
@@ -225,7 +229,7 @@ public class BrokenGarholdEntity extends Monster {
     @Override
     protected void removePassenger(Entity passenger) {
         super.removePassenger(passenger);
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             nonPlayerRideStartTick = -1;
         }
     }
@@ -242,7 +246,7 @@ public class BrokenGarholdEntity extends Monster {
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             return super.hurt(source, amount);
         }
 
@@ -285,7 +289,7 @@ public class BrokenGarholdEntity extends Monster {
     @Override
     public void die(DamageSource source) {
         super.die(source);
-        if (!level().isClientSide && !broken) {
+        if (!level().isClientSide() && !broken) {
             spawnBreakFx((ServerLevel) level());
             forceDismountAtSeat();
         }

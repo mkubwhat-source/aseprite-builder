@@ -7,12 +7,12 @@ import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.entity.client.model.BallistaGolemModel;
 import dev.hexnowloading.dungeonnowloading.entity.projectile.BallistaArrowEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.ArrowRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import org.joml.Matrix3f;
@@ -20,7 +20,7 @@ import org.joml.Matrix4f;
 
 public class BallistaArrowRenderer<T extends BallistaArrowEntity> extends EntityRenderer<BallistaArrowEntity> {
 
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/ballista_arrow.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/ballista_arrow.png");
 
     public BallistaArrowRenderer(EntityRendererProvider.Context renderManager) {
         super(renderManager);
@@ -73,7 +73,7 @@ public class BallistaArrowRenderer<T extends BallistaArrowEntity> extends Entity
     }
 
     @Override
-    public ResourceLocation getTextureLocation(BallistaArrowEntity ballistaArrowEntity) {
+    public Identifier getTextureLocation(BallistaArrowEntity ballistaArrowEntity) {
         return TEXTURE;
     }
 }

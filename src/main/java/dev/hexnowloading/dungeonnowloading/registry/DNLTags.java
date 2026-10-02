@@ -2,7 +2,7 @@ package dev.hexnowloading.dungeonnowloading.registry;
 
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EntityType;
@@ -40,22 +40,22 @@ public class DNLTags {
     public static final TagKey<Structure> LABYRINTH = registerStructureTag("labyrinth");
 
     private static TagKey<Block> registerBlockTag(String string) {
-        return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, string));
+        return TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, string));
     }
 
     private static TagKey<Item> registerItemTag(String string) {
-        return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, string));
+        return TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, string));
     }
 
     private static TagKey<DamageType> registerDamageTypeTag(String string) {
-        return TagKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, string));
+        return TagKey.create(Registries.DAMAGE_TYPE, Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, string));
     }
 
     private static TagKey<EntityType<?>> registerEntityTypeTag(String string) {
-        return TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, string));
+        return TagKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, string));
     }
 
     private static TagKey<Structure> registerStructureTag(String string) {
-        return TagKey.create(Registries.STRUCTURE, ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, string));
+        return TagKey.create(Registries.STRUCTURE, Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, string));
     }
 }

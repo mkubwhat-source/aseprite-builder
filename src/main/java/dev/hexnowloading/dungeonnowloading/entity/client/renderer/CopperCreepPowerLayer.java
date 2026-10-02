@@ -11,18 +11,18 @@ import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.entity.client.model.copper_creep.CopperCreepModel;
 import dev.hexnowloading.dungeonnowloading.entity.passive.CopperCreepEntity;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.HierarchicalModel;
+import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.PowerableMob;
 
 //public class ChaosSpawnerLayer<T extends ChaosSpawnerEntity, M extends ChaosSpawnerModel<T>> extends RenderLayer<T, M> {
 public class CopperCreepPowerLayer<T extends CopperCreepEntity, M extends HierarchicalModel<T>> extends RenderLayer<T, M> {
-    private static final ResourceLocation POWER_LOCATION = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/copper_creep/copper_creep_armor.png");
+    private static final Identifier POWER_LOCATION = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/copper_creep/copper_creep_armor.png");
     private final CopperCreepModel<CopperCreepEntity> model;
     private final float OFFSET_Y_BY_PIXEL = 0.75F;
 
@@ -52,7 +52,7 @@ public class CopperCreepPowerLayer<T extends CopperCreepEntity, M extends Hierar
             this.getParentModel().copyPropertiesTo((EntityModel<T>) entityModel);
             VertexConsumer $$12 = bufferSource.getBuffer(RenderType.energySwirl(POWER_LOCATION, this.xOffset(tickCount) % 1.0F, tickCount * 0.01F % 1.0F));
             entityModel.setupAnim(copperCreepEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-            entityModel.renderToBuffer(poseStack, $$12, packedLight, OverlayTexture.NO_OVERLAY, net.minecraft.util.FastColor.ARGB32.colorFromFloat(1.0F, 0.5F, 0.5F, 0.5F));
+            entityModel.renderToBuffer(poseStack, $$12, packedLight, OverlayTexture.NO_OVERLAY, net.minecraft.util.ARGB.colorFromFloat(1.0F, 0.5F, 0.5F, 0.5F));
             poseStack.popPose();
         }
     }

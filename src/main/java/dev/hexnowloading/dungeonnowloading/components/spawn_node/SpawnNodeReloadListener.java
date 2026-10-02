@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -27,14 +27,14 @@ public class SpawnNodeReloadListener extends SimpleJsonResourceReloadListener {
     }
 
     @Override
-    protected void apply(Map<ResourceLocation, JsonElement> jsonMap,
+    protected void apply(Map<Identifier, JsonElement> jsonMap,
                          ResourceManager resourceManager,
                          ProfilerFiller profiler) {
 
-        Map<ResourceLocation, SpawnNode> nodes = new HashMap<>();
+        Map<Identifier, SpawnNode> nodes = new HashMap<>();
 
         for (var entry : jsonMap.entrySet()) {
-            ResourceLocation id = entry.getKey();
+            Identifier id = entry.getKey();
 
             try {
                 JsonObject obj = entry.getValue().getAsJsonObject();
@@ -86,7 +86,7 @@ public class SpawnNodeReloadListener extends SimpleJsonResourceReloadListener {
         try {
             if (!obj.has("entity")) return null;
 
-            ResourceLocation entityId = ResourceLocation.parse(obj.get("entity").getAsString());
+            Identifier entityId = Identifier.parse(obj.get("entity").getAsString());
             if (!BuiltInRegistries.ENTITY_TYPE.containsKey(entityId)) return null;
 
             EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(entityId);

@@ -9,7 +9,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -37,12 +37,12 @@ public class GreatExperienceBottleItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
         ItemStack itemStack = player.getItemInHand(interactionHand);
         level.playSound((Player)null, player.getX(), player.getY(), player.getZ(), SoundEvents.EXPERIENCE_BOTTLE_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             /*int experience = experienceLevelAmount;
             CompoundTag compoundTag = StackNbt.getOrCreateTag(itemStack).getCompound("StoredExperience");
             compoundTag.putInt("StoredExperience", 2000);
-            if (compoundTag.contains("StoredExperience", CompoundTag.TAG_INT)) {
-                experience = compoundTag.getInt("StoredExperience");
+            if (compoundTag.contains("StoredExperience")) {
+                experience = compoundTag.getIntOr("StoredExperience", 0);
             }*/
             GreatExperienceBottleEntity thrownExperienceBottle = new GreatExperienceBottleEntity(level, player);
             thrownExperienceBottle.setItem(itemStack);

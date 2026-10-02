@@ -155,7 +155,7 @@ public class GarholdSideCaptureGoal extends Goal {
 
     private void dealDashHitDamage(@Nullable LivingEntity hit) {
         if (hit == null) return;
-        if (mob.level().isClientSide) return;
+        if (mob.level().isClientSide()) return;
         if (!hit.isAlive()) return;
         if (hit instanceof Player p && p.isCreative()) return;
         mob.doHurtTarget(hit);

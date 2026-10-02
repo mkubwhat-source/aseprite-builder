@@ -24,7 +24,7 @@ public class BlockDestroyCancelMixin {
         Level level = ((Level) (Object) this);
         level.gameEvent(DNLGameEvents.holder(DNLGameEvents.BLOCK_DESTROY_EARLY), pos, GameEvent.Context.of(entity, level.getBlockState(pos)));
 
-        if (!level.isClientSide && level instanceof ServerLevel server) {
+        if (!level.isClientSide() && level instanceof ServerLevel server) {
             BlockEntity be = server.getBlockEntity(pos);
             if (be instanceof DuriteQuellerBlockEntity quellerBe) {
                 quellerBe.tryReplaceSelfWithMendingAura(server);

@@ -46,7 +46,7 @@ public class BallistaGolemStatuePartBlock extends Block implements SimpleWaterlo
 
     @Override
     public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (!world.isClientSide && state.getBlock() != newState.getBlock()) {
+        if (!world.isClientSide() && state.getBlock() != newState.getBlock()) {
             BallistaGolemStatueStates partState = state.getValue(STATES);
             Direction partFacing = state.getValue(FACING);
 
@@ -75,7 +75,7 @@ public class BallistaGolemStatuePartBlock extends Block implements SimpleWaterlo
 
     @Override
     public BlockState playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             this.playerDestroyedPart = !player.getAbilities().instabuild;
             if (this.playerDestroyedPart) {
                 ItemStack heldItem = player.getMainHandItem();
@@ -108,7 +108,7 @@ public class BallistaGolemStatuePartBlock extends Block implements SimpleWaterlo
 
     @Override
     public void neighborChanged(BlockState blockState, Level level, BlockPos blockPos, Block block, BlockPos blockPos1, boolean b) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
         if (!level.hasNeighborSignal(blockPos)) {

@@ -1,6 +1,6 @@
 package dev.hexnowloading.dungeonnowloading.components.spawn_node;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 
@@ -8,7 +8,7 @@ import java.util.List;
 
 public class SpawnNode {
 
-    public final ResourceLocation id;
+    public final Identifier id;
 
     // single mode
     public final EntityType<?> entityType;
@@ -22,7 +22,7 @@ public class SpawnNode {
     public final List<SpawnEntry> entries;
 
     // single ctor
-    public SpawnNode(ResourceLocation id, EntityType<?> entityType, int count, double chance,
+    public SpawnNode(Identifier id, EntityType<?> entityType, int count, double chance,
                      String spawnEffect,
                      net.minecraft.nbt.CompoundTag nbtPatch,
                      net.minecraft.nbt.CompoundTag snbtPatch) {
@@ -38,7 +38,7 @@ public class SpawnNode {
     }
 
     // multi-entry ctor (unweighted random)
-    public SpawnNode(ResourceLocation id, List<SpawnEntry> entries) {
+    public SpawnNode(Identifier id, List<SpawnEntry> entries) {
         this.id = id;
         this.entries = entries == null ? List.of() : List.copyOf(entries);
 

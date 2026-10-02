@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.item;
 
+
+import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
 import dev.hexnowloading.dungeonnowloading.util.StackNbt;
 import net.minecraft.world.item.Item;
 import dev.hexnowloading.dungeonnowloading.config.GeneralConfig;
@@ -16,14 +18,14 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -70,7 +72,7 @@ public class ScorcherItem extends Item implements DNLAnimatedItem<ScorcherItem.S
         }
 
         if (ItemAnimationState.isAnimating(stack, ScorcherAnimationState.SCORCHER_OVERHEAT.getName(), level.getGameTime())) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 ItemAnimationState.start(stack, ScorcherAnimationState.SCORCHER_STALLING.getName(), level.getGameTime(), (long) (ScorcherAnimationDuration.SCORCHER_STALLING * 20L), false, false);
                 playScorcherSounds(stack, player, DNLSounds.SCORCHER_STALL.get(), DNLSounds.SOUL_SCORCHER_STALL.get());
             }
@@ -79,7 +81,7 @@ public class ScorcherItem extends Item implements DNLAnimatedItem<ScorcherItem.S
         }
 
         player.startUsingItem(hand);
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             return InteractionResultHolder.consume(stack);
         } else {
             return InteractionResultHolder.fail(stack);
@@ -115,7 +117,7 @@ public class ScorcherItem extends Item implements DNLAnimatedItem<ScorcherItem.S
     @Override
     public void onUseTick(Level level, LivingEntity entity, ItemStack itemStack, int remainingUseDuration) {
 
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         if (!(entity instanceof Player player)) return;
 
@@ -238,7 +240,7 @@ public class ScorcherItem extends Item implements DNLAnimatedItem<ScorcherItem.S
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean isSelected) {
         long gameTime = level.getGameTime();
 
-        if (!level.isClientSide && stack.getItem() instanceof ScorcherItem && entity instanceof Player player) {
+        if (!level.isClientSide() && stack.getItem() instanceof ScorcherItem && entity instanceof Player player) {
             long storedGameTime = getTimeStamp(stack);
 
             if (storedGameTime != gameTime) {
@@ -325,7 +327,7 @@ public class ScorcherItem extends Item implements DNLAnimatedItem<ScorcherItem.S
     @Override
     public void releaseUsing(ItemStack stack, Level level, LivingEntity entity, int timeCharged) {
 
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         if (ItemAnimationState.isAnimating(stack, ScorcherAnimationState.SCORCHER_OVERHEAT.getName(), level.getGameTime())) {
             return;
@@ -343,7 +345,7 @@ public class ScorcherItem extends Item implements DNLAnimatedItem<ScorcherItem.S
                 ServerPlayer.class,
                 detectionBox
         );
-        ResourceLocation sound;
+        Identifier sound;
         if (itemStack.is(DNLItems.SOUL_SCORCHER.get())) {
             sound = soulScorcher.getLocation();
         } else {
@@ -361,7 +363,7 @@ public class ScorcherItem extends Item implements DNLAnimatedItem<ScorcherItem.S
                 ServerPlayer.class,
                 detectionBox
         );
-        List<ResourceLocation> soundsToStop = new ArrayList<>(List.of());
+        List<Identifier> soundsToStop = new ArrayList<>(List.of());
         if (itemStack.is(DNLItems.SOUL_SCORCHER.get())) {
             soundsToStop.add(DNLSounds.SOUL_SCORCHER_START.get().getLocation());
             soundsToStop.add(DNLSounds.SOUL_SCORCHER_SHOOT.get().getLocation());
@@ -372,7 +374,7 @@ public class ScorcherItem extends Item implements DNLAnimatedItem<ScorcherItem.S
             soundsToStop.add(DNLSounds.SCORCHER_OVERHEAT.get().getLocation());
         }
         for (ServerPlayer otherPlayer : nearbyPlayers) {
-            for (ResourceLocation sound : soundsToStop) {
+            for (Identifier sound : soundsToStop) {
                 Services.NETWORK.sendToPlayer(new S2CStopTickingSoundPacket(player.getId(), sound, 20, true), otherPlayer);
             }
         }
@@ -385,7 +387,7 @@ public class ScorcherItem extends Item implements DNLAnimatedItem<ScorcherItem.S
                 ServerPlayer.class,
                 detectionBox
         );
-        ResourceLocation sound;
+        Identifier sound;
         if (itemStack.is(DNLItems.SOUL_SCORCHER.get())) {
             sound = soulScorcher.getLocation();
         } else {
@@ -432,12 +434,12 @@ public class ScorcherItem extends Item implements DNLAnimatedItem<ScorcherItem.S
             dev.hexnowloading.dungeonnowloading.util.StackNbt.setTag(stack, new CompoundTag()); // Create tag if missing
         }
         if (!StackNbt.getTag(stack).contains("ScorcherUUID")) {
-            StackNbt.update(stack, t -> t.putUUID("ScorcherUUID", UUID.randomUUID())); // ✅ Assign unique UUID
+            StackNbt.update(stack, t -> NbtCompat.putUUID(t, "ScorcherUUID", UUID.randomUUID())); // ✅ Assign unique UUID
         }
     }
 
     private void setFuelNBT(ItemStack weaponItemStack, Item fuelItem) {
-        ResourceLocation fuelId = BuiltInRegistries.ITEM.getKey(fuelItem);
+        Identifier fuelId = BuiltInRegistries.ITEM.getKey(fuelItem);
 
         if (fuelId != null) {
             StackNbt.update(weaponItemStack, tag -> tag.putString("FuelType", fuelId.toString()));
@@ -447,7 +449,7 @@ public class ScorcherItem extends Item implements DNLAnimatedItem<ScorcherItem.S
     public static Item getFuelType(ItemStack stack) {
         CompoundTag tag = StackNbt.getTag(stack);
         if (tag != null && tag.contains("FuelType")) {
-            ResourceLocation fuelId = ResourceLocation.parse(tag.getString("FuelType"));
+            Identifier fuelId = Identifier.parse(tag.getStringOr("FuelType", ""));
             return BuiltInRegistries.ITEM.get(fuelId);
         }
         return Items.AIR;
@@ -460,7 +462,7 @@ public class ScorcherItem extends Item implements DNLAnimatedItem<ScorcherItem.S
     private int getBurnTime(ItemStack itemStack) {
         CompoundTag tag = StackNbt.getTag(itemStack);
         if (tag != null && tag.contains(BURN_TIME)) {
-            return tag.getInt(BURN_TIME);
+            return tag.getIntOr(BURN_TIME, 0);
         }
         return 0;
     }

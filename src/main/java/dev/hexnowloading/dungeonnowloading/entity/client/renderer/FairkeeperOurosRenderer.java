@@ -8,11 +8,11 @@ import dev.hexnowloading.dungeonnowloading.entity.client.layer.FairkeeperOurosLa
 import dev.hexnowloading.dungeonnowloading.entity.client.model.FairkeeperOurosModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class FairkeeperOurosRenderer<T extends FairkeeperOurosEntity> extends MobRenderer<T, FairkeeperOurosModel<T>> {
 
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/fairkeeper_ouros/fairkeeper_ouros_head.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/fairkeeper_ouros/fairkeeper_ouros_head.png");
 
     public FairkeeperOurosRenderer(EntityRendererProvider.Context renderManager) {
         super(renderManager, new FairkeeperOurosModel<>(renderManager.bakeLayer(FairkeeperOurosModel.LAYER_LOCATION)), 1.0F);
@@ -45,7 +45,7 @@ public class FairkeeperOurosRenderer<T extends FairkeeperOurosEntity> extends Mo
     }
 
     @Override
-    public ResourceLocation getTextureLocation(FairkeeperOurosEntity fairkeeperEntity) {
+    public Identifier getTextureLocation(FairkeeperOurosEntity fairkeeperEntity) {
         return TEXTURE;
     }
 }

@@ -69,7 +69,7 @@ public class C2SPedestalUpdatePacket implements DNLPacket {
         System.out.println("[C2S Update] recv from " + sender.getGameProfile().getName() + " @ " + pos);
 
         if (sender == null) return;
-        sender.server.execute(() -> {                 // <-- hop to server thread
+        sender.level().getServer().execute(() -> {                 // <-- hop to server thread
             var level = sender.level();
             if (!level.isLoaded(pos)) return;
 

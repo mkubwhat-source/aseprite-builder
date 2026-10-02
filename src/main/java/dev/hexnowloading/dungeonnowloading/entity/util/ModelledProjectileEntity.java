@@ -1,5 +1,11 @@
 package dev.hexnowloading.dungeonnowloading.entity.util;
 
+
+
+
+import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -41,7 +47,7 @@ public abstract class ModelledProjectileEntity extends Entity implements Traceab
             this.leftOwner = this.checkLeftOwner();
         }
         Entity owner = this.getOwner();
-        if (this.level().isClientSide || (owner == null || !owner.isRemoved()) && this.level().hasChunkAt(this.blockPosition())) {
+        if (this.level().isClientSide() || (owner == null || !owner.isRemoved()) && this.level().hasChunkAt(this.blockPosition())) {
             super.tick();
 
             HitResult hitResult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
@@ -147,9 +153,9 @@ public abstract class ModelledProjectileEntity extends Entity implements Traceab
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compoundTag) {
+    protected void readAdditionalSaveData(ValueInput compoundTag) {
         if (this.ownerUUID != null) {
-            compoundTag.putUUID("Owner", this.ownerUUID);
+            NbtCompat.putUUID(compoundTag, "Owner", this.ownerUUID);
         }
 
         if (this.leftOwner) {
@@ -160,13 +166,13 @@ public abstract class ModelledProjectileEntity extends Entity implements Traceab
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compoundTag) {
-        if (compoundTag.hasUUID("Owner")) {
-            this.ownerUUID = compoundTag.getUUID("Owner");
+    protected void addAdditionalSaveData(ValueOutput compoundTag) {
+        if (NbtCompat.hasUUID(compoundTag, "Owner")) {
+            this.ownerUUID = NbtCompat.getUUID(compoundTag, "Owner");
             this.cachedOwner = null;
         }
 
-        this.leftOwner = compoundTag.getBoolean("LeftOwner");
-        this.hasBeenShot = compoundTag.getBoolean("HasBeenShot");
+        this.leftOwner = compoundTag.getBooleanOr("LeftOwner", false);
+        this.hasBeenShot = compoundTag.getBooleanOr("HasBeenShot", false);
     }
 }

@@ -17,7 +17,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -52,14 +52,14 @@ public class RepulsorItem extends Item {
         // Check the block you actually clicked
         BlockPos clickedPos = ctx.getClickedPos();
         if (level.getBlockState(clickedPos).is(Blocks.GOLD_BLOCK)) {
-            if (!level.isClientSide && player != null) {
+            if (!level.isClientSide() && player != null) {
                 UUID uuid = player.getUUID();
                 boolean allowed = DNLSupporters.hasSkin(uuid, "repulsor_golden") || DNLSupporters.isSupporter(uuid);
                 if (allowed) {
                     cycleCosmeticMode(stack);
                     String mode = getCosmeticMode(stack);
                     String nice = Character.toUpperCase(mode.charAt(0)) + mode.substring(1);
-                    player.displayClientMessage(Component.literal("Current Repulsor: " + nice).withStyle(ChatFormatting.YELLOW), true);
+                    player.sendOverlayMessage(Component.literal("Current Repulsor: " + nice).withStyle(ChatFormatting.YELLOW));
                 }
             }
             // Don’t place when toggling
@@ -78,7 +78,7 @@ public class RepulsorItem extends Item {
 
         if (level instanceof ServerLevel server) {
             Consumer<RepulsorEntity> consumer = EntityType.createDefaultStackConfig(server, stack, ctx.getPlayer());
-            RepulsorEntity rep = (RepulsorEntity)DNLEntityTypes.REPULSOR.get().create(server, consumer, placePos, MobSpawnType.SPAWN_EGG, true, true);
+            RepulsorEntity rep = (RepulsorEntity)DNLEntityTypes.REPULSOR.get().create(server, consumer, placePos, EntitySpawnReason.SPAWN_EGG, true, true);
             if (rep == null) return InteractionResult.FAIL;
 
             // Force exact placement + orientation
@@ -107,7 +107,7 @@ public class RepulsorItem extends Item {
         }
 
         stack.shrink(1);
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
 

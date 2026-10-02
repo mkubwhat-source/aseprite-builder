@@ -9,11 +9,11 @@ import dev.hexnowloading.dungeonnowloading.entity.projectile.BallistaArrowEntity
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class BallistaGolemRenderer<T extends BallistaGolemEntity> extends MobRenderer<T, BallistaGolemModel<T>> {
 
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/ballista_golem/ballista_golem.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/ballista_golem/ballista_golem.png");
 
     public BallistaGolemRenderer(EntityRendererProvider.Context renderManager) {
         super(renderManager, new BallistaGolemModel<>(renderManager.bakeLayer(BallistaGolemModel.LAYER_LOCATION)), 1.5F);
@@ -28,7 +28,7 @@ public class BallistaGolemRenderer<T extends BallistaGolemEntity> extends MobRen
     }
 
     @Override
-    public ResourceLocation getTextureLocation(BallistaGolemEntity ballistaGolemEntity) {
+    public Identifier getTextureLocation(BallistaGolemEntity ballistaGolemEntity) {
         return TEXTURE;
     }
 }

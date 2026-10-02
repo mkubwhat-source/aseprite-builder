@@ -7,11 +7,11 @@ import dev.hexnowloading.dungeonnowloading.block.DungeonBannerBlock;
 import dev.hexnowloading.dungeonnowloading.block.client.model.DungeonBannerBlockModel;
 import dev.hexnowloading.dungeonnowloading.block.entity.DungeonBannerBlockEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.WallBannerBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -22,7 +22,7 @@ public class DungeonBannerBlockRenderer implements BlockEntityRenderer<DungeonBa
 
     private final DungeonBannerBlockModel model;
 
-    private static final Map<DungeonBannerBlock.DungeonBannerVariant, ResourceLocation> TEX = new EnumMap<>(DungeonBannerBlock.DungeonBannerVariant.class);
+    private static final Map<DungeonBannerBlock.DungeonBannerVariant, Identifier> TEX = new EnumMap<>(DungeonBannerBlock.DungeonBannerVariant.class);
 
     static {
         // If your textures are named by variant serialized name:
@@ -30,7 +30,7 @@ public class DungeonBannerBlockRenderer implements BlockEntityRenderer<DungeonBa
         // textures/block/dungeon_banner/dungeon_banner_hollow.png
         // etc.
         for (DungeonBannerBlock.DungeonBannerVariant v : DungeonBannerBlock.DungeonBannerVariant.values()) {
-            TEX.put(v, ResourceLocation.fromNamespaceAndPath(
+            TEX.put(v, Identifier.fromNamespaceAndPath(
                     DungeonNowLoading.MOD_ID,
                     "textures/block/dungeon_banner/dungeon_banner_" + v.getSerializedName() + ".png"
             ));
@@ -71,7 +71,7 @@ public class DungeonBannerBlockRenderer implements BlockEntityRenderer<DungeonBa
 
         poseStack.mulPose(com.mojang.math.Axis.YP.rotationDegrees(yRot));
 
-        ResourceLocation tex = TEX.get(variant);
+        Identifier tex = TEX.get(variant);
         if (tex == null) return; // safety
 
         RenderType type = RenderType.entityCutoutNoCull(tex);

@@ -140,7 +140,7 @@ public class DungeonWallTorch extends HorizontalDirectionalBlock {
                 setLit(level, blockState, blockPos, false);
                 level.playSound(null, blockPos, SoundEvents.CANDLE_EXTINGUISH, SoundSource.BLOCKS, 1.0F, 1.0F);
                 level.gameEvent(player, GameEvent.BLOCK_CHANGE, blockPos);
-                return net.minecraft.world.ItemInteractionResult.sidedSuccess(level.isClientSide);
+                return net.minecraft.world.ItemInteractionResult.sidedSuccess(level.isClientSide());
             }
             ItemStack flintAndSteel = player.getItemInHand(interactionHand);
             if (flintAndSteel.is(Items.FLINT_AND_STEEL) && !blockState.getValue(LIT)) {
@@ -149,7 +149,7 @@ public class DungeonWallTorch extends HorizontalDirectionalBlock {
                     if (player instanceof ServerPlayer) { flintAndSteel.hurtAndBreak(1, player, net.minecraft.world.entity.LivingEntity.getSlotForHand(interactionHand)); }
                     level.playSound(player, blockPos, SoundEvents.FLINTANDSTEEL_USE,SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.4F + 0.8F);
                     level.gameEvent(player, GameEvent.BLOCK_CHANGE, blockPos);
-                    return net.minecraft.world.ItemInteractionResult.sidedSuccess(level.isClientSide);
+                    return net.minecraft.world.ItemInteractionResult.sidedSuccess(level.isClientSide());
                 }
             }
         }

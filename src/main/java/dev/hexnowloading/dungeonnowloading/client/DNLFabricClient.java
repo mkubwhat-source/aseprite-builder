@@ -25,19 +25,19 @@ import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -128,7 +128,7 @@ public class DNLFabricClient implements ClientModInitializer {
 
     private void registerModelModifiers() {
         ModelLoadingPlugin.register(context -> context.modifyModelAfterBake().register((net.minecraft.client.resources.model.BakedModel model, ModelModifier.AfterBake.Context modifierContext) -> {
-            ResourceLocation id = modifierContext.resourceId();
+            Identifier id = modifierContext.resourceId();
             if (model != null && DungeonNowLoading.MOD_ID.equals(id.getNamespace()) && isMendingAuraModel(id.getPath())) {
                 return (net.minecraft.client.resources.model.BakedModel) new MendingAuraFabricBakedModel(model);
             }
@@ -187,23 +187,23 @@ public class DNLFabricClient implements ClientModInitializer {
         BlockEntityRenderers.register(DNLBlockEntityTypes.MENDING_AURA.get(), MendingAuraBlockEntityRenderer::new);
 
         // Item Properties
-        ItemProperties.register(DNLItems.VERTEX_BOW.get(), ResourceLocation.parse("pull"), (stack, level, entity, idk) -> {
+        ItemProperties.register(DNLItems.VERTEX_BOW.get(), Identifier.parse("pull"), (stack, level, entity, idk) -> {
             if (entity == null) return 0.0F;
             else
                 return entity.getUseItem() != stack ? 0.0F : (stack.getUseDuration(entity) - entity.getUseItemRemainingTicks()) / 30.0F;
         });
 
-        ItemProperties.register(DNLItems.VERTEX_BOW.get(), ResourceLocation.parse("pulling"), (stack, level, entity, idk) ->
+        ItemProperties.register(DNLItems.VERTEX_BOW.get(), Identifier.parse("pulling"), (stack, level, entity, idk) ->
                 entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
 
-        ItemProperties.register(DNLItems.COPPER_DETONATOR.get(), ResourceLocation.parse("mode_switch"), (stack, level, entity, idk) -> {
+        ItemProperties.register(DNLItems.COPPER_DETONATOR.get(), Identifier.parse("mode_switch"), (stack, level, entity, idk) -> {
             if (entity == null || entity.getUseItem() != stack) return 0.0F;
 
             int useTime = stack.getUseDuration(entity) - entity.getUseItemRemainingTicks();
             return useTime > CopperDetonatorItem.MODE_SWITCH_TIMING ? 1.0F : 0.0F;
         });
 
-        ItemProperties.register(DNLItems.REPULSOR.get(), ResourceLocation.parse("golden_mode"),
+        ItemProperties.register(DNLItems.REPULSOR.get(), Identifier.parse("golden_mode"),
                 (stack, level, entity, seed) -> RepulsorItem.isGoldenMode(stack) ? 1.0F : 0.0F);
     }
 

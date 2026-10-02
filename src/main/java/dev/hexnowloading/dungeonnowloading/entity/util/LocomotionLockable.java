@@ -19,7 +19,7 @@ public interface LocomotionLockable {
 
     default void tickLocomotionLock() {
         Mob mob = (Mob) this;
-        if (mob.level().isClientSide || !this.isLocomotionLocked()) {
+        if (mob.level().isClientSide() || !this.isLocomotionLocked()) {
             return;
         }
 

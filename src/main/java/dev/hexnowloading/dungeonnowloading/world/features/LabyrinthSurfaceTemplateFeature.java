@@ -2,7 +2,7 @@ package dev.hexnowloading.dungeonnowloading.world.features;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
@@ -16,8 +16,8 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 
 public class LabyrinthSurfaceTemplateFeature extends Feature<NoneFeatureConfiguration> {
 
-    private static final ResourceLocation TEMPLATE_ID =
-            ResourceLocation.fromNamespaceAndPath("dungeonnowloading", "labyrinth/surface");
+    private static final Identifier TEMPLATE_ID =
+            Identifier.fromNamespaceAndPath("dungeonnowloading", "labyrinth/surface");
 
     public LabyrinthSurfaceTemplateFeature() {
         super(NoneFeatureConfiguration.CODEC);

@@ -54,7 +54,7 @@ public class PoofSpawnEffect implements SpawnTask {
     private static boolean roll(ServerLevel level, double chance) {
         if (chance >= 1.0) return true;
         if (chance <= 0.0) return false;
-        return level.random.nextDouble() < chance;
+        return level.getRandom().nextDouble() < chance;
     }
 
     private static PoofParams computePoof(ServerLevel level, SpawnNode def, BlockPos pos) {

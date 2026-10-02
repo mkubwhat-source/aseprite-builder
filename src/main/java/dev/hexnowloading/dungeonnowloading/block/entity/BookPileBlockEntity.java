@@ -1,10 +1,16 @@
 package dev.hexnowloading.dungeonnowloading.block.entity;
 
+
+
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
 import dev.hexnowloading.dungeonnowloading.registry.DNLBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -13,7 +19,7 @@ import javax.annotation.Nullable;
 public class BookPileBlockEntity extends BlockEntity {
 
     @Nullable
-    private ResourceLocation lootTable;
+    private Identifier lootTable;
     private long lootTableSeed;
 
     public BookPileBlockEntity(BlockPos pos, BlockState state) {
@@ -21,18 +27,18 @@ public class BookPileBlockEntity extends BlockEntity {
     }
 
     @Nullable
-    public ResourceLocation getLootTable() {
+    public Identifier getLootTable() {
         return lootTable;
     }
 
-    public void setLootTable(@Nullable ResourceLocation id, long seed) {
+    public void setLootTable(@Nullable Identifier id, long seed) {
         this.lootTable = id;
         this.lootTableSeed = seed;
         setChanged();
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+    protected void saveAdditional(ValueOutput tag) {
         super.saveAdditional(tag, registries);
 
         if (lootTable != null) {
@@ -42,12 +48,12 @@ public class BookPileBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+    protected void loadAdditional(ValueInput tag) {
         super.loadAdditional(tag, registries);
 
-        if (tag.contains("LootTable", Tag.TAG_STRING)) {
-            this.lootTable = ResourceLocation.parse(tag.getString("LootTable"));
-            this.lootTableSeed = tag.getLong("LootTableSeed");
+        if (NbtCompat.has(tag, "LootTable")) {
+            this.lootTable = Identifier.parse(tag.getStringOr("LootTable", ""));
+            this.lootTableSeed = tag.getLongOr("LootTableSeed", 0L);
         } else {
             this.lootTable = null;
             this.lootTableSeed = 0L;

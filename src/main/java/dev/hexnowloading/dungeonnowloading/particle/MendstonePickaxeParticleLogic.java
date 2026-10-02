@@ -82,8 +82,8 @@ public class MendstonePickaxeParticleLogic {
         double x = pos.getX();
         double y = pos.getY();
         double z = pos.getZ();
-        double u = level.random.nextDouble();
-        double v = level.random.nextDouble();
+        double u = level.getRandom().nextDouble();
+        double v = level.getRandom().nextDouble();
         final double OUT = 0.02D; // push outward a bit more so particles are clearly outside
         double px = 0;
         double py = 0;

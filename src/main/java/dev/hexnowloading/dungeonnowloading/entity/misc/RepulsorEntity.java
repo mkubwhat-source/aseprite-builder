@@ -1,5 +1,11 @@
 package dev.hexnowloading.dungeonnowloading.entity.misc;
 
+
+
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
 import dev.hexnowloading.dungeonnowloading.util.ItemNbt;
 import dev.hexnowloading.dungeonnowloading.entity.ai.EntityBodyRotationControl;
 import dev.hexnowloading.dungeonnowloading.entity.client.animation_duration.RepulsorAnimationDuration;
@@ -24,10 +30,10 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.BodyRotationControl;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ThrownPotion;
-import net.minecraft.world.entity.projectile.ThrownTrident;
+import net.minecraft.world.entity.projectile.arrow.ThrownTrident;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.core.Holder;
@@ -38,7 +44,7 @@ import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.AABB;
@@ -116,16 +122,16 @@ public class RepulsorEntity extends Mob {
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
+    public void readAdditionalSaveData(ValueInput compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-        this.entityData.set(DATA_CAN_RENDER, compoundTag.getBoolean("canRender"));
-        this.entityData.set(DATA_AGE, compoundTag.getInt("age"));
-        this.entityData.set(DATA_SHIELD_HEALTH, compoundTag.getInt("shieldHealth"));
-        if (compoundTag.contains("skin") && !this.getSkinValidation()) {
-            this.entityData.set(DATA_SKIN, Skin.fromId(compoundTag.getString("skin")));
+        this.entityData.set(DATA_CAN_RENDER, compoundTag.getBooleanOr("canRender", false));
+        this.entityData.set(DATA_AGE, compoundTag.getIntOr("age", 0));
+        this.entityData.set(DATA_SHIELD_HEALTH, compoundTag.getIntOr("shieldHealth", 0));
+        if (NbtCompat.has(compoundTag, "skin") && !this.getSkinValidation()) {
+            this.entityData.set(DATA_SKIN, Skin.fromId(compoundTag.getStringOr("skin", "")));
         }
-        if (compoundTag.contains("SourceStack", 10)) { // 10 = compound
-            this.sourceStack = ItemNbt.load(compoundTag.getCompound("SourceStack"));
+        if (NbtCompat.has(compoundTag, "SourceStack")) { // 10 = compound
+            this.sourceStack = ItemNbt.load(NbtCompat.getCompound(compoundTag, "SourceStack"));
         } else {
             this.sourceStack = ItemStack.EMPTY;
         }
@@ -133,7 +139,7 @@ public class RepulsorEntity extends Mob {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compoundTag) {
+    public void addAdditionalSaveData(ValueOutput compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         compoundTag.putBoolean("canRender", this.canRender());
         compoundTag.putInt("age", this.getAge());
@@ -141,7 +147,7 @@ public class RepulsorEntity extends Mob {
         compoundTag.putString("skin", getSkin().getId());
         if (!this.sourceStack.isEmpty()) {
             CompoundTag s = ItemNbt.save(this.sourceStack);
-            compoundTag.put("SourceStack", s);
+            NbtCompat.put(compoundTag, "SourceStack", s);
         }
     }
 
@@ -168,7 +174,7 @@ public class RepulsorEntity extends Mob {
     public PushReaction getPistonPushReaction() {
         this.dropItem((Entity) null);
         this.discard();
-        return PushReaction.NORMAL;
+        return PushReaction.PUSH_PULL;
     }
 
     @Override
@@ -182,12 +188,12 @@ public class RepulsorEntity extends Mob {
                 this.playSound(DNLSounds.REPULSOR_RECHARGE.get(), 0.5f, 1f);
             }
             this.rechargeAnimDuration = (int) (RepulsorAnimationDuration.RECHARGE * 20);
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 itemStack.shrink(1);
                 this.setShieldHealth(this.getShieldHealth() + SHIELD_HEAL_AMOUNT);
             }
 
-            return InteractionResult.sidedSuccess(this.level().isClientSide);
+            return InteractionResult.sidedSuccess(this.level().isClientSide());
         }
 
         return super.mobInteract(player, interactionHand);
@@ -208,7 +214,7 @@ public class RepulsorEntity extends Mob {
         if (this.isInvulnerableTo(damageSource)) {
             return false;
         } else {
-            if (!this.isRemoved() && !this.level().isClientSide) {
+            if (!this.isRemoved() && !this.level().isClientSide()) {
                 this.discard();
                 this.markHurt();
                 this.dropItem(damageSource.getEntity());
@@ -219,14 +225,14 @@ public class RepulsorEntity extends Mob {
     }
 
     public void push(double d, double e, double f) {
-        if (!this.level().isClientSide && !this.isRemoved() && d * d + e * e + f * f > 0.0) {
+        if (!this.level().isClientSide() && !this.isRemoved() && d * d + e * e + f * f > 0.0) {
             this.discard();
             this.dropItem((Entity) null);
         }
     }
 
     public void dropItem(@Nullable Entity entity) {
-        if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+        if (this.level().getGameRules().getBooleanOr(GameRules.RULE_DOENTITYDROPS, false)) {
             this.playSound(DNLSounds.REPULSOR_BREAK.get());
             if (entity instanceof Player player && player.getAbilities().instabuild) return;
 
@@ -272,7 +278,7 @@ public class RepulsorEntity extends Mob {
             }
         }
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (this.getAge() >= 36) {
                 for (Entity entity : this.getNearbyProjectiles()) {
                     boolean discardEntity = false;
@@ -496,8 +502,8 @@ public class RepulsorEntity extends Mob {
     public ItemStack getSourceStack() { return sourceStack; }
 
     private void maybeDropScrapOnUsedUp() {
-        if (!this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) return;
-        if (this.level().isClientSide) return;
+        if (!this.level().getGameRules().getBooleanOr(GameRules.RULE_DOENTITYDROPS, false)) return;
+        if (this.level().isClientSide()) return;
         if (this.sourceStack.isEmpty()) return;
         // Only convert to scrap if the original item had Break Protection
         if (EnchantmentHelper.getItemEnchantmentLevel(DNLEnchantments.holder(this.level(), DNLEnchantments.BREAK_PROTECTION), this.sourceStack) <= 0) return;

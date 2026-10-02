@@ -9,11 +9,11 @@ import dev.hexnowloading.dungeonnowloading.entity.monster.ScuttleEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class ScuttleRenderer<T extends ScuttleEntity> extends MobRenderer<T, ScuttleModel<T>> {
 
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/scuttle/scuttle.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/scuttle/scuttle.png");
 
     public ScuttleRenderer(EntityRendererProvider.Context renderManager) {
         super(renderManager, new ScuttleModel<>(renderManager.bakeLayer(ScuttleModel.LAYER_LOCATION)), 1.0F);
@@ -29,5 +29,5 @@ public class ScuttleRenderer<T extends ScuttleEntity> extends MobRenderer<T, Scu
     }
 
     @Override
-    public ResourceLocation getTextureLocation(ScuttleEntity scuttleEntity) { return TEXTURE; }
+    public Identifier getTextureLocation(ScuttleEntity scuttleEntity) { return TEXTURE; }
 }

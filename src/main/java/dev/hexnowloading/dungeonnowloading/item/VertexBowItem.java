@@ -14,10 +14,10 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -51,7 +51,7 @@ public class VertexBowItem extends BowItem {
                 float powerForTime = getPowerForTime(currentUseDuration);
                 if (!((double)powerForTime < 0.1)) {
                     boolean b1 = b && projectile.is(Items.ARROW);
-                    if (!level.isClientSide) {
+                    if (!level.isClientSide()) {
                         ArrowItem arrowItem = (ArrowItem)(projectile.getItem() instanceof ArrowItem ? projectile.getItem() : Items.ARROW);
 
                         AbstractArrow arrow;
@@ -140,7 +140,7 @@ public class VertexBowItem extends BowItem {
         if (livingEntity instanceof Player player) {
             int chargeDuration = this.getUseDuration(itemStack, livingEntity) - remainingUseDuration;
 
-            if (!level.isClientSide && chargeDuration == 0) {
+            if (!level.isClientSide() && chargeDuration == 0) {
                 level.playSound(
                         null,
                         player.getX(),
@@ -153,7 +153,7 @@ public class VertexBowItem extends BowItem {
                 );
             }
 
-            if (!level.isClientSide && chargeDuration == CHARGE_TIME - 4.0f) {
+            if (!level.isClientSide() && chargeDuration == CHARGE_TIME - 4.0f) {
                 livingEntity.level().playSound(
                         null,
                         livingEntity.getX(),
@@ -166,7 +166,7 @@ public class VertexBowItem extends BowItem {
                 );
             }
 
-            if (!level.isClientSide && chargeDuration == CHARGE_TIME) {
+            if (!level.isClientSide() && chargeDuration == CHARGE_TIME) {
 //                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.REDSTONE_TORCH_BURNOUT, SoundSource.PLAYERS, 1.0F, 1.0F);
                 ((ServerLevel) level).sendParticles(DustParticleOptions.REDSTONE, player.getX(), player.getY(), player.getZ(), 20, 0.3D, 0.9D, 0.3D, 0);
             }

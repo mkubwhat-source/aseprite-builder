@@ -4,7 +4,7 @@ import dev.hexnowloading.dungeonnowloading.block.entity.FairkeeperChestBlockEnti
 import dev.hexnowloading.dungeonnowloading.platform.Services;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
@@ -31,7 +31,7 @@ public abstract class BucketItemMixin {
             at = @At("TAIL"))
     private void dnl$trackFairkeeperOnBucketUse(Level level, Player player, InteractionHand hand,
                                                 CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (player.isCreative() || player.isSpectator()) return;
 
         BlockHitResult hit = Item.getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);

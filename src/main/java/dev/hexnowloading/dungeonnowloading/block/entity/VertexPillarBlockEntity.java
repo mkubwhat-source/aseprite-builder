@@ -1,5 +1,11 @@
 package dev.hexnowloading.dungeonnowloading.block.entity;
 
+
+
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
 import dev.hexnowloading.dungeonnowloading.entity.boss.FairkeeperSerpentEntity;
 import dev.hexnowloading.dungeonnowloading.particle.type.ScalableParticleType;
 import dev.hexnowloading.dungeonnowloading.registry.DNLBlockEntityTypes;
@@ -49,7 +55,7 @@ public class VertexPillarBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compoundTag, net.minecraft.core.HolderLookup.Provider registries) {
+    protected void saveAdditional(ValueOutput compoundTag) {
         super.saveAdditional(compoundTag, registries);
         ListTag posList = new ListTag();
 
@@ -61,24 +67,24 @@ public class VertexPillarBlockEntity extends BlockEntity {
             posList.add(posTag);
         }
 
-        compoundTag.put("LinkedPositions", posList);
+        NbtCompat.put(compoundTag, "LinkedPositions", posList);
         compoundTag.putInt("Age", this.age);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag compoundTag, net.minecraft.core.HolderLookup.Provider registries) {
+    protected void loadAdditional(ValueInput compoundTag) {
         super.loadAdditional(compoundTag, registries);
         this.linkedPositions.clear();
 
-        ListTag posList = compoundTag.getList("LinkedPositions", CompoundTag.TAG_COMPOUND);
+        ListTag posList = NbtCompat.getList(compoundTag, "LinkedPositions");
 
         for (Tag tag : posList) {
             CompoundTag posTag = (CompoundTag) tag;
-            BlockPos loadedPos = new BlockPos(posTag.getInt("X"), posTag.getInt("Y"), posTag.getInt("Z"));
+            BlockPos loadedPos = new BlockPos(posTag.getIntOr("X", 0), posTag.getIntOr("Y", 0), posTag.getIntOr("Z", 0));
             linkedPositions.add(loadedPos);
         }
 
-        this.age = compoundTag.getInt("Age");
+        this.age = compoundTag.getIntOr("Age", 0);
     }
 
     public List<BlockPos> getLinkedPositions() {
@@ -100,7 +106,7 @@ public class VertexPillarBlockEntity extends BlockEntity {
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, VertexPillarBlockEntity blockEntity) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             for (BlockPos linkedPos : blockEntity.getLinkedPositions()) {
                 BlockEntity targetBE = level.getBlockEntity(linkedPos);
                 if (targetBE instanceof VertexPillarBlockEntity pillarBlockEntity && pillarBlockEntity.age > blockEntity.age) {

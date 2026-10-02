@@ -7,14 +7,14 @@ import dev.hexnowloading.dungeonnowloading.entity.boss.FairkeeperOurosPartEntity
 import dev.hexnowloading.dungeonnowloading.entity.client.model.FairkeeperOurosBodyModel;
 import dev.hexnowloading.dungeonnowloading.entity.client.renderer.FairkeeperOurosBodyRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class FairkeeperOurosBodyLayer<T extends FairkeeperOurosPartEntity, M extends FairkeeperOurosBodyModel<T>> extends RenderLayer<T, M> {
 
-    private static final ResourceLocation TEXTURE_EMISSIVE = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/fairkeeper_ouros/fairkeeper_ouros_body_emissive.png");
+    private static final Identifier TEXTURE_EMISSIVE = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/fairkeeper_ouros/fairkeeper_ouros_body_emissive.png");
 
     public FairkeeperOurosBodyLayer(FairkeeperOurosBodyRenderer renderer) {
         super(renderer);

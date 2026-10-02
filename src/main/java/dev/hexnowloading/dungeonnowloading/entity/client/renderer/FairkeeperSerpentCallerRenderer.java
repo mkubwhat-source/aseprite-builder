@@ -7,16 +7,16 @@ import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.entity.boss.FairkeeperSerpentCallerEntity;
 import dev.hexnowloading.dungeonnowloading.entity.client.model.FairkeeperSerpentCallerModel;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class FairkeeperSerpentCallerRenderer<T extends FairkeeperSerpentCallerEntity> extends EntityRenderer<FairkeeperSerpentCallerEntity> {
 
-    private static final ResourceLocation TEXTURE_INACTIVE = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/fairkeeper_serpent_caller/fairkeeper_serpent_caller_inactive.png");
-    private static final ResourceLocation TEXTURE_ACTIVE = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/fairkeeper_serpent_caller/fairkeeper_serpent_caller_active.png");
+    private static final Identifier TEXTURE_INACTIVE = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/fairkeeper_serpent_caller/fairkeeper_serpent_caller_inactive.png");
+    private static final Identifier TEXTURE_ACTIVE = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/fairkeeper_serpent_caller/fairkeeper_serpent_caller_active.png");
     private FairkeeperSerpentCallerModel model;
     private static final RenderType RENDER_TYPE_INACTIVE = RenderType.entityTranslucent(TEXTURE_INACTIVE);
     private static final RenderType RENDER_TYPE_ACTIVE = RenderType.entityTranslucent(TEXTURE_ACTIVE);
@@ -45,7 +45,7 @@ public class FairkeeperSerpentCallerRenderer<T extends FairkeeperSerpentCallerEn
     }
 
     @Override
-    public ResourceLocation getTextureLocation(FairkeeperSerpentCallerEntity fairkeeperEntity) {
+    public Identifier getTextureLocation(FairkeeperSerpentCallerEntity fairkeeperEntity) {
         return TEXTURE_INACTIVE;
     }
 }

@@ -15,7 +15,7 @@ public class ItemAnimationState {
         // Single write-back: StackNbt.getOrCreateTag returns a COPY in 1.21, so all mutations
         // (reset + the new entry) must happen inside one update() or they are lost.
         StackNbt.update(stack, tag -> {
-            CompoundTag animationsTag = resetAnimations ? new CompoundTag() : tag.getCompound(ANIMATIONS_TAG);
+            CompoundTag animationsTag = resetAnimations ? new CompoundTag() : tag.getCompoundOrEmpty(ANIMATIONS_TAG);
 
             CompoundTag animTag = new CompoundTag();
             animTag.putLong("StartTime", gameTime);
@@ -39,9 +39,9 @@ public class ItemAnimationState {
         CompoundTag animationsTag = StackNbt.getTag(stack).getCompound("Animations");
         if (!animationsTag.contains(animationName)) return 0.0f;
 
-        CompoundTag animTag = animationsTag.getCompound(animationName);
-        long startTime = animTag.getLong("StartTime");
-        long duration = animTag.getLong("Duration");
+        CompoundTag animTag = animationsTag.getCompoundOrEmpty(animationName);
+        long startTime = animTag.getLongOr("StartTime", 0L);
+        long duration = animTag.getLongOr("Duration", 0L);
 
         if (duration <= 0) return 0.0f; // Prevent divide by zero
 
@@ -56,10 +56,10 @@ public class ItemAnimationState {
         CompoundTag animationsTag = StackNbt.getTag(stack).getCompound(ANIMATIONS_TAG);
 
         for (String key : animationsTag.getAllKeys()) {
-            CompoundTag animTag = animationsTag.getCompound(key);
-            long startTime = animTag.getLong("StartTime");
-            long duration = animTag.getLong("Duration");
-            boolean looping = animTag.getBoolean("Looping");
+            CompoundTag animTag = animationsTag.getCompoundOrEmpty(key);
+            long startTime = animTag.getLongOr("StartTime", 0L);
+            long duration = animTag.getLongOr("Duration", 0L);
+            boolean looping = animTag.getBooleanOr("Looping", false);
 
             if (looping || (gameTime - startTime) < duration) {
                 return key; // Return the first valid animation found
@@ -74,10 +74,10 @@ public class ItemAnimationState {
         CompoundTag animationsTag = StackNbt.getTag(stack).getCompound(ANIMATIONS_TAG);
         if (!animationsTag.contains(animationName)) return false;
 
-        CompoundTag animTag = animationsTag.getCompound(animationName);
-        long startTime = animTag.getLong("StartTime");
-        long duration = animTag.getLong("Duration");
-        boolean looping = animTag.getBoolean("Looping");
+        CompoundTag animTag = animationsTag.getCompoundOrEmpty(animationName);
+        long startTime = animTag.getLongOr("StartTime", 0L);
+        long duration = animTag.getLongOr("Duration", 0L);
+        boolean looping = animTag.getBooleanOr("Looping", false);
 
         return looping || (gameTime - startTime) < duration;
     }
@@ -88,10 +88,10 @@ public class ItemAnimationState {
         CompoundTag animationsTag = StackNbt.getTag(stack).getCompound(ANIMATIONS_TAG);
         if (!animationsTag.contains(animationName)) return false;
 
-        CompoundTag animTag = animationsTag.getCompound(animationName);
-        long startTime = animTag.getLong("StartTime");
-        long duration = animTag.getLong("Duration");
-        boolean looping = animTag.getBoolean("Looping");
+        CompoundTag animTag = animationsTag.getCompoundOrEmpty(animationName);
+        long startTime = animTag.getLongOr("StartTime", 0L);
+        long duration = animTag.getLongOr("Duration", 0L);
+        boolean looping = animTag.getBooleanOr("Looping", false);
 
         return looping || (gameTime - startTime) < duration || (!looping && (gameTime - startTime) >= duration);
     }
@@ -102,10 +102,10 @@ public class ItemAnimationState {
         CompoundTag animationsTag = StackNbt.getTag(stack).getCompound(ANIMATIONS_TAG);
         if (!animationsTag.contains(animationName)) return false;
 
-        CompoundTag animTag = animationsTag.getCompound(animationName);
-        long startTime = animTag.getLong("StartTime");
-        long duration = animTag.getLong("Duration");
-        boolean looping = animTag.getBoolean("Looping");
+        CompoundTag animTag = animationsTag.getCompoundOrEmpty(animationName);
+        long startTime = animTag.getLongOr("StartTime", 0L);
+        long duration = animTag.getLongOr("Duration", 0L);
+        boolean looping = animTag.getBooleanOr("Looping", false);
 
         // Check if animation has ended but is still in NBT
         return !looping && (gameTime - startTime) >= duration;

@@ -9,9 +9,9 @@ import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.resources.DefaultPlayerSkin;
-import net.minecraft.client.resources.PlayerSkin;
+import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.client.resources.SkinManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -26,8 +26,8 @@ import java.util.concurrent.Executors;
 public final class StatueSkinCache {
 
     private static final boolean LOG = true;
-    public record StatueSkin(ResourceLocation texture, boolean slim) {}
-    private static final ResourceLocation DEFAULT_STONE = ResourceLocation.fromNamespaceAndPath("dungeonnowloading", "textures/block/player_statue_stone.png");
+    public record StatueSkin(Identifier texture, boolean slim) {}
+    private static final Identifier DEFAULT_STONE = Identifier.fromNamespaceAndPath("dungeonnowloading", "textures/block/player_statue_stone.png");
     private static final float DEFAULT_OVERLAY_ALPHA = 0.35f;
     private static final Map<String, StatueSkin> READY = new ConcurrentHashMap<>();
     private static final Set<String> INFLIGHT = ConcurrentHashMap.newKeySet();
@@ -53,7 +53,7 @@ public final class StatueSkinCache {
         return get(profile, DEFAULT_OVERLAY_ALPHA, DEFAULT_STONE);
     }
 
-    public static StatueSkin get(GameProfile profile, float overlayAlpha, ResourceLocation stoneTex) {
+    public static StatueSkin get(GameProfile profile, float overlayAlpha, Identifier stoneTex) {
         if (profile == null) {
             return buildPlaceholder(overlayAlpha, stoneTex, "null-profile");
         }
@@ -73,7 +73,7 @@ public final class StatueSkinCache {
         return buildPlaceholder(overlayAlpha, stoneTex, k1 != null ? k1 : "unknown");
     }
 
-    private static void startAsyncBuild(GameProfile profile, String key, float overlayAlpha, ResourceLocation stoneTex) {
+    private static void startAsyncBuild(GameProfile profile, String key, float overlayAlpha, Identifier stoneTex) {
         EXEC.submit(() -> {
             try {
                 SkinImg s = (profile != null) ? resolveSkinImageAndModel(profile) : null;
@@ -81,7 +81,7 @@ public final class StatueSkinCache {
                     PlayerSkin defaultSkin = (profile != null)
                             ? DefaultPlayerSkin.get(profile)
                             : DefaultPlayerSkin.get(new UUID(0L, 0L));
-                    ResourceLocation def = defaultSkin.texture();
+                    Identifier def = defaultSkin.texture();
                     boolean slim = defaultSkin.model() == PlayerSkin.Model.SLIM;
                     NativeImage img = readResource(def);
                     if (img == null) return;
@@ -95,7 +95,7 @@ public final class StatueSkinCache {
                 NativeImage finalImg = s.img;
                 String seed = key + "|" + String.format(Locale.ROOT, "%.2f", overlayAlpha) + "|" + stoneTex;
                 String digest = Hashing.sha1().hashString(seed, StandardCharsets.UTF_8).toString();
-                ResourceLocation loc = ResourceLocation.fromNamespaceAndPath("dungeonnowloading", "statue/" + digest);
+                Identifier loc = Identifier.fromNamespaceAndPath("dungeonnowloading", "statue/" + digest);
 
                 boolean isSlim = s.slim;
                 Minecraft.getInstance().execute(() -> {
@@ -283,7 +283,7 @@ public final class StatueSkinCache {
         }
     }
 
-    private static NativeImage readResource(ResourceLocation rl) {
+    private static NativeImage readResource(Identifier rl) {
         try {
             Optional<net.minecraft.server.packs.resources.Resource> res = Minecraft.getInstance().getResourceManager().getResource(rl);
             if (res.isEmpty()) return null;
@@ -330,11 +330,11 @@ public final class StatueSkinCache {
         }
     }
 
-    private static StatueSkin buildPlaceholder(float overlayAlpha, ResourceLocation stoneTex, String keySeed) {
+    private static StatueSkin buildPlaceholder(float overlayAlpha, Identifier stoneTex, String keySeed) {
         try {
             // fixed UUID -> stable Steve/Alex selection
             PlayerSkin defaultSkin = DefaultPlayerSkin.get(new UUID(0L, 0L));
-            ResourceLocation def = defaultSkin.texture();
+            Identifier def = defaultSkin.texture();
             boolean slim = defaultSkin.model() == PlayerSkin.Model.SLIM;
 
             NativeImage img = readResource(def);
@@ -346,7 +346,7 @@ public final class StatueSkinCache {
 
                 String seed = keySeed + "|ph|" + String.format(Locale.ROOT, "%.2f", overlayAlpha) + "|" + stoneTex;
                 String digest = Hashing.sha1().hashString(seed, StandardCharsets.UTF_8).toString();
-                ResourceLocation loc = ResourceLocation.fromNamespaceAndPath("dungeonnowloading", "statue/" + digest);
+                Identifier loc = Identifier.fromNamespaceAndPath("dungeonnowloading", "statue/" + digest);
                 Minecraft.getInstance().getTextureManager().register(loc, dyn);
                 return new StatueSkin(loc, slim);
             }

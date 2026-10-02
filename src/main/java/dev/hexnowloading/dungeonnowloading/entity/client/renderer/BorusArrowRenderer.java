@@ -6,18 +6,18 @@ import com.mojang.math.Axis;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.entity.projectile.BorusArrowEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 public class BorusArrowRenderer<T extends BorusArrowEntity> extends EntityRenderer<BorusArrowEntity> {
 
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/borus_arrow.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/borus_arrow.png");
 
     public BorusArrowRenderer(EntityRendererProvider.Context renderManager) { super(renderManager); }
 
@@ -68,7 +68,7 @@ public class BorusArrowRenderer<T extends BorusArrowEntity> extends EntityRender
     }
 
     @Override
-    public ResourceLocation getTextureLocation(BorusArrowEntity borusArrowEntity) {
+    public Identifier getTextureLocation(BorusArrowEntity borusArrowEntity) {
         return TEXTURE;
     }
 }

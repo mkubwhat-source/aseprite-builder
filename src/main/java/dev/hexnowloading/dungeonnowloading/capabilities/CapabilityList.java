@@ -5,7 +5,7 @@ import dev.hexnowloading.dungeonnowloading.capabilities.fabric.DNLArmPoseCompone
 import dev.hexnowloading.dungeonnowloading.capabilities.fabric.DNLArmPoseCapabilityHandler;
 import dev.hexnowloading.dungeonnowloading.capabilities.fabric.FairkeeperChestPositionsCapabilityHandler;
 import dev.hexnowloading.dungeonnowloading.capabilities.fabric.IFairkeeperChestPositionsCapability;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.ladysnake.cca.api.v3.component.ComponentKey;
 import org.ladysnake.cca.api.v3.component.ComponentRegistry;
 import org.ladysnake.cca.api.v3.entity.EntityComponentFactoryRegistry;
@@ -14,8 +14,8 @@ import org.ladysnake.cca.api.v3.entity.RespawnCopyStrategy;
 
 public class CapabilityList implements EntityComponentInitializer {
 
-    public static final ComponentKey<IFairkeeperChestPositionsCapability> FAIRKEEPER_CHEST_POSITIONS_CAP = ComponentRegistry.getOrCreate(ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "fairkeeper_chest_positions"), IFairkeeperChestPositionsCapability.class);
-    public static final ComponentKey<DNLArmPoseComponent> DNL_ARM_POSE = ComponentRegistry.getOrCreate(ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "dnl_arm_pose"), DNLArmPoseComponent.class);
+    public static final ComponentKey<IFairkeeperChestPositionsCapability> FAIRKEEPER_CHEST_POSITIONS_CAP = ComponentRegistry.getOrCreate(Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "fairkeeper_chest_positions"), IFairkeeperChestPositionsCapability.class);
+    public static final ComponentKey<DNLArmPoseComponent> DNL_ARM_POSE = ComponentRegistry.getOrCreate(Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "dnl_arm_pose"), DNLArmPoseComponent.class);
 
     @Override
     public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {

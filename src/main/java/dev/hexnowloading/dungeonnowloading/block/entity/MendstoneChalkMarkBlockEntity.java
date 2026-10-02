@@ -1,5 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.block.entity;
 
+
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import dev.hexnowloading.dungeonnowloading.registry.DNLBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -17,17 +21,17 @@ public class MendstoneChalkMarkBlockEntity extends PreserverBlockEntity{
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compoundTag, net.minecraft.core.HolderLookup.Provider registries) {
+    protected void saveAdditional(ValueOutput compoundTag) {
         super.saveAdditional(compoundTag, registries);
 
         compoundTag.putInt("Damage", this.damage);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag compoundTag, net.minecraft.core.HolderLookup.Provider registries) {
+    protected void loadAdditional(ValueInput compoundTag) {
         super.loadAdditional(compoundTag, registries);
 
-        this.damage = compoundTag.getInt("Damage");
+        this.damage = compoundTag.getIntOr("Damage", 0);
     }
 
     public int getDamage() {

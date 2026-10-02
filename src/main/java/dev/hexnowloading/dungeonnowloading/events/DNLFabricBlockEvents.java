@@ -24,7 +24,7 @@ public class DNLFabricBlockEvents {
 
     public static void onPlayerBreakBlock(Level level, Player player, BlockPos brokenBlockPos, BlockState state, BlockEntity blockEntity) {
 
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         if (player.isCreative() || player.isSpectator()) return;
 
@@ -38,7 +38,7 @@ public class DNLFabricBlockEvents {
             Player player = context.getPlayer();
             BlockPos placeBlockPos = context.getClickedPos();
 
-            if (level.isClientSide) return InteractionResult.PASS;
+            if (level.isClientSide()) return InteractionResult.PASS;
 
             if (player == null || player.isCreative() || player.isSpectator()) return InteractionResult.PASS;
 

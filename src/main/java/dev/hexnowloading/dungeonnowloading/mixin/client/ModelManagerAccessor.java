@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Mixin(ModelManager.class)
 public interface ModelManagerAccessor {
-    // 1.21: ModelManager.bakedRegistry is keyed by ModelResourceLocation, not ResourceLocation.
+    // 1.21: ModelManager.bakedRegistry is keyed by ModelResourceLocation, not Identifier.
     @Accessor("bakedRegistry")
     Map<ModelResourceLocation, BakedModel> getBakedRegistry();
 }

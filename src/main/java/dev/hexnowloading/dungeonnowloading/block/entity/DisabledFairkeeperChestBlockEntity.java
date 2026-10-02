@@ -1,5 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.block.entity;
 
+
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import dev.hexnowloading.dungeonnowloading.block.DisabledFairkeeperChestBlock;
 import dev.hexnowloading.dungeonnowloading.block.FairkeeperChestBlock;
 import dev.hexnowloading.dungeonnowloading.block.property.ChestStates;
@@ -10,7 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -28,7 +32,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class DisabledFairkeeperChestBlockEntity extends RandomizableContainerBlockEntity implements MenuProvider {
 
     private NonNullList<ItemStack> items = NonNullList.withSize(27, ItemStack.EMPTY);
-    protected ResourceLocation lootTable;
+    protected Identifier lootTable;
     protected long lootTableSeed;
     private static final int OPEN_CLOSE_ANIMATION_DURATION = 10;
     private int openCloseAnimationProgress = 0;
@@ -39,19 +43,19 @@ public class DisabledFairkeeperChestBlockEntity extends RandomizableContainerBlo
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compoundTag, net.minecraft.core.HolderLookup.Provider registries) {
+    protected void saveAdditional(ValueOutput compoundTag) {
         super.saveAdditional(compoundTag, registries);
         if (!this.trySaveLootTable(compoundTag)) {
-            ContainerHelper.saveAllItems(compoundTag, this.items, registries);
+            ContainerHelper.saveAllItems(compoundTag, this.items);
         }
     }
 
     @Override
-    protected void loadAdditional(CompoundTag compoundTag, net.minecraft.core.HolderLookup.Provider registries) {
+    protected void loadAdditional(ValueInput compoundTag) {
         super.loadAdditional(compoundTag, registries);
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         if (!this.tryLoadLootTable(compoundTag)) {
-            ContainerHelper.loadAllItems(compoundTag, this.items, registries);
+            ContainerHelper.loadAllItems(compoundTag, this.items);
         }
     }
 
@@ -101,7 +105,7 @@ public class DisabledFairkeeperChestBlockEntity extends RandomizableContainerBlo
     }
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, DisabledFairkeeperChestBlockEntity blockEntity) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             blockEntity.prevOpenCloseAnimationProgress = blockEntity.openCloseAnimationProgress;
             if (state.getValue(DNLProperties.CHEST_STATES) == ChestStates.OPENING) {
                 if (blockEntity.openCloseAnimationProgress == OPEN_CLOSE_ANIMATION_DURATION) {
@@ -120,7 +124,7 @@ public class DisabledFairkeeperChestBlockEntity extends RandomizableContainerBlo
     }
 
     public static void playSound(Level level, BlockPos blockPos, SoundEvent soundEvent) {
-        level.playSound((Player) null, blockPos, soundEvent, SoundSource.BLOCKS, 0.5F, level.random.nextFloat() * 0.1f + 0.9f);
+        level.playSound((Player) null, blockPos, soundEvent, SoundSource.BLOCKS, 0.5F, level.getRandom().nextFloat() * 0.1f + 0.9f);
     }
 
     public float getOpenProgress(float partialTicks) {

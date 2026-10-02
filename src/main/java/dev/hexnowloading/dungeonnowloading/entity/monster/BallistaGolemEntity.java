@@ -1,5 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.entity.monster;
 
+
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import dev.hexnowloading.dungeonnowloading.entity.ai.BallistaGolemArrowAttackGoal;
 import dev.hexnowloading.dungeonnowloading.entity.ai.BallistaGolemMeleeAttackGoal;
 import dev.hexnowloading.dungeonnowloading.entity.ai.BallistaGolemReloadGoal;
@@ -17,7 +21,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -29,8 +33,8 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -98,18 +102,18 @@ public class BallistaGolemEntity extends Monster implements Enemy, SlumberingEnt
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compoundTag) {
+    public void addAdditionalSaveData(ValueOutput compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         compoundTag.putBoolean("Slumbering", isSlumbering());
         compoundTag.putInt("ArrowCount", this.entityData.get(ARROW_COUNT));
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
+    public void readAdditionalSaveData(ValueInput compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-        boolean isSlumbering = compoundTag.getBoolean("Slumbering");
+        boolean isSlumbering = compoundTag.getBooleanOr("Slumbering", false);
         this.entityData.set(STATE, isSlumbering ? BallistaGolemState.SLUMBERING : BallistaGolemState.IDLE);
-        this.entityData.set(ARROW_COUNT, compoundTag.getInt("ArrowCount"));
+        this.entityData.set(ARROW_COUNT, compoundTag.getIntOr("ArrowCount", 0));
     }
 
     @Override
@@ -136,7 +140,7 @@ public class BallistaGolemEntity extends Monster implements Enemy, SlumberingEnt
             }
         }
 
-        if (this.horizontalCollision && this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
+        if (this.horizontalCollision && this.level().getGameRules().getBooleanOr(GameRules.RULE_MOBGRIEFING, false)) {
             boolean brokeLeaves = false;
             AABB box = this.getBoundingBox().inflate(0.2);
 
@@ -211,11 +215,11 @@ public class BallistaGolemEntity extends Monster implements Enemy, SlumberingEnt
                 ServerPlayer.class,
                 detectionBox
         );
-        List<ResourceLocation> soundsToStop = new ArrayList<>(List.of());
+        List<Identifier> soundsToStop = new ArrayList<>(List.of());
         soundsToStop.add(DNLSounds.BALLISTA_GOLEM_WAKING.get().getLocation());
         soundsToStop.add(DNLSounds.BALLISTA_GOLEM_RELOAD.get().getLocation());
         for (ServerPlayer player : nearbyPlayers) {
-            for (ResourceLocation sound : soundsToStop) {
+            for (Identifier sound : soundsToStop) {
                 Services.NETWORK.sendToPlayer(new S2CStopTickingSoundPacket(this.getId(), sound, 20, true), player);
             }
         }
@@ -252,7 +256,7 @@ public class BallistaGolemEntity extends Monster implements Enemy, SlumberingEnt
     @Override
     public void die(DamageSource damageSource) {
         super.die(damageSource);
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.stopBallsitaGolemSounds();
         }
     }

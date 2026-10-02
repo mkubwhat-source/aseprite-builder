@@ -7,19 +7,19 @@ import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 public class DifferentProspectiveItemRenderer implements BuiltinItemRendererRegistry.DynamicItemRenderer {
-    private final ResourceLocation model3d;
-    private final ResourceLocation model2d;
+    private final Identifier model3d;
+    private final Identifier model2d;
 
-    public DifferentProspectiveItemRenderer(ResourceLocation model2d, ResourceLocation model3d){
+    public DifferentProspectiveItemRenderer(Identifier model2d, Identifier model3d){
         this.model2d = model2d;
         this.model3d = model3d;
     }
@@ -45,7 +45,7 @@ public class DifferentProspectiveItemRenderer implements BuiltinItemRendererRegi
         }
     }
 
-    public static BakedModel getModel(ModelManager modelManager, ResourceLocation modelLocation) {
+    public static BakedModel getModel(ModelManager modelManager, Identifier modelLocation) {
         // 1.21: bakedRegistry is keyed by ModelResourceLocation (standalone variant for side-loaded models).
         var key = new net.minecraft.client.resources.model.ModelResourceLocation(modelLocation, "standalone");
         return ((ModelManagerAccessor) modelManager).getBakedRegistry().getOrDefault(key, modelManager.getMissingModel());

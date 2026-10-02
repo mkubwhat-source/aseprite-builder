@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -123,7 +123,7 @@ public class SpawnerCarrierPreviewLayer<T extends SpawnerCarrierEntity, M extend
     @Nullable
     private Entity createDisplayEntity(T carrier, String id) {
         try {
-            ResourceLocation rl = ResourceLocation.parse(id);
+            Identifier rl = Identifier.parse(id);
             EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(rl);
             if (type == null) return null;
 

@@ -174,7 +174,7 @@ public class HollowBreakLightGoal extends Goal {
 
 
     private void interact(Level level, BlockPos pos) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         BlockState state = level.getBlockState(pos);
         Block block = state.getBlock();

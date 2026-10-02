@@ -4,7 +4,7 @@ import dev.hexnowloading.dungeonnowloading.config.DNLClientConfig;
 import dev.hexnowloading.dungeonnowloading.config.DNLServerConfig;
 import dev.hexnowloading.dungeonnowloading.registry.*;
 import dev.hexnowloading.dungeonnowloading.supporter.DNLSupporters;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +74,7 @@ public class DungeonNowLoading {
         DNLClientConfig.register();
     }
 
-    public static ResourceLocation id(String name) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, name);
+    public static Identifier id(String name) {
+        return Identifier.fromNamespaceAndPath(MOD_ID, name);
     }
 }

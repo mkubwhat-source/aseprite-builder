@@ -57,7 +57,7 @@ public class FairkeeperSpawnerBlock extends BaseEntityBlock implements EntityBlo
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> type) {
-        return createTickerHelper(type, DNLBlockEntityTypes.FAIRKEEPER_SPAWNER.get(), level.isClientSide ? FairkeeperSpawnerBlockEntity::clientTick : FairkeeperSpawnerBlockEntity::serverTick);
+        return createTickerHelper(type, DNLBlockEntityTypes.FAIRKEEPER_SPAWNER.get(), level.isClientSide() ? FairkeeperSpawnerBlockEntity::clientTick : FairkeeperSpawnerBlockEntity::serverTick);
     }
 
     @Nullable
@@ -75,7 +75,7 @@ public class FairkeeperSpawnerBlock extends BaseEntityBlock implements EntityBlo
 
     @Override
     public void neighborChanged(BlockState blockState, Level level, BlockPos blockPos, Block block, BlockPos blockPos1, boolean b) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
         if (!level.hasNeighborSignal(blockPos)) {

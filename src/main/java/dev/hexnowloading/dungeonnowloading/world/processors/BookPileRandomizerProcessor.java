@@ -8,7 +8,7 @@ import dev.hexnowloading.dungeonnowloading.registry.DNLBlocks;
 import dev.hexnowloading.dungeonnowloading.registry.DNLProcessors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
@@ -22,7 +22,7 @@ public class BookPileRandomizerProcessor extends StructureProcessor {
 
     public static final MapCodec<BookPileRandomizerProcessor> CODEC =
             RecordCodecBuilder.mapCodec(inst -> inst.group(
-                    ResourceLocation.CODEC.listOf().fieldOf("loot_tables").forGetter(p -> p.lootTables),
+                    Identifier.CODEC.listOf().fieldOf("loot_tables").forGetter(p -> p.lootTables),
                     Codec.BOOL.optionalFieldOf("write_seed", true).forGetter(p -> p.writeSeed),
                     // 1.21: unboundedMap(Codec.INT, ...) no longer accepts JSON object string keys
                     // ("Not a number: \"4\""). Parse string-keyed object and convert to Integer keys.
@@ -42,13 +42,13 @@ public class BookPileRandomizerProcessor extends StructureProcessor {
                             .forGetter(p -> p.pileWeights)
             ).apply(inst, BookPileRandomizerProcessor::new));
 
-    private final List<ResourceLocation> lootTables;
+    private final List<Identifier> lootTables;
     private final boolean writeSeed;
 
     private final java.util.Map<Integer, Integer> pileWeights;
 
     public BookPileRandomizerProcessor(
-            List<ResourceLocation> lootTables,
+            List<Identifier> lootTables,
             boolean writeSeed,
             java.util.Map<Integer, Integer> pileWeights
     ) {
@@ -95,7 +95,7 @@ public class BookPileRandomizerProcessor extends StructureProcessor {
             return new StructureTemplate.StructureBlockInfo(worldPos, state, placedInfo.nbt());
         }
 
-        ResourceLocation chosen = lootTables.get(rand.nextInt(lootTables.size()));
+        Identifier chosen = lootTables.get(rand.nextInt(lootTables.size()));
 
         CompoundTag tag = placedInfo.nbt() == null ? new CompoundTag() : placedInfo.nbt().copy();
         tag.putString("LootTable", chosen.toString());

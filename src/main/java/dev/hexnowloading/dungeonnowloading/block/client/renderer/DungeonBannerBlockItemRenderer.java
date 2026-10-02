@@ -11,9 +11,9 @@ import dev.hexnowloading.dungeonnowloading.item.blockitem.DungeonBannerBlockItem
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
@@ -24,11 +24,11 @@ public class DungeonBannerBlockItemRenderer extends BlockEntityWithoutLevelRende
 
     private final DungeonBannerBlockModel model;
 
-    private static final Map<DungeonBannerBlock.DungeonBannerVariant, ResourceLocation> TEX = new EnumMap<>(DungeonBannerBlock.DungeonBannerVariant.class);
+    private static final Map<DungeonBannerBlock.DungeonBannerVariant, Identifier> TEX = new EnumMap<>(DungeonBannerBlock.DungeonBannerVariant.class);
     static {
         // expects: textures/block/dungeon_banner/dungeon_banner_<serialized>.png
         for (DungeonBannerBlock.DungeonBannerVariant v : DungeonBannerBlock.DungeonBannerVariant.values()) {
-            TEX.put(v, ResourceLocation.fromNamespaceAndPath(
+            TEX.put(v, Identifier.fromNamespaceAndPath(
                     DungeonNowLoading.MOD_ID,
                     "textures/block/dungeon_banner/dungeon_banner_" + v.getSerializedName() + ".png"
             ));
@@ -47,7 +47,7 @@ public class DungeonBannerBlockItemRenderer extends BlockEntityWithoutLevelRende
         if (!(stack.getItem() instanceof DungeonBannerBlockItem bannerItem)) return;
 
         DungeonBannerBlock.DungeonBannerVariant variant = bannerItem.getVariant();
-        ResourceLocation tex = TEX.get(variant);
+        Identifier tex = TEX.get(variant);
         if (tex == null) return;
 
         poseStack.pushPose();

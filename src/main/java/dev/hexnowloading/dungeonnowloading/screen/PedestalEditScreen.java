@@ -3,22 +3,22 @@ package dev.hexnowloading.dungeonnowloading.screen;
 import dev.hexnowloading.dungeonnowloading.block.client.renderer.PlayerStatueRenderer;
 import dev.hexnowloading.dungeonnowloading.network.packets.C2SPedestalUpdatePacket;
 import dev.hexnowloading.dungeonnowloading.platform.Services;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.font.TextFieldHelper;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
 public class PedestalEditScreen extends Screen {
-    private static final ResourceLocation PREVIEW_TEX =
-            ResourceLocation.fromNamespaceAndPath("dungeonnowloading", "textures/block/player_statue_pedestal_side.png");
+    private static final Identifier PREVIEW_TEX =
+            Identifier.fromNamespaceAndPath("dungeonnowloading", "textures/block/player_statue_pedestal_side.png");
 
     private static final int MAX_CHARS = 16; // ⬅︎ hard username-length cap
 

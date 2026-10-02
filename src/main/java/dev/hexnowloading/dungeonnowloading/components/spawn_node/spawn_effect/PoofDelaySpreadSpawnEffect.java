@@ -34,7 +34,7 @@ public class PoofDelaySpreadSpawnEffect implements SpawnTask {
 
         // roll chance for this slot
         double chance = req.node().chance;
-        boolean willSpawn = chance >= 1.0 || (chance > 0.0 && level.random.nextDouble() < chance);
+        boolean willSpawn = chance >= 1.0 || (chance > 0.0 && level.getRandom().nextDouble() < chance);
 
         BlockPos pos = pickSpread(level, req.basePos(), radius);
 
@@ -57,8 +57,8 @@ public class PoofDelaySpreadSpawnEffect implements SpawnTask {
     private static BlockPos pickSpread(ServerLevel level, BlockPos base, int r) {
         if (r <= 0) return base;
         for (int i = 0; i < 8; i++) {
-            int dx = level.random.nextInt(r * 2 + 1) - r;
-            int dz = level.random.nextInt(r * 2 + 1) - r;
+            int dx = level.getRandom().nextInt(r * 2 + 1) - r;
+            int dz = level.getRandom().nextInt(r * 2 + 1) - r;
             BlockPos p = base.offset(dx, 0, dz);
             if (level.getBlockState(p).isAir() && level.getBlockState(p.below()).isSolid()) return p;
         }

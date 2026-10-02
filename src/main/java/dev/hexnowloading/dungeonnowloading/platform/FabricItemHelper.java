@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 public class FabricItemHelper implements ItemHelper {
     @Override
     public Supplier<Item> makeSpawnEgg(Supplier<EntityType<? extends Mob>> entityType, int bg, int fg, Item.Properties properties) {
-        return () -> new SpawnEggItem(entityType.get(), bg, fg, properties);
+        // 1.21.5+: spawn egg colours are defined by the item model (assets), not the item.
+        return () -> new SpawnEggItem(properties.spawnEgg(entityType.get()));
     }
 }

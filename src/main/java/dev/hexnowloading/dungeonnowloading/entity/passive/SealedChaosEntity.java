@@ -1,7 +1,13 @@
 package dev.hexnowloading.dungeonnowloading.entity.passive;
 
+
+
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import dev.hexnowloading.dungeonnowloading.config.PvpConfig;
 import dev.hexnowloading.dungeonnowloading.entity.ai.EntityBodyRotationControl;
 import dev.hexnowloading.dungeonnowloading.entity.ai.SealedChaosAttackGoal;
@@ -49,7 +55,7 @@ public class SealedChaosEntity extends PathfinderMob implements OwnableEntity {
     private static final EntityDataAccessor<Boolean> GIGANTIC = SynchedEntityData.defineId(SealedChaosEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> OVERWORKED_LEVEL = SynchedEntityData.defineId(SealedChaosEntity.class, EntityDataSerializers.INT);
 
-    private static final ResourceLocation GIGANTISM_MAX_HEALTH_MODIFIER_ID = DungeonNowLoading.id("gigantism_max_health");
+    private static final Identifier GIGANTISM_MAX_HEALTH_MODIFIER_ID = DungeonNowLoading.id("gigantism_max_health");
 
     public SealedChaosEntity(EntityType<? extends SealedChaosEntity> entityType, Level level) {
         super(entityType, level);
@@ -99,11 +105,11 @@ public class SealedChaosEntity extends PathfinderMob implements OwnableEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compoundTag) {
+    public void addAdditionalSaveData(ValueOutput compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         compoundTag.putInt("DespawnTicks", this.entityData.get(DESPAWN_TICK));
         if (this.getOwnerUUID() != null) {
-            compoundTag.putUUID("Owner", this.getOwnerUUID());
+            NbtCompat.putUUID(compoundTag, "Owner", this.getOwnerUUID());
         }
         compoundTag.putBoolean("Basic", this.isBasicVariant());
         compoundTag.putInt("ArcShotLevel", this.getArcShotLevel());
@@ -113,35 +119,35 @@ public class SealedChaosEntity extends PathfinderMob implements OwnableEntity {
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
+    public void readAdditionalSaveData(ValueInput compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-        this.entityData.set(DESPAWN_TICK, compoundTag.getInt("DespawnTicks"));
+        this.entityData.set(DESPAWN_TICK, compoundTag.getIntOr("DespawnTicks", 0));
         UUID uuid;
-        if (compoundTag.hasUUID("Owner")) {
-            uuid = compoundTag.getUUID("Owner");
+        if (NbtCompat.hasUUID(compoundTag, "Owner")) {
+            uuid = NbtCompat.getUUID(compoundTag, "Owner");
         } else {
-            String string = compoundTag.getString("Owner");
+            String string = compoundTag.getStringOr("Owner", "");
             uuid = OldUsersConverter.convertMobOwnerIfNecessary(this.getServer(), string);
         }
         if (uuid != null) {
             this.setOwnerUUID(uuid);
         }
-        if (compoundTag.contains("ArcShotLevel")) {
-            this.setArcShotLevel(compoundTag.getInt("ArcShotLevel"));
+        if (NbtCompat.has(compoundTag, "ArcShotLevel")) {
+            this.setArcShotLevel(compoundTag.getIntOr("ArcShotLevel", 0));
         }
-        if (compoundTag.contains("PulseShotLevel")) {
-            this.setPulseShotLevel(compoundTag.getInt("PulseShotLevel"));
+        if (NbtCompat.has(compoundTag, "PulseShotLevel")) {
+            this.setPulseShotLevel(compoundTag.getIntOr("PulseShotLevel", 0));
         }
-        if (compoundTag.contains("Gigantic")) {
-            this.setGigantic(compoundTag.getBoolean("Gigantic"));
+        if (NbtCompat.has(compoundTag, "Gigantic")) {
+            this.setGigantic(compoundTag.getBooleanOr("Gigantic", false));
         }
-        if (compoundTag.contains("OverworkedLevel")) {
-            this.setOverworkedLevel(compoundTag.getInt("OverworkedLevel"));
+        if (NbtCompat.has(compoundTag, "OverworkedLevel")) {
+            this.setOverworkedLevel(compoundTag.getIntOr("OverworkedLevel", 0));
         }
 
         // Ensure attributes are consistent after loading.
         this.applyGigantismHealthBonus();
-        this.setBasicVariant(compoundTag.getBoolean("Basic"));
+        this.setBasicVariant(compoundTag.getBooleanOr("Basic", false));
     }
 
     @Override
@@ -165,7 +171,7 @@ public class SealedChaosEntity extends PathfinderMob implements OwnableEntity {
                     player.getCooldowns().addCooldown(DNLItems.SCEPTER_OF_SEALED_CHAOS.get(), 20);
                     this.discardWithParticle();
                 }
-                return InteractionResult.sidedSuccess(this.level().isClientSide);
+                return InteractionResult.sidedSuccess(this.level().isClientSide());
             }
         }
         return super.mobInteract(player, interactionHand);
@@ -173,7 +179,7 @@ public class SealedChaosEntity extends PathfinderMob implements OwnableEntity {
 
     private void discardWithParticle() {
         this.level().playSound(null, this.getX(), this.getY(), this.getZ(), DNLSounds.SEALED_CHAOS_PLACE.get(), SoundSource.HOSTILE, 0.5F, 1.0F);
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             ((ServerLevel) this.level()).sendParticles(ParticleTypes.POOF, this.getX(), this.getY(), this.getZ(), 20, 0.3D, 0.3D, 0.3D, 0.0D);
         }
         this.discard();
@@ -305,7 +311,7 @@ public class SealedChaosEntity extends PathfinderMob implements OwnableEntity {
         int level = this.getOverworkedLevel();
         AttributeInstance attackSpeed = this.getAttribute(Attributes.ATTACK_SPEED);
         if (attackSpeed != null) {
-            ResourceLocation modifierId = DungeonNowLoading.id("overworked_attack_speed");
+            Identifier modifierId = DungeonNowLoading.id("overworked_attack_speed");
             if (attackSpeed.getModifier(modifierId) != null) {
                 attackSpeed.removeModifier(modifierId);
             }
@@ -321,7 +327,7 @@ public class SealedChaosEntity extends PathfinderMob implements OwnableEntity {
     }
 
     private void applyGigantismHealthBonus() {
-        if (this.level() != null && this.level().isClientSide) {
+        if (this.level() != null && this.level().isClientSide()) {
             return;
         }
 
@@ -361,7 +367,7 @@ public class SealedChaosEntity extends PathfinderMob implements OwnableEntity {
         int overworkedLevel = this.getOverworkedLevel();
         super.remove(reason);
 
-        if (!this.level().isClientSide && owner != null && overworkedLevel > 0) {
+        if (!this.level().isClientSide() && owner != null && overworkedLevel > 0) {
             OverworkedPenaltyUtil.refreshOwnerPenaltyIfPossible(this.level(), owner);
         }
     }

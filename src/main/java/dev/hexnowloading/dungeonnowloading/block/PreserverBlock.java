@@ -77,7 +77,7 @@ public class PreserverBlock extends BaseEntityBlock {
     }
     @Override
     public BlockState playerWillDestroy(Level level, BlockPos blockPos, BlockState blockState, Player player) {
-        if (!this.canPlayerDestroy() && !level.isClientSide && !player.getAbilities().instabuild) {
+        if (!this.canPlayerDestroy() && !level.isClientSide() && !player.getAbilities().instabuild) {
             BlockEntity blockEntityOld = level.getBlockEntity(blockPos);
 
             if (blockEntityOld instanceof PreserverBlockEntity preserverBlockEntity) {
@@ -90,7 +90,7 @@ public class PreserverBlock extends BaseEntityBlock {
     @Override
     public void playerDestroy(Level level, Player player, BlockPos blockPos, BlockState state, BlockEntity blockEntity, ItemStack tool) {
         super.playerDestroy(level, player, blockPos, state, blockEntity, tool);
-        if (!this.canPlayerDestroy() && !level.isClientSide && !player.getAbilities().instabuild) {
+        if (!this.canPlayerDestroy() && !level.isClientSide() && !player.getAbilities().instabuild) {
             Direction direction = state.getValue(FACING);
             level.setBlock(blockPos, this.blockType.defaultBlockState().setValue(LIT, true).setValue(FACING, direction), Block.UPDATE_CLIENTS);
 
@@ -110,7 +110,7 @@ public class PreserverBlock extends BaseEntityBlock {
 
     @Override
     public void wasExploded(Level level, BlockPos blockPos, Explosion explosion) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
         BlockEntity blockEntityOld = level.getBlockEntity(blockPos);

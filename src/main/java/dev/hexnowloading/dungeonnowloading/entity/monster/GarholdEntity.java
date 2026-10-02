@@ -1,5 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.entity.monster;
 
+
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.tags.EntityTypeTags;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.entity.ai.garhold.*;
@@ -20,7 +24,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -42,7 +46,7 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.ItemStack;
@@ -70,10 +74,10 @@ public class GarholdEntity extends Monster {
     private static final EntityDataAccessor<Boolean> SIDE_OPENESS = SynchedEntityData.defineId(GarholdEntity.class, EntityDataSerializers.BOOLEAN);
 
 
-    private static final ResourceLocation CAPTURE_KB_UUID = DungeonNowLoading.id("garhold_capture_knockback");
+    private static final Identifier CAPTURE_KB_UUID = DungeonNowLoading.id("garhold_capture_knockback");
     private static final AttributeModifier CAPTURE_KB_MOD = new AttributeModifier(CAPTURE_KB_UUID, 1.0, AttributeModifier.Operation.ADD_VALUE);
 
-    private static final ResourceLocation CHAIN_KB_UUID = DungeonNowLoading.id("garhold_chain_lock_knockback");
+    private static final Identifier CHAIN_KB_UUID = DungeonNowLoading.id("garhold_chain_lock_knockback");
     private static final AttributeModifier CHAIN_KB_MOD = new AttributeModifier(CHAIN_KB_UUID, 1.0, AttributeModifier.Operation.ADD_VALUE);
 
     private AnimationChainer<GarholdAnimationState> animationChainer = new AnimationChainer<>();
@@ -195,15 +199,15 @@ public class GarholdEntity extends Monster {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compoundTag) {
+    public void addAdditionalSaveData(ValueOutput compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         compoundTag.putBoolean("Chained", this.isGarholdState(GarholdState.CHAINED));
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
+    public void readAdditionalSaveData(ValueInput compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-        this.setGarholdState(compoundTag.getBoolean("Chained") ? GarholdState.CHAINED : GarholdState.FLYING);
+        this.setGarholdState(compoundTag.getBooleanOr("Chained", false) ? GarholdState.CHAINED : GarholdState.FLYING);
     }
 
     @Override
@@ -297,7 +301,7 @@ public class GarholdEntity extends Monster {
     public void tick() {
         super.tick();
 
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             this.bottomDoorAnimation();
             this.sideDoorAnimation();
             this.flyAnimation();
@@ -478,7 +482,7 @@ public class GarholdEntity extends Monster {
     }
 
     private void teleportRiderToChainedGarhold() {
-        if (this.level().isClientSide) return;
+        if (this.level().isClientSide()) return;
         if (this.getPassengers().isEmpty()) return;
 
         Entity rider = this.getPassengers().get(0);
@@ -560,7 +564,7 @@ public class GarholdEntity extends Monster {
     protected void removePassenger(Entity passenger) {
         super.removePassenger(passenger);
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (this.getPassengers().isEmpty()) {
                 this.clearCaptureAttributes();
             }
@@ -624,7 +628,7 @@ public class GarholdEntity extends Monster {
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (player.getAbilities().instabuild) {
 
                 boolean usePickaxe = stack.getItem() instanceof PickaxeItem;
@@ -881,7 +885,7 @@ public class GarholdEntity extends Monster {
     @Override
     public void die(DamageSource $$0) {
         super.die($$0);
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.stopGarholdSounds();
         }
     }
@@ -971,10 +975,10 @@ public class GarholdEntity extends Monster {
                 ServerPlayer.class,
                 detectionBox
         );
-        List<ResourceLocation> soundsToStop = new ArrayList<>(List.of());
+        List<Identifier> soundsToStop = new ArrayList<>(List.of());
         soundsToStop.add(DNLSounds.GARHOLD_CLOSING.get().getLocation());
         for (ServerPlayer player : nearbyPlayers) {
-            for (ResourceLocation sound : soundsToStop) {
+            for (Identifier sound : soundsToStop) {
                 Services.NETWORK.sendToPlayer(new S2CStopTickingSoundPacket(this.getId(), sound, 20, true), player);
             }
         }

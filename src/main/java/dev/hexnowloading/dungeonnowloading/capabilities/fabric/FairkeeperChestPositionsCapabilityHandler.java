@@ -2,10 +2,8 @@ package dev.hexnowloading.dungeonnowloading.capabilities.fabric;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.IntTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.ladysnake.cca.api.v3.entity.RespawnableComponent;
 
 import java.util.ArrayList;
@@ -52,22 +50,15 @@ public class FairkeeperChestPositionsCapabilityHandler implements IFairkeeperChe
     }
 
     @Override
-    public void readFromNbt(CompoundTag compoundTag, HolderLookup.Provider registries) {
+    public void readData(ValueInput input) {
         this.fairkeeperPosList = new ArrayList<>();
-        if (compoundTag.contains("FairkeeperChestPositions", Tag.TAG_LIST)) {
-            ListTag listTag = compoundTag.getList("FairkeeperChestPositions", Tag.TAG_LIST);
-            for (int a = 0; a < listTag.size(); ++a) {
-                ListTag pos = listTag.getList(a);
-                this.fairkeeperPosList.add(new BlockPos(pos.getInt(0), pos.getInt(1), pos.getInt(2)));
-            }
-        }
+        input.listOrEmpty("FairkeeperChestPositions", BlockPos.CODEC).stream().forEach(this.fairkeeperPosList::add);
     }
 
     @Override
-    public void writeToNbt(CompoundTag compoundTag, HolderLookup.Provider registries) {
-        ListTag listTag = new ListTag();
-        getList().forEach(blockPos -> listTag.add(newIntList(blockPos.getX(), blockPos.getY(), blockPos.getZ())));
-        compoundTag.put("FairkeeperChestPositions", listTag);
+    public void writeData(ValueOutput output) {
+        ValueOutput.TypedOutputList<BlockPos> list = output.list("FairkeeperChestPositions", BlockPos.CODEC);
+        getList().forEach(list::add);
     }
 
     @Override
@@ -78,13 +69,5 @@ public class FairkeeperChestPositionsCapabilityHandler implements IFairkeeperChe
     @Override
     public boolean shouldCopyForRespawn(boolean lossless, boolean keepInventory, boolean sameCharacter) {
         return lossless || keepInventory;
-    }
-
-    private ListTag newIntList(int... ints) {
-        ListTag listTag = new ListTag();
-        for (int i : ints) {
-            listTag.add(IntTag.valueOf(i));
-        }
-        return listTag;
     }
 }

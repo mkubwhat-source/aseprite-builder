@@ -1,5 +1,13 @@
 package dev.hexnowloading.dungeonnowloading.entity.monster;
 
+
+
+
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
+import net.minecraft.world.entity.EntitySpawnReason;
 import dev.hexnowloading.dungeonnowloading.util.StackNbt;
 import dev.hexnowloading.dungeonnowloading.registry.DNLEnchantments;
 import dev.hexnowloading.dungeonnowloading.entity.ai.spawner_carrier.SpawnerCarrierApproachAndSmashGoal;
@@ -20,7 +28,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -155,26 +163,26 @@ public class SpawnerCarrierEntity extends Monster {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
+    public void addAdditionalSaveData(ValueOutput tag) {
         super.addAdditionalSaveData(tag);
 
         tag.putString("StoredEntityId", this.entityData.get(STORED_ENTITY_ID));
         if (this.storedEntityNbt != null) {
-            tag.put("StoredEntityNbt", this.storedEntityNbt);
+            NbtCompat.put(tag, "StoredEntityNbt", this.storedEntityNbt);
         }
         tag.putFloat("PickaxeAccumDamage", this.getPickaxeAccumDamage());
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
+    public void readAdditionalSaveData(ValueInput tag) {
         super.readAdditionalSaveData(tag);
 
-        this.entityData.set(STORED_ENTITY_ID, tag.getString("StoredEntityId"));
-        this.storedEntityNbt = tag.contains("StoredEntityNbt", CompoundTag.TAG_COMPOUND)
-                ? tag.getCompound("StoredEntityNbt")
+        this.entityData.set(STORED_ENTITY_ID, tag.getStringOr("StoredEntityId", ""));
+        this.storedEntityNbt = NbtCompat.has(tag, "StoredEntityNbt")
+                ? NbtCompat.getCompound(tag, "StoredEntityNbt")
                 : null;
-        if (tag.contains("PickaxeAccumDamage")) {
-            this.entityData.set(PICKAXE_ACCUM_DAMAGE, tag.getFloat("PickaxeAccumDamage"));
+        if (NbtCompat.has(tag, "PickaxeAccumDamage")) {
+            this.entityData.set(PICKAXE_ACCUM_DAMAGE, tag.getFloatOr("PickaxeAccumDamage", 0.0F));
         }
     }
 
@@ -182,7 +190,7 @@ public class SpawnerCarrierEntity extends Monster {
     public void tick() {
         super.tick();
 
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             this.previewOSpin = this.previewSpin;
 
             SpawnerCarrierAnimationState s = this.entityData.get(ANIMATION_STATE);
@@ -198,7 +206,7 @@ public class SpawnerCarrierEntity extends Monster {
             this.previewSpin = (this.previewSpin + add) % 360.0F;
         }
 
-        if (this.level().isClientSide) return;
+        if (this.level().isClientSide()) return;
 
         pruneSpawnedMinions();
 
@@ -250,7 +258,7 @@ public class SpawnerCarrierEntity extends Monster {
 
         if (spawned instanceof Mob mob) {
             BlockPos pos = BlockPos.containing(x, y, z);
-            mob.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), MobSpawnType.MOB_SUMMONED, null);
+            mob.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), EntitySpawnReason.MOB_SUMMONED, null);
             mob.setTarget(this.getTarget());
 
         }
@@ -263,7 +271,7 @@ public class SpawnerCarrierEntity extends Monster {
     public void aiStep() {
         super.aiStep();
 
-        if (!this.level().isClientSide && locomotionLocked) {
+        if (!this.level().isClientSide() && locomotionLocked) {
             this.getNavigation().stop();
             this.setDeltaMovement(0.0, this.getDeltaMovement().y, 0.0);
             this.hasImpulse = true; // helps syncing sometimes
@@ -295,7 +303,7 @@ public class SpawnerCarrierEntity extends Monster {
         }
 
         // Server-side only for state changes
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             return InteractionResult.SUCCESS;
         }
 
@@ -306,7 +314,7 @@ public class SpawnerCarrierEntity extends Monster {
 
         // Determine entity type from the spawn egg (handles NBT overrides)
         EntityType<?> type = egg.getType(stack);
-        ResourceLocation key = BuiltInRegistries.ENTITY_TYPE.getKey(type);
+        Identifier key = BuiltInRegistries.ENTITY_TYPE.getKey(type);
 
         if (key == null) {
             return InteractionResult.CONSUME;
@@ -369,7 +377,7 @@ public class SpawnerCarrierEntity extends Monster {
     }
 
     private void tryTriggerUpkeepSummon() {
-        if (this.level().isClientSide) return;
+        if (this.level().isClientSide()) return;
 
         // only during combat
         LivingEntity target = this.getTarget();
@@ -438,7 +446,7 @@ public class SpawnerCarrierEntity extends Monster {
 
     private boolean canSpawnAt(ServerLevel level, double x, double y, double z) {
         var type = net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getOptional(
-                net.minecraft.resources.ResourceLocation.parse(this.getStoredEntityId())
+                net.minecraft.resources.Identifier.parse(this.getStoredEntityId())
         ).orElse(null);
 
         if (type == null) return false;
@@ -456,12 +464,12 @@ public class SpawnerCarrierEntity extends Monster {
 
     @Override
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType,
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnType,
                                         @Nullable SpawnGroupData spawnGroupData) {
         SpawnGroupData data = super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
 
         // Only choose randomly when it "naturally" appears in the world
-        if (spawnType == MobSpawnType.NATURAL || spawnType == MobSpawnType.CHUNK_GENERATION || spawnType == MobSpawnType.SPAWN_EGG) {
+        if (spawnType == EntitySpawnReason.NATURAL || spawnType == EntitySpawnReason.CHUNK_GENERATION || spawnType == EntitySpawnReason.SPAWN_EGG) {
             if (this.entityData.get(STORED_ENTITY_ID).isEmpty()) {
                 String id = DEFAULT_POOL[this.random.nextInt(DEFAULT_POOL.length)];
                 this.entityData.set(STORED_ENTITY_ID, id);
@@ -484,7 +492,7 @@ public class SpawnerCarrierEntity extends Monster {
         if (!didHurt) return false;
 
         // Server only
-        if (this.level().isClientSide) return true;
+        if (this.level().isClientSide()) return true;
 
         // Already broken? ignore pickaxe mining
         if (this.isSpawnerBroken()) return true;
@@ -724,7 +732,7 @@ public class SpawnerCarrierEntity extends Monster {
 
 
     public void playGroundSmashFromGoal() {
-        if (this.level().isClientSide) return;
+        if (this.level().isClientSide()) return;
         if (isBusyAttacking()) return;
         playGroundSmashAnimation(); // your private method
     }

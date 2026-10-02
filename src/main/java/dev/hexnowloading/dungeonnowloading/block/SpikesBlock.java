@@ -59,7 +59,7 @@ public class SpikesBlock extends Block implements SimpleWaterloggedBlock {
         if (entity instanceof Player player && player.isCreative()) return;
         if (entity instanceof LivingEntity livingEntity && entity.isAlive()) {
             livingEntity.makeStuckInBlock(blockState, new Vec3(0.5F, 0.5F, 0.5F));
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 //livingEntity.hurt(level.damageSources().cactus(), damage);
                 livingEntity.hurt(DNLDamageTypes.getDamageSource(level, DNLDamageTypes.SPIKE), damage);
             }

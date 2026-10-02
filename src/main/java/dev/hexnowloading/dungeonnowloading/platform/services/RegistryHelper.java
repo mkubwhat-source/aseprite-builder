@@ -2,7 +2,7 @@ package dev.hexnowloading.dungeonnowloading.platform.services;
 
 import net.minecraft.core.Registry;
 import net.minecraft.network.syncher.EntityDataSerializer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.CreativeModeTab;
@@ -20,7 +20,7 @@ public interface RegistryHelper {
     // vanilla EntityDataSerializers.registerSerializer (which throws on modded entries).
     void registerEntityDataSerializer(String name, EntityDataSerializer<?> serializer);
 
-    void register(ResourceLocation id, SimpleJsonResourceReloadListener loader);
+    void register(Identifier id, SimpleJsonResourceReloadListener loader);
 
     SoundType getSoundType(float volume, float pitch, Supplier<SoundEvent> breakSound, Supplier<SoundEvent> stepSound,
                            Supplier<SoundEvent> placeSound, Supplier<SoundEvent> hitSound, Supplier<SoundEvent> fallSound);

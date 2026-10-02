@@ -3,13 +3,13 @@ package dev.hexnowloading.dungeonnowloading.item;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.platform.Services;
 import dev.hexnowloading.dungeonnowloading.registry.DNLItems;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.EnumMap;
@@ -52,7 +52,7 @@ public final class DNLArmorMaterial {
     private static Supplier<Holder<ArmorMaterial>> register(String name, EnumMap<ArmorItem.Type, Integer> defense,
                                                             int enchantmentValue, float toughness, float knockbackResistance,
                                                             Supplier<Ingredient> repairIngredient) {
-        ResourceLocation id = DungeonNowLoading.id(name);
+        Identifier id = DungeonNowLoading.id(name);
         List<ArmorMaterial.Layer> layers = List.of(new ArmorMaterial.Layer(id, "", false));
         net.minecraft.resources.ResourceKey<ArmorMaterial> key =
                 net.minecraft.resources.ResourceKey.create(BuiltInRegistries.ARMOR_MATERIAL.key(), id);

@@ -46,16 +46,16 @@ public class StoneNotchBlock extends Block {
                 if (!player.getAbilities().instabuild) {
                     itemInHand.shrink(1);
                 }
-                return net.minecraft.world.ItemInteractionResult.sidedSuccess(level.isClientSide);
+                return net.minecraft.world.ItemInteractionResult.sidedSuccess(level.isClientSide());
             } else {
-                return popOutMaterial(level, blockState, blockPos) ? net.minecraft.world.ItemInteractionResult.sidedSuccess(level.isClientSide) : net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                return popOutMaterial(level, blockState, blockPos) ? net.minecraft.world.ItemInteractionResult.sidedSuccess(level.isClientSide()) : net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
             }
         }
         if (itemInHand.isEmpty()) {
             if (blockState.is(DNLBlocks.STONE_NOTCH.get())) {
                 return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
             }
-            return popOutMaterial(level, blockState, blockPos) ? net.minecraft.world.ItemInteractionResult.sidedSuccess(level.isClientSide) : net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return popOutMaterial(level, blockState, blockPos) ? net.minecraft.world.ItemInteractionResult.sidedSuccess(level.isClientSide()) : net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
@@ -106,7 +106,7 @@ public class StoneNotchBlock extends Block {
             if (offsetPos.isEmpty()) {
                 return false;
             }
-            int randomPos = level.random.nextInt(offsetPos.size());
+            int randomPos = level.getRandom().nextInt(offsetPos.size());
             OffsetPos chosenPos = offsetPos.get(randomPos);
             Vec3 popPos = Vec3.atLowerCornerWithOffset(blockPos, chosenPos.x, chosenPos.y, chosenPos.z);
             if (notchMaterial.item != null) {
@@ -124,7 +124,7 @@ public class StoneNotchBlock extends Block {
 
     @Override
     public void neighborChanged(BlockState blockState, Level level, BlockPos blockPos, Block block, BlockPos blockPos1, boolean b) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             if (!blockState.is(DNLBlocks.STONE_NOTCH.get()) && level.hasNeighborSignal(blockPos)) {
                 popOutMaterial(level, blockState, blockPos);
             }
@@ -151,7 +151,7 @@ public class StoneNotchBlock extends Block {
         double d1 = (double)pos.getY() + 0.5D;
         double d2 = (double)pos.getZ() + 0.5D;
 
-        level.playSound((Player)null, d0, d1, d2, soundEvent, SoundSource.BLOCKS, 0.5F, level.random.nextFloat() * 0.1F + 0.9F);
+        level.playSound((Player)null, d0, d1, d2, soundEvent, SoundSource.BLOCKS, 0.5F, level.getRandom().nextFloat() * 0.1F + 0.9F);
     }
 
     public enum StoneNotchMaterialSignalStrength {

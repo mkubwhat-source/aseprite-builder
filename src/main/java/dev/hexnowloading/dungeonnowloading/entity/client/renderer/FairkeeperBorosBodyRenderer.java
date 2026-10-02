@@ -7,11 +7,11 @@ import dev.hexnowloading.dungeonnowloading.entity.client.layer.FairkeeperBorosBo
 import dev.hexnowloading.dungeonnowloading.entity.client.model.FairkeeperBorosBodyModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class FairkeeperBorosBodyRenderer<T extends FairkeeperBorosPartEntity> extends MobRenderer<T, FairkeeperBorosBodyModel<T>> {
 
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/fairkeeper_boros/fairkeeper_boros_body.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/fairkeeper_boros/fairkeeper_boros_body.png");
 
     public FairkeeperBorosBodyRenderer(EntityRendererProvider.Context renderManager) {
         super(renderManager, new FairkeeperBorosBodyModel<>(renderManager.bakeLayer(FairkeeperBorosBodyModel.LAYER_LOCATION)), 1.0F);
@@ -30,7 +30,7 @@ public class FairkeeperBorosBodyRenderer<T extends FairkeeperBorosPartEntity> ex
     }
 
     @Override
-    public ResourceLocation getTextureLocation(FairkeeperBorosPartEntity fairkeeperEntity) {
+    public Identifier getTextureLocation(FairkeeperBorosPartEntity fairkeeperEntity) {
         return TEXTURE;
     }
 }

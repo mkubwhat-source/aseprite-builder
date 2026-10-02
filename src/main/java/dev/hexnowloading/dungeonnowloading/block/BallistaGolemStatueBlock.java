@@ -123,7 +123,7 @@ public class BallistaGolemStatueBlock extends BaseEntityBlock implements EntityB
 
     @Override
     public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
-        if (!world.isClientSide && placer instanceof Player) {
+        if (!world.isClientSide() && placer instanceof Player) {
             // Get the player's facing direction
             Direction playerFacing = placer.getDirection().getOpposite();
 
@@ -164,7 +164,7 @@ public class BallistaGolemStatueBlock extends BaseEntityBlock implements EntityB
 
     @Override
     public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (!world.isClientSide && state.getBlock() != newState.getBlock()) {
+        if (!world.isClientSide() && state.getBlock() != newState.getBlock()) {
             destroyAllBlocks(world, pos);
             destroyBlocksAbove(world, pos);
 
@@ -202,7 +202,7 @@ public class BallistaGolemStatueBlock extends BaseEntityBlock implements EntityB
 
     @Override
     public BlockState playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             this.playerDestroyed = !player.getAbilities().instabuild;
             if (this.playerDestroyed) {
                 ItemStack heldItem = player.getMainHandItem();
@@ -214,7 +214,7 @@ public class BallistaGolemStatueBlock extends BaseEntityBlock implements EntityB
 
     @Override
     public void neighborChanged(BlockState blockState, Level level, BlockPos blockPos, Block block, BlockPos blockPos1, boolean b) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
         if (!level.hasNeighborSignal(blockPos)) {

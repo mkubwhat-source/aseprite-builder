@@ -1,18 +1,18 @@
 package dev.hexnowloading.dungeonnowloading.screen;
 
 import dev.hexnowloading.dungeonnowloading.menu.MendingTableMenu;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 public class MendingTableScreen extends AbstractContainerScreen<MendingTableMenu> {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("dungeonnowloading", "textures/gui/mending_table_gui.png");
-    private static final ResourceLocation PICKAXE_OUTLINE = ResourceLocation.fromNamespaceAndPath("dungeonnowloading", "textures/gui/pickaxe_outline_gui.png");
-    private static final ResourceLocation DURITE_OUTLINE = ResourceLocation.fromNamespaceAndPath("dungeonnowloading", "textures/gui/durite_outline_gui.png");
-    private static final ResourceLocation DURITE_NOTCH = ResourceLocation.fromNamespaceAndPath("dungeonnowloading", "textures/gui/mending_table_gui_durite_notch.png");
-    private static final ResourceLocation GOLD_NOTCH = ResourceLocation.fromNamespaceAndPath("dungeonnowloading", "textures/gui/mending_table_gui_golden_notch.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath("dungeonnowloading", "textures/gui/mending_table_gui.png");
+    private static final Identifier PICKAXE_OUTLINE = Identifier.fromNamespaceAndPath("dungeonnowloading", "textures/gui/pickaxe_outline_gui.png");
+    private static final Identifier DURITE_OUTLINE = Identifier.fromNamespaceAndPath("dungeonnowloading", "textures/gui/durite_outline_gui.png");
+    private static final Identifier DURITE_NOTCH = Identifier.fromNamespaceAndPath("dungeonnowloading", "textures/gui/mending_table_gui_durite_notch.png");
+    private static final Identifier GOLD_NOTCH = Identifier.fromNamespaceAndPath("dungeonnowloading", "textures/gui/mending_table_gui_golden_notch.png");
     private static final int NOTCH_START_X = 113;
     private static final int NOTCH_ROW1_Y = 69;
     private static final int NOTCH_ROW2_Y = 75; // keep given y even though height is 3 (gap visually larger)

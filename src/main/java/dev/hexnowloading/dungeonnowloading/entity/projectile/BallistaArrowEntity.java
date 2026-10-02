@@ -8,7 +8,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
@@ -37,7 +37,7 @@ public class BallistaArrowEntity extends AbstractArrow {
 
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             return;
         }
         Entity target = entityHitResult.getEntity();
@@ -100,7 +100,7 @@ public class BallistaArrowEntity extends AbstractArrow {
     }
 
     private void explode() {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.level().explode(this, this.getX(), this.getY(), this.getZ(), EXPLOSION_STRENGTH, Level.ExplosionInteraction.NONE);
         }
     }

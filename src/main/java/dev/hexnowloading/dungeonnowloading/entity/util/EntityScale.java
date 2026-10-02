@@ -3,7 +3,7 @@ package dev.hexnowloading.dungeonnowloading.entity.util;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.config.BossConfig;
 import dev.hexnowloading.dungeonnowloading.config.MobConfig;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -12,8 +12,8 @@ import java.util.Objects;
 
 public class EntityScale {
 
-    private static final ResourceLocation SCALED_HEALTH_MODIFIER_UUID = DungeonNowLoading.id("scaled_health");
-    private static final ResourceLocation SCALED_ATTACK_MODIFIER_UUID = DungeonNowLoading.id("scaled_attack");
+    private static final Identifier SCALED_HEALTH_MODIFIER_UUID = DungeonNowLoading.id("scaled_health");
+    private static final Identifier SCALED_ATTACK_MODIFIER_UUID = DungeonNowLoading.id("scaled_attack");
     private static final double bossHealthScale = BossConfig.BOSS_HEALTH_MODIFIER.get();
     private static final double bossAttackDamageScale = BossConfig.BOSS_DAMAGE_MODIFIER.get();
     private static final double bossExhaustionScale = BossConfig.BOSS_EXHAUSTION_MODIFIER.get();

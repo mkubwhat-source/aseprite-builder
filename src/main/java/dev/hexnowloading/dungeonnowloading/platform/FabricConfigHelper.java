@@ -2,14 +2,14 @@ package dev.hexnowloading.dungeonnowloading.platform;
 
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.platform.services.ConfigHelper;
-import fuzs.forgeconfigapiport.fabric.api.neoforge.v4.NeoForgeConfigRegistry;
+import fuzs.forgeconfigapiport.fabric.api.v5.ConfigRegistry;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class FabricConfigHelper implements ConfigHelper {
     @Override
     public void registerConfig(ConfigType type, ModConfigSpec spec) {
-        NeoForgeConfigRegistry.INSTANCE.register(DungeonNowLoading.MOD_ID, toModConfigType(type), spec);
+        ConfigRegistry.INSTANCE.register(DungeonNowLoading.MOD_ID, toModConfigType(type), spec);
     }
 
     private static ModConfig.Type toModConfigType(ConfigType type) {

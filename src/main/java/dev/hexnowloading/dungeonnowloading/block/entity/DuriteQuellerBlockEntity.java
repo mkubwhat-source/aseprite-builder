@@ -1,5 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.block.entity;
 
+
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import com.mojang.serialization.MapCodec;
 
 import dev.hexnowloading.dungeonnowloading.block.MendingAuraBlock;
@@ -218,7 +222,7 @@ public class DuriteQuellerBlockEntity extends BlockEntity implements ZoneReceive
 
         level.playSound(null, startPos, sound, net.minecraft.sounds.SoundSource.BLOCKS, 1.0F, 0.7F);
         level.playSound(null, startPos, soundPop, net.minecraft.sounds.SoundSource.BLOCKS, 1.0F, 1.0F);
-        if (level.random.nextFloat() < 0.25f) {
+        if (level.getRandom().nextFloat() < 0.25f) {
             level.addFreshEntity(new net.minecraft.world.entity.item.ItemEntity(
                     level,
                     startPos.getX() + 0.5, startPos.getY() + 0.5, startPos.getZ() + 0.5,
@@ -305,9 +309,9 @@ public class DuriteQuellerBlockEntity extends BlockEntity implements ZoneReceive
             if (vel.lengthSqr() < 1.0e-6) continue;
             vel = vel.normalize().scale(vMag);
 
-            double px = spawn.x + (level.random.nextDouble() - 0.5) * jitter;
-            double py = spawn.y + (level.random.nextDouble() - 0.5) * jitter;
-            double pz = spawn.z + (level.random.nextDouble() - 0.5) * jitter;
+            double px = spawn.x + (level.getRandom().nextDouble() - 0.5) * jitter;
+            double py = spawn.y + (level.getRandom().nextDouble() - 0.5) * jitter;
+            double pz = spawn.z + (level.getRandom().nextDouble() - 0.5) * jitter;
 
             var data = new dev.hexnowloading.dungeonnowloading.particle.type.MendingFadeParticleType.Data(
                     DNLParticleTypes.MENDING_FADE_PARTICLE.get(),
@@ -417,7 +421,7 @@ public class DuriteQuellerBlockEntity extends BlockEntity implements ZoneReceive
     }
 
     public void onRedstone(boolean powered) {
-        if (this.level == null || this.level.isClientSide) return;
+        if (this.level == null || this.level.isClientSide()) return;
 
         if (powered && !wasPowered) {
 
@@ -542,7 +546,7 @@ public class DuriteQuellerBlockEntity extends BlockEntity implements ZoneReceive
 
     // === Save/load ===
     @Override
-    protected void saveAdditional(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+    protected void saveAdditional(ValueOutput tag) {
         super.saveAdditional(tag, registries);
         tag.putInt("cornerAx", cornerA.getX());
         tag.putInt("cornerAy", cornerA.getY());
@@ -571,28 +575,28 @@ public class DuriteQuellerBlockEntity extends BlockEntity implements ZoneReceive
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+    protected void loadAdditional(ValueInput tag) {
         super.loadAdditional(tag, registries);
-        cornerA = new BlockPos(tag.getInt("cornerAx"), tag.getInt("cornerAy"), tag.getInt("cornerAz"));
-        cornerB = new BlockPos(tag.getInt("cornerBx"), tag.getInt("cornerBy"), tag.getInt("cornerBz"));
-        nbtFacing = Direction.byName(tag.getString("nbtFacing"));
+        cornerA = new BlockPos(tag.getIntOr("cornerAx", 0), tag.getIntOr("cornerAy", 0), tag.getIntOr("cornerAz", 0));
+        cornerB = new BlockPos(tag.getIntOr("cornerBx", 0), tag.getIntOr("cornerBy", 0), tag.getIntOr("cornerBz", 0));
+        nbtFacing = Direction.byName(tag.getStringOr("nbtFacing", ""));
         if (nbtFacing == null) nbtFacing = Direction.NORTH;
-        delayTicks = tag.getInt("delayTicks");
-        pending = tag.getBoolean("pending");
-        wasPowered = tag.getBoolean("wasPowered");
-        this.phase = Phase.valueOf(tag.getString("phase"));
-        this.spawnTicksLeft = tag.getInt("spawnTicksLeft");
-        this.waitTicksLeft = tag.getInt("waitTicksLeft");
+        delayTicks = tag.getIntOr("delayTicks", 0);
+        pending = tag.getBooleanOr("pending", false);
+        wasPowered = tag.getBooleanOr("wasPowered", false);
+        this.phase = Phase.valueOf(tag.getStringOr("phase", ""));
+        this.spawnTicksLeft = tag.getIntOr("spawnTicksLeft", 0);
+        this.waitTicksLeft = tag.getIntOr("waitTicksLeft", 0);
 
-        this.triggerGameTime = tag.getLong("triggerGameTime");
-        this.firstArrivalTick = tag.getInt("firstArrivalTick");
-        this.lastArrivalTick = tag.getInt("lastArrivalTick");
+        this.triggerGameTime = tag.getLongOr("triggerGameTime", 0L);
+        this.firstArrivalTick = tag.getIntOr("firstArrivalTick", 0);
+        this.lastArrivalTick = tag.getIntOr("lastArrivalTick", 0);
 
-        this.growthTotal = tag.getInt("growthTotal");
-        this.nextGrowthIndex = tag.getInt("nextGrowthIndex");
-        this.nextEarlyIndex = tag.getInt("nextEarlyIndex");
+        this.growthTotal = tag.getIntOr("growthTotal", 0);
+        this.nextGrowthIndex = tag.getIntOr("nextGrowthIndex", 0);
+        this.nextEarlyIndex = tag.getIntOr("nextEarlyIndex", 0);
 
-        this.spawnTicksTotal = tag.getInt("spawnTicksTotal");
-        this.particleFirstArrivalTick = tag.getInt("particleFirstArrivalTick");
+        this.spawnTicksTotal = tag.getIntOr("spawnTicksTotal", 0);
+        this.particleFirstArrivalTick = tag.getIntOr("particleFirstArrivalTick", 0);
     }
 }

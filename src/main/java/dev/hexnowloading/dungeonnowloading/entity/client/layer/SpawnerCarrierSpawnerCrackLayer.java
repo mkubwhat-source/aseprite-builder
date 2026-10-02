@@ -8,22 +8,22 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class SpawnerCarrierSpawnerCrackLayer<T extends SpawnerCarrierEntity, M extends EntityModel<T>>
         extends RenderLayer<T, M> {
 
-    private static final ResourceLocation[] DESTROY_STAGES = new ResourceLocation[] {
-            ResourceLocation.parse("textures/block/destroy_stage_0.png"),
-            ResourceLocation.parse("textures/block/destroy_stage_1.png"),
-            ResourceLocation.parse("textures/block/destroy_stage_2.png"),
-            ResourceLocation.parse("textures/block/destroy_stage_3.png"),
-            ResourceLocation.parse("textures/block/destroy_stage_4.png"),
-            ResourceLocation.parse("textures/block/destroy_stage_5.png"),
-            ResourceLocation.parse("textures/block/destroy_stage_6.png"),
-            ResourceLocation.parse("textures/block/destroy_stage_7.png"),
-            ResourceLocation.parse("textures/block/destroy_stage_8.png"),
-            ResourceLocation.parse("textures/block/destroy_stage_9.png"),
+    private static final Identifier[] DESTROY_STAGES = new Identifier[] {
+            Identifier.parse("textures/block/destroy_stage_0.png"),
+            Identifier.parse("textures/block/destroy_stage_1.png"),
+            Identifier.parse("textures/block/destroy_stage_2.png"),
+            Identifier.parse("textures/block/destroy_stage_3.png"),
+            Identifier.parse("textures/block/destroy_stage_4.png"),
+            Identifier.parse("textures/block/destroy_stage_5.png"),
+            Identifier.parse("textures/block/destroy_stage_6.png"),
+            Identifier.parse("textures/block/destroy_stage_7.png"),
+            Identifier.parse("textures/block/destroy_stage_8.png"),
+            Identifier.parse("textures/block/destroy_stage_9.png"),
     };
 
     public SpawnerCarrierSpawnerCrackLayer(RenderLayerParent<T, M> parent) {
@@ -58,7 +58,7 @@ public class SpawnerCarrierSpawnerCrackLayer<T extends SpawnerCarrierEntity, M e
                 tiled,
                 packedLight,
                 net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY,
-                net.minecraft.util.FastColor.ARGB32.colorFromFloat(1f, 1f, 0.2f, 0.2f)
+                net.minecraft.util.ARGB.colorFromFloat(1f, 1f, 0.2f, 0.2f)
         );
 
         poseStack.popPose();

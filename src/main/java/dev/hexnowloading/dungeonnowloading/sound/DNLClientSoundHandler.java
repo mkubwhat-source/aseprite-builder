@@ -3,7 +3,7 @@ package dev.hexnowloading.dungeonnowloading.sound;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
@@ -15,9 +15,9 @@ import java.util.Map;
 
 public class DNLClientSoundHandler {
 
-    private static final Map<ResourceLocation, Map<Integer, Map<Integer, List<AbstractTickableSoundInstance>>>> activeSounds = new HashMap<>();
+    private static final Map<Identifier, Map<Integer, Map<Integer, List<AbstractTickableSoundInstance>>>> activeSounds = new HashMap<>();
 
-    public static void playTickingSound(ResourceLocation soundId, SoundSource soundSource, Entity entity, int tagId, float volume, float pitch, boolean stopWhenOutOfRange, float range, float fadeStartDistance) {
+    public static void playTickingSound(Identifier soundId, SoundSource soundSource, Entity entity, int tagId, float volume, float pitch, boolean stopWhenOutOfRange, float range, float fadeStartDistance) {
         SoundEvent sound = BuiltInRegistries.SOUND_EVENT.get(soundId);
         if (sound == null) return;
 
@@ -34,7 +34,7 @@ public class DNLClientSoundHandler {
         tagMap.computeIfAbsent(tagId, k -> new ArrayList<>()).add(instance);
     }
 
-    public static void fadeInTickingSound(ResourceLocation soundId, int entityId, TickingSoundTarget target, int specificTagId, float maxVolume, int fadeInTicks) {
+    public static void fadeInTickingSound(Identifier soundId, int entityId, TickingSoundTarget target, int specificTagId, float maxVolume, int fadeInTicks) {
         Map<Integer, Map<Integer, List<AbstractTickableSoundInstance>>> entityMap = activeSounds.get(soundId);
         if (entityMap == null) return;
 
@@ -65,7 +65,7 @@ public class DNLClientSoundHandler {
         }
     }
 
-    public static void fadeOutTickingSound(ResourceLocation soundId, int entityId, TickingSoundTarget target, int specificTagId, int fadeTicks, boolean shouldStop) {
+    public static void fadeOutTickingSound(Identifier soundId, int entityId, TickingSoundTarget target, int specificTagId, int fadeTicks, boolean shouldStop) {
         Map<Integer, Map<Integer, List<AbstractTickableSoundInstance>>> entityMap = activeSounds.get(soundId);
         if (entityMap == null) return;
 
@@ -110,7 +110,7 @@ public class DNLClientSoundHandler {
         };
     }
 
-    public static boolean isTickingSoundActive(ResourceLocation soundId) {
+    public static boolean isTickingSoundActive(Identifier soundId) {
         Map<Integer, Map<Integer, List<AbstractTickableSoundInstance>>> entityMap = activeSounds.get(soundId);
         if (entityMap == null || entityMap.isEmpty()) {
             return false;

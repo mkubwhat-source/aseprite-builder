@@ -1,5 +1,13 @@
 package dev.hexnowloading.dungeonnowloading.entity.boss;
 
+
+
+
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
+import net.minecraft.world.entity.EntitySpawnReason;
 import dev.hexnowloading.dungeonnowloading.util.StackNbt;
 import net.minecraft.core.Holder;
 import com.google.common.collect.ImmutableList;
@@ -30,7 +38,7 @@ import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -202,7 +210,7 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
+    public void addAdditionalSaveData(ValueOutput compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         compoundTag.putInt("SpawnPointX", this.getSpawnPointPos().getX());
         compoundTag.putInt("SpawnPointY", this.getSpawnPointPos().getY());
@@ -220,31 +228,31 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
         ListTag listTag = new ListTag();
         for (UUID id : this.playerUUIDs) {
             CompoundTag t = new CompoundTag();
-            t.putUUID("Id", id);
+            NbtCompat.putUUID(t, "Id", id);
             listTag.add(t);
         }
-        compoundTag.put("PlayerUUIDs", listTag);
+        NbtCompat.put(compoundTag, "PlayerUUIDs", listTag);
 
         SeepingSoulEntity.writeRecallNBT(compoundTag, this.playerDefeatedUUIDs, this.defeatedCount, this.modifiedDefeatedCount);
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
+    public void readAdditionalSaveData(ValueInput compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-        int i = compoundTag.getInt("SpawnPointX");
-        int j = compoundTag.getInt("SpawnPointY");
-        int k = compoundTag.getInt("SpawnPointZ");
+        int i = compoundTag.getIntOr("SpawnPointX", 0);
+        int j = compoundTag.getIntOr("SpawnPointY", 0);
+        int k = compoundTag.getIntOr("SpawnPointZ", 0);
         this.entityData.set(SPAWN_POINT, new BlockPos(i, j, k));
-        this.entityData.set(AWAKENING_TICKS, compoundTag.getInt("AwakeningTicks"));
-        this.entityData.set(PLAYER_COUNT, compoundTag.getInt("PlayerCount"));
-        this.entityData.set(BARRIER_NORTH_TICK, compoundTag.getInt("BarrierNorthTicks"));
-        this.entityData.set(BARRIER_EAST_TICK, compoundTag.getInt("BarrierEastTicks"));
-        this.entityData.set(BARRIER_SOUTH_TICK, compoundTag.getInt("BarrierSouthTicks"));
-        this.entityData.set(BARRIER_WEST_TICK, compoundTag.getInt("BarrierWestTicks"));
-        this.entityData.set(BARRIER_UP_TICK, compoundTag.getInt("BarrierUpTicks"));
-        this.entityData.set(BARRIER_DOWN_TICK, compoundTag.getInt("BarrierDownTicks"));
-        this.attackTickCount = compoundTag.getInt("AttackTicks");
-        int phase = compoundTag.getInt("Phase");
+        this.entityData.set(AWAKENING_TICKS, compoundTag.getIntOr("AwakeningTicks", 0));
+        this.entityData.set(PLAYER_COUNT, compoundTag.getIntOr("PlayerCount", 0));
+        this.entityData.set(BARRIER_NORTH_TICK, compoundTag.getIntOr("BarrierNorthTicks", 0));
+        this.entityData.set(BARRIER_EAST_TICK, compoundTag.getIntOr("BarrierEastTicks", 0));
+        this.entityData.set(BARRIER_SOUTH_TICK, compoundTag.getIntOr("BarrierSouthTicks", 0));
+        this.entityData.set(BARRIER_WEST_TICK, compoundTag.getIntOr("BarrierWestTicks", 0));
+        this.entityData.set(BARRIER_UP_TICK, compoundTag.getIntOr("BarrierUpTicks", 0));
+        this.entityData.set(BARRIER_DOWN_TICK, compoundTag.getIntOr("BarrierDownTicks", 0));
+        this.attackTickCount = compoundTag.getIntOr("AttackTicks", 0);
+        int phase = compoundTag.getIntOr("Phase", 0);
         if (phase < 1) {
             this.entityData.set(DATA_STATE, State.SLEEPING);
             this.entityData.set(PHASE, 0);
@@ -254,10 +262,10 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
         if (this.hasCustomName()) {
             this.bossEvent.setName(this.getDisplayName());
         }
-        if (compoundTag.contains("PlayerUUIDs", CompoundTag.TAG_LIST)) {
-            ListTag listTag = compoundTag.getList("PlayerUUIDs", CompoundTag.TAG_COMPOUND);
+        if (NbtCompat.has(compoundTag, "PlayerUUIDs")) {
+            ListTag listTag = NbtCompat.getList(compoundTag, "PlayerUUIDs");
             for (int a = 0; a < listTag.size(); ++a) {
-                this.playerUUIDs.add(listTag.getCompound(a).getUUID("Id"));
+                this.playerUUIDs.add(listTag.getCompoundOrEmpty(a).getUUID("Id"));
             }
         }
         SeepingSoulEntity.RecallData data = SeepingSoulEntity.readRecallNBT(compoundTag);
@@ -346,8 +354,8 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
     @Override
     public InteractionResult mobInteract(Player player, InteractionHand interactionHand) {
         if (this.isAlive() && this.entityData.get(PHASE) < 1 && this.getState() != State.AWAKENING) {
-            player.displayClientMessage(Component.translatable("entity.dungeonnowloading.chaos_spawner.right_click"), true);
-            return InteractionResult.sidedSuccess(this.level().isClientSide);
+            player.sendOverlayMessage(Component.translatable("entity.dungeonnowloading.chaos_spawner.right_click"));
+            return InteractionResult.sidedSuccess(this.level().isClientSide());
         } else {
             return super.mobInteract(player, interactionHand);
         }
@@ -648,7 +656,7 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor serverLevelAccessor, DifficultyInstance difficultyInstance, MobSpawnType mobSpawnType, SpawnGroupData spawnGroupData) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor serverLevelAccessor, DifficultyInstance difficultyInstance, EntitySpawnReason mobSpawnType, SpawnGroupData spawnGroupData) {
         this.entityData.set(SPAWN_POINT, this.blockPosition());
         this.entityData.set(DATA_STATE, State.SLEEPING);
         this.triggerSleepAnimation();
@@ -703,7 +711,7 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
         soul.moveTo(start.getX() + 0.5, start.getY() + RECALL_POSITION_OFFSET_Y, start.getZ() + 0.5, 0, 0);
 
         // bossId should match the recall registry id you use for Chaos Spawner
-        soul.setBossId(ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "chaos_spawner"));
+        soul.setBossId(Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "chaos_spawner"));
 
         int count = SeepingSoulEntity.getRecallCountForSeepingSoul(this.defeatedCount, this.modifiedDefeatedCount);
 
@@ -727,7 +735,7 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
         if (this.isSleeping()) {
             this.stopSleeping();
         }
-        if (!this.level().isClientSide && this.hasCustomName()) {
+        if (!this.level().isClientSide() && this.hasCustomName()) {
             LOGGER.info("Named entity {} died: {}", (Object)this, (Object)this.getCombatTracker().getDeathMessage().getString());
         }
         Level level = this.level();
@@ -796,21 +804,21 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
     }
 
     private void dropLabyrinthTrophyForPlayer(UUID playerUuid) {
-        if (this.level().isClientSide) return;
+        if (this.level().isClientSide()) return;
 
         ItemStack trophy = new ItemStack(DNLBlocks.LABYRINTH_TROPHY.get());
         this.spawnSpecialItemEntity(trophy, 0.0F, playerUuid);
     }
 
     private void dropBannerForPlayer(UUID playerUuid) {
-        if (this.level().isClientSide) return;
+        if (this.level().isClientSide()) return;
 
         ItemStack banner = new ItemStack(DNLBlocks.DUNGEON_BANNER_CHAOS_SPAWNER.get());
         this.spawnSpecialItemEntity(banner, 0.0F, playerUuid);
     }
 
     private void dropGreatXpBottlesForPlayer(UUID playerUuid) {
-        if (this.level().isClientSide) return;
+        if (this.level().isClientSide()) return;
 
         int recallCount = Math.max(0, this.modifiedDefeatedCount);; // 0,1,2,...
         int total = 5 * (recallCount + 1);
@@ -830,7 +838,7 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
     }
 
     private void dropRecallEnchantedBookForPlayer(UUID playerUuid) {
-        if (this.level().isClientSide) return;
+        if (this.level().isClientSide()) return;
 
         Holder<Enchantment> ench = this.random.nextBoolean()
                 ? DNLEnchantments.holder(this.level(), DNLEnchantments.ARC_SHOT)
@@ -869,7 +877,7 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
     public SpecialItemEntity spawnSpecialItemEntity(ItemStack itemStack, float i, UUID uuid) {
         if (itemStack.isEmpty()) {
             return null;
-        } else if (this.level().isClientSide) {
+        } else if (this.level().isClientSide()) {
             return null;
         } else {
             SpecialItemEntity specialItemEntity = new SpecialItemEntity(this.level(), this.getX(), this.getY() + i, this.getZ(), itemStack);
@@ -887,11 +895,11 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
                 ServerPlayer.class,
                 detectionBox
         );
-        List<ResourceLocation> soundsToStart = new ArrayList<>(List.of());
+        List<Identifier> soundsToStart = new ArrayList<>(List.of());
         soundsToStart.add(DNLSounds.MUSIC_HELLSPAWN_BASE.get().getLocation());
         soundsToStart.add(DNLSounds.MUSIC_HELLSPAWN_OVERLAY.get().getLocation());
         for (ServerPlayer player : nearbyPlayers) {
-            for (ResourceLocation sound : soundsToStart) {
+            for (Identifier sound : soundsToStart) {
                 Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(this.getId(), sound, SoundSource.MUSIC, 1.0F, 1.0f, false, radius, radius), player);
             }
             Services.NETWORK.sendToPlayer(new S2CFadeOutBackgroundMusicSoundPacket(60), player);
@@ -930,12 +938,12 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
                 detectionBox
         );
 
-        List<ResourceLocation> soundsToStop = new ArrayList<>(List.of());
+        List<Identifier> soundsToStop = new ArrayList<>(List.of());
         soundsToStop.add(DNLSounds.MUSIC_HELLSPAWN_BASE.get().getLocation());
         soundsToStop.add(DNLSounds.MUSIC_HELLSPAWN_OVERLAY.get().getLocation());
 
         for (ServerPlayer otherPlayer : nearbyPlayers) {
-            for (ResourceLocation sound : soundsToStop) {
+            for (Identifier sound : soundsToStop) {
                 Services.NETWORK.sendToPlayer(new S2CStopTickingSoundPacket(this.getId(), sound, TickingSoundTarget.ALL, 60, true), otherPlayer);
             }
         }
@@ -1153,26 +1161,26 @@ public class ChaosSpawnerEntity extends Monster implements Enemy, UniqueDeathAni
 
         // Poof burst (fast)
         for (int i = 0; i < 25; i++) {
-            double x = x0 + (level.random.nextDouble() * 2.0 - 1.0) * radius;
-            double z = z0 + (level.random.nextDouble() * 2.0 - 1.0) * radius;
-            double y = y0 + (level.random.nextDouble() * 2.0 - 1.0) * radius;
+            double x = x0 + (level.getRandom().nextDouble() * 2.0 - 1.0) * radius;
+            double z = z0 + (level.getRandom().nextDouble() * 2.0 - 1.0) * radius;
+            double y = y0 + (level.getRandom().nextDouble() * 2.0 - 1.0) * radius;
 
-            double vx = (level.random.nextDouble() * 2.0 - 1.0) * 0.10;
-            double vy = (level.random.nextDouble() * 2.0 - 1.0) * 0.10;
-            double vz = (level.random.nextDouble() * 2.0 - 1.0) * 0.10;
+            double vx = (level.getRandom().nextDouble() * 2.0 - 1.0) * 0.10;
+            double vy = (level.getRandom().nextDouble() * 2.0 - 1.0) * 0.10;
+            double vz = (level.getRandom().nextDouble() * 2.0 - 1.0) * 0.10;
 
             level.sendParticles(ParticleTypes.POOF, x, y, z, 1, vx, vy, vz, 0.0);
         }
 
         // Soul particles (floaty)
         for (int i = 0; i < 18; i++) {
-            double x = x0 + (level.random.nextDouble() * 2.0 - 1.0) * radius;
-            double z = z0 + (level.random.nextDouble() * 2.0 - 1.0) * radius;
-            double y = y0 + (level.random.nextDouble() * 2.0 - 1.0) * radius;
+            double x = x0 + (level.getRandom().nextDouble() * 2.0 - 1.0) * radius;
+            double z = z0 + (level.getRandom().nextDouble() * 2.0 - 1.0) * radius;
+            double y = y0 + (level.getRandom().nextDouble() * 2.0 - 1.0) * radius;
 
-            double vx = (level.random.nextDouble() * 2.0 - 1.0) * 0.025;
-            double vy = (level.random.nextDouble() * 2.0 - 1.0) * 0.025;
-            double vz = (level.random.nextDouble() * 2.0 - 1.0) * 0.025;
+            double vx = (level.getRandom().nextDouble() * 2.0 - 1.0) * 0.025;
+            double vy = (level.getRandom().nextDouble() * 2.0 - 1.0) * 0.025;
+            double vz = (level.getRandom().nextDouble() * 2.0 - 1.0) * 0.025;
 
             level.sendParticles(ParticleTypes.SOUL, x, y, z, 1, vx, vy, vz, 0.0);
         }

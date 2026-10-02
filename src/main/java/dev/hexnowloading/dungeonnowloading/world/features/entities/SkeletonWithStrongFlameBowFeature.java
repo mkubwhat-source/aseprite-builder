@@ -4,11 +4,11 @@ import dev.hexnowloading.dungeonnowloading.registry.DNLEnchantments;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.entity.util.EntityScale;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.monster.Skeleton;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.monster.skeleton.Skeleton;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -27,7 +27,7 @@ public class SkeletonWithStrongFlameBowFeature extends Feature<NoneFeatureConfig
         Skeleton skeleton = EntityType.SKELETON.create(context.level().getLevel());
         skeleton.setPersistenceRequired();
         skeleton.moveTo((double)context.origin().getX() + 0.5D, context.origin().getY(), (double)context.origin().getZ() + 0.5D, 0.0F, 0.0F);
-        skeleton.finalizeSpawn(context.level(), context.level().getCurrentDifficultyAt(context.origin()), MobSpawnType.STRUCTURE, null);
+        skeleton.finalizeSpawn(context.level(), context.level().getCurrentDifficultyAt(context.origin()), EntitySpawnReason.STRUCTURE, null);
         EntityScale.scaleMobAttributes(skeleton);
         skeleton.setItemSlot(EquipmentSlot.MAINHAND, strongFlameBow(context.level().registryAccess()));
         skeleton.setItemSlot(EquipmentSlot.HEAD, trimArmor(context.level().registryAccess(), Items.DIAMOND_HELMET));
@@ -41,7 +41,7 @@ public class SkeletonWithStrongFlameBowFeature extends Feature<NoneFeatureConfig
         skeleton.setDropChance(EquipmentSlot.LEGS, 0.0F);
         skeleton.setDropChance(EquipmentSlot.FEET, 0.0F);
         skeleton.setLeftHanded(context.level().getRandom().nextFloat() < 0.05F);
-        skeleton.lootTable = net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "entities/modified/diamond_skeleton"));
+        skeleton.lootTable = net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE, Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "entities/modified/diamond_skeleton"));
 
         context.level().addFreshEntity(skeleton);
         return true;

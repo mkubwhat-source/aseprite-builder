@@ -8,7 +8,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
@@ -39,8 +39,8 @@ public class DevStructureDatafixCommand {
                                 .then(Commands.literal("datafix").executes(DevStructureDatafixCommand::datafix)))));
     }
 
-    private static List<ResourceLocation> dnlTemplates(StructureTemplateManager mgr) {
-        List<ResourceLocation> out = new ArrayList<>();
+    private static List<Identifier> dnlTemplates(StructureTemplateManager mgr) {
+        List<Identifier> out = new ArrayList<>();
         mgr.listTemplates().filter(rl -> DungeonNowLoading.MOD_ID.equals(rl.getNamespace())).forEach(out::add);
         return out;
     }
@@ -52,7 +52,7 @@ public class DevStructureDatafixCommand {
         int checked = 0, empty = 0, zeroSize = 0;
         var log = com.mojang.logging.LogUtils.getLogger();
         log.info("[DNL-STRUCT] report start");
-        for (ResourceLocation rl : dnlTemplates(mgr)) {
+        for (Identifier rl : dnlTemplates(mgr)) {
             checked++;
             StructureTemplate t = mgr.get(rl).orElse(null);
             if (t == null) { empty++; log.info("[DNL-STRUCT] MISSING {}", rl); continue; }
@@ -75,7 +75,7 @@ public class DevStructureDatafixCommand {
         Path outDir = Path.of("dnl_datafix_structures");
         var src = ctx.getSource();
         int ok = 0, fail = 0;
-        for (ResourceLocation rl : dnlTemplates(mgr)) {
+        for (Identifier rl : dnlTemplates(mgr)) {
             try {
                 StructureTemplate t = mgr.get(rl).orElse(null);
                 if (t == null) { fail++; continue; }
@@ -86,7 +86,7 @@ public class DevStructureDatafixCommand {
                 ok++;
             } catch (Throwable th) {
                 fail++;
-                final ResourceLocation frl = rl;
+                final Identifier frl = rl;
                 final String msg = th.toString();
                 src.sendFailure(Component.literal("FAIL " + frl + ": " + msg));
             }

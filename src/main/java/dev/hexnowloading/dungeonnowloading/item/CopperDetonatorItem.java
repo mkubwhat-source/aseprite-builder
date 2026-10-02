@@ -15,7 +15,7 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
@@ -52,11 +52,11 @@ public class CopperDetonatorItem extends Item {
         Player player = context.getPlayer();
 
         if (blockState.is(Blocks.COCOA)) {
-            if (!level.isClientSide && player != null && DNLSupporters.hasSkin(player.getUUID(), "copper_creep_butler")) {
+            if (!level.isClientSide() && player != null && DNLSupporters.hasSkin(player.getUUID(), "copper_creep_butler")) {
                 cycleCosmeticMode(stack);
                 String modeName = getCosmeticMode(stack);
                 String capitalizedMode = modeName.substring(0, 1).toUpperCase() + modeName.substring(1);
-                player.displayClientMessage(Component.literal("Current Mode: " + capitalizedMode).withStyle(ChatFormatting.YELLOW), true);
+                player.sendOverlayMessage(Component.literal("Current Mode: " + capitalizedMode).withStyle(ChatFormatting.YELLOW));
             }
             return InteractionResult.SUCCESS;
         }
@@ -120,8 +120,8 @@ public class CopperDetonatorItem extends Item {
             if (creepsInRange.size() < 3) {
                 // First, check whether there is enough space to spawn (including gigantism size) *before* consuming resources.
                 if (!canSpawnCreepHere(level, player, itemStack)) {
-                    if (!level.isClientSide) {
-                        player.displayClientMessage(Component.literal("Not enough space for summon").withStyle(ChatFormatting.RED), true);
+                    if (!level.isClientSide()) {
+                        player.sendOverlayMessage(Component.literal("Not enough space for summon").withStyle(ChatFormatting.RED));
                     }
                     player.getCooldowns().addCooldown(this, 20);
                     return;

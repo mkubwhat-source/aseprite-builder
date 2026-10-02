@@ -119,7 +119,7 @@ public class MendingTableBlock extends BaseEntityBlock implements SimpleWaterlog
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             BlockEntity be = level.getBlockEntity(pos);
             if (be instanceof MendingTableBlockEntity mending) {
                 player.openMenu(mending);

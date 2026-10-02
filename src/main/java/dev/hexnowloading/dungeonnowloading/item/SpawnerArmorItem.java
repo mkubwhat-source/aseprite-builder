@@ -20,14 +20,14 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
@@ -86,13 +86,10 @@ public class SpawnerArmorItem extends ArmorItem {
             return super.useOn(context);
         }
 
-        if (!level.isClientSide && player != null && canUseLanternWhimperMode(player)) {
+        if (!level.isClientSide() && player != null && canUseLanternWhimperMode(player)) {
             cycleWhimperCosmeticMode(stack);
             String modeName = getWhimperCosmeticMode(stack);
-            player.displayClientMessage(
-                    Component.literal("Whimper Mode: " + capitalize(modeName)).withStyle(ChatFormatting.YELLOW),
-                    true
-            );
+            player.sendOverlayMessage(Component.literal("Whimper Mode: " + capitalize(modeName)).withStyle(ChatFormatting.YELLOW));
         }
 
         return InteractionResult.SUCCESS;
@@ -102,7 +99,7 @@ public class SpawnerArmorItem extends ArmorItem {
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected) {
         super.inventoryTick(stack, level, entity, slot, selected);
 
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (!(entity instanceof Player player)) return;
         if (!isEquippedSpawnerHelmet(player, stack)) return;
         if (!hasCorrectArmorOn(player)) return;

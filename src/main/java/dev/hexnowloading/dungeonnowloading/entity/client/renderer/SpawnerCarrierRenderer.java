@@ -9,12 +9,12 @@ import dev.hexnowloading.dungeonnowloading.entity.monster.SpawnerCarrierEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class SpawnerCarrierRenderer<T extends SpawnerCarrierEntity> extends MobRenderer<T, SpawnerCarrierModel<T>> {
 
-    private static final ResourceLocation TEXTURE =
-            ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/spawner_carrier.png");
+    private static final Identifier TEXTURE =
+            Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/spawner_carrier.png");
 
     public SpawnerCarrierRenderer(EntityRendererProvider.Context ctx) {
         super(ctx, new SpawnerCarrierModel<>(ctx.bakeLayer(SpawnerCarrierModel.LAYER_LOCATION)), 1.5F);
@@ -29,7 +29,7 @@ public class SpawnerCarrierRenderer<T extends SpawnerCarrierEntity> extends MobR
     }
 
     @Override
-    public ResourceLocation getTextureLocation(SpawnerCarrierEntity entity) {
+    public Identifier getTextureLocation(SpawnerCarrierEntity entity) {
         return TEXTURE;
     }
 }

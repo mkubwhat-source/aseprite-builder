@@ -4,7 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import dev.hexnowloading.dungeonnowloading.registry.DNLGameEvents;
 import dev.hexnowloading.dungeonnowloading.util.event_managers.ExplosionDestructionManager;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -24,7 +24,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.EntityBasedExplosionDamageCalculator;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.ExplosionDamageCalculator;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Block;
@@ -91,7 +91,7 @@ public final class DNLCustomExplosion {
         return switch (explosionInteraction) {
             case NONE -> Explosion.BlockInteraction.KEEP;
             case BLOCK -> getDestroyType(level, GameRules.RULE_BLOCK_EXPLOSION_DROP_DECAY);
-            case MOB -> level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)
+            case MOB -> level.getGameRules().getBooleanOr(GameRules.RULE_MOBGRIEFING, false)
                     ? getDestroyType(level, GameRules.RULE_MOB_EXPLOSION_DROP_DECAY)
                     : Explosion.BlockInteraction.KEEP;
             case TNT -> getDestroyType(level, GameRules.RULE_TNT_EXPLOSION_DROP_DECAY);
@@ -110,7 +110,7 @@ public final class DNLCustomExplosion {
         }
 
         Set<BlockPos> positions = new HashSet<>();
-        RandomSource random = level.random;
+        RandomSource random = level.getRandom();
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
                 for (int z = 0; z < 16; z++) {
@@ -225,7 +225,7 @@ public final class DNLCustomExplosion {
         }
 
         if (settings.causesFire) {
-            RandomSource random = level.random;
+            RandomSource random = level.getRandom();
             for (BlockPos blockPos : toBlow) {
                 if (random.nextInt(3) == 0 && level.getBlockState(blockPos).isAir() && level.getBlockState(blockPos.below()).isSolidRender(level, blockPos.below())) {
                     level.setBlockAndUpdate(blockPos, BaseFireBlock.getState(level, blockPos));
@@ -237,7 +237,7 @@ public final class DNLCustomExplosion {
     private static void destroyBlocks(ServerLevel level, Explosion explosion, ObjectArrayList<BlockPos> toBlow, Settings settings, Explosion.BlockInteraction blockInteraction) {
         ObjectArrayList<Pair<ItemStack, BlockPos>> drops = new ObjectArrayList<>();
         boolean playerSource = explosion.getIndirectSourceEntity() instanceof Player;
-        Util.shuffle(toBlow, level.random);
+        Util.shuffle(toBlow, level.getRandom());
 
         for (BlockPos blockPos : toBlow) {
             BlockState blockState = level.getBlockState(blockPos);

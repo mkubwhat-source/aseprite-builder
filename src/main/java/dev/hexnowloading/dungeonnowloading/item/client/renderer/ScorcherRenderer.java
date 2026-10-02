@@ -10,10 +10,10 @@ import dev.hexnowloading.dungeonnowloading.item.client.model.ScorcherModel;
 import dev.hexnowloading.dungeonnowloading.network.ClientUtil;
 import dev.hexnowloading.dungeonnowloading.registry.DNLItems;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -23,9 +23,9 @@ import static dev.hexnowloading.dungeonnowloading.item.ScorcherItem.getTimeStamp
 
 public class ScorcherRenderer extends BlockEntityWithoutLevelRenderer {
 
-    private static final ResourceLocation TEXTURE_EMISSIVE_FLAME = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/item/scorcher/scorcher_emissive_flame.png");
-    private static final ResourceLocation TEXTURE_EMISSIVE_SOUL_FLAME = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/item/scorcher/scorcher_emissive_soul_flame.png");
-    private static final ResourceLocation TEXTURE_EMISSIVE_HEAT = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/item/scorcher/scorcher_emissive_heat.png");
+    private static final Identifier TEXTURE_EMISSIVE_FLAME = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/item/scorcher/scorcher_emissive_flame.png");
+    private static final Identifier TEXTURE_EMISSIVE_SOUL_FLAME = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/item/scorcher/scorcher_emissive_soul_flame.png");
+    private static final Identifier TEXTURE_EMISSIVE_HEAT = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/item/scorcher/scorcher_emissive_heat.png");
     private static final RenderType RENDER_TYPE_EMISSIVE_FLAME = RenderType.entityTranslucent(TEXTURE_EMISSIVE_FLAME);
     private static final RenderType RENDER_TYPE_EMISSIVE_SOUL_FLAME = RenderType.entityTranslucent(TEXTURE_EMISSIVE_SOUL_FLAME);
     private static final RenderType RENDER_TYPE_EMISSIVE_HEAT = RenderType.entityTranslucent(TEXTURE_EMISSIVE_HEAT);
@@ -81,12 +81,12 @@ public class ScorcherRenderer extends BlockEntityWithoutLevelRenderer {
             if (itemStack.is(DNLItems.SOUL_SCORCHER.get())) {
                 emissiveFlame = bufferSource.getBuffer(RENDER_TYPE_EMISSIVE_SOUL_FLAME);
             }
-            this.model.renderToBuffer(poseStack, emissiveFlame, LightTexture.FULL_BRIGHT, packedOverlay, net.minecraft.util.FastColor.ARGB32.colorFromFloat(flameAlpha, 1.0F, 1.0F, 1.0F));
+            this.model.renderToBuffer(poseStack, emissiveFlame, LightCoordsUtil.FULL_BRIGHT, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(flameAlpha, 1.0F, 1.0F, 1.0F));
         }
 
         if (heatAlpha > 0.0F) {
             VertexConsumer emissiveHeat = bufferSource.getBuffer(RENDER_TYPE_EMISSIVE_HEAT);
-            this.model.renderToBuffer(poseStack, emissiveHeat, LightTexture.FULL_BRIGHT, packedOverlay, net.minecraft.util.FastColor.ARGB32.colorFromFloat(heatAlpha, 1.0F, 1.0F, 1.0F));
+            this.model.renderToBuffer(poseStack, emissiveHeat, LightCoordsUtil.FULL_BRIGHT, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(heatAlpha, 1.0F, 1.0F, 1.0F));
         }
         poseStack.popPose();
     }

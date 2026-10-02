@@ -1,5 +1,11 @@
 package dev.hexnowloading.dungeonnowloading.block.entity;
 
+
+
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
 import com.mojang.authlib.GameProfile;
 import dev.hexnowloading.dungeonnowloading.registry.DNLBlockEntityTypes;
 import net.minecraft.core.BlockPos;
@@ -122,13 +128,13 @@ public class PlayerStatueBlockEntity extends BlockEntity {
      */
     public void applyTextUpdateFromClient(ServerPlayer sender, List<Component> newLines, DyeColor color, boolean glow) {
         if (!(level instanceof ServerLevel)) return;
-        if (isWaxed()) { sender.displayClientMessage(Component.literal("Statue is waxed"), false); return; }
+        if (isWaxed()) { sender.sendSystemMessage(Component.literal("Statue is waxed")); return; }
         if (!sender.getUUID().equals(allowedEditor)) {
-            sender.displayClientMessage(Component.literal("No edit lock / wrong editor"), false);
+            sender.sendSystemMessage(Component.literal("No edit lock / wrong editor"));
             return;
         }
         if (playerIsTooFarAwayToEdit(sender.getUUID())) {
-            sender.displayClientMessage(Component.literal("Too far to edit"), false);
+            sender.sendSystemMessage(Component.literal("Too far to edit"));
             return;
         }
 
@@ -140,7 +146,7 @@ public class PlayerStatueBlockEntity extends BlockEntity {
     // ===== saving / syncing ==================================================
 
     @Override
-    protected void saveAdditional(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+    protected void saveAdditional(ValueOutput tag) {
         super.saveAdditional(tag, registries);
 
         // owner
@@ -148,7 +154,7 @@ public class PlayerStatueBlockEntity extends BlockEntity {
             net.minecraft.world.item.component.ResolvableProfile.CODEC
                     .encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, new net.minecraft.world.item.component.ResolvableProfile(owner))
                     .result()
-                    .ifPresent(t -> tag.put("Owner", t));
+                    .ifPresent(t -> NbtCompat.put(tag, "Owner", t));
         }
 
         // pose
@@ -162,7 +168,7 @@ public class PlayerStatueBlockEntity extends BlockEntity {
         tag.putBoolean("TextGlowing", glowingText);
 
         // sign-like extras
-        if (allowedEditor != null) tag.putUUID("AllowedEditor", allowedEditor);
+        if (allowedEditor != null) NbtCompat.putUUID(tag, "AllowedEditor", allowedEditor);
         tag.putBoolean("Waxed", waxed);
 
         // tier only (no Offering tag)
@@ -170,13 +176,13 @@ public class PlayerStatueBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+    protected void loadAdditional(ValueInput tag) {
         super.loadAdditional(tag, registries);
 
         // owner
-        if (tag.contains("Owner", 10)) {
+        if (NbtCompat.has(tag, "Owner")) {
             owner = net.minecraft.world.item.component.ResolvableProfile.CODEC
-                    .parse(net.minecraft.nbt.NbtOps.INSTANCE, tag.getCompound("Owner"))
+                    .parse(net.minecraft.nbt.NbtOps.INSTANCE, NbtCompat.getCompound(tag, "Owner"))
                     .result()
                     .map(net.minecraft.world.item.component.ResolvableProfile::gameProfile)
                     .orElse(null);
@@ -185,29 +191,29 @@ public class PlayerStatueBlockEntity extends BlockEntity {
         }
 
         // pose
-        poseVariant = tag.getInt("PoseVariant");
+        poseVariant = tag.getIntOr("PoseVariant", 0);
 
         // text
         for (int i = 0; i < LINES; i++) {
             String key = "Text" + (i + 1);
-            text[i] = tag.contains(key, 8) ? Component.Serializer.fromJson(tag.getString(key), registries) : Component.empty();
+            text[i] = NbtCompat.has(tag, key) ? Component.Serializer.fromJson(tag.getStringOr(key, ""), registries) : Component.empty();
         }
-        if (tag.contains("TextColor", 8)) {
-            try { textColor = DyeColor.byName(tag.getString("TextColor"), DyeColor.BLACK); } catch (Exception ignored) {}
+        if (NbtCompat.has(tag, "TextColor")) {
+            try { textColor = DyeColor.byName(tag.getStringOr("TextColor", ""), DyeColor.BLACK); } catch (Exception ignored) {}
         }
-        glowingText = tag.getBoolean("TextGlowing");
+        glowingText = tag.getBooleanOr("TextGlowing", false);
 
         // sign-like extras
-        allowedEditor = (tag.contains("AllowedEditor", 11) || tag.contains("AllowedEditor", 12))
-                ? tag.getUUID("AllowedEditor") : null;
-        waxed = tag.getBoolean("Waxed");
+        allowedEditor = (NbtCompat.has(tag, "AllowedEditor") || NbtCompat.has(tag, "AllowedEditor"))
+                ? NbtCompat.getUUID(tag, "AllowedEditor") : null;
+        waxed = tag.getBooleanOr("Waxed", false);
 
         // tier
-        this.notchTier = NotchTier.fromString(tag.getString("NotchTier"));
+        this.notchTier = NotchTier.fromString(tag.getStringOr("NotchTier", ""));
 
         // Back-compat: if a legacy "Offering" tag exists, derive the tier once.
-        if (this.notchTier == NotchTier.NONE && tag.contains("Offering", 10)) {
-            ItemStack legacy = ItemStack.parseOptional(registries, tag.getCompound("Offering"));
+        if (this.notchTier == NotchTier.NONE && NbtCompat.has(tag, "Offering")) {
+            ItemStack legacy = ItemStack.parseOptional(registries, NbtCompat.getCompound(tag, "Offering"));
             NotchTier legacyTier = tierFromItem(legacy);
             if (legacyTier != NotchTier.NONE) this.notchTier = legacyTier;
         }
@@ -219,7 +225,7 @@ public class PlayerStatueBlockEntity extends BlockEntity {
 
     /** Sends a block update to clients (server only). */
     public void sync() {
-        if (level != null && !level.isClientSide) {
+        if (level != null && !level.isClientSide()) {
             level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
         }
     }

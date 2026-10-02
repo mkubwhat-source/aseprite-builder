@@ -25,7 +25,7 @@ public abstract class FlintAndSteelMixin {
         Player player = context.getPlayer();
         BlockPos placeBlockPos = context.getClickedPos();
 
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         if (player.isCreative() || player.isSpectator()) return;
 

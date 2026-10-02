@@ -5,19 +5,19 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.entity.client.model.VertexDomainProjectileModel;
 import dev.hexnowloading.dungeonnowloading.entity.projectile.VertexDomainProjectileEntity;
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class VertexDomainProjectileRenderer<T extends VertexDomainProjectileEntity> extends EntityRenderer<VertexDomainProjectileEntity> {
 
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/vertex_domain_projectile.png");
-    private static final ResourceLocation EMISSIVE = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/vertex_domain_projectile_emissive.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/vertex_domain_projectile.png");
+    private static final Identifier EMISSIVE = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/vertex_domain_projectile_emissive.png");
     private static final RenderType RENDER_TYPE = RenderType.entityTranslucent(TEXTURE);
     private static final RenderType EMISSIVE_RENDER_TYPE = RenderType.entityTranslucent(EMISSIVE);
     private VertexDomainProjectileModel model;
@@ -49,12 +49,12 @@ public class VertexDomainProjectileRenderer<T extends VertexDomainProjectileEnti
 
         VertexConsumer vertexConsumer = buffer.getBuffer(RENDER_TYPE);
         this.model.setupAnim(entity, 0, 0, entity.tickCount + partialTicks, entityYaw, 0);
-        this.model.renderToBufferWithEntity(entity, poseStack, vertexConsumer, LightTexture.FULL_BRIGHT, OverlayTexture.pack(0.0f, bl), 1.0F, 1.0F, 1.0F, alpha);
+        this.model.renderToBufferWithEntity(entity, poseStack, vertexConsumer, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.pack(0.0f, bl), 1.0F, 1.0F, 1.0F, alpha);
 
         float emissiveAlpha = getEmissiveAlpha(entity, partialTicks);
         if (emissiveAlpha > 0.01F) {
             VertexConsumer emissiveVertexConsumer = buffer.getBuffer(EMISSIVE_RENDER_TYPE);
-            this.model.renderToBufferWithEntity(entity, poseStack, emissiveVertexConsumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, emissiveAlpha);
+            this.model.renderToBufferWithEntity(entity, poseStack, emissiveVertexConsumer, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, emissiveAlpha);
         }
 
         poseStack.popPose();
@@ -96,7 +96,7 @@ public class VertexDomainProjectileRenderer<T extends VertexDomainProjectileEnti
 
 
     @Override
-    public ResourceLocation getTextureLocation(VertexDomainProjectileEntity vertexDomainProjectileEntity) {
+    public Identifier getTextureLocation(VertexDomainProjectileEntity vertexDomainProjectileEntity) {
         return TEXTURE;
     }
 }

@@ -70,14 +70,14 @@ public class SignalGateBlock extends DirectionalBlock {
         if (power > 15) {
             power = 0;
         }
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             Direction direction = blockState.getValue(FACING);
             boolean b = blockState.getValue(POWERED);
             level.setBlock(blockPos, blockState.setValue(POWER, power).setValue(FACING, direction).setValue(POWERED, b), 2);
             level.playSound(null, blockPos, DNLSounds.SIGNAL_GATE_CLICK.get(), SoundSource.BLOCKS, 1.0F, 1.0F + 1.0F * power / 15);
             this.startSignal(level, blockPos);
         }
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
     /*@Override
@@ -178,7 +178,7 @@ public class SignalGateBlock extends DirectionalBlock {
         if (blockState.is(blockState2.getBlock())) {
             return;
         }
-        if (!level.isClientSide && blockState.getValue(POWERED).booleanValue() && level.getBlockTicks().hasScheduledTick(blockPos, this)) {
+        if (!level.isClientSide() && blockState.getValue(POWERED).booleanValue() && level.getBlockTicks().hasScheduledTick(blockPos, this)) {
             this.updateNeighborsInFront(level, blockPos, (BlockState)blockState.setValue(POWERED, false));
         }
     }

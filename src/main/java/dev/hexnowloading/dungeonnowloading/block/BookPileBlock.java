@@ -4,7 +4,7 @@ import dev.hexnowloading.dungeonnowloading.block.entity.BookPileBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -91,7 +91,7 @@ public class BookPileBlock extends PileBlock implements EntityBlock {
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(level, pos, state, placer, stack);
 
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         BlockEntity be = level.getBlockEntity(pos);
         if (!(be instanceof BookPileBlockEntity pileBe)) return;
@@ -101,17 +101,17 @@ public class BookPileBlock extends PileBlock implements EntityBlock {
         net.minecraft.world.item.component.CustomData customData =
                 stack.get(net.minecraft.core.component.DataComponents.BLOCK_ENTITY_DATA);
         CompoundTag bet = customData != null ? customData.copyTag() : null;
-        if (bet != null && bet.contains("LootTable", Tag.TAG_STRING)) {
-            ResourceLocation id = ResourceLocation.parse(bet.getString("LootTable"));
-            long seed = bet.contains("LootTableSeed", Tag.TAG_LONG) ? bet.getLong("LootTableSeed") : level.getRandom().nextLong();
+        if (bet != null && bet.contains("LootTable")) {
+            Identifier id = Identifier.parse(bet.getStringOr("LootTable", ""));
+            long seed = bet.contains("LootTableSeed") ? bet.getLongOr("LootTableSeed", 0L) : level.getRandom().nextLong();
             pileBe.setLootTable(id, seed);
         }
     }
 
     @Override
     public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool) {
-        if (!level.isClientSide && level instanceof ServerLevel serverLevel && blockEntity instanceof BookPileBlockEntity pileBe) {
-            ResourceLocation tableId = pileBe.getLootTable();
+        if (!level.isClientSide() && level instanceof ServerLevel serverLevel && blockEntity instanceof BookPileBlockEntity pileBe) {
+            Identifier tableId = pileBe.getLootTable();
 
             if (tableId != null) {
                 LootTable table = serverLevel.getServer().reloadableRegistries().getLootTable(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE, tableId));
@@ -141,7 +141,7 @@ public class BookPileBlock extends PileBlock implements EntityBlock {
         if (builder.getOptionalParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.BLOCK_ENTITY)
                 instanceof BookPileBlockEntity be) {
 
-            ResourceLocation tableId = be.getLootTable();
+            Identifier tableId = be.getLootTable();
             Level level = builder.getLevel();
             if (tableId != null) {
                 var lootTable = level.getServer().reloadableRegistries().getLootTable(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE, tableId));

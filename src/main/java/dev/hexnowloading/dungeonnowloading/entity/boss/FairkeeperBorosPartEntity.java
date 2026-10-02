@@ -1,5 +1,11 @@
 package dev.hexnowloading.dungeonnowloading.entity.boss;
 
+
+
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
 import net.minecraft.core.Holder;
 import dev.hexnowloading.dungeonnowloading.entity.projectile.VertexDomainProjectileEntity;
 import dev.hexnowloading.dungeonnowloading.entity.projectile.VertexOrbProjectileEntity;
@@ -30,7 +36,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -93,16 +99,16 @@ public class FairkeeperBorosPartEntity extends Monster implements Boss, Enemy, S
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compoundTag) {
+    public void addAdditionalSaveData(ValueOutput compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         if (this.getParentId() != null) {
-            compoundTag.putUUID("ParentUUID", this.getParentId());
+            NbtCompat.putUUID(compoundTag, "ParentUUID", this.getParentId());
         }
         if (this.getChildId() != null) {
-            compoundTag.putUUID("ChildUUID", this.getChildId());
+            NbtCompat.putUUID(compoundTag, "ChildUUID", this.getChildId());
         }
         if (this.getHeadId() != null) {
-            compoundTag.putUUID("HeadUUID", this.getHeadId());
+            NbtCompat.putUUID(compoundTag, "HeadUUID", this.getHeadId());
         }
         compoundTag.putBoolean("TailPart", isTail());
         compoundTag.putInt("BodyIndex", getBodyIndex());
@@ -110,26 +116,26 @@ public class FairkeeperBorosPartEntity extends Monster implements Boss, Enemy, S
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
+    public void readAdditionalSaveData(ValueInput compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-        if (compoundTag.hasUUID("ParentUUID")) {
-            this.setParentId(compoundTag.getUUID("ParentUUID"));
+        if (NbtCompat.hasUUID(compoundTag, "ParentUUID")) {
+            this.setParentId(NbtCompat.getUUID(compoundTag, "ParentUUID"));
         }
-        if (compoundTag.hasUUID("ChildUUID")) {
-            this.setChildId(compoundTag.getUUID("ChildUUID"));
+        if (NbtCompat.hasUUID(compoundTag, "ChildUUID")) {
+            this.setChildId(NbtCompat.getUUID(compoundTag, "ChildUUID"));
         }
-        if (compoundTag.hasUUID("HeadUUID")) {
-            this.setHeadId(compoundTag.getUUID("HeadUUID"));
+        if (NbtCompat.hasUUID(compoundTag, "HeadUUID")) {
+            this.setHeadId(NbtCompat.getUUID(compoundTag, "HeadUUID"));
         }
-        this.setTail(compoundTag.getBoolean("TailPart"));
-        this.setBodyIndex(compoundTag.getInt("BodyIndex"));
-        this.setArmor(compoundTag.getBoolean("Armor"));
+        this.setTail(compoundTag.getBooleanOr("TailPart", false));
+        this.setBodyIndex(compoundTag.getIntOr("BodyIndex", 0));
+        this.setArmor(compoundTag.getBooleanOr("Armor", false));
     }
 
     @Override
     public void tick() {
         Entity parent = getParent();
-        if (parent != null && !this.level().isClientSide) {
+        if (parent != null && !this.level().isClientSide()) {
             this.setNoGravity(true);
             if (this.getHead() instanceof FairkeeperBorosEntity headEntity) {
 
@@ -175,7 +181,7 @@ public class FairkeeperBorosPartEntity extends Monster implements Boss, Enemy, S
 
             }
 
-        } else if (!this.level().isClientSide) {
+        } else if (!this.level().isClientSide()) {
             remove(RemovalReason.DISCARDED);
         }
         super.tick();
@@ -367,7 +373,7 @@ public class FairkeeperBorosPartEntity extends Monster implements Boss, Enemy, S
 
     public Entity getHead() {
         UUID id = getHeadId();
-        if (id != null && !this.level().isClientSide) {
+        if (id != null && !this.level().isClientSide()) {
             return ((ServerLevel) this.level()).getEntity(id);
         }
         return null;
@@ -402,7 +408,7 @@ public class FairkeeperBorosPartEntity extends Monster implements Boss, Enemy, S
 
     public Entity getParent() {
         UUID id = getParentId();
-        if (id != null && !this.level().isClientSide) {
+        if (id != null && !this.level().isClientSide()) {
             return ((ServerLevel) this.level()).getEntity(id);
         }
         return null;
@@ -421,7 +427,7 @@ public class FairkeeperBorosPartEntity extends Monster implements Boss, Enemy, S
 
     public Entity getChild() {
         UUID id = getChildId();
-        if (id != null && !this.level().isClientSide) {
+        if (id != null && !this.level().isClientSide()) {
             return ((ServerLevel) this.level()).getEntity(id);
         }
         return null;

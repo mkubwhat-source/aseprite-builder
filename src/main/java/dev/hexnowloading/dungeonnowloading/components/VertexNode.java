@@ -107,7 +107,7 @@ public class VertexNode {
     }
 
     public void tick(Entity entity) {
-        boolean isClientSide = entity.level().isClientSide;
+        boolean isClientSide = entity.level().isClientSide();
 
         for (VertexNodeConnectionContext connectedNodeContext : new ArrayList<>(this.connectedNodes)) {
             VertexNode connectedNode = connectedNodeContext.getVertexNode();

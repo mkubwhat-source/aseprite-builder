@@ -7,15 +7,15 @@ import dev.hexnowloading.dungeonnowloading.entity.client.model.ChaosSpawnerProje
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.entity.projectile.ChaosSpawnerProjectileEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 public class ChaosSpawnerProjectileRenderer<T extends ChaosSpawnerProjectileEntity> extends EntityRenderer<ChaosSpawnerProjectileEntity> {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/chaos_spawner/chaos_spawner_projectile.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/chaos_spawner/chaos_spawner_projectile.png");
     private ChaosSpawnerProjectileModel model;
     private static final RenderType RENDER_TYPE;
 
@@ -36,14 +36,14 @@ public class ChaosSpawnerProjectileRenderer<T extends ChaosSpawnerProjectileEnti
         if (chaosSpawnerProjectileEntity.tickCount > 4) {
             this.model.renderToBuffer(poseStack, vertexConsumer, i, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
         } else {
-            this.model.renderToBuffer(poseStack, vertexConsumer, i, OverlayTexture.NO_OVERLAY, net.minecraft.util.FastColor.ARGB32.colorFromFloat(0.0F, 1.0F, 1.0F, 1.0F));
+            this.model.renderToBuffer(poseStack, vertexConsumer, i, OverlayTexture.NO_OVERLAY, net.minecraft.util.ARGB.colorFromFloat(0.0F, 1.0F, 1.0F, 1.0F));
         }
         poseStack.popPose();
         super.render(chaosSpawnerProjectileEntity, v, v1, poseStack, multiBufferSource, i);
     }
 
     @Override
-    public ResourceLocation getTextureLocation(ChaosSpawnerProjectileEntity chaosSpawnerProjectile) {
+    public Identifier getTextureLocation(ChaosSpawnerProjectileEntity chaosSpawnerProjectile) {
         return TEXTURE;
     }
 

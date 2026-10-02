@@ -6,7 +6,7 @@ import dev.hexnowloading.dungeonnowloading.item.blockitem.*;
 import dev.hexnowloading.dungeonnowloading.platform.Services;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 
@@ -14,7 +14,7 @@ import java.util.*;
 import java.util.function.Supplier;
 
 public class DNLItems {
-    private static final HashMap<ResourceKey<CreativeModeTab>, ArrayList<ResourceLocation>> ITEM_TABS = new HashMap<>();
+    private static final HashMap<ResourceKey<CreativeModeTab>, ArrayList<Identifier>> ITEM_TABS = new HashMap<>();
     private static final Map<DungeonBannerBlock.DungeonBannerVariant, Supplier<Item>> BANNER_ITEMS = new EnumMap<>(DungeonBannerBlock.DungeonBannerVariant.class);
 
     // ITEMS - INGREDIENTS
@@ -193,7 +193,7 @@ public class DNLItems {
         return Services.REGISTRY.register(BuiltInRegistries.ITEM, name, itemSupplier);
     }
 
-    public static Map<ResourceKey<CreativeModeTab>, ArrayList<ResourceLocation>> getItemTabs() {
+    public static Map<ResourceKey<CreativeModeTab>, ArrayList<Identifier>> getItemTabs() {
         return ITEM_TABS;
     }
 

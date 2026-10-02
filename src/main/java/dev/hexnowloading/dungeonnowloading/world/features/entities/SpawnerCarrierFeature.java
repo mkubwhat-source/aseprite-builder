@@ -6,7 +6,7 @@ import dev.hexnowloading.dungeonnowloading.registry.DNLEntityTypes;
 import dev.hexnowloading.dungeonnowloading.entity.util.EntityScale;
 import dev.hexnowloading.dungeonnowloading.world.features.configs.EntityTypeConfig;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 
@@ -21,7 +21,7 @@ public class SpawnerCarrierFeature extends Feature<EntityTypeConfig> {
 
         spawnerCarrier.setPersistenceRequired();
         spawnerCarrier.moveTo((double)context.origin().getX() + 0.5D, context.origin().getY(), (double)context.origin().getZ() + 0.5D, 0.0F, 0.0F);
-        spawnerCarrier.finalizeSpawn(context.level(), context.level().getCurrentDifficultyAt(context.origin()), MobSpawnType.STRUCTURE, null);
+        spawnerCarrier.finalizeSpawn(context.level(), context.level().getCurrentDifficultyAt(context.origin()), EntitySpawnReason.STRUCTURE, null);
         EntityScale.scaleMobAttributes(spawnerCarrier);
         EntityType<?> entityType = context.config().entityType;
         if (EntityType.ZOMBIE.equals(entityType)) {

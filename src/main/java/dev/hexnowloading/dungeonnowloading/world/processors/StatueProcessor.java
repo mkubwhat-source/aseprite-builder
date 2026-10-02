@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.world.processors;
 
+
+import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -70,7 +72,7 @@ public class StatueProcessor extends StructureProcessor {
         var beTag = current.nbt() == null ? new CompoundTag() : current.nbt().copy();
 
         // Random pose if absent
-        if (!beTag.contains("PoseVariant", Tag.TAG_INT)) {
+        if (!beTag.contains("PoseVariant")) {
             beTag.putInt("PoseVariant", rand.nextInt(dev.hexnowloading.dungeonnowloading.block.PlayerStatueBlock.MAX_POSES));
         }
 
@@ -81,7 +83,7 @@ public class StatueProcessor extends StructureProcessor {
         var patron = PatronRegistry.pickPatron(this.campaign, rand);
         if (patron != null && patron.uuid != null) {
             CompoundTag owner = new CompoundTag();
-            owner.putUUID("Id", patron.uuid);
+            NbtCompat.putUUID(owner, "Id", patron.uuid);
             if (patron.name != null && !patron.name.isBlank()) {
                 owner.putString("Name", patron.name);
             }

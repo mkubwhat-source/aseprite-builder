@@ -10,7 +10,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
@@ -90,7 +90,7 @@ public class BorusArrowEntity extends AbstractArrow {
         }
         BlockState blockState = this.level().getBlockState(blockHitResult.getBlockPos());
         if (!blockState.is(BlockTags.WITHER_IMMUNE)) {
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 this.level().destroyBlock(blockHitResult.getBlockPos(), true);
             }
             this.setDeltaMovement(this.constantDeltaMovement);
@@ -103,7 +103,7 @@ public class BorusArrowEntity extends AbstractArrow {
 
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             return;
         }
         Entity target = entityHitResult.getEntity();

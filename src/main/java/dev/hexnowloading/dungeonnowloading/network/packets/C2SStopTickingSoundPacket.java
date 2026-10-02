@@ -3,7 +3,7 @@ package dev.hexnowloading.dungeonnowloading.network.packets;
 import dev.hexnowloading.dungeonnowloading.network.DNLPacket;
 import dev.hexnowloading.dungeonnowloading.platform.Services;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.AABB;
 
@@ -12,22 +12,22 @@ import java.util.List;
 
 public class C2SStopTickingSoundPacket implements DNLPacket {
 
-    private final ResourceLocation soundId;
+    private final Identifier soundId;
     private final double radius;
 
-    public C2SStopTickingSoundPacket(ResourceLocation soundId, double radius) {
+    public C2SStopTickingSoundPacket(Identifier soundId, double radius) {
         this.soundId = soundId;
         this.radius = radius;
     }
 
     public C2SStopTickingSoundPacket(FriendlyByteBuf buf) {
-        this.soundId = buf.readResourceLocation();
+        this.soundId = buf.readIdentifier();
         this.radius = buf.readDouble();
     }
 
     @Override
     public void encode(FriendlyByteBuf buf) {
-        buf.writeResourceLocation(soundId);
+        buf.writeIdentifier(soundId);
         buf.writeDouble(radius);
     }
 

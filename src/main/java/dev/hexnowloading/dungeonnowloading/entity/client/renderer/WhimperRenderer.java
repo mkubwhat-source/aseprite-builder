@@ -7,11 +7,11 @@ import dev.hexnowloading.dungeonnowloading.entity.client.model.WhimperModel;
 import dev.hexnowloading.dungeonnowloading.entity.passive.WhimperEntity;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class WhimperRenderer<T extends WhimperEntity> extends MobRenderer<T, WhimperModel<T>> {
 
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/whimper/whimper.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/whimper/whimper.png");
 
     public WhimperRenderer(EntityRendererProvider.Context context) {
         super(context, new WhimperModel<>(context.bakeLayer(WhimperModel.LAYER_LOCATION)), 0.5F);
@@ -33,7 +33,7 @@ public class WhimperRenderer<T extends WhimperEntity> extends MobRenderer<T, Whi
     }
 
     @Override
-    public ResourceLocation getTextureLocation(T t) {
+    public Identifier getTextureLocation(T t) {
         return TEXTURE;
     }
 }

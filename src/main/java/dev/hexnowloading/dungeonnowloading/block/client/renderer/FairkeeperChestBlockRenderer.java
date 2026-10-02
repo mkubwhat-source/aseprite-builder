@@ -12,15 +12,15 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 public class FairkeeperChestBlockRenderer implements BlockEntityRenderer<FairkeeperChestBlockEntity> {
 
     private final FairkeeperChestModel fairkeeperChestModel;
-    private static final ResourceLocation TEXTURE_OFF = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/block/entity/fairkeeper_chest_off.png");
-    private static final ResourceLocation TEXTURE_ON = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/block/entity/fairkeeper_chest_on.png");
+    private static final Identifier TEXTURE_OFF = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/block/entity/fairkeeper_chest_off.png");
+    private static final Identifier TEXTURE_ON = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/block/entity/fairkeeper_chest_on.png");
 
     public FairkeeperChestBlockRenderer(BlockEntityRendererProvider.Context renderer) {
         this.fairkeeperChestModel = new FairkeeperChestModel(renderer.bakeLayer(FairkeeperChestModel.LAYER_LOCATION));

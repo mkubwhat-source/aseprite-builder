@@ -1,5 +1,11 @@
 package dev.hexnowloading.dungeonnowloading.entity.projectile;
 
+
+
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
 import net.minecraft.network.syncher.SynchedEntityData;
 import dev.hexnowloading.dungeonnowloading.entity.boss.ChaosSpawnerEntity;
 import dev.hexnowloading.dungeonnowloading.entity.passive.SealedChaosEntity;
@@ -94,7 +100,7 @@ public class ChaosSpawnerProjectileEntity extends Entity {
             this.remove(RemovalReason.DISCARDED);
         } else {
             Entity owner = this.getOwner();
-            if (this.level().isClientSide || (owner == null || !owner.isRemoved()) && this.level().hasChunkAt(this.blockPosition())) {
+            if (this.level().isClientSide() || (owner == null || !owner.isRemoved()) && this.level().hasChunkAt(this.blockPosition())) {
                 super.tick();
 
                 HitResult hitResult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
@@ -152,7 +158,7 @@ public class ChaosSpawnerProjectileEntity extends Entity {
     }
 
     protected void onHitEntity(EntityHitResult entityHitResult) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             Entity target = entityHitResult.getEntity();
             Entity owner = this.getOwner();
             if (owner instanceof ChaosSpawnerEntity) {
@@ -314,9 +320,9 @@ public class ChaosSpawnerProjectileEntity extends Entity {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compoundTag) {
+    protected void readAdditionalSaveData(ValueInput compoundTag) {
         if (this.ownerUUID != null) {
-            compoundTag.putUUID("Owner", this.ownerUUID);
+            NbtCompat.putUUID(compoundTag, "Owner", this.ownerUUID);
         }
 
         if (this.leftOwner) {
@@ -324,8 +330,8 @@ public class ChaosSpawnerProjectileEntity extends Entity {
         }
 
         compoundTag.putBoolean("HasBeenShot", this.hasBeenShot);
-        if (compoundTag.contains("power", 9)) {
-            ListTag listtag = compoundTag.getList("power", 6);
+        if (NbtCompat.has(compoundTag, "power")) {
+            ListTag listtag = NbtCompat.getList(compoundTag, "power");
             if (listtag.size() == 3) {
                 this.xPower = listtag.getDouble(0);
                 this.yPower = listtag.getDouble(1);
@@ -335,14 +341,14 @@ public class ChaosSpawnerProjectileEntity extends Entity {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compoundTag) {
-        if (compoundTag.hasUUID("Owner")) {
-            this.ownerUUID = compoundTag.getUUID("Owner");
+    protected void addAdditionalSaveData(ValueOutput compoundTag) {
+        if (NbtCompat.hasUUID(compoundTag, "Owner")) {
+            this.ownerUUID = NbtCompat.getUUID(compoundTag, "Owner");
             this.cachedOwner = null;
         }
 
-        this.leftOwner = compoundTag.getBoolean("LeftOwner");
-        this.hasBeenShot = compoundTag.getBoolean("HasBeenShot");
-        compoundTag.put("power", this.newDoubleList(new double[]{this.xPower, this.yPower, this.zPower}));
+        this.leftOwner = compoundTag.getBooleanOr("LeftOwner", false);
+        this.hasBeenShot = compoundTag.getBooleanOr("HasBeenShot", false);
+        NbtCompat.put(compoundTag, "power", this.newDoubleList(new double[]{this.xPower, this.yPower, this.zPower}));
     }
 }

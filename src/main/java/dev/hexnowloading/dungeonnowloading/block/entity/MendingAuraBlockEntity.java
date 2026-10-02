@@ -1,5 +1,11 @@
 package dev.hexnowloading.dungeonnowloading.block.entity;
 
+
+
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
 import dev.hexnowloading.dungeonnowloading.registry.DNLBlockEntityTypes;
 import dev.hexnowloading.dungeonnowloading.network.packets.S2CMendingAuraSyncPacket;
 import dev.hexnowloading.dungeonnowloading.platform.Services;
@@ -59,33 +65,33 @@ public class MendingAuraBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compoundTag, net.minecraft.core.HolderLookup.Provider registries) {
+    protected void saveAdditional(ValueOutput compoundTag) {
         super.saveAdditional(compoundTag, registries);
 
         if (storedBlockState != null) {
-            compoundTag.put("StoredBlockState", BlockState.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, storedBlockState).result().orElseThrow());
+            NbtCompat.put(compoundTag, "StoredBlockState", BlockState.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, storedBlockState).result().orElseThrow());
         }
 
         if (storedBlockNbt != null) {
-            compoundTag.put("StoredBlockNBT", storedBlockNbt.copy());
+            NbtCompat.put(compoundTag, "StoredBlockNBT", storedBlockNbt.copy());
         }
 
         compoundTag.putInt("RestoreTime", restoreTime);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag compoundTag, net.minecraft.core.HolderLookup.Provider registries) {
+    protected void loadAdditional(ValueInput compoundTag) {
         super.loadAdditional(compoundTag, registries);
 
-        if (compoundTag.contains("StoredBlockState")) {
-            storedBlockState = BlockState.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, compoundTag.getCompound("StoredBlockState")).result().orElse(null);
+        if (NbtCompat.has(compoundTag, "StoredBlockState")) {
+            storedBlockState = BlockState.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, NbtCompat.getCompound(compoundTag, "StoredBlockState")).result().orElse(null);
         }
 
-        if (compoundTag.contains("StoredBlockNBT")) {
-            storedBlockNbt = compoundTag.getCompound("StoredBlockNBT").copy();
+        if (NbtCompat.has(compoundTag, "StoredBlockNBT")) {
+            storedBlockNbt = NbtCompat.getCompound(compoundTag, "StoredBlockNBT").copy();
         }
 
-        restoreTime = compoundTag.getInt("RestoreTime");
+        restoreTime = compoundTag.getIntOr("RestoreTime", 0);
     }
 
     @Nullable

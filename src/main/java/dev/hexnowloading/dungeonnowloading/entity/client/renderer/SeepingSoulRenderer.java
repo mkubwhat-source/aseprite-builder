@@ -12,14 +12,14 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class SeepingSoulRenderer extends EntityRenderer<SeepingSoulEntity> {
 
-    private final Map<ResourceLocation, SeepingSoulRenderBundle> bundles = new HashMap<>();
+    private final Map<Identifier, SeepingSoulRenderBundle> bundles = new HashMap<>();
     private final SeepingSoulRenderBundle fallback;
 
     public SeepingSoulRenderer(EntityRendererProvider.Context context) {
@@ -46,16 +46,16 @@ public class SeepingSoulRenderer extends EntityRenderer<SeepingSoulEntity> {
         this.fallback = chaos;
     }
 
-    private static ResourceLocation tex(String path) {
-        return ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, path);
+    private static Identifier tex(String path) {
+        return Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, path);
     }
 
-    private static SeepingSoulRenderBundle makeBundle(SeepingSoulRenderModel model, ResourceLocation base, ResourceLocation eyes) {
+    private static SeepingSoulRenderBundle makeBundle(SeepingSoulRenderModel model, Identifier base, Identifier eyes) {
         return new SeepingSoulRenderBundle(model, base, eyes);
     }
 
     private void put(String bossIdPath, SeepingSoulRenderBundle bundle) {
-        this.bundles.put(ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, bossIdPath), bundle);
+        this.bundles.put(Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, bossIdPath), bundle);
     }
 
     @Override
@@ -85,7 +85,7 @@ public class SeepingSoulRenderer extends EntityRenderer<SeepingSoulEntity> {
                 poseStack,
                 baseVc,
                 emissiveLight,
-                OverlayTexture.pack(0.0f, bl), net.minecraft.util.FastColor.ARGB32.colorFromFloat(alpha, 1.0F, 1.0F, 1.0F));
+                OverlayTexture.pack(0.0f, bl), net.minecraft.util.ARGB.colorFromFloat(alpha, 1.0F, 1.0F, 1.0F));
 
         // Eyes
         VertexConsumer eyesVc = buffer.getBuffer(bundle.eyesRenderType());
@@ -100,7 +100,7 @@ public class SeepingSoulRenderer extends EntityRenderer<SeepingSoulEntity> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(SeepingSoulEntity entity) {
+    public Identifier getTextureLocation(SeepingSoulEntity entity) {
         // Not used by your manual render pipeline, but must return something non-null.
         // Returning the fallback base texture is a safe choice.
         return fallback.baseTexture();

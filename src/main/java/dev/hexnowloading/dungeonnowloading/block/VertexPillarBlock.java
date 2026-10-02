@@ -112,7 +112,7 @@ public class VertexPillarBlock extends BaseEntityBlock implements EntityBlock, S
     public void setPlacedBy(Level level, BlockPos blockPos, BlockState blockState, @Nullable LivingEntity livingEntity, ItemStack itemStack) {
         BlockPos upperBlockPos = blockPos.above();
         level.setBlock(upperBlockPos, this.defaultBlockState().setValue(HALF, DoubleBlockHalf.UPPER), Block.UPDATE_ALL);
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             linkOnPlaced(level, blockPos);
         }
     }

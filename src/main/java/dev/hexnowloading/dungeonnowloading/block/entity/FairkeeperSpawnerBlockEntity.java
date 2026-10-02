@@ -1,5 +1,13 @@
 package dev.hexnowloading.dungeonnowloading.block.entity;
 
+
+
+
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
+import net.minecraft.world.entity.EntitySpawnReason;
 import com.mojang.logging.LogUtils;
 import dev.hexnowloading.dungeonnowloading.block.FairkeeperSpawnerBlock;
 import dev.hexnowloading.dungeonnowloading.entity.util.EntityScale;
@@ -21,8 +29,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.random.SimpleWeightedRandomList;
-import net.minecraft.util.random.WeightedEntry;
+import net.minecraft.util.random.WeightedList;
+import net.minecraft.world.entity.ai.behavior.ShufflingList.WeightedEntry;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -77,37 +85,37 @@ public class FairkeeperSpawnerBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compoundTag, net.minecraft.core.HolderLookup.Provider registries) {
+    protected void saveAdditional(ValueOutput compoundTag) {
         compoundTag.putInt("RemainingStoredMobs", this.remainingStoredMobs);
         compoundTag.putInt("StartUpTick", this.startUpTick);
         compoundTag.putInt("SpawnDelay", this.spawnDelay);
         compoundTag.putBoolean("Disabled", this.disabled);
         if (this.nextSpawnData != null) {
-            compoundTag.put("SpawnData", (Tag)SpawnData.CODEC.encodeStart(NbtOps.INSTANCE, this.nextSpawnData).result().orElseThrow(() -> {
+            NbtCompat.put(compoundTag, "SpawnData", (Tag)SpawnData.CODEC.encodeStart(NbtOps.INSTANCE, this.nextSpawnData).result().orElseThrow(() -> {
                 return new IllegalStateException("Invalid SpawnData");
             }));
         }
 
-        compoundTag.put("SpawnPotentials", (Tag)SpawnData.LIST_CODEC.encodeStart(NbtOps.INSTANCE, this.spawnPotentials).result().orElseThrow());
+        NbtCompat.put(compoundTag, "SpawnPotentials", (Tag)SpawnData.LIST_CODEC.encodeStart(NbtOps.INSTANCE, this.spawnPotentials).result().orElseThrow());
         super.saveAdditional(compoundTag, registries);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag compoundTag, net.minecraft.core.HolderLookup.Provider registries) {
-        this.remainingStoredMobs = compoundTag.getInt("RemainingStoredMobs");
-        this.startUpTick = compoundTag.getInt("StartUpTick");
-        this.spawnDelay = compoundTag.getInt("SpawnDelay");
-        this.disabled = compoundTag.getBoolean("Disabled");
-        boolean b0 = compoundTag.contains("SpawnData", 10);
+    protected void loadAdditional(ValueInput compoundTag) {
+        this.remainingStoredMobs = compoundTag.getIntOr("RemainingStoredMobs", 0);
+        this.startUpTick = compoundTag.getIntOr("StartUpTick", 0);
+        this.spawnDelay = compoundTag.getIntOr("SpawnDelay", 0);
+        this.disabled = compoundTag.getBooleanOr("Disabled", false);
+        boolean b0 = NbtCompat.has(compoundTag, "SpawnData");
         if (b0) {
-            SpawnData spawnData = (SpawnData)SpawnData.CODEC.parse(NbtOps.INSTANCE, compoundTag.getCompound("SpawnData")).resultOrPartial(($$0x) -> {
+            SpawnData spawnData = (SpawnData)SpawnData.CODEC.parse(NbtOps.INSTANCE, NbtCompat.getCompound(compoundTag, "SpawnData")).resultOrPartial(($$0x) -> {
                 LOGGER.warn("Invalid SpawnData: {}", $$0x);
             }).orElseGet(SpawnData::new);
             this.setNextSpawnData(this.level, this.getBlockPos(), spawnData);
         }
-        boolean b1 = compoundTag.contains("SpawnPotentials", 9);
+        boolean b1 = NbtCompat.has(compoundTag, "SpawnPotentials");
         if (b1) {
-            ListTag $$6 = compoundTag.getList("SpawnPotentials", 10);
+            ListTag $$6 = NbtCompat.getList(compoundTag, "SpawnPotentials");
             this.spawnPotentials = (SimpleWeightedRandomList)SpawnData.LIST_CODEC.parse(NbtOps.INSTANCE, $$6).resultOrPartial(($$0x) -> {
                 LOGGER.warn("Invalid SpawnPotentials list: {}", $$0x);
             }).orElseGet(SimpleWeightedRandomList::empty);
@@ -180,7 +188,7 @@ public class FairkeeperSpawnerBlockEntity extends BlockEntity {
     public static void serverTick(Level level, BlockPos pos, BlockState state, FairkeeperSpawnerBlockEntity blockEntity) {
         if (blockEntity.disabled) {
             if (blockEntity.destroyTick < 0) {
-                blockEntity.destroyTick = 20 + level.random.nextInt(40);
+                blockEntity.destroyTick = 20 + level.getRandom().nextInt(40);
             }
             blockEntity.destroyTick--;
             if (blockEntity.destroyTick == 0) {
@@ -194,7 +202,7 @@ public class FairkeeperSpawnerBlockEntity extends BlockEntity {
         if (state.getValue(DNLProperties.FAIRKEEPER_ALERT)) {
             if (blockEntity.startUpTick > 0) {
                 if (blockEntity.startUpTick == 40) {
-                    level.playSound(null, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, SoundEvents.WITHER_SHOOT, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.2F + 0.8F);
+                    level.playSound(null, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, SoundEvents.WITHER_SHOOT, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.2F + 0.8F);
                 }
                 blockEntity.startUpTick--;
             } else {
@@ -205,7 +213,7 @@ public class FairkeeperSpawnerBlockEntity extends BlockEntity {
                         blockEntity.spawnDelay = 20;
                         blockEntity.remainingStoredMobs--;
                         blockEntity.randomMobSummon((ServerLevel) level);
-                        level.playSound(null, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, SoundEvents.EVOKER_CAST_SPELL, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.2F + 0.8F);
+                        level.playSound(null, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, SoundEvents.EVOKER_CAST_SPELL, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.2F + 0.8F);
                     }
                 } else {
                     level.destroyBlock(pos, false);
@@ -238,21 +246,21 @@ public class FairkeeperSpawnerBlockEntity extends BlockEntity {
         if (entityType.isEmpty()) return;
         if (!entityType.get().getCategory().isFriendly() && level.getDifficulty() == Difficulty.PEACEFUL) return;
         for (int i = 0; i < SPAWN_POS_TRIES; i++) {
-            double x = (double)this.getBlockPos().getX() + (level.random.nextDouble() - level.random.nextDouble()) * (double)this.SPAWN_RANGE + 0.5;
-            double y = (double)(this.getBlockPos().getY() + level.random.nextInt(3) - 1);
-            double z = (double)this.getBlockPos().getZ() + (level.random.nextDouble() - level.random.nextDouble()) * (double)this.SPAWN_RANGE + 0.5;
+            double x = (double)this.getBlockPos().getX() + (level.getRandom().nextDouble() - level.getRandom().nextDouble()) * (double)this.SPAWN_RANGE + 0.5;
+            double y = (double)(this.getBlockPos().getY() + level.getRandom().nextInt(3) - 1);
+            double z = (double)this.getBlockPos().getZ() + (level.getRandom().nextDouble() - level.getRandom().nextDouble()) * (double)this.SPAWN_RANGE + 0.5;
             BlockPos blockPos = BlockPos.containing(x, y, z);
             Entity mob = EntityType.loadEntityRecursive(compoundTag, level, (a) -> {
                 a.moveTo(x, y, z, a.getYRot(), a.getXRot());
                 return a;
             });
             if (mob == null) break;
-            mob.moveTo(x, y, z, level.random.nextFloat() * 360.0f, 0.0f);
+            mob.moveTo(x, y, z, level.getRandom().nextFloat() * 360.0f, 0.0f);
             if (mob instanceof Mob mob1 && level.noCollision(mob1, entityType.get().getSpawnAABB(mob1.getX(), mob1.getY(), mob1.getZ())) && mob1.checkSpawnObstruction(level)) {
                 EntityScale.scaleMobAttributes(mob1);
                 mob1.setPersistenceRequired();
-                if (spawnData.getEntityToSpawn().size() == 1 && spawnData.getEntityToSpawn().contains("id", CompoundTag.OBJECT_HEADER)) { // adding this part ignores equipment attachment from the finalized spawn, which is good, but don't know why it happens...
-                    ((Mob)mob).finalizeSpawn(level, level.getCurrentDifficultyAt(mob.blockPosition()), MobSpawnType.SPAWNER, (SpawnGroupData)null);
+                if (spawnData.getEntityToSpawn().size() == 1 && spawnData.getEntityToSpawn().contains("id")) { // adding this part ignores equipment attachment from the finalized spawn, which is good, but don't know why it happens...
+                    ((Mob)mob).finalizeSpawn(level, level.getCurrentDifficultyAt(mob.blockPosition()), EntitySpawnReason.SPAWNER, (SpawnGroupData)null);
                 }
                 /*Collection<MobEffectInstance> reapplyMobEffects = mob1.getActiveEffects();
                 mob1.removeAllEffects();

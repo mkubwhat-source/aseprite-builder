@@ -12,7 +12,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -30,7 +30,7 @@ import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Arrow;
+import net.minecraft.world.entity.projectile.arrow.Arrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -91,7 +91,7 @@ public class HollowEntity extends Monster {
         }
         this.setNoGravity(true);
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (chargeCooldownTicks > 0) chargeCooldownTicks--;
 
             if (this.IsCharging()) {
@@ -134,7 +134,7 @@ public class HollowEntity extends Monster {
 
     @Override
     public void aiStep() {
-        if (!this.level().isClientSide && this.isAlive() && this.isSunSensitive() && this.isSunBurnTick()) {
+        if (!this.level().isClientSide() && this.isAlive() && this.isSunSensitive() && this.isSunBurnTick()) {
 
             // Optional helmet logic (same as zombie). If you DON'T want helmets to protect, delete this block.
             ItemStack head = this.getItemBySlot(EquipmentSlot.HEAD);
@@ -163,7 +163,7 @@ public class HollowEntity extends Monster {
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        if (this.level().isClientSide) return false;
+        if (this.level().isClientSide()) return false;
 
         if (source.getEntity() instanceof Player p && p.getAbilities().instabuild) {
             return super.hurt(source, amount);
@@ -207,7 +207,7 @@ public class HollowEntity extends Monster {
 
     @Override
     public void die(DamageSource source) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             boolean valid = isValidHollowKill(source);
 
             if (!valid) {
@@ -234,12 +234,12 @@ public class HollowEntity extends Monster {
     protected void dropCustomDeathLoot(net.minecraft.server.level.ServerLevel serverLevel, DamageSource source, boolean recentlyHit) {
         super.dropCustomDeathLoot(serverLevel, source, recentlyHit);
 
-        if (this.level().isClientSide) return;
+        if (this.level().isClientSide()) return;
 
         if (source.getDirectEntity() instanceof Arrow arrow && ArrowUtil.hasPotionEffects(arrow)) {
 
             LootTable table = serverLevel.getServer().reloadableRegistries()
-                    .getLootTable(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("dungeonnowloading", "entities/hollow_tipped_arrow_kill")));
+                    .getLootTable(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE, Identifier.fromNamespaceAndPath("dungeonnowloading", "entities/hollow_tipped_arrow_kill")));
 
             LootParams params = new LootParams.Builder(serverLevel)
                     .withParameter(LootContextParams.THIS_ENTITY, this)

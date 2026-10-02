@@ -2,10 +2,11 @@ package dev.hexnowloading.dungeonnowloading.capabilities.fabric;
 
 import dev.hexnowloading.dungeonnowloading.item.client.DNLArmPose;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.ladysnake.cca.api.v3.entity.RespawnableComponent;
 
-// 1.21 / CCA 6.1.3: PlayerComponent -> RespawnableComponent; NBT methods take HolderLookup.Provider.
+// CCA 8 (26.x): components serialize through ValueInput/ValueOutput.
 public class DNLArmPoseCapabilityHandler implements DNLArmPoseComponent, RespawnableComponent<DNLArmPoseCapabilityHandler> {
 
     private DNLArmPose armPose = DNLArmPose.EMPTY; // Default Pose
@@ -21,15 +22,13 @@ public class DNLArmPoseCapabilityHandler implements DNLArmPoseComponent, Respawn
     }
 
     @Override
-    public void readFromNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        if (tag.contains("DNLArmPose", CompoundTag.TAG_STRING)) {
-            this.armPose = DNLArmPose.fromId(tag.getString("DNLArmPose"));
-        }
+    public void readData(ValueInput input) {
+        input.getStringOr("DNLArmPose", "").ifPresent(id -> this.armPose = DNLArmPose.fromId(id));
     }
 
     @Override
-    public void writeToNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        tag.putString("DNLArmPose", armPose.getId());
+    public void writeData(ValueOutput output) {
+        output.putString("DNLArmPose", armPose.getId());
     }
 
     @Override

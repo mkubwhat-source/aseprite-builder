@@ -51,14 +51,14 @@ public class PlayerStatueBlockItem extends BlockItem {
 
         // Accept either "SkullOwner" (string or compound) or "Owner" (compound)
         if (tag.contains("SkullOwner", 8)) { // string
-            return tag.getString("SkullOwner");
+            return tag.getStringOr("SkullOwner", "");
         }
         if (tag.contains("Owner", 10)) { // compound
-            GameProfile gp = ProfileNbt.read(tag.getCompound("Owner"));
+            GameProfile gp = ProfileNbt.read(tag.getCompoundOrEmpty("Owner"));
             if (gp != null && gp.getName() != null) return gp.getName();
         }
         if (tag.contains("SkullOwner", 10)) { // compound
-            GameProfile gp = ProfileNbt.read(tag.getCompound("SkullOwner"));
+            GameProfile gp = ProfileNbt.read(tag.getCompoundOrEmpty("SkullOwner"));
             if (gp != null && gp.getName() != null) return gp.getName();
         }
         return null;

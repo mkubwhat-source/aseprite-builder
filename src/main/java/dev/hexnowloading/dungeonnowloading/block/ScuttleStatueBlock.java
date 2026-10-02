@@ -82,7 +82,7 @@ public class ScuttleStatueBlock extends BaseEntityBlock implements EntityBlock {
 
     @Override
     public void neighborChanged(BlockState blockState, Level level, BlockPos blockPos, Block block, BlockPos blockPos1, boolean b) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
         if (!level.hasNeighborSignal(blockPos)) {
@@ -114,7 +114,7 @@ public class ScuttleStatueBlock extends BaseEntityBlock implements EntityBlock {
 
     @Override
     public BlockState playerWillDestroy(Level level, BlockPos blockPos, BlockState blockState, Player player) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             this.playerDestroyed = !player.getAbilities().instabuild;
             if (playerDestroyed) {
                 ItemStack heldItem = player.getMainHandItem();
@@ -127,7 +127,7 @@ public class ScuttleStatueBlock extends BaseEntityBlock implements EntityBlock {
     @Override
     public void onRemove(BlockState blockState, Level level, BlockPos blockPos, BlockState newState, boolean isMoving) {
 
-        if (!level.isClientSide && blockState.getBlock() != newState.getBlock()) {
+        if (!level.isClientSide() && blockState.getBlock() != newState.getBlock()) {
             if (blockState.getValue(HALF) == DoubleBlockHalf.UPPER) {
                 level.destroyBlock(blockPos.below(), false);
             }

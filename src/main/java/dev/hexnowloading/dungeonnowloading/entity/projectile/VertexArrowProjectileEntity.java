@@ -1,5 +1,9 @@
 package dev.hexnowloading.dungeonnowloading.entity.projectile;
 
+
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import dev.hexnowloading.dungeonnowloading.components.VertexNode;
 import dev.hexnowloading.dungeonnowloading.potion.VertexTransmissionEffect;
 import dev.hexnowloading.dungeonnowloading.registry.DNLEntityTypes;
@@ -15,7 +19,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
@@ -61,15 +65,15 @@ public class VertexArrowProjectileEntity extends AbstractArrow {
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
+    public void addAdditionalSaveData(ValueOutput compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         compoundTag.putInt("powerLevel", this.entityData.get(POWER_LEVEL));
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
+    public void readAdditionalSaveData(ValueInput compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-        this.entityData.set(POWER_LEVEL, compoundTag.getInt("powerLevel"));
+        this.entityData.set(POWER_LEVEL, compoundTag.getIntOr("powerLevel", 0));
     }
 
     @Override
@@ -141,7 +145,7 @@ public class VertexArrowProjectileEntity extends AbstractArrow {
                     this.entityData.set(POWER_LEVEL, this.powerLevel);
                     this.powerIncrementTimer = 0;
                 }
-            } else if (!this.level().isClientSide && !this.vertexNode.attemptedConnection() && this.life != DESPAWN_TIME_TICKS) {
+            } else if (!this.level().isClientSide() && !this.vertexNode.attemptedConnection() && this.life != DESPAWN_TIME_TICKS) {
                 this.vertexNode.connectToNearbyNodes(this);
             }
         }

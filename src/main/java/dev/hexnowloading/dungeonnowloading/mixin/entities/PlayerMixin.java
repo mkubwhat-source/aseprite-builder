@@ -23,7 +23,7 @@ public abstract class PlayerMixin {
         Player player = (Player) (Object) this;
         Level level = player.level();
 
-        if (!level.isClientSide && itemStack.getItem() instanceof DNLAnimatedItem<?> animatedItem) {
+        if (!level.isClientSide() && itemStack.getItem() instanceof DNLAnimatedItem<?> animatedItem) {
             long gameTime = player.level().getGameTime();
             if (ItemAnimationState.isAnimating(itemStack, ScorcherItem.ScorcherAnimationState.SCORCHER_ACTIVATED.getName(), gameTime) || ItemAnimationState.isAnimating(itemStack, ScorcherItem.ScorcherAnimationState.SCORCHER_SHOOT.getName(), gameTime)) {
                 animatedItem.playDroppedAnimation(player, itemStack);

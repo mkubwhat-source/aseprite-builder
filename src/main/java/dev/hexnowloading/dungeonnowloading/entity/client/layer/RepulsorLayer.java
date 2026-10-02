@@ -7,13 +7,13 @@ import dev.hexnowloading.dungeonnowloading.entity.client.model.RepulsorModel;
 import dev.hexnowloading.dungeonnowloading.entity.client.renderer.RepulsorRenderer;
 import dev.hexnowloading.dungeonnowloading.entity.misc.RepulsorEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class RepulsorLayer<T extends RepulsorEntity, M extends RepulsorModel<T>> extends RenderLayer<T, M> {
-    private static final ResourceLocation EMISSIVE = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/repulsor/repulsor_emissive.png");
+    private static final Identifier EMISSIVE = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/repulsor/repulsor_emissive.png");
 
     public RepulsorLayer(RepulsorRenderer renderer) { super(renderer); }
 
@@ -25,7 +25,7 @@ public class RepulsorLayer<T extends RepulsorEntity, M extends RepulsorModel<T>>
                 float healthRation = repulsorEntity.getShieldHealth() / RepulsorEntity.SHIELD_ALERT_THRESHOLD;
                 float blinkCycle = 40 - 35F * (1 - healthRation);
                 float alpha = (repulsorEntity.getAge() % blinkCycle < blinkCycle / 2) ? 1.0F : 0.0F;
-                this.getParentModel().renderToBuffer(poseStack, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY, net.minecraft.util.FastColor.ARGB32.colorFromFloat(alpha, 1.0F, 1.0F, 1.0F));
+                this.getParentModel().renderToBuffer(poseStack, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY, net.minecraft.util.ARGB.colorFromFloat(alpha, 1.0F, 1.0F, 1.0F));
             } else {
                 this.getParentModel().renderToBuffer(poseStack, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
             }

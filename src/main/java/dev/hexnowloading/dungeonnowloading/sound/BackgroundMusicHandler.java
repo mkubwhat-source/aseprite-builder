@@ -3,7 +3,7 @@ package dev.hexnowloading.dungeonnowloading.sound;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.sounds.ChannelAccess;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -12,13 +12,13 @@ import java.util.List;
 public class BackgroundMusicHandler {
     private static final List<FadingChannel> fadingChannels = new ArrayList<>();
 
-    private static final List<ResourceLocation> BLOCKING_TICKING_SOUNDS = List.of(
-            ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "music_clash_of_duality_base"),
-            ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "music_hellspawn_base")
+    private static final List<Identifier> BLOCKING_TICKING_SOUNDS = List.of(
+            Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "music_clash_of_duality_base"),
+            Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "music_hellspawn_base")
     );
 
     public static boolean isBackgroundMusicBlocked() {
-        for (ResourceLocation id : BLOCKING_TICKING_SOUNDS) {
+        for (Identifier id : BLOCKING_TICKING_SOUNDS) {
             if (DNLClientSoundHandler.isTickingSoundActive(id)) return true;
         }
         return false;

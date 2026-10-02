@@ -58,7 +58,7 @@ public class DungeonDirectorBlock extends Block implements EntityBlock {
     @Override
     protected net.minecraft.world.ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 
-        if (level.isClientSide) return net.minecraft.world.ItemInteractionResult.SUCCESS;
+        if (level.isClientSide()) return net.minecraft.world.ItemInteractionResult.SUCCESS;
 
         if (player.getItemInHand(hand).is(DNLItems.ZONE_WAND.get())) {
             return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
@@ -81,13 +81,9 @@ public class DungeonDirectorBlock extends Block implements EntityBlock {
             director.setChanged();
 
             if (newState.getValue(REMOVE_AFTER_SUMMON)) {
-                player.displayClientMessage(Component.translatable("block.dungeonnowloading.dungeon_director.hint_remove"),
-                        true
-                );
+                player.sendOverlayMessage(Component.translatable("block.dungeonnowloading.dungeon_director.hint_remove"));
             } else {
-                player.displayClientMessage(Component.translatable("block.dungeonnowloading.dungeon_director.hint_retain"),
-                        true
-                );
+                player.sendOverlayMessage(Component.translatable("block.dungeonnowloading.dungeon_director.hint_retain"));
             }
 
             return net.minecraft.world.ItemInteractionResult.CONSUME;
@@ -96,16 +92,10 @@ public class DungeonDirectorBlock extends Block implements EntityBlock {
         int n;
         if (!director.isBaked()) {
             n = director.bakeFromWorldSpawnNodes();
-            player.displayClientMessage(
-                    Component.translatable("block.dungeonnowloading.dungeon_director.baked", n),
-                    true
-            );
+            player.sendOverlayMessage(Component.translatable("block.dungeonnowloading.dungeon_director.baked", n));
         } else {
             n = director.restoreSpawnNodesToWorld();
-            player.displayClientMessage(
-                    Component.translatable("block.dungeonnowloading.dungeon_director.restored", n),
-                    true
-            );
+            player.sendOverlayMessage(Component.translatable("block.dungeonnowloading.dungeon_director.restored", n));
         }
 
         director.setChanged();
@@ -117,7 +107,7 @@ public class DungeonDirectorBlock extends Block implements EntityBlock {
     @Override
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (level.isClientSide) return null;
+        if (level.isClientSide()) return null;
 
         return (lvl, p, st, be) -> {
             if (be instanceof DungeonDirectorBlockEntity director) {

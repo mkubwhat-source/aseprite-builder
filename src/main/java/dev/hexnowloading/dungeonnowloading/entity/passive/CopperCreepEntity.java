@@ -1,7 +1,13 @@
 package dev.hexnowloading.dungeonnowloading.entity.passive;
 
+
+
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import dev.hexnowloading.dungeonnowloading.config.PvpConfig;
 import dev.hexnowloading.dungeonnowloading.entity.client.animation_duration.CopperCreepAnimationDuration;
 import dev.hexnowloading.dungeonnowloading.entity.util.AnimationChainer;
@@ -140,7 +146,7 @@ public class CopperCreepEntity extends PathfinderMob implements OwnableEntity, P
     private AnimationChainer<CopperCreepAnimationState> animationChainer = new AnimationChainer<>();
     public State currentState;
 
-    private static final ResourceLocation GIGANTISM_MAX_HEALTH_MODIFIER_ID = DungeonNowLoading.id("gigantism_max_health");
+    private static final Identifier GIGANTISM_MAX_HEALTH_MODIFIER_ID = DungeonNowLoading.id("gigantism_max_health");
 
     public CopperCreepEntity(EntityType<? extends CopperCreepEntity> entityType, Level level) {
         super(entityType, level);
@@ -218,9 +224,9 @@ public class CopperCreepEntity extends PathfinderMob implements OwnableEntity, P
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
+    public void addAdditionalSaveData(ValueOutput compoundTag) {
         super.addAdditionalSaveData(compoundTag);
-        this.getSummonerUUID().ifPresent(uuid -> compoundTag.putUUID("summonerUUID", uuid));
+        this.getSummonerUUID().ifPresent(uuid -> NbtCompat.putUUID(compoundTag, "summonerUUID", uuid));
 
         if ((Boolean) this.entityData.get(DATA_IS_POWERED)) {
             compoundTag.putBoolean("powered", true);
@@ -237,48 +243,48 @@ public class CopperCreepEntity extends PathfinderMob implements OwnableEntity, P
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
+    public void readAdditionalSaveData(ValueInput compoundTag) {
         super.readAdditionalSaveData(compoundTag);
 
-        if (compoundTag.contains("summonerUUID")) {
-            UUID summonerUUID = compoundTag.getUUID("summonerUUID");
+        if (NbtCompat.has(compoundTag, "summonerUUID")) {
+            UUID summonerUUID = NbtCompat.getUUID(compoundTag, "summonerUUID");
             this.setSummonerUUID(summonerUUID);
         }
 
-        this.entityData.set(DATA_IS_POWERED, compoundTag.getBoolean("powered"));
+        this.entityData.set(DATA_IS_POWERED, compoundTag.getBooleanOr("powered", false));
 
-        if (compoundTag.getBoolean("ignited") && !this.isDefused()) {
+        if (compoundTag.getBooleanOr("ignited", false) && !this.isDefused()) {
             this.ignite();
         }
 
-        this.entityData.set(DATA_IS_ALREADY_SUMMONED, compoundTag.getBoolean("isAlreadySummoned"));
-        if (compoundTag.getBoolean("isSitting")) {
+        this.entityData.set(DATA_IS_ALREADY_SUMMONED, compoundTag.getBooleanOr("isAlreadySummoned", false));
+        if (compoundTag.getBooleanOr("isSitting", false)) {
             this.setState(State.SITTING);
         }
-        if (compoundTag.getBoolean("isWandering")) {
+        if (compoundTag.getBooleanOr("isWandering", false)) {
             this.setState(State.WANDERING);
         }
         if (SummonFlag.isSummoning()) {
             this.setSkinValidation(true);
         }
-        if (compoundTag.contains("skin") && !this.entityData.get(SKIN_VALIDATION)) {
-            this.entityData.set(SKIN, Skin.fromId(compoundTag.getString("skin")));
+        if (NbtCompat.has(compoundTag, "skin") && !this.entityData.get(SKIN_VALIDATION)) {
+            this.entityData.set(SKIN, Skin.fromId(compoundTag.getStringOr("skin", "")));
         }
         this.setSkinValidation(true);
-        if (compoundTag.contains("Gigantic")) {
-            this.setGigantic(compoundTag.getBoolean("Gigantic"));
+        if (NbtCompat.has(compoundTag, "Gigantic")) {
+            this.setGigantic(compoundTag.getBooleanOr("Gigantic", false));
         }
-        if (compoundTag.contains("Overworked")) {
-            this.setOverworked(compoundTag.getBoolean("Overworked"));
+        if (NbtCompat.has(compoundTag, "Overworked")) {
+            this.setOverworked(compoundTag.getBooleanOr("Overworked", false));
         }
-        if (compoundTag.contains("OverworkedLevel")) {
-            this.setOverworkedLevel(compoundTag.getInt("OverworkedLevel"));
+        if (NbtCompat.has(compoundTag, "OverworkedLevel")) {
+            this.setOverworkedLevel(compoundTag.getIntOr("OverworkedLevel", 0));
         }
         this.applyGigantismHealthBonus();
     }
 
     //    @Override
-//    public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor $$0, DifficultyInstance $$1, MobSpawnType $$2, @Nullable SpawnGroupData $$3, @Nullable CompoundTag $$4) {
+//    public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor $$0, DifficultyInstance $$1, EntitySpawnReason $$2, @Nullable SpawnGroupData $$3, @Nullable CompoundTag $$4) {
 ////        triggerIdleAnimation();
 ////        triggerSummonAnimation();
 //        return super.finalizeSpawn($$0, $$1, $$2, $$3);
@@ -294,7 +300,7 @@ public class CopperCreepEntity extends PathfinderMob implements OwnableEntity, P
                 this.ignite();
             }
 
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 if (!itemStack.isDamageableItem()) {
                     itemStack.shrink(1);
                 } else {
@@ -303,12 +309,12 @@ public class CopperCreepEntity extends PathfinderMob implements OwnableEntity, P
             }
 
         } else {
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 Optional<UUID> summonerUUID = this.getSummonerUUID();
                 if (summonerUUID.isPresent() && summonerUUID.get().equals(player.getUUID())) {
                     if (this.getState() == State.IDLE || this.getState() == State.FOLLOWING) {
                         if (this.isDefused() && this.canSit() && this.sitAnimationTick <= 0) {
-                            player.displayClientMessage(Component.translatable("entity.dungeonnowloading.copper_creep.state_wander"), true);
+                            player.sendOverlayMessage(Component.translatable("entity.dungeonnowloading.copper_creep.state_wander"));
                             this.setState(State.WANDERING);
                         } else {
                             this.rightClickToSit(player);
@@ -316,7 +322,7 @@ public class CopperCreepEntity extends PathfinderMob implements OwnableEntity, P
                     } else if (this.getState() == State.WANDERING && this.canSit() && this.sitAnimationTick <= 0) {
                         this.rightClickToSit(player);
                     } else if (this.getState() == State.SITTING && this.sitAnimationTick <= 0) {
-                        player.displayClientMessage(Component.translatable("entity.dungeonnowloading.copper_creep.state_follow"), true);
+                        player.sendOverlayMessage(Component.translatable("entity.dungeonnowloading.copper_creep.state_follow"));
                         this.standUp();
                     }
                 } else {
@@ -325,11 +331,11 @@ public class CopperCreepEntity extends PathfinderMob implements OwnableEntity, P
             }
         }
 
-        return InteractionResult.sidedSuccess(this.level().isClientSide);
+        return InteractionResult.sidedSuccess(this.level().isClientSide());
     }
 
     private void rightClickToSit(Player player) {
-        player.displayClientMessage(Component.translatable("entity.dungeonnowloading.copper_creep.state_sit"), true);
+        player.sendOverlayMessage(Component.translatable("entity.dungeonnowloading.copper_creep.state_sit"));
         this.triggerSitAnimation();
         this.setState(State.SIT);
         this.playSound(DNLSounds.COPPER_CREEP_SIT_DOWN.get());
@@ -374,7 +380,7 @@ public class CopperCreepEntity extends PathfinderMob implements OwnableEntity, P
     }
 
     private void applyGigantismHealthBonus() {
-        if (this.level() != null && this.level().isClientSide) {
+        if (this.level() != null && this.level().isClientSide()) {
             return;
         }
 
@@ -447,7 +453,7 @@ public class CopperCreepEntity extends PathfinderMob implements OwnableEntity, P
         // Overworked: scale movement speed. Lvl 5 => 2x speed (= +100%).
         AttributeInstance moveSpeedAttr = this.getAttribute(Attributes.MOVEMENT_SPEED);
         if (moveSpeedAttr != null) {
-            ResourceLocation overworkedSpeedId = DungeonNowLoading.id("overworked_speed");
+            Identifier overworkedSpeedId = DungeonNowLoading.id("overworked_speed");
             AttributeModifier existing = moveSpeedAttr.getModifier(overworkedSpeedId);
             if (existing != null) {
                 moveSpeedAttr.removeModifier(existing);
@@ -525,7 +531,7 @@ public class CopperCreepEntity extends PathfinderMob implements OwnableEntity, P
 
             if (this.swell < this.MAX_SWELL) {
                 this.swell++;
-            } else if (!this.level().isClientSide) {
+            } else if (!this.level().isClientSide()) {
                 this.dead = true;
                 float finalExplosionRadius = EXPLOSION_RADIUS;
                 if (this.isPowered()) {
@@ -545,11 +551,11 @@ public class CopperCreepEntity extends PathfinderMob implements OwnableEntity, P
 
         super.tick();
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             animationChainer.tick(this::transitionTo);
         }
 
-        if (!this.level().isClientSide) return;
+        if (!this.level().isClientSide()) return;
 
         if (this.getState() == State.IDLE || this.getState() == State.WANDERING) {
             this.standAnimationState.stop();
@@ -679,7 +685,7 @@ public class CopperCreepEntity extends PathfinderMob implements OwnableEntity, P
     @Override
     public boolean hurt(DamageSource damageSource, float amount) {
         boolean hurt = super.hurt(damageSource, amount);
-        if (hurt && !this.level().isClientSide) {
+        if (hurt && !this.level().isClientSide()) {
             if (this.getState() == State.SITTING) {
                 this.standUp();
             }
@@ -989,7 +995,7 @@ public class CopperCreepEntity extends PathfinderMob implements OwnableEntity, P
         boolean overworked = this.isOverworked();
         super.remove(reason);
 
-        if (!this.level().isClientSide && owner != null && overworked) {
+        if (!this.level().isClientSide() && owner != null && overworked) {
             OverworkedPenaltyUtil.refreshOwnerPenaltyIfPossible(this.level(), owner);
         }
     }

@@ -20,7 +20,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -51,21 +51,18 @@ public class ScepterOfSealedChaosItem extends Item {
 
 // cycle mode if amethyst cluster is clicked
         if (clickedState.is(net.minecraft.world.level.block.Blocks.AMETHYST_CLUSTER)) {
-            if (!level.isClientSide && player != null) {
+            if (!level.isClientSide() && player != null) {
                 boolean basic = !StackNbt.getOrCreateTag(itemStack).getBoolean(MODE_BASIC);
                 StackNbt.update(itemStack, t -> t.putBoolean(MODE_BASIC, basic));
 
-                player.displayClientMessage(
-                        Component.translatable(
+                player.sendOverlayMessage(Component.translatable(
                                 basic
                                         ? "item.dungeonnowloading.scepter_of_sealed_chaos.mode.basic"
                                         : "item.dungeonnowloading.scepter_of_sealed_chaos.mode.normal"
-                        ),
-                        true
-                );
+                        ));
                 level.playSound(null, clicked, SoundEvents.AMETHYST_CLUSTER_HIT, SoundSource.PLAYERS, 1.0F, basic ? 1.2F : 0.9F);
             }
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
         if (itemStack.getDamageValue() == itemStack.getMaxDamage()) {
             return InteractionResult.FAIL;
@@ -81,7 +78,7 @@ public class ScepterOfSealedChaosItem extends Item {
 
         boolean spawned = false;
 
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             BlockPos blockPos = useOnContext.getClickedPos();
             Direction direction = useOnContext.getClickedFace();
             BlockState blockState = level.getBlockState(blockPos);
@@ -114,7 +111,7 @@ public class ScepterOfSealedChaosItem extends Item {
                 // Prevent spawn if there is not enough free space for its (possibly gigantic) bounding box
                 if (!level.noCollision(sealedChaosEntity)) {
                     player.getCooldowns().addCooldown(this, 20);
-                    player.displayClientMessage(Component.literal("Not enough space for summon").withStyle(ChatFormatting.RED), true);
+                    player.sendOverlayMessage(Component.literal("Not enough space for summon").withStyle(ChatFormatting.RED));
                     return InteractionResult.FAIL;
                 }
 

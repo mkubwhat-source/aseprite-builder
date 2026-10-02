@@ -139,7 +139,7 @@ public class PlayerStatueBlock extends BaseEntityBlock implements EntityBlock, S
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(level, pos, state, placer, stack);
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         var be = level.getBlockEntity(pos);
         if (!(be instanceof PlayerStatueBlockEntity statue)) return;
@@ -148,19 +148,19 @@ public class PlayerStatueBlock extends BaseEntityBlock implements EntityBlock, S
         CompoundTag tag = StackNbt.getTag(stack);
 
         if (tag != null) {
-            if (tag.contains("Owner", 10)) gp = ProfileNbt.read(tag.getCompound("Owner"));
-            else if (tag.contains("SkullOwner", 10)) gp = ProfileNbt.read(tag.getCompound("SkullOwner"));
-            else if (tag.contains("SkullOwner", 8))  gp = new GameProfile(null, tag.getString("SkullOwner"));
+            if (tag.contains("Owner", 10)) gp = ProfileNbt.read(tag.getCompoundOrEmpty("Owner"));
+            else if (tag.contains("SkullOwner", 10)) gp = ProfileNbt.read(tag.getCompoundOrEmpty("SkullOwner"));
+            else if (tag.contains("SkullOwner", 8))  gp = new GameProfile(null, tag.getStringOr("SkullOwner", ""));
         }
 
         // Owner / SkullOwner
         /*if (tag != null) {
             if (tag.contains("Owner", 10)) {
-                gp = ProfileNbt.read(tag.getCompound("Owner"));
+                gp = ProfileNbt.read(tag.getCompoundOrEmpty("Owner"));
             } else if (tag.contains("SkullOwner", 10)) {
-                gp = ProfileNbt.read(tag.getCompound("SkullOwner"));
+                gp = ProfileNbt.read(tag.getCompoundOrEmpty("SkullOwner"));
             } else if (tag.contains("SkullOwner", 8)) {
-                gp = new GameProfile(null, tag.getString("SkullOwner"));
+                gp = new GameProfile(null, tag.getStringOr("SkullOwner", ""));
             }
         }*/
         if (gp == null) gp = new GameProfile(null, "MHF_Alex");
@@ -169,10 +169,10 @@ public class PlayerStatueBlock extends BaseEntityBlock implements EntityBlock, S
         // Restore offering if present in the item NBT
         if (tag != null) {
             if (tag.contains("DNL_Notch", 8)) {
-                var tier = PlayerStatueBlockEntity.NotchTier.fromString(tag.getString("DNL_Notch"));
+                var tier = PlayerStatueBlockEntity.NotchTier.fromString(tag.getStringOr("DNL_Notch", ""));
                 if (tier != PlayerStatueBlockEntity.NotchTier.NONE) statue.setNotchTier(tier);
             } else if (tag.contains("Offering", 10)) { // legacy item NBT
-                ItemStack off = ItemNbt.load(tag.getCompound("Offering"));
+                ItemStack off = ItemNbt.load(tag.getCompoundOrEmpty("Offering"));
                 var tier = PlayerStatueBlockEntity.tierFromItem(off);
                 if (tier != PlayerStatueBlockEntity.NotchTier.NONE) statue.setNotchTier(tier);
             }
@@ -187,7 +187,7 @@ public class PlayerStatueBlock extends BaseEntityBlock implements EntityBlock, S
         if (!(be instanceof PlayerStatueBlockEntity statue)) return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
         // ---- PEDESTAL MATERIAL INTERACTION (server) ----
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             // Waxed statues block material edits
             if (statue.isWaxed()) {
                 level.playSound(null, pos, SoundEvents.WAXED_SIGN_INTERACT_FAIL, SoundSource.BLOCKS, 1.0f, 1.0f);
@@ -219,7 +219,7 @@ public class PlayerStatueBlock extends BaseEntityBlock implements EntityBlock, S
                             "block.dungeonnowloading.player_statue.message",
                             Component.literal(ownerName).withStyle(ChatFormatting.GOLD)
                     );
-                    player.displayClientMessage(msg, true);
+                    player.sendOverlayMessage(msg);
                 }
                 return net.minecraft.world.ItemInteractionResult.CONSUME;
             }
@@ -248,7 +248,7 @@ public class PlayerStatueBlock extends BaseEntityBlock implements EntityBlock, S
 
         // --- BRUSH: cycle pose (like you had) ---
         if (held.is(Items.BRUSH)) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 int dir = player.isShiftKeyDown() ? -1 : +1;
                 int next = Math.floorMod(statue.getPoseVariant() + dir, MAX_POSES);
                 statue.setPoseVariant(next);
@@ -257,11 +257,11 @@ public class PlayerStatueBlock extends BaseEntityBlock implements EntityBlock, S
                 level.playSound(null, pos, SoundEvents.BRUSH_GENERIC, SoundSource.BLOCKS, 0.6f, 1.2f);
                 level.levelEvent(2001, pos, Block.getId(state));
             }
-            return net.minecraft.world.ItemInteractionResult.sidedSuccess(level.isClientSide);
+            return net.minecraft.world.ItemInteractionResult.sidedSuccess(level.isClientSide());
         }
 
         // --- CLIENT: wait for server to decide (just like SignBlock) ---
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             // If you want to mimic SignBlock exactly, return CONSUME here
             // so the client waits for the server to send the open-editor screen.
             return statue.isWaxed() ? net.minecraft.world.ItemInteractionResult.SUCCESS : net.minecraft.world.ItemInteractionResult.CONSUME;
@@ -316,7 +316,7 @@ public class PlayerStatueBlock extends BaseEntityBlock implements EntityBlock, S
         }
 
         // Server: empty hand opens editor
-        if (!level.isClientSide && held.isEmpty() && player instanceof ServerPlayer sp) {
+        if (!level.isClientSide() && held.isEmpty() && player instanceof ServerPlayer sp) {
             if (statue.isWaxed()) return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
             statue.setAllowedEditor(sp.getUUID());
@@ -346,7 +346,7 @@ public class PlayerStatueBlock extends BaseEntityBlock implements EntityBlock, S
     @Override
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return !level.isClientSide
+        return !level.isClientSide()
                 ? createTickerHelper(type, DNLBlockEntityTypes.PLAYER_STATUE.get(), PlayerStatueBlockEntity::serverTick)
                 : null;
     }

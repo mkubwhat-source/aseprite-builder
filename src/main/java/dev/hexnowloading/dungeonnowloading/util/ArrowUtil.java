@@ -1,7 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.util;
 
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.alchemy.PotionContents;
 
 /**

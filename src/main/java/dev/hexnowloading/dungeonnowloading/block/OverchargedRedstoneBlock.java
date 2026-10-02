@@ -63,7 +63,7 @@ public class OverchargedRedstoneBlock extends Block {
 
     @Override
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState1, boolean b) {
-        if (blockState.is(blockState1.getBlock()) || level.isClientSide) return;
+        if (blockState.is(blockState1.getBlock()) || level.isClientSide()) return;
         explodePoweredRedstone(level, blockPos);
         explodeDirectlyConnectedRepeatersAndComparatorsInAllDirections(level, blockPos);
         super.onPlace(blockState, level, blockPos, blockState1, b);
@@ -71,7 +71,7 @@ public class OverchargedRedstoneBlock extends Block {
 
     @Override
     public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
-        if (world.isClientSide) return;
+        if (world.isClientSide()) return;
         explodePoweredRedstone(world, pos);
         explodeDirectlyConnectedRepeatersAndComparatorsInAllDirections(world, pos);
     }

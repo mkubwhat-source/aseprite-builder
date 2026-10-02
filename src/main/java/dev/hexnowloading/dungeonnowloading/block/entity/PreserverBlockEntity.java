@@ -1,5 +1,11 @@
 package dev.hexnowloading.dungeonnowloading.block.entity;
 
+
+
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
 import com.mojang.logging.LogUtils;
 import dev.hexnowloading.dungeonnowloading.block.ZoneReceiverBlockEntity;
 import dev.hexnowloading.dungeonnowloading.game_event_listener.PreserverBlockDestructionSystem;
@@ -40,27 +46,27 @@ public class PreserverBlockEntity extends BlockEntity implements GameEventListen
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compoundTag, net.minecraft.core.HolderLookup.Provider registries) {
+    protected void saveAdditional(ValueOutput compoundTag) {
         super.saveAdditional(compoundTag, registries);
 
         PreserverBlockDestructionSystem.User.CODEC.encodeStart(NbtOps.INSTANCE, this.user)
                 .resultOrPartial(LOGGER::error)
-                .ifPresent(tag -> compoundTag.put("listener", tag));
-        compoundTag.put("PlayerPlacedBlocks", saveBlockPosSet(playerPlacedBlocks));
+                .ifPresent(tag -> NbtCompat.put(compoundTag, "listener", tag));
+        NbtCompat.put(compoundTag, "PlayerPlacedBlocks", saveBlockPosSet(playerPlacedBlocks));
     }
 
     @Override
-    protected void loadAdditional(CompoundTag compoundTag, net.minecraft.core.HolderLookup.Provider registries) {
-        if (compoundTag.contains("listener", 10)) { // 10 means it's a CompoundTag
-            PreserverBlockDestructionSystem.User.CODEC.parse(NbtOps.INSTANCE, compoundTag.getCompound("listener"))
+    protected void loadAdditional(ValueInput compoundTag) {
+        if (NbtCompat.has(compoundTag, "listener")) { // 10 means it's a CompoundTag
+            PreserverBlockDestructionSystem.User.CODEC.parse(NbtOps.INSTANCE, NbtCompat.getCompound(compoundTag, "listener"))
                     .resultOrPartial(LOGGER::error)
                     .ifPresent(listener -> {
                         this.user = new User(this.getBlockPos(), listener.getCornerA(), listener.getCornerB(), listener.getFacing());
                     });
         }
-        if (compoundTag.contains("PlayerPlacedBlocks")) {
+        if (NbtCompat.has(compoundTag, "PlayerPlacedBlocks")) {
             playerPlacedBlocks.clear();
-            playerPlacedBlocks.addAll(loadBlockPosSet(compoundTag.getList("PlayerPlacedBlocks", 10)));
+            playerPlacedBlocks.addAll(loadBlockPosSet(NbtCompat.getList(compoundTag, "PlayerPlacedBlocks")));
         }
     }
 
@@ -100,9 +106,9 @@ public class PreserverBlockEntity extends BlockEntity implements GameEventListen
         final float speed = 0.22f;
 
         for (int i = 0; i < count; i++) {
-            double rx = level.random.nextDouble() * 2.0 - 1.0;
-            double ry = level.random.nextDouble() * 2.0 - 1.0;
-            double rz = level.random.nextDouble() * 2.0 - 1.0;
+            double rx = level.getRandom().nextDouble() * 2.0 - 1.0;
+            double ry = level.getRandom().nextDouble() * 2.0 - 1.0;
+            double rz = level.getRandom().nextDouble() * 2.0 - 1.0;
             Vec3 direction = new Vec3(rx, ry, rz);
             if (direction.lengthSqr() < 1.0e-6) {
                 direction = new Vec3(0.0D, 1.0D, 0.0D);
@@ -115,9 +121,9 @@ public class PreserverBlockEntity extends BlockEntity implements GameEventListen
                     fadeIn, fadeOut, lifetime
             );
 
-            double px = center.x + (level.random.nextDouble() - 0.5D) * 0.25D;
-            double py = center.y + (level.random.nextDouble() - 0.5D) * 0.25D;
-            double pz = center.z + (level.random.nextDouble() - 0.5D) * 0.25D;
+            double px = center.x + (level.getRandom().nextDouble() - 0.5D) * 0.25D;
+            double py = center.y + (level.getRandom().nextDouble() - 0.5D) * 0.25D;
+            double pz = center.z + (level.getRandom().nextDouble() - 0.5D) * 0.25D;
 
             level.sendParticles(data, px, py, pz, 1, 0.0D, 0.0D, 0.0D, 0.0D);
         }
@@ -138,8 +144,8 @@ public class PreserverBlockEntity extends BlockEntity implements GameEventListen
     private static Set<BlockPos> loadBlockPosSet(ListTag listTag) {
         Set<BlockPos> positions = new HashSet<>();
         for (int i = 0; i < listTag.size(); i++) {
-            CompoundTag tag = listTag.getCompound(i);
-            positions.add(new BlockPos(tag.getInt("x"), tag.getInt("y"), tag.getInt("z")));
+            CompoundTag tag = listTag.getCompoundOrEmpty(i);
+            positions.add(new BlockPos(tag.getIntOr("x", 0), tag.getIntOr("y", 0), tag.getIntOr("z", 0)));
         }
         return positions;
     }
@@ -160,7 +166,7 @@ public class PreserverBlockEntity extends BlockEntity implements GameEventListen
 
         setChanged();
 
-        if (this.level != null && !this.level.isClientSide) {
+        if (this.level != null && !this.level.isClientSide()) {
             BlockState st = this.getBlockState();
             this.level.sendBlockUpdated(this.worldPosition, st, st, 3);
         }

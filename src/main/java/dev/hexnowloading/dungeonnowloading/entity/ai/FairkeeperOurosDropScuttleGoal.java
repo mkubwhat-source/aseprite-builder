@@ -11,7 +11,7 @@ import dev.hexnowloading.dungeonnowloading.registry.DNLEntityTypes;
 import dev.hexnowloading.dungeonnowloading.registry.DNLParticleTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -104,13 +104,13 @@ public class FairkeeperOurosDropScuttleGoal extends StoppableGoal {
         scuttle = (ScuttleEntity) SpawnMobUtil.spawnEntityWithRot(scuttle, this.currentPart.getX(), this.currentPart.getY() - 0.5F, this.currentPart.getZ(), this.currentPart.getYRot(), 0.0F, this.ouros.level());
         scuttle.setYBodyRot(this.currentPart.getYRot());
         scuttle.setYHeadRot(this.currentPart.getYRot());
-        scuttle.lootTable = net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "empty"));
+        scuttle.lootTable = net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE, Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "empty"));
         scuttle.skipDropExperience();
         level.addFreshEntity(scuttle);
 
         this.caller.addMinion(scuttle.getUUID());
 
-        level.playSound(null, this.currentPart.getX(), this.currentPart.getY() - 0.5F, this.currentPart.getZ(), SoundEvents.WITHER_SHOOT, SoundSource.BLOCKS, 1.0F, this.ouros.level().random.nextFloat() * 0.2F + 0.8F);
+        level.playSound(null, this.currentPart.getX(), this.currentPart.getY() - 0.5F, this.currentPart.getZ(), SoundEvents.WITHER_SHOOT, SoundSource.BLOCKS, 1.0F, this.ouros.level().getRandom().nextFloat() * 0.2F + 0.8F);
 
         BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos(this.currentPart.getX(), this.currentPart.getY(), currentPart.getZ());
 

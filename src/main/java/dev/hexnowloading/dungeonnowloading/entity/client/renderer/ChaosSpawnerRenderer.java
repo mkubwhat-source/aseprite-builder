@@ -7,10 +7,10 @@ import dev.hexnowloading.dungeonnowloading.entity.client.layer.ChaosSpawnerLayer
 import dev.hexnowloading.dungeonnowloading.entity.client.model.ChaosSpawnerModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class ChaosSpawnerRenderer<T extends ChaosSpawnerEntity> extends MobRenderer<T, ChaosSpawnerModel<T>> {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/chaos_spawner/chaos_spawner.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/chaos_spawner/chaos_spawner.png");
     public ChaosSpawnerRenderer(EntityRendererProvider.Context renderManager) {
         super(renderManager, new ChaosSpawnerModel<>(renderManager.bakeLayer(ChaosSpawnerModel.LAYER_LOCATION)), 1.0F);
         this.addLayer(new ChaosSpawnerLayer(this));
@@ -31,5 +31,5 @@ public class ChaosSpawnerRenderer<T extends ChaosSpawnerEntity> extends MobRende
     }
 
     @Override
-    public ResourceLocation getTextureLocation(ChaosSpawnerEntity instance) { return TEXTURE; }
+    public Identifier getTextureLocation(ChaosSpawnerEntity instance) { return TEXTURE; }
 }

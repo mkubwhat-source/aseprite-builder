@@ -1,7 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.util;
 
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import dev.hexnowloading.dungeonnowloading.entity.passive.CopperCreepEntity;
 import dev.hexnowloading.dungeonnowloading.entity.passive.SealedChaosEntity;
 import dev.hexnowloading.dungeonnowloading.entity.passive.WhimperEntity;
@@ -23,7 +23,7 @@ public final class OverworkedPenaltyUtil {
     }
 
     /** Stable id so the modifier can be updated/removed safely. */
-    public static final ResourceLocation OVERWORKED_HP_MODIFIER_ID =
+    public static final Identifier OVERWORKED_HP_MODIFIER_ID =
             DungeonNowLoading.id("overworked_player_max_health");
 
     /**

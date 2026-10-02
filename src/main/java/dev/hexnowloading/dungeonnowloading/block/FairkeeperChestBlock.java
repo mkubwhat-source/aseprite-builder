@@ -15,7 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -133,7 +133,7 @@ public class FairkeeperChestBlock extends BaseEntityBlock implements SimpleWater
         return super.playerWillDestroy(level, blockPos, blockState, player);
     }
 
-    protected Stat<ResourceLocation> getOpenChestStat() { return Stats.CUSTOM.get(Stats.OPEN_CHEST); }
+    protected Stat<Identifier> getOpenChestStat() { return Stats.CUSTOM.get(Stats.OPEN_CHEST); }
 
     public static boolean isChestBlockedByBlock(BlockGetter blockGetter, BlockPos pos) {
         BlockPos blockPos = pos.above();
@@ -150,7 +150,7 @@ public class FairkeeperChestBlock extends BaseEntityBlock implements SimpleWater
             return InteractionResult.PASS;
         }
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return InteractionResult.sidedSuccess(level.isClientSide());
         }
         if (isChestBlockedByBlock(level, pos)) {
@@ -182,7 +182,7 @@ public class FairkeeperChestBlock extends BaseEntityBlock implements SimpleWater
     }
 
     private static InteractionResult InteractWithLockedFairkeeperChest(Level level, Player player, BlockPos blockPos) {
-        player.displayClientMessage(Component.translatable("warning.dungeonnowloading.cannot_open_fairkeeper_chest"), true);
+        player.sendOverlayMessage(Component.translatable("warning.dungeonnowloading.cannot_open_fairkeeper_chest"));
         playSound(level, blockPos, SoundEvents.CHEST_LOCKED);
         return InteractionResult.SUCCESS;
     }
@@ -220,20 +220,20 @@ public class FairkeeperChestBlock extends BaseEntityBlock implements SimpleWater
         double d1 = (double)pos.getY() + 0.5D;
         double d2 = (double)pos.getZ() + 0.5D;
 
-        level.playSound((Player)null, d0, d1, d2, soundEvent, SoundSource.BLOCKS, 0.5F, level.random.nextFloat() * 0.1F + 0.9F);
+        level.playSound((Player)null, d0, d1, d2, soundEvent, SoundSource.BLOCKS, 0.5F, level.getRandom().nextFloat() * 0.1F + 0.9F);
     }
 
     @Override
     public void animateTick(BlockState blockState, Level level, BlockPos blockPos, RandomSource randomSource) {
-        /*if (level.isClientSide) {
+        /*if (level.isClientSide()) {
             int actualRegion1X = fairkeeperChest.getActualRegion1X(fairkeeperChest);
             int actualRegion2X = fairkeeperChest.getActualRegion2X(fairkeeperChest);
             int actualRegion1Y = fairkeeperChest.getActualRegion1Y(fairkeeperChest);
             int actualRegion2Y = fairkeeperChest.getActualRegion2Y(fairkeeperChest);
             int actualRegion1Z = fairkeeperChest.getActualRegion1Z(fairkeeperChest)
-            double x = actualRegion2X + (actualRegion1X - actualRegion2X) * level.random.nextFloat();
-            double y = actualRegion2Y + (actualRegion1Y - actualRegion2Y) * level.random.nextFloat();
-            double z = actualRegion2Z + (actualRegion1Z - actualRegion2Z) * level.random.nextFloat();
+            double x = actualRegion2X + (actualRegion1X - actualRegion2X) * level.getRandom().nextFloat();
+            double y = actualRegion2Y + (actualRegion1Y - actualRegion2Y) * level.getRandom().nextFloat();
+            double z = actualRegion2Z + (actualRegion1Z - actualRegion2Z) * level.getRandom().nextFloat();
             level.addParticle(DNLParticleTypes.FAIRKEEPER_BOUNDARY_PARTICLE.get(), blockEntity.actualRegion1X, y, z, 1, 90.0F, 0.0F);
             level.addParticle(DNLParticleTypes.FAIRKEEPER_BOUNDARY_PARTICLE.get(), blockEntity.actualRegion2X, y, z, 1, 90.0F, 0.0F);
             level.addParticle(DNLParticleTypes.FAIRKEEPER_BOUNDARY_PARTICLE.get(), x, blockEntity.actualRegion1Y, z, 0, 90.0F, 0.0F);
@@ -246,7 +246,7 @@ public class FairkeeperChestBlock extends BaseEntityBlock implements SimpleWater
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return createTickerHelper(type, DNLBlockEntityTypes.FAIRKEEPER_CHEST.get(), level.isClientSide ? FairkeeperChestBlockEntity::clientTick : FairkeeperChestBlockEntity::serverTick);
+        return createTickerHelper(type, DNLBlockEntityTypes.FAIRKEEPER_CHEST.get(), level.isClientSide() ? FairkeeperChestBlockEntity::clientTick : FairkeeperChestBlockEntity::serverTick);
     }
 
     @Override

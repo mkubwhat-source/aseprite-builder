@@ -6,13 +6,13 @@ import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.platform.Services;
 import dev.hexnowloading.dungeonnowloading.components.spawn_node.SpawnNodeReloadListener;
 import dev.hexnowloading.dungeonnowloading.components.spawn_node.SpawnPoolReloadListener;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public final class DNLReloadListeners {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     public static void init() {
-        Services.RELOAD_LISTENERS.registerDataReloadListener(ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "spawn_pools"), new SpawnPoolReloadListener(GSON, DungeonNowLoading.LOGGER));
-        Services.RELOAD_LISTENERS.registerDataReloadListener(ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "spawn_nodes"), new SpawnNodeReloadListener(GSON, DungeonNowLoading.LOGGER));
+        Services.RELOAD_LISTENERS.registerDataReloadListener(Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "spawn_pools"), new SpawnPoolReloadListener(GSON, DungeonNowLoading.LOGGER));
+        Services.RELOAD_LISTENERS.registerDataReloadListener(Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "spawn_nodes"), new SpawnNodeReloadListener(GSON, DungeonNowLoading.LOGGER));
     }
 }

@@ -59,7 +59,7 @@ public class NoGeodesInStructuresMixin {
             return;
         }
 
-        Registry<Structure> structureRegistry = worldGenRegion.registryAccess().registryOrThrow(Registries.STRUCTURE);
+        Registry<Structure> structureRegistry = worldGenRegion.registryAccess().lookupOrThrow(Registries.STRUCTURE);
 
         List<StructureStart> starts = getValidStructureStarts(
                 worldGenRegion,

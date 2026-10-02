@@ -13,7 +13,7 @@ public class RedstoneShockwaveParticle extends TextureSheetParticle {
 
     protected RedstoneShockwaveParticle(ClientLevel clientLevel, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, float scale, SpriteSet spriteSet) {
         super(clientLevel, x, y, z, xSpeed, ySpeed, zSpeed);
-        this.quadSize *= 5.9F + level.random.nextFloat() * 0.5F;
+        this.quadSize *= 5.9F + level.getRandom().nextFloat() * 0.5F;
         this.xd = xSpeed;
         this.yd = ySpeed;
         this.zd = zSpeed;

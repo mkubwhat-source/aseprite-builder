@@ -39,7 +39,7 @@ public class ScrapItem extends Item {
     public static ItemStack getOriginal(ItemStack stack) {
         CompoundTag tag = StackNbt.getTag(stack);
         if (tag != null && tag.contains(ORIGINAL_TAG, 10)) {
-            return ItemNbt.load(tag.getCompound(ORIGINAL_TAG));
+            return ItemNbt.load(tag.getCompoundOrEmpty(ORIGINAL_TAG));
         }
         return ItemStack.EMPTY;
     }

@@ -7,17 +7,17 @@ import dev.hexnowloading.dungeonnowloading.entity.client.model.HollowModel;
 import dev.hexnowloading.dungeonnowloading.entity.client.renderer.HollowRenderer;
 import dev.hexnowloading.dungeonnowloading.entity.monster.HollowEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.LightLayer;
 
 public class HollowTransparentLayer<T extends HollowEntity, M extends HollowModel<T>> extends RenderLayer<T, M> {
 
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/hollow_body.png");
-    private static final ResourceLocation EYE_TEXTURE = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/hollow.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/hollow_body.png");
+    private static final Identifier EYE_TEXTURE = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/hollow.png");
 
     public HollowTransparentLayer(HollowRenderer renderer) {
         super(renderer);
@@ -58,7 +58,7 @@ public class HollowTransparentLayer<T extends HollowEntity, M extends HollowMode
                 poseStack,
                 bodyVc,
                 packedLight,
-                LivingEntityRenderer.getOverlayCoords(entity, 0.0F), net.minecraft.util.FastColor.ARGB32.colorFromFloat(alpha, 1.0F, 1.0F, 1.0F));
+                LivingEntityRenderer.getOverlayCoords(entity, 0.0F), net.minecraft.util.ARGB.colorFromFloat(alpha, 1.0F, 1.0F, 1.0F));
 
 
         // 2) EYES (always emissive, ignore lighting)

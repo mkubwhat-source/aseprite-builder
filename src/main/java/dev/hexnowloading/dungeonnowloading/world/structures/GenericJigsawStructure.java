@@ -6,7 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.hexnowloading.dungeonnowloading.registry.DNLStructures;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.WorldGenerationContext;
@@ -24,14 +24,14 @@ public class GenericJigsawStructure extends Structure {
     public static final com.mojang.serialization.MapCodec<GenericJigsawStructure> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             GenericJigsawStructure.settingsCodec(instance),
             StructureTemplatePool.CODEC.fieldOf("start_pool").forGetter(structure -> structure.startPool),
-            ResourceLocation.CODEC.optionalFieldOf("start_jigsaw_name").forGetter(structure -> structure.startJigsawName),
+            Identifier.CODEC.optionalFieldOf("start_jigsaw_name").forGetter(structure -> structure.startJigsawName),
             Codec.intRange(0, 100).fieldOf("size").forGetter(structure -> structure.size),
             HeightProvider.CODEC.fieldOf("start_height").forGetter(structure -> structure.startHeight),
             Codec.BOOL.fieldOf("use_expansion_hack").forGetter(structure -> structure.useExpansionHack),
             Heightmap.Types.CODEC.optionalFieldOf("project_start_to_heightmap").forGetter(structure -> structure.projectStartToHeightmap),
             Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter),
             StructureTemplatePool.CODEC.optionalFieldOf("extra_surface_pool").forGetter(structure -> structure.extraSurfacePool),
-            ResourceLocation.CODEC.optionalFieldOf("extra_surface_start_jigsaw_name").forGetter(structure -> structure.extraSurfaceStartJigsawName),
+            Identifier.CODEC.optionalFieldOf("extra_surface_start_jigsaw_name").forGetter(structure -> structure.extraSurfaceStartJigsawName),
             Codec.intRange(0, 100).optionalFieldOf("extra_surface_size", 0).forGetter(structure -> structure.extraSurfaceSize),
             Codec.intRange(1, 128).optionalFieldOf("extra_surface_max_distance_from_center", 80).forGetter(structure -> structure.extraSurfaceMaxDistanceFromCenter),
             Heightmap.Types.CODEC.optionalFieldOf("extra_surface_heightmap", Heightmap.Types.WORLD_SURFACE_WG).forGetter(structure -> structure.extraSurfaceHeightmap),
@@ -39,21 +39,21 @@ public class GenericJigsawStructure extends Structure {
             Codec.BOOL.optionalFieldOf("sample_biome_at_surface", false).forGetter(structure -> structure.sampleBiomeAtSurface)
     ).apply(instance, GenericJigsawStructure::new));
     private final Holder<StructureTemplatePool> startPool;
-    private final Optional<ResourceLocation> startJigsawName;
+    private final Optional<Identifier> startJigsawName;
     private final int size;
     private final HeightProvider startHeight;
     private final boolean useExpansionHack;
     private final Optional<Heightmap.Types> projectStartToHeightmap;
     private final int maxDistanceFromCenter;
     private final Optional<Holder<StructureTemplatePool>> extraSurfacePool;
-    private final Optional<ResourceLocation> extraSurfaceStartJigsawName;
+    private final Optional<Identifier> extraSurfaceStartJigsawName;
     private final int extraSurfaceSize;
     private final int extraSurfaceMaxDistanceFromCenter;
     private final Heightmap.Types extraSurfaceHeightmap;
     private final int extraSurfaceYOffset;
     private final boolean sampleBiomeAtSurface;
 
-    public GenericJigsawStructure(StructureSettings config, Holder<StructureTemplatePool> startPool, Optional<ResourceLocation> startJigsawName, int size, HeightProvider startHeight, boolean useExpansionHack, Optional<Heightmap.Types> projectStartToHeightmap, int maxDistanceFromCenter, Optional<Holder<StructureTemplatePool>> extraSurfacePool, Optional<ResourceLocation> extraSurfaceStartJigsawName, int extraSurfaceSize, int extraSurfaceMaxDistanceFromCenter, Heightmap.Types extraSurfaceHeightmap, int extraSurfaceYOffset, boolean sampleBiomeAtSurface) {
+    public GenericJigsawStructure(StructureSettings config, Holder<StructureTemplatePool> startPool, Optional<Identifier> startJigsawName, int size, HeightProvider startHeight, boolean useExpansionHack, Optional<Heightmap.Types> projectStartToHeightmap, int maxDistanceFromCenter, Optional<Holder<StructureTemplatePool>> extraSurfacePool, Optional<Identifier> extraSurfaceStartJigsawName, int extraSurfaceSize, int extraSurfaceMaxDistanceFromCenter, Heightmap.Types extraSurfaceHeightmap, int extraSurfaceYOffset, boolean sampleBiomeAtSurface) {
         super(config);
         this.startPool = startPool;
         this.startJigsawName = startJigsawName;

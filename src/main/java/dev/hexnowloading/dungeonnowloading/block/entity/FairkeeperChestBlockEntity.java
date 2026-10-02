@@ -1,5 +1,11 @@
 package dev.hexnowloading.dungeonnowloading.block.entity;
 
+
+
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
 import dev.hexnowloading.dungeonnowloading.block.FairkeeperChestBlock;
 import dev.hexnowloading.dungeonnowloading.block.ZoneReceiverBlockEntity;
 import dev.hexnowloading.dungeonnowloading.block.property.ChestStates;
@@ -18,7 +24,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -51,9 +57,9 @@ public class FairkeeperChestBlockEntity extends RandomizableContainerBlockEntity
     public static final String LOOT_TABLE_TAG = "LootTable";
     public static final String LOOT_TABLE_SEED_TAG = "LootTableSeed";
     private NonNullList<ItemStack> items = NonNullList.withSize(27, ItemStack.EMPTY);
-    protected ResourceLocation lootTable;
+    protected Identifier lootTable;
     protected long lootTableSeed;
-    private ResourceLocation combatLootTable;
+    private Identifier combatLootTable;
     private long combatLootTableSeed;
     private List<BlockPos> blockEntityLocationList;
     private BlockPos oldBlockPos; // This block position will be different from the actual fairkeeper chest block pos if it was generated through structure.
@@ -84,10 +90,10 @@ public class FairkeeperChestBlockEntity extends RandomizableContainerBlockEntity
 
     // Saves the nbt when player leaves the world.
     @Override
-    protected void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+    protected void saveAdditional(ValueOutput nbt) {
         super.saveAdditional(nbt, registries);
         if (!this.trySaveLootTable(nbt)) {
-            ContainerHelper.saveAllItems(nbt, this.items, registries);
+            ContainerHelper.saveAllItems(nbt, this.items);
         } else {
             if (this.combatLootTable != null) {
                 nbt.putString("CombatLootTable", this.combatLootTable.toString());
@@ -99,21 +105,21 @@ public class FairkeeperChestBlockEntity extends RandomizableContainerBlockEntity
         if (this.blockEntityLocationList != null) {
             ListTag listTag = new ListTag();
             this.blockEntityLocationList.forEach(blockPos -> listTag.add(this.newIntList(blockPos.getX(), blockPos.getY(), blockPos.getZ())));
-            nbt.put("SpawnerLocations", listTag);
+            NbtCompat.put(nbt, "SpawnerLocations", listTag);
         }
         if (lastSpawner != null) {
-            nbt.put("LastSpawner", this.newIntList(this.lastSpawner.getX(), this.lastSpawner.getY(), this.lastSpawner.getZ()));
+            NbtCompat.put(nbt, "LastSpawner", this.newIntList(this.lastSpawner.getX(), this.lastSpawner.getY(), this.lastSpawner.getZ()));
         }
         nbt.putInt("Facing", this.facing);
-        nbt.put("OldBlockPos", this.newIntList(this.getBlockPos().getX(), this.getBlockPos().getY(), this.getBlockPos().getZ()));
+        NbtCompat.put(nbt, "OldBlockPos", this.newIntList(this.getBlockPos().getX(), this.getBlockPos().getY(), this.getBlockPos().getZ()));
         nbt.putInt("StartUpTick", this.startUpTick);
         nbt.putInt("PlayerCount", this.playerCount);
         nbt.putBoolean("Disabled", this.disabled);
         if (this.maxRegion != null) {
-            nbt.put("MaxRegion", this.newIntList(this.maxRegion.getX(), this.maxRegion.getY(), this.maxRegion.getZ()));
+            NbtCompat.put(nbt, "MaxRegion", this.newIntList(this.maxRegion.getX(), this.maxRegion.getY(), this.maxRegion.getZ()));
         }
         if (this.minRegion != null) {
-            nbt.put("MinRegion", this.newIntList(this.minRegion.getX(), this.minRegion.getY(), this.minRegion.getZ()));
+            NbtCompat.put(nbt, "MinRegion", this.newIntList(this.minRegion.getX(), this.minRegion.getY(), this.minRegion.getZ()));
         }
     }
 
@@ -127,19 +133,19 @@ public class FairkeeperChestBlockEntity extends RandomizableContainerBlockEntity
 
     // Loads the nbt when player joins the world.
     @Override
-    protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+    protected void loadAdditional(ValueInput nbt) {
         super.loadAdditional(nbt, registries);
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         if (!this.tryLoadLootTable(nbt)) {
-            ContainerHelper.loadAllItems(nbt, this.items, registries);
+            ContainerHelper.loadAllItems(nbt, this.items);
         } else {
-            if (nbt.contains("CombatLootTable", CompoundTag.OBJECT_HEADER)) {
-                this.combatLootTable = ResourceLocation.parse(nbt.getString("CombatLootTable"));
-                this.combatLootTableSeed = nbt.getLong("CombatLootTableSeed");
+            if (NbtCompat.has(nbt, "CombatLootTable")) {
+                this.combatLootTable = Identifier.parse(nbt.getStringOr("CombatLootTable", ""));
+                this.combatLootTableSeed = nbt.getLongOr("CombatLootTableSeed", 0L);
             }
         }
-        if (nbt.contains("SpawnerLocations", CompoundTag.TAG_LIST)) {
-            ListTag listTag = nbt.getList("SpawnerLocations", CompoundTag.TAG_LIST);
+        if (NbtCompat.has(nbt, "SpawnerLocations")) {
+            ListTag listTag = NbtCompat.getList(nbt, "SpawnerLocations");
             if (this.blockEntityLocationList == null) {
                 this.blockEntityLocationList = new ArrayList<>();
             }
@@ -147,19 +153,19 @@ public class FairkeeperChestBlockEntity extends RandomizableContainerBlockEntity
                 this.blockEntityLocationList.add(new BlockPos(listTag.getInt(0), listTag.getInt(1), listTag.getInt(2)));
             }
         }
-        if (nbt.contains("LastSpawner", CompoundTag.TAG_LIST)) {
-            this.lastSpawner = new BlockPos(nbt.getList("LastSpawner", CompoundTag.TAG_INT).getInt(0), nbt.getList("LastSpawner", CompoundTag.TAG_INT).getInt(1), nbt.getList("LastSpawner", CompoundTag.TAG_INT).getInt(2));
+        if (NbtCompat.has(nbt, "LastSpawner")) {
+            this.lastSpawner = new BlockPos(NbtCompat.getList(nbt, "LastSpawner").getInt(0), NbtCompat.getList(nbt, "LastSpawner").getInt(1), NbtCompat.getList(nbt, "LastSpawner").getInt(2));
         }
-        this.facing = nbt.getInt("Facing");
-        this.startUpTick = nbt.getInt("StartUpTick");
-        this.playerCount = nbt.getInt("PlayerCount");
-        this.disabled = nbt.getBoolean("Disabled");
-        this.oldBlockPos = new BlockPos(nbt.getList("OldBlockPos", CompoundTag.TAG_INT).getInt(0), nbt.getList("OldBlockPos", CompoundTag.TAG_INT).getInt(1), nbt.getList("OldBlockPos", CompoundTag.TAG_INT).getInt(2));
-        if (nbt.contains("MaxRegion", CompoundTag.TAG_LIST)) {
-            this.maxRegion = new BlockPos(nbt.getList("MaxRegion", CompoundTag.TAG_INT).getInt(0), nbt.getList("MaxRegion", CompoundTag.TAG_INT).getInt(1), nbt.getList("MaxRegion", CompoundTag.TAG_INT).getInt(2));
+        this.facing = nbt.getIntOr("Facing", 0);
+        this.startUpTick = nbt.getIntOr("StartUpTick", 0);
+        this.playerCount = nbt.getIntOr("PlayerCount", 0);
+        this.disabled = nbt.getBooleanOr("Disabled", false);
+        this.oldBlockPos = new BlockPos(NbtCompat.getList(nbt, "OldBlockPos").getInt(0), NbtCompat.getList(nbt, "OldBlockPos").getInt(1), NbtCompat.getList(nbt, "OldBlockPos").getInt(2));
+        if (NbtCompat.has(nbt, "MaxRegion")) {
+            this.maxRegion = new BlockPos(NbtCompat.getList(nbt, "MaxRegion").getInt(0), NbtCompat.getList(nbt, "MaxRegion").getInt(1), NbtCompat.getList(nbt, "MaxRegion").getInt(2));
         }
-        if (nbt.contains("MinRegion", CompoundTag.TAG_LIST)) {
-            this.minRegion = new BlockPos(nbt.getList("MinRegion", CompoundTag.TAG_INT).getInt(0), nbt.getList("MinRegion", CompoundTag.TAG_INT).getInt(1), nbt.getList("MinRegion", CompoundTag.TAG_INT).getInt(2));
+        if (NbtCompat.has(nbt, "MinRegion")) {
+            this.minRegion = new BlockPos(NbtCompat.getList(nbt, "MinRegion").getInt(0), NbtCompat.getList(nbt, "MinRegion").getInt(1), NbtCompat.getList(nbt, "MinRegion").getInt(2));
         }
     }
 
@@ -172,7 +178,7 @@ public class FairkeeperChestBlockEntity extends RandomizableContainerBlockEntity
 
     public CompoundTag setCombatLootTable(FairkeeperChestBlockEntity blockEntity) {
         CompoundTag nbt = blockEntity.saveWithFullMetadata(blockEntity.level.registryAccess()).copy();
-        if (nbt.contains("CombatLootTable", CompoundTag.OBJECT_HEADER)) {
+        if (nbt.contains("CombatLootTable")) {
             nbt.putString("LootTable", blockEntity.combatLootTable.toString());
             nbt.putLong("LootTableSeed", blockEntity.combatLootTableSeed);
             nbt.remove("CombatLootTable");
@@ -220,8 +226,8 @@ public class FairkeeperChestBlockEntity extends RandomizableContainerBlockEntity
 
     protected boolean tryLoadLootTable(CompoundTag nbt) {
         if (nbt.contains("LootTable", 8)) {
-            this.lootTable = ResourceLocation.parse(nbt.getString("LootTable"));
-            this.lootTableSeed = nbt.getLong("LootTableSeed");
+            this.lootTable = Identifier.parse(nbt.getStringOr("LootTable", ""));
+            this.lootTableSeed = nbt.getLongOr("LootTableSeed", 0L);
             return true;
         } else {
             return false;
@@ -279,7 +285,7 @@ public class FairkeeperChestBlockEntity extends RandomizableContainerBlockEntity
     }*/
 
     public static void playSound(Level level, BlockPos blockPos, SoundEvent soundEvent) {
-        level.playSound((Player) null, blockPos, soundEvent, SoundSource.BLOCKS, 0.5F, level.random.nextFloat() * 0.1f + 0.9f);
+        level.playSound((Player) null, blockPos, soundEvent, SoundSource.BLOCKS, 0.5F, level.getRandom().nextFloat() * 0.1f + 0.9f);
     }
 
     // Fairkeeper Chest Alert Mechanic
@@ -514,22 +520,22 @@ public class FairkeeperChestBlockEntity extends RandomizableContainerBlockEntity
             float xy = 1.0F - ((float) (blockEntity.actualRegion1X - blockEntity.actualRegion2X) * (blockEntity.actualRegion1Y - blockEntity.actualRegion2Y)) / 1024F;
             float xz = 1.0F - ((float) (blockEntity.actualRegion1X - blockEntity.actualRegion2X) * (blockEntity.actualRegion1Z - blockEntity.actualRegion2Z)) / 1024F;
             float yz = 1.0F - ((float) (blockEntity.actualRegion1Y - blockEntity.actualRegion2Y) * (blockEntity.actualRegion1Z - blockEntity.actualRegion2Z)) / 1024F;
-            double x = blockEntity.actualRegion2X + (blockEntity.actualRegion1X - blockEntity.actualRegion2X) * level.random.nextFloat();
-            double y = blockEntity.actualRegion2Y + (blockEntity.actualRegion1Y - blockEntity.actualRegion2Y) * level.random.nextFloat();
-            double z = blockEntity.actualRegion2Z + (blockEntity.actualRegion1Z - blockEntity.actualRegion2Z) * level.random.nextFloat();
-            float r = level.random.nextFloat();
+            double x = blockEntity.actualRegion2X + (blockEntity.actualRegion1X - blockEntity.actualRegion2X) * level.getRandom().nextFloat();
+            double y = blockEntity.actualRegion2Y + (blockEntity.actualRegion1Y - blockEntity.actualRegion2Y) * level.getRandom().nextFloat();
+            double z = blockEntity.actualRegion2Z + (blockEntity.actualRegion1Z - blockEntity.actualRegion2Z) * level.getRandom().nextFloat();
+            float r = level.getRandom().nextFloat();
 
             if (r + 0.2F > yz) {
-                ((ServerLevel) level).sendParticles(new AxisParticleType.AxisParticleData(DNLParticleTypes.FAIRKEEPER_BOUNDARY_PARTICLE.get(), 1, 270), blockEntity.actualRegion1X + (level.random.nextFloat() - level.random.nextFloat()) * 0.1F, y, z, 1, 0, 0, 0, 0);
-                ((ServerLevel) level).sendParticles(new AxisParticleType.AxisParticleData(DNLParticleTypes.FAIRKEEPER_BOUNDARY_PARTICLE.get(), 1, 90), blockEntity.actualRegion2X + (level.random.nextFloat() - level.random.nextFloat()) * 0.1F, y, z, 1, 0, 0, 0, 0);
+                ((ServerLevel) level).sendParticles(new AxisParticleType.AxisParticleData(DNLParticleTypes.FAIRKEEPER_BOUNDARY_PARTICLE.get(), 1, 270), blockEntity.actualRegion1X + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F, y, z, 1, 0, 0, 0, 0);
+                ((ServerLevel) level).sendParticles(new AxisParticleType.AxisParticleData(DNLParticleTypes.FAIRKEEPER_BOUNDARY_PARTICLE.get(), 1, 90), blockEntity.actualRegion2X + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F, y, z, 1, 0, 0, 0, 0);
             }
             if (r + 0.2F > xz) {
-                ((ServerLevel) level).sendParticles(new AxisParticleType.AxisParticleData(DNLParticleTypes.FAIRKEEPER_BOUNDARY_PARTICLE.get(), 0, 90), x, blockEntity.actualRegion1Y + (level.random.nextFloat() - level.random.nextFloat()) * 0.1F, z, 1, 0, 0, 0, 0);
-                ((ServerLevel) level).sendParticles(new AxisParticleType.AxisParticleData(DNLParticleTypes.FAIRKEEPER_BOUNDARY_PARTICLE.get(), 0, 270), x, blockEntity.actualRegion2Y + (level.random.nextFloat() - level.random.nextFloat()) * 0.1F, z, 1, 0, 0, 0, 0);
+                ((ServerLevel) level).sendParticles(new AxisParticleType.AxisParticleData(DNLParticleTypes.FAIRKEEPER_BOUNDARY_PARTICLE.get(), 0, 90), x, blockEntity.actualRegion1Y + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F, z, 1, 0, 0, 0, 0);
+                ((ServerLevel) level).sendParticles(new AxisParticleType.AxisParticleData(DNLParticleTypes.FAIRKEEPER_BOUNDARY_PARTICLE.get(), 0, 270), x, blockEntity.actualRegion2Y + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F, z, 1, 0, 0, 0, 0);
             }
             if (r + 0.2F > xy) {
-                ((ServerLevel) level).sendParticles(new AxisParticleType.AxisParticleData(DNLParticleTypes.FAIRKEEPER_BOUNDARY_PARTICLE.get(), 1, 180), x, y, blockEntity.actualRegion1Z + (level.random.nextFloat() - level.random.nextFloat()) * 0.1F, 1, 0, 0, 0, 0);
-                ((ServerLevel) level).sendParticles(new AxisParticleType.AxisParticleData(DNLParticleTypes.FAIRKEEPER_BOUNDARY_PARTICLE.get(), 1, 0), x, y, blockEntity.actualRegion2Z + (level.random.nextFloat() - level.random.nextFloat()) * 0.1F, 1, 0, 0, 0, 0);
+                ((ServerLevel) level).sendParticles(new AxisParticleType.AxisParticleData(DNLParticleTypes.FAIRKEEPER_BOUNDARY_PARTICLE.get(), 1, 180), x, y, blockEntity.actualRegion1Z + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F, 1, 0, 0, 0, 0);
+                ((ServerLevel) level).sendParticles(new AxisParticleType.AxisParticleData(DNLParticleTypes.FAIRKEEPER_BOUNDARY_PARTICLE.get(), 1, 0), x, y, blockEntity.actualRegion2Z + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F, 1, 0, 0, 0, 0);
             }
         }
     }
@@ -565,7 +571,7 @@ public class FairkeeperChestBlockEntity extends RandomizableContainerBlockEntity
         d /= s;
         e /= s;
         f /= s;
-        double r = level.random.nextDouble();
+        double r = level.getRandom().nextDouble();
         while (r < s) {
             r += 0.2;
             ((ServerLevel) level).sendParticles(DustParticleOptions.REDSTONE, (double) originPos.getX() + 0.5D + d * r, (double) originPos.getY() + 0.5D + e * r, (double) originPos.getZ() + 0.5D + f * r, 1, 0.0D, 0.0, 0.0, 0.0);
@@ -654,7 +660,7 @@ public class FairkeeperChestBlockEntity extends RandomizableContainerBlockEntity
         applyOffsetsToActualRegion(origin, this.maxRegion, this.minRegion);
 
         setChanged();
-        if (this.level != null && !this.level.isClientSide) {
+        if (this.level != null && !this.level.isClientSide()) {
             BlockState st = this.getBlockState();
             this.level.sendBlockUpdated(this.worldPosition, st, st, 3);
         }

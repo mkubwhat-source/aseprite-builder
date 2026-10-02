@@ -37,7 +37,7 @@ public class LifeStealerItem extends SwordItem {
                 float healAmount = 1.0F;
                 userEntity.heal(healAmount);
                 Level level = userEntity.level();
-                if (!level.isClientSide) {
+                if (!level.isClientSide()) {
                     ((ServerLevel) level).sendParticles(ParticleTypes.ANGRY_VILLAGER, hurtedEntity.getX(), hurtedEntity.getY() + 2.0, hurtedEntity.getZ(), 1, 0.1D, 0.1D, 0.1D, 0.0D);
                 }
             }

@@ -4,11 +4,11 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.armortrim.ArmorTrim;
-import net.minecraft.world.item.armortrim.TrimMaterial;
-import net.minecraft.world.item.armortrim.TrimPattern;
+import net.minecraft.world.item.equipment.trim.ArmorTrim;
+import net.minecraft.world.item.equipment.trim.TrimMaterial;
+import net.minecraft.world.item.equipment.trim.TrimPattern;
 import net.minecraft.core.component.DataComponents;
 
 /**
@@ -33,9 +33,9 @@ public final class ArmorTrimUtil {
         stack.set(DataComponents.TRIM, new ArmorTrim(materialHolder, patternHolder));
     }
 
-    private static ResourceLocation id(String value) {
+    private static Identifier id(String value) {
         return value.indexOf(':') >= 0
-                ? ResourceLocation.parse(value)
-                : ResourceLocation.withDefaultNamespace(value);
+                ? Identifier.parse(value)
+                : Identifier.withDefaultNamespace(value);
     }
 }

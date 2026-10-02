@@ -9,14 +9,14 @@ import dev.hexnowloading.dungeonnowloading.block.client.model.PlayerStatuePedest
 import dev.hexnowloading.dungeonnowloading.block.entity.PlayerStatueBlockEntity;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.FormattedText;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
@@ -25,19 +25,19 @@ public class PlayerStatueRenderer implements BlockEntityRenderer<PlayerStatueBlo
     private final PlayerStatuePedestalModel pedestal;
     private final Font font; // 🔹 add
 
-    private static final ResourceLocation PEDESTAL_TEX =
-            ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/block/player_statue_pedestal.png");
-    private static final ResourceLocation PEDESTAL_TEX_COPPER_NOTCH =
-            ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/block/player_statue_pedestal_copper_notch.png");
-    private static final ResourceLocation PEDESTAL_TEX_IRON_NOTCH =
-            ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/block/player_statue_pedestal_iron_notch.png");
-    private static final ResourceLocation PEDESTAL_TEX_GOLD_NOTCH =
-            ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/block/player_statue_pedestal_gold_notch.png");
-    private static final ResourceLocation PEDESTAL_TEX_DIAMOND_NOTCH =
-            ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/block/player_statue_pedestal_diamond_notch.png");
+    private static final Identifier PEDESTAL_TEX =
+            Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/block/player_statue_pedestal.png");
+    private static final Identifier PEDESTAL_TEX_COPPER_NOTCH =
+            Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/block/player_statue_pedestal_copper_notch.png");
+    private static final Identifier PEDESTAL_TEX_IRON_NOTCH =
+            Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/block/player_statue_pedestal_iron_notch.png");
+    private static final Identifier PEDESTAL_TEX_GOLD_NOTCH =
+            Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/block/player_statue_pedestal_gold_notch.png");
+    private static final Identifier PEDESTAL_TEX_DIAMOND_NOTCH =
+            Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/block/player_statue_pedestal_diamond_notch.png");
 
-    private static final ResourceLocation STONE_OVERLAY_TEX =
-            ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/block/player_statue_stone.png");
+    private static final Identifier STONE_OVERLAY_TEX =
+            Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/block/player_statue_stone.png");
 
 
     public PlayerStatueRenderer(BlockEntityRendererProvider.Context ctx) {
@@ -190,16 +190,16 @@ public class PlayerStatueRenderer implements BlockEntityRenderer<PlayerStatueBlo
             return -988212; // SignRenderer.BLACK_TEXT_OUTLINE_COLOR
         }
         // 40% darken like signs
-        int r = (int)(FastColor.ARGB32.red(rgb)   * 0.4);
-        int g = (int)(FastColor.ARGB32.green(rgb) * 0.4);
-        int b = (int)(FastColor.ARGB32.blue(rgb)  * 0.4);
-        return FastColor.ARGB32.color(0, r, g, b);
+        int r = (int)(ARGB.red(rgb)   * 0.4);
+        int g = (int)(ARGB.green(rgb) * 0.4);
+        int b = (int)(ARGB.blue(rgb)  * 0.4);
+        return ARGB.color(0, r, g, b);
     }
 
     public static final int PEDESTAL_TEXT_MAX_PX = 100; // safe pixel budget for one line
     public static int pedestalMaxTextPixels(Font font) { return PEDESTAL_TEXT_MAX_PX; }
 
-    private ResourceLocation notchOverlayTex(PlayerStatueBlockEntity be) {
+    private Identifier notchOverlayTex(PlayerStatueBlockEntity be) {
         return switch (be.getNotchTier()) {
             case COPPER  -> PEDESTAL_TEX_COPPER_NOTCH;
             case IRON    -> PEDESTAL_TEX_IRON_NOTCH;

@@ -1,5 +1,7 @@
 package dev.hexnowloading.dungeonnowloading.item;
 
+
+import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
 import dev.hexnowloading.dungeonnowloading.util.StackNbt;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -23,7 +25,7 @@ public interface DNLAnimatedItem<T extends Enum<T> & DNLAnimationState> {
         // update() or the UUID never persists. Without it getItemUUID() always returns null, which
         // breaks ItemInHandRendererMixin's re-equip suppression (Scorcher jumps in first person).
         if (getItemUUID(stack) == null) {
-            StackNbt.update(stack, tag -> tag.putUUID(ITEM_UUID, UUID.randomUUID()));
+            StackNbt.update(stack, tag -> NbtCompat.putUUID(tag, ITEM_UUID, UUID.randomUUID()));
         }
     }
 

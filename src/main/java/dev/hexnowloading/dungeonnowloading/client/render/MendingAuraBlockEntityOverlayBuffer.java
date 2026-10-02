@@ -3,12 +3,12 @@ package dev.hexnowloading.dungeonnowloading.client.render;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 
 import java.lang.reflect.Field;
@@ -18,9 +18,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class MendingAuraBlockEntityOverlayBuffer implements MultiBufferSource {
     public static final RenderType RENDER_TYPE = RenderType.entityTranslucent(TextureAtlas.LOCATION_BLOCKS);
-    private static final ResourceLocation MENDING_AURA_SPRITE = ResourceLocation.fromNamespaceAndPath("dungeonnowloading", "block/mending_aura_0");
+    private static final Identifier MENDING_AURA_SPRITE = Identifier.fromNamespaceAndPath("dungeonnowloading", "block/mending_aura_0");
     private static final float OVERLAY_OFFSET = 0.002F;
-    private static final Map<ResourceLocation, TextureMask> TEXTURE_MASK_CACHE = new ConcurrentHashMap<>();
+    private static final Map<Identifier, TextureMask> TEXTURE_MASK_CACHE = new ConcurrentHashMap<>();
     private static Field compositeStateField;
     private static Field textureStateField;
     private static Field textureField;
@@ -247,7 +247,7 @@ public class MendingAuraBlockEntityOverlayBuffer implements MultiBufferSource {
                     // 1.21: getU/getV take a normalized 0..1 fraction (1.20.1 took 0..16); u,v are already 0..1.
                     .setUv(this.auraSprite.getU(u), this.auraSprite.getV(v))
                     .setUv1(vertex.overlayU, vertex.overlayV)
-                    .setLight(LightTexture.FULL_BRIGHT)
+                    .setLight(LightCoordsUtil.FULL_BRIGHT)
                     .setNormal(vertex.normalX, vertex.normalY, vertex.normalZ);
         }
 
@@ -313,11 +313,11 @@ public class MendingAuraBlockEntityOverlayBuffer implements MultiBufferSource {
     }
 
     private static TextureMask textureMask(RenderType renderType) {
-        Optional<ResourceLocation> location = textureLocation(renderType);
+        Optional<Identifier> location = textureLocation(renderType);
         return location.map(resourceLocation -> TEXTURE_MASK_CACHE.computeIfAbsent(resourceLocation, MendingAuraBlockEntityOverlayBuffer::loadTextureMask)).orElse(null);
     }
 
-    private static TextureMask loadTextureMask(ResourceLocation location) {
+    private static TextureMask loadTextureMask(Identifier location) {
         Optional<Resource> resource = Minecraft.getInstance().getResourceManager().getResource(location);
         if (resource.isEmpty()) {
             return null;
@@ -339,7 +339,7 @@ public class MendingAuraBlockEntityOverlayBuffer implements MultiBufferSource {
     }
 
     @SuppressWarnings("unchecked")
-    private static Optional<ResourceLocation> textureLocation(RenderType renderType) {
+    private static Optional<Identifier> textureLocation(RenderType renderType) {
         try {
             Field stateField = compositeStateField;
             if (stateField == null) {
@@ -360,7 +360,7 @@ public class MendingAuraBlockEntityOverlayBuffer implements MultiBufferSource {
                 texture = findField(textureStateValue.getClass(), "texture");
                 textureField = texture;
             }
-            return (Optional<ResourceLocation>) texture.get(textureStateValue);
+            return (Optional<Identifier>) texture.get(textureStateValue);
         } catch (Exception ignored) {
             return Optional.empty();
         }

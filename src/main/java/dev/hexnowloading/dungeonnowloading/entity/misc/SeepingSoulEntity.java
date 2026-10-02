@@ -1,5 +1,11 @@
 package dev.hexnowloading.dungeonnowloading.entity.misc;
 
+
+
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.entity.client.animation_duration.seeping_soul.SeepingSoulAnimationDuration;
 import dev.hexnowloading.dungeonnowloading.entity.client.animation_duration.seeping_soul.SeepingSoulDuration;
@@ -20,7 +26,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -74,7 +80,7 @@ public class SeepingSoulEntity extends Entity {
     private static final EntityDataAccessor<SeepingSoulAnimationState> ANIMATION_STATE = SynchedEntityData.defineId(SeepingSoulEntity.class, EntityStates.SEEPING_SOUL_ANIMATION_STATE);
     private static final EntityDataAccessor<String> DATA_BOSS_ID = SynchedEntityData.defineId(SeepingSoulEntity.class, EntityDataSerializers.STRING);
 
-    private static final ResourceLocation DEFAULT_BOSS_ID = ResourceLocation.fromNamespaceAndPath("minecraft", "pig"); // fallback
+    private static final Identifier DEFAULT_BOSS_ID = Identifier.fromNamespaceAndPath("minecraft", "pig"); // fallback
     // Stored as string in NBT
     private int lastHitTick = -999999;
     private final Set<UUID> playerDefeatedUUIDs = new HashSet<>();
@@ -124,7 +130,7 @@ public class SeepingSoulEntity extends Entity {
         int ht = getHurtTicks();
         if (ht > 0) setHurtTicks(ht - 1);
 
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             eventAnimations.tick();
             spawnVisibleSoulParticles();
             return;
@@ -225,7 +231,7 @@ public class SeepingSoulEntity extends Entity {
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        if (this.level().isClientSide) return true;
+        if (this.level().isClientSide()) return true;
 
         setHurtTicks(HURT_FLASH_TICKS);
 
@@ -254,7 +260,7 @@ public class SeepingSoulEntity extends Entity {
         Component bossName = (def != null) ? def.displayName() : Component.literal("???");
         Component itemName = (def != null) ? def.recallItem().get().getDefaultInstance().getHoverName() : Component.literal("???");
 
-        player.displayClientMessage(Component.translatable("entity.dungeonnowloading.seeping_soul.right_click", itemName, bossName), true);
+        player.sendOverlayMessage(Component.translatable("entity.dungeonnowloading.seeping_soul.right_click", itemName, bossName));
 
         return true;
     }
@@ -269,30 +275,30 @@ public class SeepingSoulEntity extends Entity {
 
         // Poof burst
         for (int i = 0; i < 28; i++) {
-            double x = x0 + (level.random.nextDouble() * 2.0 - 1.0) * radius;
-            double y = y0 + (level.random.nextDouble() * 2.0 - 1.0) * 0.6;
-            double z = z0 + (level.random.nextDouble() * 2.0 - 1.0) * radius;
+            double x = x0 + (level.getRandom().nextDouble() * 2.0 - 1.0) * radius;
+            double y = y0 + (level.getRandom().nextDouble() * 2.0 - 1.0) * 0.6;
+            double z = z0 + (level.getRandom().nextDouble() * 2.0 - 1.0) * radius;
 
-            double vx = (level.random.nextDouble() * 2.0 - 1.0) * 0.12;
-            double vy = 0.05 + level.random.nextDouble() * 0.18;
-            double vz = (level.random.nextDouble() * 2.0 - 1.0) * 0.12;
+            double vx = (level.getRandom().nextDouble() * 2.0 - 1.0) * 0.12;
+            double vy = 0.05 + level.getRandom().nextDouble() * 0.18;
+            double vz = (level.getRandom().nextDouble() * 2.0 - 1.0) * 0.12;
 
             level.sendParticles(ParticleTypes.POOF, x, y, z, 1, vx, vy, vz, 0.0);
         }
 
         // Soul burst
         for (int i = 0; i < 22; i++) {
-            double x = x0 + (level.random.nextDouble() * 2.0 - 1.0) * radius;
-            double y = y0 + level.random.nextDouble() * 0.9;
-            double z = z0 + (level.random.nextDouble() * 2.0 - 1.0) * radius;
+            double x = x0 + (level.getRandom().nextDouble() * 2.0 - 1.0) * radius;
+            double y = y0 + level.getRandom().nextDouble() * 0.9;
+            double z = z0 + (level.getRandom().nextDouble() * 2.0 - 1.0) * radius;
 
-            double vx = (level.random.nextDouble() * 2.0 - 1.0) * 0.05;
-            double vy = 0.03 + level.random.nextDouble() * 0.06;
-            double vz = (level.random.nextDouble() * 2.0 - 1.0) * 0.05;
+            double vx = (level.getRandom().nextDouble() * 2.0 - 1.0) * 0.05;
+            double vy = 0.03 + level.getRandom().nextDouble() * 0.06;
+            double vz = (level.getRandom().nextDouble() * 2.0 - 1.0) * 0.05;
 
             level.sendParticles(ParticleTypes.SOUL, x, y, z, 1, vx, vy, vz, 0.0);
 
-            if (level.random.nextInt(3) == 0) {
+            if (level.getRandom().nextInt(3) == 0) {
                 level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, x, y, z, 1, vx * 0.7, vy * 0.7, vz * 0.7, 1.0);
             }
         }
@@ -303,7 +309,7 @@ public class SeepingSoulEntity extends Entity {
     public InteractionResult interact(Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
 
             if (isInSpawnDelay()) return InteractionResult.FAIL;
 
@@ -318,21 +324,18 @@ public class SeepingSoulEntity extends Entity {
                     ? def.recallItem().get().getDefaultInstance().getHoverName()
                     : Component.literal("???");
 
-            player.displayClientMessage(
-                    Component.translatable(
+            player.sendOverlayMessage(Component.translatable(
                             "entity.dungeonnowloading.seeping_soul.right_click",
                             itemName,
                             bossName
-                    ),
-                    true
-            );
+                    ));
         }
 
-        return InteractionResult.sidedSuccess(this.level().isClientSide);
+        return InteractionResult.sidedSuccess(this.level().isClientSide());
     }
 
     public boolean tryStartChanneling(Player player, ItemStack stack) {
-        if (this.level().isClientSide) return false;
+        if (this.level().isClientSide()) return false;
 
         if (isInSpawnDelay()) return false;
 
@@ -372,33 +375,33 @@ public class SeepingSoulEntity extends Entity {
 
     // --- NBT ---
     @Override
-    protected void readAdditionalSaveData(CompoundTag tag) {
-        if (tag.contains("Boss", CompoundTag.TAG_STRING)) {
+    protected void readAdditionalSaveData(ValueInput tag) {
+        if (NbtCompat.has(tag, "Boss")) {
             try {
-                this.setBossId(ResourceLocation.parse(tag.getString("Boss")));
+                this.setBossId(Identifier.parse(tag.getStringOr("Boss", "")));
             } catch (Exception ignored) {
                 this.setBossId(DEFAULT_BOSS_ID);
             }
         }
 
-        setSpawnDelayTicks(Mth.clamp(tag.getInt("SpawnDelayTicks"), 0, SPAWN_DELAY_TICKS));
-        setHp(Mth.clamp(tag.getInt("Health"), 0, MAX_HP));
-        setDefeatedCount(Mth.clamp(tag.getInt("DefeatedCount"), 0, 100));
-        setChannelTicks(Mth.clamp(tag.getInt("ChannelTicks"), 0, CHANNEL_TOTAL_TICKS));
-        this.lastHitTick = tag.getInt("LastHitTick");
+        setSpawnDelayTicks(Mth.clamp(tag.getIntOr("SpawnDelayTicks", 0), 0, SPAWN_DELAY_TICKS));
+        setHp(Mth.clamp(tag.getIntOr("Health", 0), 0, MAX_HP));
+        setDefeatedCount(Mth.clamp(tag.getIntOr("DefeatedCount", 0), 0, 100));
+        setChannelTicks(Mth.clamp(tag.getIntOr("ChannelTicks", 0), 0, CHANNEL_TOTAL_TICKS));
+        this.lastHitTick = tag.getIntOr("LastHitTick", 0);
 
         this.playerDefeatedUUIDs.clear();
 
-        if (tag.contains("PlayerDefeatedUUIDs", CompoundTag.TAG_LIST)) {
-            ListTag list = tag.getList("PlayerDefeatedUUIDs", CompoundTag.TAG_COMPOUND);
+        if (NbtCompat.has(tag, "PlayerDefeatedUUIDs")) {
+            ListTag list = NbtCompat.getList(tag, "PlayerDefeatedUUIDs");
             for (int i = 0; i < list.size(); i++) {
-                this.playerDefeatedUUIDs.add(list.getCompound(i).getUUID("Id"));
+                this.playerDefeatedUUIDs.add(list.getCompoundOrEmpty(i).getUUID("Id"));
             }
         }
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag tag) {
+    protected void addAdditionalSaveData(ValueOutput tag) {
         tag.putString("Boss", this.getBossId().toString());
         tag.putInt("Health", getHp());
         tag.putInt("DefeatedCount", getDefeatedCount());
@@ -408,10 +411,10 @@ public class SeepingSoulEntity extends Entity {
         ListTag list = new ListTag();
         for (UUID id : this.playerDefeatedUUIDs) {
             CompoundTag t = new CompoundTag();
-            t.putUUID("Id", id);
+            NbtCompat.putUUID(t, "Id", id);
             list.add(t);
         }
-        tag.put("PlayerDefeatedUUIDs", list);
+        NbtCompat.put(tag, "PlayerDefeatedUUIDs", list);
 
     }
 
@@ -424,7 +427,7 @@ public class SeepingSoulEntity extends Entity {
         ListTag list = new ListTag();
         for (UUID id : playerDefeatedUUIDs) {
             CompoundTag t = new CompoundTag();
-            t.putUUID("Id", id);
+            NbtCompat.putUUID(t, "Id", id);
             list.add(t);
         }
 
@@ -436,15 +439,15 @@ public class SeepingSoulEntity extends Entity {
     public static RecallData readRecallNBT(CompoundTag tag) {
         Set<UUID> set = new HashSet<>();
 
-        if (tag.contains("PlayerDefeatedUUIDs", CompoundTag.TAG_LIST)) {
-            ListTag list = tag.getList("PlayerDefeatedUUIDs", CompoundTag.TAG_COMPOUND);
+        if (tag.contains("PlayerDefeatedUUIDs")) {
+            ListTag list = tag.getListOrEmpty("PlayerDefeatedUUIDs");
             for (int i = 0; i < list.size(); i++) {
-                set.add(list.getCompound(i).getUUID("Id"));
+                set.add(list.getCompoundOrEmpty(i).getUUID("Id"));
             }
         }
 
-        int defeatedCount = tag.getInt("DefeatedCount");
-        int modifiedDefeatedCount = tag.getInt("ModifiedDefeatedCount");
+        int defeatedCount = tag.getIntOr("DefeatedCount", 0);
+        int modifiedDefeatedCount = tag.getIntOr("ModifiedDefeatedCount", 0);
 
         return new RecallData(set, defeatedCount, modifiedDefeatedCount);
     }
@@ -503,18 +506,18 @@ public class SeepingSoulEntity extends Entity {
     public int getChannelTicks() { return this.entityData.get(DATA_CHANNEL_TICKS); }
     public void setChannelTicks(int v) { this.entityData.set(DATA_CHANNEL_TICKS, Mth.clamp(v, 0, CHANNEL_TOTAL_TICKS)); }
 
-    public ResourceLocation getBossId() {
+    public Identifier getBossId() {
         String s = this.entityData.get(DATA_BOSS_ID);
         if (s == null || s.isBlank()) return DEFAULT_BOSS_ID;
 
         try {
-            return ResourceLocation.parse(s);
+            return Identifier.parse(s);
         } catch (Exception e) {
             return DEFAULT_BOSS_ID;
         }
     }
 
-    public void setBossId(ResourceLocation id) {
+    public void setBossId(Identifier id) {
         this.entityData.set(DATA_BOSS_ID, (id == null ? DEFAULT_BOSS_ID : id).toString());
     }
 
@@ -569,10 +572,10 @@ public class SeepingSoulEntity extends Entity {
 
     private SeepingSoulDuration durations() {
         // simplest: switch by boss id
-        ResourceLocation boss = this.getBossId();
+        Identifier boss = this.getBossId();
 
         // Use exact ids that you used in the renderer bundles map:
-        if (boss.equals(ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "fairkeeper_serpent_caller"))) {
+        if (boss.equals(Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "fairkeeper_serpent_caller"))) {
             return SeepingSoulAnimationDuration.SERPENT_CALLER;
         }
 

@@ -10,15 +10,15 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 public class ScorcherModel extends AnimatedItemModel {
-    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/item/scorcher/scorcher.png");
-    public static final ResourceLocation TEXTURE_SOUL = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/item/scorcher/soul_scorcher.png");
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "scorcher"), "main");
+    public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/item/scorcher/scorcher.png");
+    public static final Identifier TEXTURE_SOUL = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/item/scorcher/soul_scorcher.png");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "scorcher"), "main");
     private final ModelPart root;
     private final ModelPart scorcher;
     private final ModelPart vfx;

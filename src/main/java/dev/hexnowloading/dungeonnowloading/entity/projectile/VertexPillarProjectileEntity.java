@@ -76,7 +76,7 @@ public class VertexPillarProjectileEntity extends ModelledProjectileEntity {
         this.move(MoverType.SELF, this.getDeltaMovement());
 
         if (this.onGround()) {
-            if (this.level().isClientSide) {
+            if (this.level().isClientSide()) {
                 return;
             }
 
@@ -121,7 +121,7 @@ public class VertexPillarProjectileEntity extends ModelledProjectileEntity {
     }
 
     private void breakLogic() {
-        if (this.level().isClientSide) return;
+        if (this.level().isClientSide()) return;
 
         this.level().destroyBlock(this.blockPosition().below(), false);
 

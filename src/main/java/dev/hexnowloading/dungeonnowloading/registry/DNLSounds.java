@@ -4,7 +4,7 @@ import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.platform.Services;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 
 import java.util.function.Supplier;
@@ -175,7 +175,7 @@ public class DNLSounds {
 
 
     private static <T extends SoundEvent> Supplier<SoundEvent> registerSoundEvent(String string) {
-        return Services.REGISTRY.register(BuiltInRegistries.SOUND_EVENT, string, () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, string)));
+        return Services.REGISTRY.register(BuiltInRegistries.SOUND_EVENT, string, () -> SoundEvent.createVariableRangeEvent(Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, string)));
     }
 
     private static Supplier<Holder<SoundEvent>> registerSoundEventHolder(String string) {

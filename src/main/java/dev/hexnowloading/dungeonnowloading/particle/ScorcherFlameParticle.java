@@ -12,7 +12,7 @@ public class ScorcherFlameParticle extends TextureSheetParticle {
 
     protected ScorcherFlameParticle(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, SpriteSet spriteSet) {
         super(level, x, y, z, xSpeed, ySpeed, zSpeed);
-        this.targetQuadSize = Math.min(level.random.nextFloat() * 0.5F + 0.5F, 0.5F); // ✅ Store the max size
+        this.targetQuadSize = Math.min(level.getRandom().nextFloat() * 0.5F + 0.5F, 0.5F); // ✅ Store the max size
         this.quadSize = 0.0F; // ✅ Start from 0
         this.hasPhysics = true;
         this.xd = xSpeed;
@@ -22,7 +22,7 @@ public class ScorcherFlameParticle extends TextureSheetParticle {
         this.gCol = 1.0F;
         this.spriteSet = spriteSet;
         this.friction = 0.95F;
-        this.lifetime = 5 + level.random.nextInt(10);
+        this.lifetime = 5 + level.getRandom().nextInt(10);
     }
 
     @Override

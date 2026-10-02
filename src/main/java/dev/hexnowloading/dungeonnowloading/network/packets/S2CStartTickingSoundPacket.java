@@ -4,7 +4,7 @@ import dev.hexnowloading.dungeonnowloading.network.ClientUtil;
 import dev.hexnowloading.dungeonnowloading.network.DNLPacket;
 import dev.hexnowloading.dungeonnowloading.sound.DNLClientSoundHandler;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 public class S2CStartTickingSoundPacket implements DNLPacket {
 
     private final int entityId;
-    private final ResourceLocation soundId;
+    private final Identifier soundId;
     private final SoundSource soundSource;
     private final int tagId;
     private final float maxVolume;
@@ -23,7 +23,7 @@ public class S2CStartTickingSoundPacket implements DNLPacket {
     private final float range;
     private final float fadeStartDistance;
 
-    public S2CStartTickingSoundPacket(int entityId,ResourceLocation soundId, SoundSource soundSource, int tagId, float maxVolume, float pitch, boolean stopWhenOutOfRange, float range, float fadeStartDistance) {
+    public S2CStartTickingSoundPacket(int entityId,Identifier soundId, SoundSource soundSource, int tagId, float maxVolume, float pitch, boolean stopWhenOutOfRange, float range, float fadeStartDistance) {
         this.entityId = entityId;
         this.soundId = soundId;
         this.soundSource = soundSource;
@@ -35,21 +35,21 @@ public class S2CStartTickingSoundPacket implements DNLPacket {
         this.fadeStartDistance = fadeStartDistance;
     }
 
-    public S2CStartTickingSoundPacket(int entityId, ResourceLocation soundId, SoundSource soundSource) {
+    public S2CStartTickingSoundPacket(int entityId, Identifier soundId, SoundSource soundSource) {
         this(entityId, soundId, soundSource, -1, 1.0f, 1.0f, true, 32f, 0f);
     }
 
-    public S2CStartTickingSoundPacket(int entityId, ResourceLocation soundId, SoundSource soundSource, float maxVolume, float pitch, boolean stopWhenOutOfRange, float range) {
+    public S2CStartTickingSoundPacket(int entityId, Identifier soundId, SoundSource soundSource, float maxVolume, float pitch, boolean stopWhenOutOfRange, float range) {
         this(entityId, soundId, soundSource, -1, maxVolume, pitch, stopWhenOutOfRange, range, 0f);
     }
 
-    public S2CStartTickingSoundPacket(int entityId, ResourceLocation soundId, SoundSource soundSource, float maxVolume, float pitch, boolean stopWhenOutOfRange, float range, float fadeStartDistance) {
+    public S2CStartTickingSoundPacket(int entityId, Identifier soundId, SoundSource soundSource, float maxVolume, float pitch, boolean stopWhenOutOfRange, float range, float fadeStartDistance) {
         this(entityId, soundId, soundSource, -1, maxVolume, pitch, stopWhenOutOfRange, range, fadeStartDistance);
     }
 
     public S2CStartTickingSoundPacket(FriendlyByteBuf buf) {
         this.entityId = buf.readVarInt();
-        this.soundId = buf.readResourceLocation();
+        this.soundId = buf.readIdentifier();
         this.soundSource = buf.readEnum(SoundSource.class);
         this.tagId = buf.readInt();
         this.maxVolume = buf.readFloat();
@@ -62,7 +62,7 @@ public class S2CStartTickingSoundPacket implements DNLPacket {
     @Override
     public void encode(FriendlyByteBuf buf) {
         buf.writeVarInt(entityId);
-        buf.writeResourceLocation(soundId);
+        buf.writeIdentifier(soundId);
         buf.writeEnum(soundSource);
         buf.writeInt(tagId);
         buf.writeFloat(maxVolume);

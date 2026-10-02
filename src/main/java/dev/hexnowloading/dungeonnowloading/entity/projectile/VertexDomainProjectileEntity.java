@@ -1,5 +1,11 @@
 package dev.hexnowloading.dungeonnowloading.entity.projectile;
 
+
+
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
 import dev.hexnowloading.dungeonnowloading.entity.boss.FairkeeperSerpentEntity;
 import dev.hexnowloading.dungeonnowloading.entity.util.EntityStates;
 import dev.hexnowloading.dungeonnowloading.entity.util.ModelledProjectileEntity;
@@ -94,28 +100,28 @@ public class VertexDomainProjectileEntity extends ModelledProjectileEntity {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compoundTag) {
+    protected void readAdditionalSaveData(ValueInput compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-        if (compoundTag.contains("power", Tag.TAG_LIST)) {
-            ListTag listTag = compoundTag.getList("power", Tag.TAG_DOUBLE);
+        if (NbtCompat.has(compoundTag, "power")) {
+            ListTag listTag = NbtCompat.getList(compoundTag, "power");
             if (listTag.size() == 3) {
                 this.xPower = listTag.getDouble(0);
                 this.yPower = listTag.getDouble(1);
                 this.zPower = listTag.getDouble(2);
             }
         }
-        if (compoundTag.contains("life", Tag.TAG_INT)) {
-            this.life = compoundTag.getInt("life");
+        if (NbtCompat.has(compoundTag, "life")) {
+            this.life = compoundTag.getIntOr("life", 0);
         }
-        if (compoundTag.contains("health", Tag.TAG_FLOAT)) {
-            this.health = compoundTag.getFloat("health");
+        if (NbtCompat.has(compoundTag, "health")) {
+            this.health = compoundTag.getFloatOr("health", 0.0F);
         }
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compoundTag) {
+    protected void addAdditionalSaveData(ValueOutput compoundTag) {
         super.addAdditionalSaveData(compoundTag);
-        compoundTag.put("power", this.newDoubleList(this.xPower, this.yPower, this.zPower));
+        NbtCompat.put(compoundTag, "power", this.newDoubleList(this.xPower, this.yPower, this.zPower));
         compoundTag.putInt("life", this.life);
         compoundTag.putFloat("health", this.health);
     }
@@ -144,7 +150,7 @@ public class VertexDomainProjectileEntity extends ModelledProjectileEntity {
         }
 
         if (!this.hasAppliedMovement) {
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 this.setDeltaMovement(xPower, yPower, zPower);
                 this.setVelocity(new Vec3(xPower, yPower, zPower));
             } else {
@@ -185,7 +191,7 @@ public class VertexDomainProjectileEntity extends ModelledProjectileEntity {
             this.life = DURATION_ON_GROUND;
             this.transitionTo(VertexDomainAnimationState.IMPACT);
             this.expansionTick = EXPANSION_DURATION;
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 this.entityData.set(GROUND_COLLISION, this.onGround());
             }
             this.impactDamage();
@@ -202,7 +208,7 @@ public class VertexDomainProjectileEntity extends ModelledProjectileEntity {
             if (this.life > 50) {
                 spawnRedstoneParticle();
             }
-            if (!this.level().isClientSide && (this.life <= 0 || !this.entityData.get(GROUND_COLLISION) || this.level().getBlockState(this.blockPosition().below()).isAir())) {
+            if (!this.level().isClientSide() && (this.life <= 0 || !this.entityData.get(GROUND_COLLISION) || this.level().getBlockState(this.blockPosition().below()).isAir())) {
                 this.remove(RemovalReason.DISCARDED);
             }
         }
@@ -216,7 +222,7 @@ public class VertexDomainProjectileEntity extends ModelledProjectileEntity {
 
     private void applyEffect() {
         Level level = this.level();
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
 
@@ -324,14 +330,14 @@ public class VertexDomainProjectileEntity extends ModelledProjectileEntity {
             this.level().addParticle(particleData, this.getX() + 6 * (this.level().getRandom().nextFloat() - this.level().getRandom().nextFloat()), this.getY()  + 6 * (this.level().getRandom().nextFloat() - this.level().getRandom().nextFloat()),this.getZ()  + 6 * (this.level().getRandom().nextFloat() - this.level().getRandom().nextFloat()), 0, 0, 0);
         }
         this.explosionImmune = true;
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.level().explode(null, this.getX(), this.getY(), this.getZ(), 6.0F, Level.ExplosionInteraction.NONE);
         }
         this.explosionImmune = false;
     }
 
     private void blockDestructionTick(int minX, int maxX, int minY, int maxY, int minZ, int maxZ) {
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             return;
         }
         //DNLLevelUtil.beginMultiDestroySoundPending();
@@ -357,7 +363,7 @@ public class VertexDomainProjectileEntity extends ModelledProjectileEntity {
     }
 
     private void animationControl() {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             return;
         }
 
@@ -451,33 +457,33 @@ public class VertexDomainProjectileEntity extends ModelledProjectileEntity {
         float xz = (float) (1.0F - ((float) (maxX - minX) * (maxZ - minZ)) / 1024F);
         float yz = (float) (1.0F - ((float) (maxY - minY) * (maxZ - minZ)) / 1024F);
 
-        double x = minX + (maxX - minX) * level().random.nextFloat();
-        double y = minY + (maxY - minY) * level().random.nextFloat();
-        double z = minZ + (maxZ - minZ) * level().random.nextFloat();
-        float r = level().random.nextFloat();
+        double x = minX + (maxX - minX) * level().getRandom().nextFloat();
+        double y = minY + (maxY - minY) * level().getRandom().nextFloat();
+        double z = minZ + (maxZ - minZ) * level().getRandom().nextFloat();
+        float r = level().getRandom().nextFloat();
 
         // YZ Plane (Front & Back)
         if (r + 0.2F > yz) {
             serverLevel.sendParticles(new AxisParticleType.AxisParticleData(DNLParticleTypes.FAIRKEEPER_BOUNDARY_PARTICLE.get(), 1, 90),
-                    minX + (level().random.nextFloat() - level().random.nextFloat()) * 0.1F, y, z, 1, 0, 0, 0, 0);
+                    minX + (level().getRandom().nextFloat() - level().getRandom().nextFloat()) * 0.1F, y, z, 1, 0, 0, 0, 0);
             serverLevel.sendParticles(new AxisParticleType.AxisParticleData(DNLParticleTypes.FAIRKEEPER_BOUNDARY_PARTICLE.get(), 1, 270),
-                    maxX + (level().random.nextFloat() - level().random.nextFloat()) * 0.1F, y, z, 1, 0, 0, 0, 0);
+                    maxX + (level().getRandom().nextFloat() - level().getRandom().nextFloat()) * 0.1F, y, z, 1, 0, 0, 0, 0);
         }
 
         // XZ Plane (Top & Bottom)
         if (r + 0.2F > xz) {
             serverLevel.sendParticles(new AxisParticleType.AxisParticleData(DNLParticleTypes.FAIRKEEPER_BOUNDARY_PARTICLE.get(), 0, 270),
-                    x, minY + (level().random.nextFloat() - level().random.nextFloat()) * 0.1F, z, 1, 0, 0, 0, 0);
+                    x, minY + (level().getRandom().nextFloat() - level().getRandom().nextFloat()) * 0.1F, z, 1, 0, 0, 0, 0);
             serverLevel.sendParticles(new AxisParticleType.AxisParticleData(DNLParticleTypes.FAIRKEEPER_BOUNDARY_PARTICLE.get(), 0, 90),
-                    x, maxY + (level().random.nextFloat() - level().random.nextFloat()) * 0.1F, z, 1, 0, 0, 0, 0);
+                    x, maxY + (level().getRandom().nextFloat() - level().getRandom().nextFloat()) * 0.1F, z, 1, 0, 0, 0, 0);
         }
 
         // XY Plane (Left & Right)
         if (r + 0.2F > xy) {
             serverLevel.sendParticles(new AxisParticleType.AxisParticleData(DNLParticleTypes.FAIRKEEPER_BOUNDARY_PARTICLE.get(), 1, 0),
-                    x, y, minZ + (level().random.nextFloat() - level().random.nextFloat()) * 0.1F, 1, 0, 0, 0, 0);
+                    x, y, minZ + (level().getRandom().nextFloat() - level().getRandom().nextFloat()) * 0.1F, 1, 0, 0, 0, 0);
             serverLevel.sendParticles(new AxisParticleType.AxisParticleData(DNLParticleTypes.FAIRKEEPER_BOUNDARY_PARTICLE.get(), 1, 180),
-                    x, y, maxZ + (level().random.nextFloat() - level().random.nextFloat()) * 0.1F, 1, 0, 0, 0, 0);
+                    x, y, maxZ + (level().getRandom().nextFloat() - level().getRandom().nextFloat()) * 0.1F, 1, 0, 0, 0, 0);
         }
     }
 
@@ -563,7 +569,7 @@ public class VertexDomainProjectileEntity extends ModelledProjectileEntity {
         if (this.getDyingTick() > 0) {
             return false;
         }
-        if (this.level().isClientSide || this.isRemoved()) {
+        if (this.level().isClientSide() || this.isRemoved()) {
             return true;
         }
         if (this.explosionImmune) {

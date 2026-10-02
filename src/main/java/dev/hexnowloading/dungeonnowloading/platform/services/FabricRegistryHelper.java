@@ -1,13 +1,14 @@
 package dev.hexnowloading.dungeonnowloading.platform.services;
 
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
-import dev.hexnowloading.dungeonnowloading.platform.JsonDataLoaderWrapper;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import dev.hexnowloading.dungeonnowloading.util.PendingRegistration;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
+import net.minecraft.resources.ResourceKey;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.sounds.SoundEvent;
@@ -23,7 +24,14 @@ import java.util.function.Supplier;
 public class FabricRegistryHelper implements RegistryHelper {
     @Override
     public <T> Supplier<T> register(Registry<? super T> registry, String name, Supplier<T> entry) {
-        T value = entry.get();
+        ResourceKey<?> key = ResourceKey.create(registry.key(), DungeonNowLoading.id(name));
+        T value;
+        PendingRegistration.set(key);
+        try {
+            value = entry.get();
+        } finally {
+            PendingRegistration.set(null);
+        }
         Registry.register(registry, DungeonNowLoading.id(name), value);
         return () -> value;
     }
@@ -36,8 +44,8 @@ public class FabricRegistryHelper implements RegistryHelper {
     }
 
     @Override
-    public void register(ResourceLocation id, SimpleJsonResourceReloadListener loader) {
-        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new JsonDataLoaderWrapper(id, loader));
+    public void register(Identifier id, SimpleJsonResourceReloadListener loader) {
+        ResourceLoader.get(PackType.SERVER_DATA).registerReloadListener(id, loader);
     }
 
     @Override
@@ -48,7 +56,7 @@ public class FabricRegistryHelper implements RegistryHelper {
     @Override
     public Supplier<CreativeModeTab> registerCreativeTab(String name, Supplier<ItemStack> iconSupplier, CreativeModeTab.DisplayItemsGenerator itemsGenerator) {
         return register(BuiltInRegistries.CREATIVE_MODE_TAB, name,
-                () -> FabricItemGroup.builder()
+                () -> FabricCreativeModeTab.builder()
                         .title(Component.translatable("tab." + DungeonNowLoading.MOD_ID + "." + name))
                         .icon(iconSupplier)
                         .displayItems(itemsGenerator)

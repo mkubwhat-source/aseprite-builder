@@ -42,7 +42,7 @@ public class MendstoneChalkItem extends Item {
 
         // --- 1) REPAIR PATH: clicking an existing mark reduces damage by 32 (one stage) ---
         if (clickedState.is(markBlock)) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 BlockEntity be = level.getBlockEntity(clickedPos);
                 if (be instanceof MendstoneChalkMarkBlockEntity markBe) {
                     int oldDamage = markBe.getDamage();
@@ -86,7 +86,7 @@ public class MendstoneChalkItem extends Item {
                     }
                 }
             }
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
         // --- 2) PLACEMENT PATH: supports partial placement when <5 dur left ---
@@ -151,7 +151,7 @@ public class MendstoneChalkItem extends Item {
         state = state.setValue(MendstoneChalkMarkBlock.FACING, chosen)
                 .setValue(MendstoneChalkMarkBlock.OUTLINE, startDamage / 32);
 
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             if (!level.setBlock(placePos, state, Block.UPDATE_ALL)) return InteractionResult.FAIL;
 
             // init BE damage
@@ -178,7 +178,7 @@ public class MendstoneChalkItem extends Item {
             }
         }
 
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return InteractionResult.sidedSuccess(level.isClientSide());
 
     }
 

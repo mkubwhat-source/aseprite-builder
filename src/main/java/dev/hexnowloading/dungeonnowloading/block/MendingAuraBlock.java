@@ -182,7 +182,7 @@ public class MendingAuraBlock extends BaseEntityBlock implements SimpleWaterlogg
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(level, pos, state, placer, stack);
 
-        if (!level.isClientSide && level.getBlockEntity(pos) instanceof MendingAuraBlockEntity mendingAuraBlockEntity
+        if (!level.isClientSide() && level.getBlockEntity(pos) instanceof MendingAuraBlockEntity mendingAuraBlockEntity
                 && mendingAuraBlockEntity.getStoredBlockState() == null) {
             mendingAuraBlockEntity.setStoredBlock(Blocks.AIR.defaultBlockState(), new CompoundTag());
             if (level instanceof ServerLevel serverLevel) {
@@ -283,7 +283,7 @@ public class MendingAuraBlock extends BaseEntityBlock implements SimpleWaterlogg
     }
 
     public void startRestoration(Level level, BlockPos pos) {
-        if (!level.isClientSide && level.getBlockEntity(pos) instanceof MendingAuraBlockEntity mendingAuraBlockEntity) {
+        if (!level.isClientSide() && level.getBlockEntity(pos) instanceof MendingAuraBlockEntity mendingAuraBlockEntity) {
             level.scheduleTick(pos, this, mendingAuraBlockEntity.getRestoreTime());
         }
     }

@@ -10,7 +10,7 @@ import dev.hexnowloading.dungeonnowloading.registry.DNLBlocks;
 import dev.hexnowloading.dungeonnowloading.registry.DNLProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.stats.Stat;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.*;
@@ -111,7 +111,7 @@ public class DisabledFairkeeperChestBlock extends BaseEntityBlock implements Sim
         }
     }
 
-    protected Stat<ResourceLocation> getOpenChestStat() { return Stats.CUSTOM.get(Stats.OPEN_CHEST); }
+    protected Stat<Identifier> getOpenChestStat() { return Stats.CUSTOM.get(Stats.OPEN_CHEST); }
 
     public static boolean isChestBlockedByBlock(BlockGetter blockGetter, BlockPos pos) {
         BlockPos blockPos = pos.above();
@@ -120,7 +120,7 @@ public class DisabledFairkeeperChestBlock extends BaseEntityBlock implements Sim
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return InteractionResult.sidedSuccess(level.isClientSide());
         }
         if (isChestBlockedByBlock(level, pos)) {

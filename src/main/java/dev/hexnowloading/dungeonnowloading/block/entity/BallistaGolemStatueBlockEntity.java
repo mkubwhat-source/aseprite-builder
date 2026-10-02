@@ -29,12 +29,12 @@ public class BallistaGolemStatueBlockEntity extends BlockEntity {
         golem.setYHeadRot(facing.toYRot());
         golem.setPersistenceRequired();
         world.addFreshEntity(golem);
-        level.playSound(null, x, y, z, SoundEvents.WITHER_SHOOT, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.2F + 0.8F);
+        level.playSound(null, x, y, z, SoundEvents.WITHER_SHOOT, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.2F + 0.8F);
 
     }
 
     public void alert(BlockPos blockPos, BallistaGolemStatueBlockEntity ballistaGolemStatueBlockEntity) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
         BallistaGolemStatueBlock ballistaGolemStatueBlock = (BallistaGolemStatueBlock) ballistaGolemStatueBlockEntity.getBlockState().getBlock();
@@ -43,7 +43,7 @@ public class BallistaGolemStatueBlockEntity extends BlockEntity {
         BallistaGolemStatueBlock.destroyAllBlocks(level, blockPos);
         BallistaGolemStatueBlock.destroyBlocksAbove(level, blockPos);
         SoundEvent soundType = level.getBlockState(blockPos).getSoundType().getBreakSound();
-        RandomSource random = this.getLevel().random;
+        RandomSource random = this.getLevel().getRandom();
         this.level.playSound(null, blockPos, soundType, SoundSource.BLOCKS, 1.0f, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
     }
 }

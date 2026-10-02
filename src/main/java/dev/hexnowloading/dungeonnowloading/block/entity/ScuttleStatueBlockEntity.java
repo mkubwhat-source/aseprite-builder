@@ -20,7 +20,7 @@ public class ScuttleStatueBlockEntity extends BlockEntity {
 
     public void alert(BlockPos blockPos, ScuttleStatueBlockEntity scuttleStatueBlockEntity) {
         Level level = scuttleStatueBlockEntity.level;
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
         level.destroyBlock(blockPos.above(2), true);
@@ -43,7 +43,7 @@ public class ScuttleStatueBlockEntity extends BlockEntity {
         mob.setPersistenceRequired();
         level.addFreshEntity(mob);
 
-        level.playSound(null, x, y, z, SoundEvents.WITHER_SHOOT, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.2F + 0.8F);
+        level.playSound(null, x, y, z, SoundEvents.WITHER_SHOOT, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.2F + 0.8F);
 
     }
 }

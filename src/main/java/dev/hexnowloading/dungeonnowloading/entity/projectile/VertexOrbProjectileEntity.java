@@ -1,5 +1,11 @@
 package dev.hexnowloading.dungeonnowloading.entity.projectile;
 
+
+
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
 import dev.hexnowloading.dungeonnowloading.entity.boss.FairkeeperSerpentEntity;
 import dev.hexnowloading.dungeonnowloading.entity.util.ModelledProjectileEntity;
 import dev.hexnowloading.dungeonnowloading.particle.type.AxisParticleType;
@@ -89,30 +95,30 @@ public class VertexOrbProjectileEntity extends ModelledProjectileEntity {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compoundTag) {
+    protected void readAdditionalSaveData(ValueInput compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-        if (compoundTag.contains("power", Tag.TAG_LIST)) {
-            ListTag listTag = compoundTag.getList("power", Tag.TAG_DOUBLE);
+        if (NbtCompat.has(compoundTag, "power")) {
+            ListTag listTag = NbtCompat.getList(compoundTag, "power");
             if (listTag.size() == 3) {
                 this.xPower = listTag.getDouble(0);
                 this.yPower = listTag.getDouble(1);
                 this.zPower = listTag.getDouble(2);
             }
         }
-        if (compoundTag.contains("life", Tag.TAG_INT)) {
-            this.life = compoundTag.getInt("life");
+        if (NbtCompat.has(compoundTag, "life")) {
+            this.life = compoundTag.getIntOr("life", 0);
         }
-        if (compoundTag.contains("radius", Tag.TAG_INT)) {
-            this.setRadius(compoundTag.getInt("radius"));
+        if (NbtCompat.has(compoundTag, "radius")) {
+            this.setRadius(compoundTag.getIntOr("radius", 0));
         }
-        this.hasLanded = compoundTag.getBoolean("hasLanded");
+        this.hasLanded = compoundTag.getBooleanOr("hasLanded", false);
 
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compoundTag) {
+    protected void addAdditionalSaveData(ValueOutput compoundTag) {
         super.addAdditionalSaveData(compoundTag);
-        compoundTag.put("power", this.newDoubleList(this.xPower, this.yPower, this.zPower));
+        NbtCompat.put(compoundTag, "power", this.newDoubleList(this.xPower, this.yPower, this.zPower));
         compoundTag.putInt("life", this.life);
         compoundTag.putInt("radius", this.getRadius());
         compoundTag.putBoolean("hasLanded", this.hasLanded);
@@ -141,7 +147,7 @@ public class VertexOrbProjectileEntity extends ModelledProjectileEntity {
         }
 
         if (!this.hasAppliedMovement) {
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 this.setDeltaMovement(xPower, yPower, zPower);
                 this.setVelocity(new Vec3(xPower, yPower, zPower));
             } else {
@@ -172,7 +178,7 @@ public class VertexOrbProjectileEntity extends ModelledProjectileEntity {
             this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE.value(), this.getSoundSource(), 3.0F, 1.0F);
             spawnInitialRedstoneParticles();
             this.expansionTick = 40;
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 this.entityData.set(GROUND_COLLISION, this.onGround());
             }
             blockDestruction();
@@ -187,7 +193,7 @@ public class VertexOrbProjectileEntity extends ModelledProjectileEntity {
             if (this.life > 50) {
                 spawnRedstoneParticle();
             }
-            if (!this.level().isClientSide && (this.life <= 0 || !this.entityData.get(GROUND_COLLISION) || this.level().getBlockState(this.blockPosition().below()).isAir())) {
+            if (!this.level().isClientSide() && (this.life <= 0 || !this.entityData.get(GROUND_COLLISION) || this.level().getBlockState(this.blockPosition().below()).isAir())) {
                 this.remove(RemovalReason.DISCARDED);
             }
         }
@@ -203,14 +209,14 @@ public class VertexOrbProjectileEntity extends ModelledProjectileEntity {
     }
 
     private void blockDestruction() {
-        if (this.level().isClientSide) return;
+        if (this.level().isClientSide()) return;
         /*this.explosionImmune = true;
         this.level().explode(null, this.getX(), this.getY(), this.getZ(), 3.0F, Level.ExplosionInteraction.BLOCK);
         this.explosionImmune = false;*/
 
         //DNLLevelUtil.beginMultiDestroySoundPending();
 
-        this.level().playSound(null, this.blockPosition(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS, 4.0f, (1.0f + (this.level().random.nextFloat() - this.level().random.nextFloat()) * 0.2f) * 0.7f);
+        this.level().playSound(null, this.blockPosition(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS, 4.0f, (1.0f + (this.level().getRandom().nextFloat() - this.level().getRandom().nextFloat()) * 0.2f) * 0.7f);
 
         BlockPos pos = this.blockPosition();
         int r = this.getRadius();
@@ -235,7 +241,7 @@ public class VertexOrbProjectileEntity extends ModelledProjectileEntity {
 
     private void applyEffect() {
         Level level = this.level();
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
 
@@ -446,7 +452,7 @@ public class VertexOrbProjectileEntity extends ModelledProjectileEntity {
         if (this.getDyingTick() > 0) {
             return false;
         }
-        if (this.level().isClientSide || this.isRemoved()) {
+        if (this.level().isClientSide() || this.isRemoved()) {
             return true;
         }
         if (this.explosionImmune) {

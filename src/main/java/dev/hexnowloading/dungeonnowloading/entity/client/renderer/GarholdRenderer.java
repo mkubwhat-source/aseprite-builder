@@ -7,10 +7,10 @@ import dev.hexnowloading.dungeonnowloading.entity.monster.GarholdEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class GarholdRenderer<T extends GarholdEntity> extends MobRenderer<T, GarholdModel<T>> {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/garhold/garhold.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/garhold/garhold.png");
 
     public GarholdRenderer(EntityRendererProvider.Context renderManager) {
         super(renderManager, new GarholdModel<>(renderManager.bakeLayer(GarholdModel.LAYER_LOCATION)), 1.0F);
@@ -22,5 +22,5 @@ public class GarholdRenderer<T extends GarholdEntity> extends MobRenderer<T, Gar
     }
 
     @Override
-    public ResourceLocation getTextureLocation(GarholdEntity entity) { return TEXTURE; }
+    public Identifier getTextureLocation(GarholdEntity entity) { return TEXTURE; }
 }

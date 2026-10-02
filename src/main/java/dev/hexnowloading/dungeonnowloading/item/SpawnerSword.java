@@ -27,7 +27,7 @@ public class SpawnerSword extends SwordItem {
     @Override
     public boolean hurtEnemy(ItemStack itemStack, LivingEntity target, LivingEntity attacker) {
         boolean result = super.hurtEnemy(itemStack, target, attacker);
-        if (result && !target.level().isClientSide) {
+        if (result && !target.level().isClientSide()) {
             int recklessLevel = EnchantmentHelper.getItemEnchantmentLevel(DNLEnchantments.holder(attacker.level(), DNLEnchantments.RECKLESS), attacker.getMainHandItem());
             float selfDamage = 1.0F + recklessLevel;
 

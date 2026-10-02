@@ -6,8 +6,8 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.entity.projectile.Arrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.Arrow;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.Nullable;
@@ -46,7 +46,7 @@ public abstract class AbstractArrowMixin {
         if (self.isOnFire()) {
             self.clearFire();
 
-            if (!self.level().isClientSide && self.level() instanceof ServerLevel sl) {
+            if (!self.level().isClientSide() && self.level() instanceof ServerLevel sl) {
                 HollowEntity.playExtinguishFx(sl, self.position());
             }
         }

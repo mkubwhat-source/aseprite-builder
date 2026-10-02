@@ -1,5 +1,11 @@
 package dev.hexnowloading.dungeonnowloading.entity.boss;
 
+
+
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
 import com.google.common.collect.ImmutableList;
 import dev.hexnowloading.dungeonnowloading.DungeonNowLoading;
 import dev.hexnowloading.dungeonnowloading.block.entity.PreserverBlockEntity;
@@ -32,7 +38,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -161,13 +167,13 @@ public class FairkeeperSerpentCallerEntity extends Entity {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compoundTag) {
+    protected void addAdditionalSaveData(ValueOutput compoundTag) {
         compoundTag.putBoolean("Activated", isActivated());
         if (this.getBorosId() != null) {
-            compoundTag.putUUID("BorosUUID", this.getBorosId());
+            NbtCompat.putUUID(compoundTag, "BorosUUID", this.getBorosId());
         }
         if (this.getOurosId() != null) {
-            compoundTag.putUUID("OurosUUID", this.getOurosId());
+            NbtCompat.putUUID(compoundTag, "OurosUUID", this.getOurosId());
         }
         compoundTag.putInt("IsBorosDefeated", this.isBorosDefeated);
         compoundTag.putInt("IsOurosDefeated", this.isOurosDefeated);
@@ -179,33 +185,33 @@ public class FairkeeperSerpentCallerEntity extends Entity {
         Iterator<UUID> var = this.playerUUIDs.iterator();
         for (int i = 0; var.hasNext(); i++) {
             listTag.add(uuidCompoundTag);
-            uuidCompoundTag.putUUID("PlayerUUID" + i, var.next());
+            NbtCompat.putUUID(uuidCompoundTag, "PlayerUUID" + i, var.next());
         }
-        compoundTag.put("PlayerUUIDs", listTag);
+        NbtCompat.put(compoundTag, "PlayerUUIDs", listTag);
         SeepingSoulEntity.writeRecallNBT(compoundTag, this.playerDefeatedUUIDs, this.defeatedCount, this.modifiedDefeatedCount);
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compoundTag) {
-        this.entityData.set(ACTIVATED, compoundTag.getBoolean("Activated"));
-        if (compoundTag.hasUUID("BorosUUID")) {
-            this.setBorosId(compoundTag.getUUID("BorosUUID"));
+    protected void readAdditionalSaveData(ValueInput compoundTag) {
+        this.entityData.set(ACTIVATED, compoundTag.getBooleanOr("Activated", false));
+        if (NbtCompat.hasUUID(compoundTag, "BorosUUID")) {
+            this.setBorosId(NbtCompat.getUUID(compoundTag, "BorosUUID"));
             this.pendingBorosUUID = this.getBorosId();
         }
-        if (compoundTag.hasUUID("OurosUUID")) {
-            this.setOurosId(compoundTag.getUUID("OurosUUID"));
+        if (NbtCompat.hasUUID(compoundTag, "OurosUUID")) {
+            this.setOurosId(NbtCompat.getUUID(compoundTag, "OurosUUID"));
             this.pendingOurosUUID = this.getOurosId();
         }
-        this.isOurosDefeated = compoundTag.getInt("IsOurosDefeated");
-        this.isBorosDefeated = compoundTag.getInt("IsBorosDefeated");
-        this.entityData.set(HORIZONTAL_OFFSET, compoundTag.getInt("HorizontalOffset"));
-        this.entityData.set(VERTICAL_OFFSET, compoundTag.getInt("VerticalOffset"));
-        this.entityData.set(PHASE, compoundTag.getInt("Phase"));
-        if (compoundTag.contains("PlayerUUIDs", CompoundTag.TAG_LIST)) {
-            ListTag listTag = compoundTag.getList("PlayerUUIDs", CompoundTag.TAG_COMPOUND);
+        this.isOurosDefeated = compoundTag.getIntOr("IsOurosDefeated", 0);
+        this.isBorosDefeated = compoundTag.getIntOr("IsBorosDefeated", 0);
+        this.entityData.set(HORIZONTAL_OFFSET, compoundTag.getIntOr("HorizontalOffset", 0));
+        this.entityData.set(VERTICAL_OFFSET, compoundTag.getIntOr("VerticalOffset", 0));
+        this.entityData.set(PHASE, compoundTag.getIntOr("Phase", 0));
+        if (NbtCompat.has(compoundTag, "PlayerUUIDs")) {
+            ListTag listTag = NbtCompat.getList(compoundTag, "PlayerUUIDs");
             for (int a = 0; a < listTag.size(); ++a) {
-                CompoundTag compoundTag1 = listTag.getCompound(a);
-                this.playerUUIDs.add(compoundTag1.getUUID("PlayerUUID" + a));
+                CompoundTag compoundTag1 = listTag.getCompoundOrEmpty(a);
+                this.playerUUIDs.add(NbtCompat.getUUID(compoundTag1, "PlayerUUID" + a));
             }
         }
         SeepingSoulEntity.RecallData data = SeepingSoulEntity.readRecallNBT(compoundTag);
@@ -256,12 +262,12 @@ public class FairkeeperSerpentCallerEntity extends Entity {
                 this.pendingOurosUUID = null;
             }
         }
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (this.entityData.get(ANIMATION_STATE) == FairkeeperSerpentCallerAnimationState.NONE) {
                 this.transitionTo(FairkeeperSerpentCallerAnimationState.IDLE);
             }
         }
-        if (this.isActivated() && !this.level().isClientSide) {
+        if (this.isActivated() && !this.level().isClientSide()) {
             musicTick++;
             if (this.musicTick >= 3242) {
                 this.musicTick = 0;
@@ -717,14 +723,14 @@ public class FairkeeperSerpentCallerEntity extends Entity {
     }
 
     private void dropTempleOfDualityTrophyForPlayer(UUID playerUuid) {
-        if (this.level().isClientSide) return;
+        if (this.level().isClientSide()) return;
 
         ItemStack trophy = new ItemStack(DNLBlocks.TEMPLE_OF_DUALITY_TROPHY.get());
         this.spawnSpecialItemEntity(trophy, 0.0F, playerUuid);
     }
 
     private void dropGreatXpBottlesForPlayer(UUID playerUuid) {
-        if (this.level().isClientSide) return;
+        if (this.level().isClientSide()) return;
 
         int recallCount = Math.max(0, this.modifiedDefeatedCount);
         int total = 15 * (recallCount + 1);
@@ -753,7 +759,7 @@ public class FairkeeperSerpentCallerEntity extends Entity {
         soul.moveTo(start.getX() + 0.5, start.getY(), start.getZ() + 0.5, this.getYRot(), 0);
 
         // bossId should match the recall registry id you use for Chaos Spawner
-        soul.setBossId(ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "fairkeeper_serpent_caller"));
+        soul.setBossId(Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "fairkeeper_serpent_caller"));
 
         int count = SeepingSoulEntity.getRecallCountForSeepingSoul(this.defeatedCount, this.modifiedDefeatedCount);
 
@@ -807,8 +813,8 @@ public class FairkeeperSerpentCallerEntity extends Entity {
         if (damageSource == null) {
             return;
         }
-        ResourceLocation baseResourceLocation = BuiltInRegistries.ENTITY_TYPE.getKey(DNLEntityTypes.FAIRKEEPER_SERPENT_CALLER.get()).withPrefix("entities/");
-        ResourceLocation lootTableResourceLocation = this.isBorosDefeated > this.isOurosDefeated ? baseResourceLocation.withSuffix("/boros") : baseResourceLocation.withSuffix("/ouros");
+        Identifier baseResourceLocation = BuiltInRegistries.ENTITY_TYPE.getKey(DNLEntityTypes.FAIRKEEPER_SERPENT_CALLER.get()).withPrefix("entities/");
+        Identifier lootTableResourceLocation = this.isBorosDefeated > this.isOurosDefeated ? baseResourceLocation.withSuffix("/boros") : baseResourceLocation.withSuffix("/ouros");
         LootTable lootTable = this.level().getServer().reloadableRegistries().getLootTable(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE, lootTableResourceLocation));
         LootParams.Builder builder = (new LootParams.Builder((ServerLevel) this.level()))
                 .withParameter(LootContextParams.THIS_ENTITY, this)
@@ -828,7 +834,7 @@ public class FairkeeperSerpentCallerEntity extends Entity {
     }
 
     private void spawnSpecialItemEntity(ItemStack itemStack, float i, UUID uuid) {
-        if (!itemStack.isEmpty() && !this.level().isClientSide && uuid != null) {
+        if (!itemStack.isEmpty() && !this.level().isClientSide() && uuid != null) {
             SpecialItemEntity specialItemEntity = new SpecialItemEntity(this.level(), this.getX(), this.getY() + i, this.getZ(), itemStack);
             specialItemEntity.setPickerUUID(uuid);
             specialItemEntity.setDefaultPickUpDelay();
@@ -1085,15 +1091,15 @@ public class FairkeeperSerpentCallerEntity extends Entity {
     @Override
     public InteractionResult interact(Player player, InteractionHand hand) {
         if (this.getPhase() < 1) {
-            player.displayClientMessage(Component.translatable("entity.dungeonnowloading.fairkeeper_serpent_caller.right_click"), true);
-            return InteractionResult.sidedSuccess(this.level().isClientSide);
+            player.sendOverlayMessage(Component.translatable("entity.dungeonnowloading.fairkeeper_serpent_caller.right_click"));
+            return InteractionResult.sidedSuccess(this.level().isClientSide());
         }
         return super.interact(player, hand);
     }
 
     @Override
     public boolean hurt(DamageSource damageSource, float v) {
-        if (!this.level().isClientSide && !this.isRemoved() && damageSource.isCreativePlayer()) {
+        if (!this.level().isClientSide() && !this.isRemoved() && damageSource.isCreativePlayer()) {
             this.kill();
             return true;
         }
@@ -1107,12 +1113,12 @@ public class FairkeeperSerpentCallerEntity extends Entity {
                 ServerPlayer.class,
                 detectionBox
         );
-        List<ResourceLocation> soundsToStart = new ArrayList<>(List.of());
+        List<Identifier> soundsToStart = new ArrayList<>(List.of());
         soundsToStart.add(DNLSounds.MUSIC_CLASH_OF_DUALITY_BASE.get().getLocation());
         soundsToStart.add(DNLSounds.MUSIC_CLASH_OF_DUALITY_BOROS.get().getLocation());
         soundsToStart.add(DNLSounds.MUSIC_CLASH_OF_DUALITY_OUROS.get().getLocation());
         for (ServerPlayer player : nearbyPlayers) {
-            for (ResourceLocation sound : soundsToStart) {
+            for (Identifier sound : soundsToStart) {
                 Services.NETWORK.sendToPlayer(new S2CStartTickingSoundPacket(this.getId(), sound, SoundSource.MUSIC, 0, 1.0f, false, ARENA_SIZE, ARENA_SIZE), player);
             }
             Services.NETWORK.sendToPlayer(new S2CFadeInTickingSoundPacket(this.getId(), DNLSounds.MUSIC_CLASH_OF_DUALITY_BASE.get().getLocation(), TickingSoundTarget.NEWEST, 1.0f, 60), player);
@@ -1148,13 +1154,13 @@ public class FairkeeperSerpentCallerEntity extends Entity {
                 detectionBox
         );
 
-        List<ResourceLocation> soundsToStop = new ArrayList<>(List.of());
+        List<Identifier> soundsToStop = new ArrayList<>(List.of());
         soundsToStop.add(DNLSounds.MUSIC_CLASH_OF_DUALITY_BASE.get().getLocation());
         soundsToStop.add(DNLSounds.MUSIC_CLASH_OF_DUALITY_BOROS.get().getLocation());
         soundsToStop.add(DNLSounds.MUSIC_CLASH_OF_DUALITY_OUROS.get().getLocation());
 
         for (ServerPlayer otherPlayer : nearbyPlayers) {
-            for (ResourceLocation sound : soundsToStop) {
+            for (Identifier sound : soundsToStop) {
                 Services.NETWORK.sendToPlayer(new S2CStopTickingSoundPacket(this.getId(), sound, TickingSoundTarget.ALL, 60, true), otherPlayer);
             }
         }
@@ -1168,13 +1174,13 @@ public class FairkeeperSerpentCallerEntity extends Entity {
                 detectionBox
         );
 
-        List<ResourceLocation> soundsToStop = new ArrayList<>(List.of());
+        List<Identifier> soundsToStop = new ArrayList<>(List.of());
         soundsToStop.add(DNLSounds.MUSIC_CLASH_OF_DUALITY_BASE.get().getLocation());
         soundsToStop.add(DNLSounds.MUSIC_CLASH_OF_DUALITY_BOROS.get().getLocation());
         soundsToStop.add(DNLSounds.MUSIC_CLASH_OF_DUALITY_OUROS.get().getLocation());
 
         for (ServerPlayer otherPlayer : nearbyPlayers) {
-            for (ResourceLocation sound : soundsToStop) {
+            for (Identifier sound : soundsToStop) {
                 Services.NETWORK.sendToPlayer(new S2CStopTickingSoundPacket(this.getId(), sound, 60, true), otherPlayer);
             }
         }
@@ -1235,26 +1241,26 @@ public class FairkeeperSerpentCallerEntity extends Entity {
 
         // Poof burst (fast)
         for (int i = 0; i < 25; i++) {
-            double x = x0 + (level.random.nextDouble() * 2.0 - 1.0) * radius;
-            double z = z0 + (level.random.nextDouble() * 2.0 - 1.0) * radius;
-            double y = y0 + (level.random.nextDouble() * 2.0 - 1.0) * radius;
+            double x = x0 + (level.getRandom().nextDouble() * 2.0 - 1.0) * radius;
+            double z = z0 + (level.getRandom().nextDouble() * 2.0 - 1.0) * radius;
+            double y = y0 + (level.getRandom().nextDouble() * 2.0 - 1.0) * radius;
 
-            double vx = (level.random.nextDouble() * 2.0 - 1.0) * 0.10;
-            double vy = (level.random.nextDouble() * 2.0 - 1.0) * 0.10;
-            double vz = (level.random.nextDouble() * 2.0 - 1.0) * 0.10;
+            double vx = (level.getRandom().nextDouble() * 2.0 - 1.0) * 0.10;
+            double vy = (level.getRandom().nextDouble() * 2.0 - 1.0) * 0.10;
+            double vz = (level.getRandom().nextDouble() * 2.0 - 1.0) * 0.10;
 
             level.sendParticles(ParticleTypes.POOF, x, y, z, 1, vx, vy, vz, 0.0);
         }
 
         // Soul particles (floaty)
         for (int i = 0; i < 18; i++) {
-            double x = x0 + (level.random.nextDouble() * 2.0 - 1.0) * radius;
-            double z = z0 + (level.random.nextDouble() * 2.0 - 1.0) * radius;
-            double y = y0 + (level.random.nextDouble() * 2.0 - 1.0) * radius;
+            double x = x0 + (level.getRandom().nextDouble() * 2.0 - 1.0) * radius;
+            double z = z0 + (level.getRandom().nextDouble() * 2.0 - 1.0) * radius;
+            double y = y0 + (level.getRandom().nextDouble() * 2.0 - 1.0) * radius;
 
-            double vx = (level.random.nextDouble() * 2.0 - 1.0) * 0.025;
-            double vy = (level.random.nextDouble() * 2.0 - 1.0) * 0.025;
-            double vz = (level.random.nextDouble() * 2.0 - 1.0) * 0.025;
+            double vx = (level.getRandom().nextDouble() * 2.0 - 1.0) * 0.025;
+            double vy = (level.getRandom().nextDouble() * 2.0 - 1.0) * 0.025;
+            double vz = (level.getRandom().nextDouble() * 2.0 - 1.0) * 0.025;
 
             level.sendParticles(ParticleTypes.SOUL, x, y, z, 1, vx, vy, vz, 0.0);
         }
@@ -1262,7 +1268,7 @@ public class FairkeeperSerpentCallerEntity extends Entity {
 
     public Entity getBoros() {
         UUID id = getBorosId();
-        if (id != null && !this.level().isClientSide) {
+        if (id != null && !this.level().isClientSide()) {
             return ((ServerLevel) this.level()).getEntity(id);
         }
         return null;
@@ -1277,7 +1283,7 @@ public class FairkeeperSerpentCallerEntity extends Entity {
 
     public Entity getOuros() {
         UUID id = getOurosId();
-        if (id != null && !this.level().isClientSide) {
+        if (id != null && !this.level().isClientSide()) {
             return ((ServerLevel) this.level()).getEntity(id);
         }
         return null;

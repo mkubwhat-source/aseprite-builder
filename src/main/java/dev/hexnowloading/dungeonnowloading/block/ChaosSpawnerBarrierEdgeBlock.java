@@ -120,7 +120,7 @@ public class ChaosSpawnerBarrierEdgeBlock extends Block implements SimpleWaterlo
                     case LEFT -> level.setBlock(blockPos, blockState.setValue(BARRIER_EDGE, BarrierEdges.UP), 3);
                 }
             }
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
         return InteractionResult.PASS;
     }

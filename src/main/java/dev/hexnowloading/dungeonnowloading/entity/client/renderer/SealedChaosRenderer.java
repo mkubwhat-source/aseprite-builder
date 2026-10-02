@@ -6,12 +6,12 @@ import dev.hexnowloading.dungeonnowloading.entity.client.model.SealedChaosModel;
 import dev.hexnowloading.dungeonnowloading.entity.passive.SealedChaosEntity;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class SealedChaosRenderer<T extends SealedChaosEntity> extends MobRenderer<T, SealedChaosModel<T>> {
 
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/sealed_chaos/sealed_chaos.png");
-    private static final ResourceLocation TEXTURE_BASIC = ResourceLocation.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/sealed_chaos/sealed_chaos_basic.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/sealed_chaos/sealed_chaos.png");
+    private static final Identifier TEXTURE_BASIC = Identifier.fromNamespaceAndPath(DungeonNowLoading.MOD_ID, "textures/entity/sealed_chaos/sealed_chaos_basic.png");
 
     public SealedChaosRenderer(EntityRendererProvider.Context context) {
         super(context, new SealedChaosModel<>(context.bakeLayer(SealedChaosModel.LAYER_LOCATION)), 0.5F);
@@ -32,7 +32,7 @@ public class SealedChaosRenderer<T extends SealedChaosEntity> extends MobRendere
     }
 
     @Override
-    public ResourceLocation getTextureLocation(T t) {
+    public Identifier getTextureLocation(T t) {
         return t.isBasicVariant() ? TEXTURE_BASIC : TEXTURE;
     }
 }

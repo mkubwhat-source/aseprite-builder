@@ -29,7 +29,7 @@ public class ZoneWandItem extends Item {
         var stack = context.getItemInHand();
 
         if (player == null) return InteractionResult.PASS;
-        if (level.isClientSide) return InteractionResult.SUCCESS;
+        if (level.isClientSide()) return InteractionResult.SUCCESS;
 
         CompoundTag tag = StackNbt.getOrCreateTag(stack);
 
@@ -39,7 +39,7 @@ public class ZoneWandItem extends Item {
             tag.remove(CORNER_B);
             tag.remove("NextCornerIsB");
             StackNbt.setTag(stack, tag);
-            player.displayClientMessage(Component.literal("Corners cleared from wand."), true);
+            player.sendOverlayMessage(Component.literal("Corners cleared from wand."));
             return InteractionResult.CONSUME;
         }
 
@@ -47,8 +47,8 @@ public class ZoneWandItem extends Item {
         BlockEntity be = level.getBlockEntity(clickedPos);
         if (be instanceof ZoneReceiverBlockEntity receiver) {
             if (tag.contains(CORNER_A) && tag.contains(CORNER_B)) {
-                BlockPos a = readPos(tag.getCompound(CORNER_A));
-                BlockPos b = readPos(tag.getCompound(CORNER_B));
+                BlockPos a = readPos(tag.getCompoundOrEmpty(CORNER_A));
+                BlockPos b = readPos(tag.getCompoundOrEmpty(CORNER_B));
 
                 // Choose an authored facing.
                 // If your blocks use BlockStateProperties.FACING, grab it; otherwise default.
@@ -64,41 +64,35 @@ public class ZoneWandItem extends Item {
                 be.setChanged();
                 level.sendBlockUpdated(clickedPos, state, state, 3);
 
-                player.displayClientMessage(
-                        Component.literal("Zone applied to block at " + clickedPos.toShortString() + " (wand corners kept)."),
-                        true
-                );
+                player.sendOverlayMessage(Component.literal("Zone applied to block at " + clickedPos.toShortString() + " (wand corners kept)."));
             } else {
-                player.displayClientMessage(
-                        Component.literal("Wand needs Corner A and Corner B first."),
-                        true
-                );
+                player.sendOverlayMessage(Component.literal("Wand needs Corner A and Corner B first."));
             }
             return InteractionResult.CONSUME;
         }
 
         // Otherwise: we are setting/updating the wand corners (same as your old behavior)
-        boolean nextCornerIsB = tag.getBoolean("NextCornerIsB");
+        boolean nextCornerIsB = tag.getBooleanOr("NextCornerIsB", false);
 
         if (!tag.contains(CORNER_A)) {
             tag.put(CORNER_A, writePos(clickedPos));
             tag.putBoolean("NextCornerIsB", true);
-            player.displayClientMessage(Component.literal("Corner A set at " + clickedPos.toShortString()), true);
+            player.sendOverlayMessage(Component.literal("Corner A set at " + clickedPos.toShortString()));
 
         } else if (!tag.contains(CORNER_B)) {
             tag.put(CORNER_B, writePos(clickedPos));
             tag.putBoolean("NextCornerIsB", false);
-            player.displayClientMessage(Component.literal("Corner B set at " + clickedPos.toShortString()), true);
+            player.sendOverlayMessage(Component.literal("Corner B set at " + clickedPos.toShortString()));
 
         } else {
             if (nextCornerIsB) {
                 tag.put(CORNER_B, writePos(clickedPos));
                 tag.putBoolean("NextCornerIsB", false);
-                player.displayClientMessage(Component.literal("Corner B updated at " + clickedPos.toShortString()), true);
+                player.sendOverlayMessage(Component.literal("Corner B updated at " + clickedPos.toShortString()));
             } else {
                 tag.put(CORNER_A, writePos(clickedPos));
                 tag.putBoolean("NextCornerIsB", true);
-                player.displayClientMessage(Component.literal("Corner A updated at " + clickedPos.toShortString()), true);
+                player.sendOverlayMessage(Component.literal("Corner A updated at " + clickedPos.toShortString()));
             }
         }
 
@@ -115,6 +109,6 @@ public class ZoneWandItem extends Item {
     }
 
     private static BlockPos readPos(CompoundTag tag) {
-        return new BlockPos(tag.getInt("X"), tag.getInt("Y"), tag.getInt("Z"));
+        return new BlockPos(tag.getIntOr("X", 0), tag.getIntOr("Y", 0), tag.getIntOr("Z", 0));
     }
 }

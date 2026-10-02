@@ -120,7 +120,7 @@ public class ChaosSpawnerBarrierVertexBlock extends Block implements SimpleWater
                     case TOP_LEFT -> level.setBlock(blockPos, blockState.setValue(BARRIER_VERTEX, BarrierVertexs.TOP_RIGHT), 3);
                 }
             }
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
         return InteractionResult.PASS;
     }

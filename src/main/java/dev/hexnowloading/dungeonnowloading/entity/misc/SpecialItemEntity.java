@@ -1,5 +1,11 @@
 package dev.hexnowloading.dungeonnowloading.entity.misc;
 
+
+
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import dev.hexnowloading.dungeonnowloading.util.NbtCompat;
 import dev.hexnowloading.dungeonnowloading.util.StackNbt;
 import dev.hexnowloading.dungeonnowloading.registry.DNLEntityTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -22,7 +28,7 @@ public class SpecialItemEntity extends ItemEntity implements TraceableEntity {
     }
 
     public SpecialItemEntity(Level level, double x, double y, double z, ItemStack itemStack) {
-        this(level, x, y, z, itemStack, level.random.nextDouble() * 0.2 - 0.1, 0.2, level.random.nextDouble() * 0.2 - 0.1);
+        this(level, x, y, z, itemStack, level.getRandom().nextDouble() * 0.2 - 0.1, 0.2, level.getRandom().nextDouble() * 0.2 - 0.1);
     }
 
     public SpecialItemEntity(Level level, double x, double y, double z, ItemStack itemStack, double i, double j, double k) {
@@ -43,18 +49,18 @@ public class SpecialItemEntity extends ItemEntity implements TraceableEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compoundTag) {
+    public void addAdditionalSaveData(ValueOutput compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         if (this.picker != null) {
-            compoundTag.putUUID("Picker", this.picker);
+            NbtCompat.putUUID(compoundTag, "Picker", this.picker);
         }
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
+    public void readAdditionalSaveData(ValueInput compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-        if (compoundTag.hasUUID("Picker")) {
-            this.picker = compoundTag.getUUID("Picker");
+        if (NbtCompat.hasUUID(compoundTag, "Picker")) {
+            this.picker = NbtCompat.getUUID(compoundTag, "Picker");
         }
     }
 
@@ -78,7 +84,7 @@ public class SpecialItemEntity extends ItemEntity implements TraceableEntity {
         this.picker = uuid;
 
         // merge into existing tag (don't overwrite enchantments, custom names, etc.)
-        StackNbt.update(this.getItem(), t -> t.putUUID("PickerUUID", uuid));
+        StackNbt.update(this.getItem(), t -> NbtCompat.putUUID(t, "PickerUUID", uuid));
     }
 
     public UUID getPickerUUID() {
